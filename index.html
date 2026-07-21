@@ -19,7 +19,7 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
 
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260722-glass1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260722-apple-liquid-glass1">
 
   <style>
     /* Compact sidebar + consistent navigation icons */
@@ -190,183 +190,355 @@
       }
     }
 
-    /* iOS-inspired liquid-glass treatment for interactive buttons.
-       Keeps Greenscape colors while adding translucent depth, blur,
-       inner highlights, and a soft press response. */
-    button:not(.plant-image):not([disabled]) {
-      --glass-bg-top: rgba(255, 255, 255, .62);
-      --glass-bg-bottom: rgba(239, 247, 242, .44);
-      --glass-border: rgba(255, 255, 255, .72);
+    /* =========================================================
+       Apple-inspired Liquid Glass for web controls
+       Based on the behavior Apple documents for custom views:
+       translucent material, adaptive tint, reflected light, and
+       real-time pointer/touch response. The browser cannot render
+       SwiftUI's native material, so this is a close CSS/JS analogue.
+       ========================================================= */
+    :root {
+      --glass-ease-spring: cubic-bezier(.20, .90, .24, 1.18);
+      --glass-ease-soft: cubic-bezier(.22, .72, .24, 1);
+    }
+
+    /* Apply glass to controls, while leaving large image/list-row buttons clean. */
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):not([disabled]) {
+      --glass-x: 50%;
+      --glass-y: 18%;
+      --glass-tilt-x: 0deg;
+      --glass-tilt-y: 0deg;
+      --glass-lift: 0px;
+      --glass-scale: 1;
+      --glass-blur: 18px;
+      --glass-saturation: 175%;
+      --glass-tint-rgb: 238, 248, 242;
+      --glass-tint-alpha-top: .56;
+      --glass-tint-alpha-bottom: .28;
+      --glass-edge: rgba(255, 255, 255, .78);
+      --glass-edge-low: rgba(15, 67, 46, .10);
       --glass-text: var(--forest-900, #173f31);
-      --glass-shadow: rgba(10, 55, 39, .14);
-      --glass-glow: rgba(255, 255, 255, .58);
+      --glass-shadow-rgb: 12, 56, 40;
+      --glass-shadow-alpha: .14;
+      --glass-specular: rgba(255, 255, 255, .78);
+      --glass-reflection-alpha: .56;
+
       position: relative;
       isolation: isolate;
       overflow: hidden;
       color: var(--glass-text) !important;
-      border: 1px solid var(--glass-border) !important;
+      border: 1px solid var(--glass-edge) !important;
       background:
-        linear-gradient(180deg, var(--glass-bg-top), var(--glass-bg-bottom)) !important;
-      -webkit-backdrop-filter: blur(14px) saturate(165%);
-      backdrop-filter: blur(14px) saturate(165%);
+        linear-gradient(
+          180deg,
+          rgba(var(--glass-tint-rgb), var(--glass-tint-alpha-top)),
+          rgba(var(--glass-tint-rgb), var(--glass-tint-alpha-bottom))
+        ) !important;
+      -webkit-backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(var(--glass-saturation))
+        contrast(1.03);
+      backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(var(--glass-saturation))
+        contrast(1.03);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, .80),
-        inset 0 -1px 0 rgba(18, 67, 47, .08),
-        0 7px 18px var(--glass-shadow),
-        0 1px 2px rgba(12, 47, 35, .08) !important;
-      text-shadow: 0 1px 0 rgba(255,255,255,.24);
-      transform: translateZ(0);
+        inset 0 1px 0 var(--glass-specular),
+        inset 0 -1px 0 var(--glass-edge-low),
+        inset 1px 0 0 rgba(255, 255, 255, .20),
+        inset -1px 0 0 rgba(255, 255, 255, .10),
+        0 7px 20px rgba(var(--glass-shadow-rgb), var(--glass-shadow-alpha)),
+        0 1px 2px rgba(var(--glass-shadow-rgb), .10) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .24);
+      transform:
+        perspective(560px)
+        translate3d(0, var(--glass-lift), 0)
+        rotateX(var(--glass-tilt-y))
+        rotateY(var(--glass-tilt-x))
+        scale(var(--glass-scale));
+      transform-origin: center;
+      will-change: transform;
       transition:
-        transform .20s cubic-bezier(.2,.8,.2,1),
-        box-shadow .22s ease,
-        border-color .22s ease,
-        filter .22s ease !important;
+        transform .34s var(--glass-ease-spring),
+        box-shadow .28s var(--glass-ease-soft),
+        border-color .24s ease,
+        filter .24s ease,
+        background-color .24s ease !important;
     }
 
-    button:not(.plant-image):not([disabled])::before {
+    /* Default capsule, matching the system's standard Liquid Glass shape. */
+    :where(.button, .feedback-launcher):not(.icon-button) {
+      border-radius: 999px !important;
+    }
+
+    /* Larger/navigation components retain a rounded-rectangle shape. */
+    .nav-item {
+      border-radius: 12px !important;
+    }
+
+    /* Optical reflection that follows the pointer or touch position. */
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):not([disabled])::before {
       content: "";
       position: absolute;
-      z-index: 0;
-      inset: 1px 10% auto;
-      height: 42%;
-      border-radius: 999px;
-      background: linear-gradient(180deg, var(--glass-glow), transparent);
+      z-index: -1;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          circle at var(--glass-x) var(--glass-y),
+          rgba(255, 255, 255, calc(var(--glass-reflection-alpha) + .12)) 0,
+          rgba(255, 255, 255, var(--glass-reflection-alpha)) 9%,
+          rgba(255, 255, 255, .16) 25%,
+          transparent 49%
+        ),
+        linear-gradient(
+          118deg,
+          rgba(255, 255, 255, .24) 0%,
+          transparent 29%,
+          rgba(255, 255, 255, .08) 61%,
+          rgba(255, 255, 255, .18) 100%
+        );
       opacity: .72;
-      pointer-events: none;
-      filter: blur(.2px);
-      transition: opacity .22s ease, transform .22s ease;
+      transform: translateZ(0) scale(1.02);
+      transition: opacity .24s ease, transform .32s var(--glass-ease-soft);
     }
 
-    button:not(.plant-image):not([disabled])::after {
+    /* Refracted rim and soft lower caustic. */
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):not([disabled])::after {
       content: "";
       position: absolute;
-      z-index: 0;
-      width: 44%;
-      height: 180%;
-      left: -36%;
-      top: -40%;
-      border-radius: 50%;
-      background: linear-gradient(110deg, transparent 18%, rgba(255,255,255,.50) 48%, transparent 78%);
-      opacity: 0;
+      z-index: -1;
+      inset: 1px;
+      border-radius: inherit;
       pointer-events: none;
-      transform: rotate(12deg);
-      transition: left .48s cubic-bezier(.2,.75,.2,1), opacity .18s ease;
+      background:
+        radial-gradient(90% 56% at 50% 118%, rgba(255,255,255,.24), transparent 72%),
+        linear-gradient(180deg, transparent 58%, rgba(16, 72, 49, .07));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.12),
+        inset 0 -7px 14px rgba(255,255,255,.06);
+      opacity: .88;
     }
 
-    button:not(.plant-image):not([disabled]) > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Primary Greenscape glass */
+    /* Prominent tinted glass. */
     .button.primary,
     .button.terracotta,
     .feedback-launcher,
     .nav-item.active,
     button[style*="background:var(--forest"],
     button[style*="background: var(--forest"] {
-      --glass-bg-top: rgba(58, 120, 89, .88);
-      --glass-bg-bottom: rgba(18, 72, 51, .86);
-      --glass-border: rgba(255, 255, 255, .38);
+      --glass-tint-rgb: 31, 107, 74;
+      --glass-tint-alpha-top: .82;
+      --glass-tint-alpha-bottom: .67;
+      --glass-edge: rgba(255, 255, 255, .40);
+      --glass-edge-low: rgba(4, 45, 30, .22);
       --glass-text: #fff;
-      --glass-shadow: rgba(6, 47, 33, .24);
-      --glass-glow: rgba(255, 255, 255, .42);
-      text-shadow: 0 1px 2px rgba(0,0,0,.18);
+      --glass-shadow-rgb: 3, 46, 30;
+      --glass-shadow-alpha: .25;
+      --glass-specular: rgba(255,255,255,.52);
+      --glass-reflection-alpha: .38;
+      text-shadow: 0 1px 2px rgba(0,0,0,.20);
     }
 
-    /* Neutral / secondary frosted glass */
+    /* Clear/neutral glass. */
     .button.secondary,
     .button.ghost,
     .icon-button,
     .moodboard-zoom-controls button {
-      --glass-bg-top: rgba(255, 255, 255, .76);
-      --glass-bg-bottom: rgba(234, 244, 238, .54);
-      --glass-border: rgba(255, 255, 255, .86);
+      --glass-tint-rgb: 246, 251, 248;
+      --glass-tint-alpha-top: .72;
+      --glass-tint-alpha-bottom: .42;
+      --glass-edge: rgba(255, 255, 255, .88);
       --glass-text: var(--forest-900, #173f31);
-      --glass-shadow: rgba(22, 69, 50, .12);
+      --glass-shadow-alpha: .11;
+      --glass-reflection-alpha: .62;
     }
 
-    /* Sidebar glass buttons */
+    /* Glass on the dark sidebar samples a darker surrounding environment. */
     .nav-item:not(.active) {
-      --glass-bg-top: rgba(255, 255, 255, .10);
-      --glass-bg-bottom: rgba(255, 255, 255, .045);
-      --glass-border: rgba(255, 255, 255, .12);
+      --glass-tint-rgb: 255, 255, 255;
+      --glass-tint-alpha-top: .12;
+      --glass-tint-alpha-bottom: .045;
+      --glass-edge: rgba(255, 255, 255, .14);
+      --glass-edge-low: rgba(0, 0, 0, .10);
       --glass-text: #dce9e1;
-      --glass-shadow: rgba(0, 0, 0, .10);
-      --glass-glow: rgba(255, 255, 255, .18);
+      --glass-shadow-rgb: 0, 0, 0;
+      --glass-shadow-alpha: .06;
+      --glass-specular: rgba(255,255,255,.17);
+      --glass-reflection-alpha: .18;
+      -webkit-backdrop-filter: blur(13px) saturate(135%);
+      backdrop-filter: blur(13px) saturate(135%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.10),
-        inset 0 -1px 0 rgba(0,0,0,.08) !important;
+        inset 0 1px 0 rgba(255,255,255,.11),
+        inset 0 -1px 0 rgba(0,0,0,.09) !important;
     }
 
     .feedback-close {
-      --glass-bg-top: rgba(255, 255, 255, .20);
-      --glass-bg-bottom: rgba(255, 255, 255, .08);
-      --glass-border: rgba(255, 255, 255, .24);
+      --glass-tint-rgb: 255, 255, 255;
+      --glass-tint-alpha-top: .24;
+      --glass-tint-alpha-bottom: .08;
+      --glass-edge: rgba(255, 255, 255, .28);
       --glass-text: #fff;
-      --glass-shadow: rgba(0, 0, 0, .12);
-      --glass-glow: rgba(255, 255, 255, .28);
+      --glass-shadow-rgb: 0, 0, 0;
+      --glass-shadow-alpha: .11;
+      --glass-reflection-alpha: .26;
     }
 
-    /* Danger glass */
+    /* Prominent danger tint. */
     .button.danger,
     .danger-text,
     .sheet-category-delete {
-      --glass-bg-top: rgba(174, 78, 61, .88);
-      --glass-bg-bottom: rgba(125, 47, 37, .84);
-      --glass-border: rgba(255, 255, 255, .34);
+      --glass-tint-rgb: 154, 62, 49;
+      --glass-tint-alpha-top: .86;
+      --glass-tint-alpha-bottom: .68;
+      --glass-edge: rgba(255, 255, 255, .36);
+      --glass-edge-low: rgba(80, 24, 19, .20);
       --glass-text: #fff;
-      --glass-shadow: rgba(91, 31, 24, .22);
-      --glass-glow: rgba(255, 255, 255, .38);
-      text-shadow: 0 1px 2px rgba(0,0,0,.16);
+      --glass-shadow-rgb: 86, 28, 21;
+      --glass-shadow-alpha: .22;
+      --glass-specular: rgba(255,255,255,.45);
+      --glass-reflection-alpha: .34;
+      text-shadow: 0 1px 2px rgba(0,0,0,.18);
     }
 
+    /* Real-time interactive response, similar to Glass.interactive(). */
     @media (hover: hover) and (pointer: fine) {
-      button:not(.plant-image):not([disabled]):hover {
-        transform: translateY(-1px) scale(1.012);
-        border-color: rgba(255,255,255,.92) !important;
-        filter: brightness(1.035) saturate(1.05);
+      :where(
+        .button,
+        .nav-item,
+        .icon-button,
+        .feedback-launcher,
+        .feedback-close,
+        .sheet-category-delete,
+        .moodboard-zoom-controls button,
+        button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+      ):not([disabled]).is-glass-hovered {
+        --glass-lift: -1px;
+        --glass-scale: 1.018;
+        filter: brightness(1.045) saturate(1.06);
+        border-color: rgba(255, 255, 255, .94) !important;
         box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, .92),
-          inset 0 -1px 0 rgba(18, 67, 47, .06),
-          0 11px 24px var(--glass-shadow),
-          0 2px 4px rgba(12, 47, 35, .08) !important;
+          inset 0 1px 0 rgba(255,255,255,.92),
+          inset 0 -1px 0 var(--glass-edge-low),
+          inset 1px 0 0 rgba(255,255,255,.25),
+          inset -1px 0 0 rgba(255,255,255,.14),
+          0 11px 27px rgba(var(--glass-shadow-rgb), calc(var(--glass-shadow-alpha) + .05)),
+          0 2px 4px rgba(var(--glass-shadow-rgb), .09) !important;
       }
-      button:not(.plant-image):not([disabled]):hover::before {
-        opacity: .94;
-        transform: translateY(-1px) scaleX(1.04);
-      }
-      button:not(.plant-image):not([disabled]):hover::after {
-        left: 92%;
-        opacity: .72;
+
+      :where(
+        .button,
+        .nav-item,
+        .icon-button,
+        .feedback-launcher,
+        .feedback-close,
+        .sheet-category-delete,
+        .moodboard-zoom-controls button,
+        button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+      ):not([disabled]).is-glass-hovered::before {
+        opacity: 1;
+        transform: translateZ(0) scale(1.055);
       }
     }
 
-    button:not(.plant-image):not([disabled]):active {
-      transform: translateY(1px) scale(.972);
-      filter: brightness(.98) saturate(1.03);
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):not([disabled]).is-glass-pressed,
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):not([disabled]):active {
+      --glass-lift: 1px;
+      --glass-scale: .965;
+      --glass-tilt-x: 0deg;
+      --glass-tilt-y: 0deg;
+      filter: brightness(.98) saturate(1.04);
       box-shadow:
-        inset 0 2px 5px rgba(8, 46, 32, .16),
-        inset 0 1px 0 rgba(255, 255, 255, .48),
-        0 3px 9px var(--glass-shadow) !important;
-      transition-duration: .07s !important;
+        inset 0 3px 8px rgba(var(--glass-shadow-rgb), .15),
+        inset 0 1px 0 rgba(255,255,255,.48),
+        0 3px 9px rgba(var(--glass-shadow-rgb), var(--glass-shadow-alpha)) !important;
+      transition-duration: .09s !important;
     }
 
-    button:not(.plant-image):focus-visible {
-      outline: 3px solid rgba(220, 233, 141, .82) !important;
+    :where(
+      .button,
+      .nav-item,
+      .icon-button,
+      .feedback-launcher,
+      .feedback-close,
+      .sheet-category-delete,
+      .moodboard-zoom-controls button,
+      button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])
+    ):focus-visible {
+      outline: 3px solid rgba(220, 233, 141, .88) !important;
       outline-offset: 3px;
     }
 
     @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-      button:not(.plant-image):not([disabled]) {
-        background: linear-gradient(180deg, var(--glass-bg-top), var(--glass-bg-bottom)) !important;
+      :where(.button, .nav-item, .icon-button, .feedback-launcher, .feedback-close, .sheet-category-delete) {
+        background:
+          linear-gradient(
+            180deg,
+            rgba(var(--glass-tint-rgb), .94),
+            rgba(var(--glass-tint-rgb), .78)
+          ) !important;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      button:not(.plant-image):not([disabled]),
-      button:not(.plant-image):not([disabled])::before,
-      button:not(.plant-image):not([disabled])::after {
+      :where(
+        .button,
+        .nav-item,
+        .icon-button,
+        .feedback-launcher,
+        .feedback-close,
+        .sheet-category-delete,
+        .moodboard-zoom-controls button,
+        button[data-action]:not(.plant-image)
+      ) {
+        --glass-tilt-x: 0deg !important;
+        --glass-tilt-y: 0deg !important;
         transition-duration: .01ms !important;
       }
     }
@@ -509,5 +681,107 @@
       }, true);
     })();
   </script>
+  <script>
+    /* Apple-style interactive Liquid Glass controller.
+       Delegated events also cover buttons rendered later by app.js. */
+    (() => {
+      const selector = [
+        '.button',
+        '.nav-item',
+        '.icon-button',
+        '.feedback-launcher',
+        '.feedback-close',
+        '.sheet-category-delete',
+        '.moodboard-zoom-controls button',
+        'button[data-action]:not(.plant-image):not([style*="background:transparent"]):not([style*="background: transparent"])'
+      ].join(',');
+
+      const animationFrames = new WeakMap();
+
+      function glassButtonFrom(target) {
+        if (!(target instanceof Element)) return null;
+        const button = target.closest(selector);
+        if (!button || button.disabled) return null;
+        return button;
+      }
+
+      function updateOptics(button, clientX, clientY) {
+        const previousFrame = animationFrames.get(button);
+        if (previousFrame) cancelAnimationFrame(previousFrame);
+
+        const frame = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+
+          const localX = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+          const localY = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+          const xPercent = localX * 100;
+          const yPercent = localY * 100;
+          const tiltX = (localX - .5) * 2.2;
+          const tiltY = (.5 - localY) * 1.8;
+
+          button.style.setProperty('--glass-x', `${xPercent.toFixed(1)}%`);
+          button.style.setProperty('--glass-y', `${yPercent.toFixed(1)}%`);
+          button.style.setProperty('--glass-tilt-x', `${tiltX.toFixed(2)}deg`);
+          button.style.setProperty('--glass-tilt-y', `${tiltY.toFixed(2)}deg`);
+          animationFrames.delete(button);
+        });
+
+        animationFrames.set(button, frame);
+      }
+
+      function resetOptics(button) {
+        button.style.setProperty('--glass-x', '50%');
+        button.style.setProperty('--glass-y', '18%');
+        button.style.setProperty('--glass-tilt-x', '0deg');
+        button.style.setProperty('--glass-tilt-y', '0deg');
+      }
+
+      document.addEventListener('pointerover', event => {
+        const button = glassButtonFrom(event.target);
+        if (!button || button.contains(event.relatedTarget)) return;
+        button.classList.add('is-glass-hovered');
+        updateOptics(button, event.clientX, event.clientY);
+      }, { passive: true });
+
+      document.addEventListener('pointermove', event => {
+        const button = glassButtonFrom(event.target);
+        if (!button || event.pointerType === 'touch') return;
+        updateOptics(button, event.clientX, event.clientY);
+      }, { passive: true });
+
+      document.addEventListener('pointerout', event => {
+        const button = glassButtonFrom(event.target);
+        if (!button || button.contains(event.relatedTarget)) return;
+        button.classList.remove('is-glass-hovered');
+        resetOptics(button);
+      }, { passive: true });
+
+      document.addEventListener('pointerdown', event => {
+        const button = glassButtonFrom(event.target);
+        if (!button) return;
+        updateOptics(button, event.clientX, event.clientY);
+        button.classList.add('is-glass-pressed');
+      }, { passive: true });
+
+      const release = event => {
+        const pressedButtons = document.querySelectorAll('.is-glass-pressed');
+        pressedButtons.forEach(button => {
+          button.classList.remove('is-glass-pressed');
+          if (event.pointerType === 'touch') resetOptics(button);
+        });
+      };
+
+      document.addEventListener('pointerup', release, { passive: true });
+      document.addEventListener('pointercancel', release, { passive: true });
+      window.addEventListener('blur', () => {
+        document.querySelectorAll('.is-glass-hovered, .is-glass-pressed').forEach(button => {
+          button.classList.remove('is-glass-hovered', 'is-glass-pressed');
+          resetOptics(button);
+        });
+      });
+    })();
+  </script>
+
 </body>
 </html>
