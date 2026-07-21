@@ -243,6 +243,37 @@
     return `hsl(${Math.abs(hash) % 360} 38% 46%)`;
   }
 
+  function categoryTextColor(category) {
+    const color = categoryColor(category);
+    const match = /^#([0-9a-f]{6})$/i.exec(color);
+    if (!match) return '#ffffff';
+
+    const value = match[1];
+    const channels = [
+      parseInt(value.slice(0, 2), 16),
+      parseInt(value.slice(2, 4), 16),
+      parseInt(value.slice(4, 6), 16)
+    ].map(channel => {
+      const normalized = channel / 255;
+      return normalized <= 0.03928
+        ? normalized / 12.92
+        : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    });
+
+    const backgroundLuminance =
+      (0.2126 * channels[0]) +
+      (0.7152 * channels[1]) +
+      (0.0722 * channels[2]);
+
+    const darkLuminance = 0.035;
+    const whiteContrast = 1.05 / (backgroundLuminance + 0.05);
+    const darkContrast =
+      (Math.max(backgroundLuminance, darkLuminance) + 0.05) /
+      (Math.min(backgroundLuminance, darkLuminance) + 0.05);
+
+    return whiteContrast >= darkContrast ? '#ffffff' : '#173728';
+  }
+
   function renderDashboard() {
     const categoryCounts = plants.reduce((acc, plant) => {
       acc[plant.category] = (acc[plant.category] || 0) + 1;
@@ -381,7 +412,7 @@
       <article class="plant-card">
         <button class="plant-image" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
           ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(initials(plant.commonName))}</div>`}
-          <span class="category-pill">${escapeHTML(plant.category)}</span>
+          <span class="category-pill" style="background:${categoryColor(plant.category)};color:${categoryTextColor(plant.category)};">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
           <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
