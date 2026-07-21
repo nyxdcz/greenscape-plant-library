@@ -1,78 +1,107 @@
 # Greenscape Plant Library
 
-This repository contains the published Greenscape Plant Library website.
+A browser-based plant library and landscape database created for **Greenscape Landscaping Services**.
 
-## How to open the website after publishing on GitHub
+The website helps organize plant information, edit plant records, prepare project plant lists, and create printable A3 plant mood boards from one workspace.
 
-### Step 1 — Open the repository
+## Live Website
 
-Go to your GitHub repository:
+Open the published website here:
 
-`https://github.com/nyxdcz-pixel/greenscape-plant-library`
+**https://nyxdcz-pixel.github.io/greenscape-plant-library/**
 
-### Step 2 — Open GitHub Pages settings
+## Main Features
 
-1. Click **Settings** at the top of the repository.
-2. In the left menu, click **Pages**.
-3. Under **Build and deployment**, confirm the following settings:
-   - **Source:** Deploy from a branch
-   - **Branch:** `main`
-   - **Folder:** `/ (root)`
-4. Click **Save** when needed.
+- Searchable plant and landscape-material library
+- Plant List Editor with save and cancel confirmation
+- Add and edit plant records, photos, sizes, notes, tags, and links
+- Duplicate plant-code detection and required-field validation
+- Project plant lists and plant schedules
+- A3 portrait and landscape mood-board creator
+- Adjustable cards per row and cards per column
+- Board zoom controls
+- PNG export and Print / Save PDF
+- Excel import and export
+- Mobile home-screen support through the web app manifest
 
-### Step 3 — Wait for publishing
+## Important Data Note
 
-GitHub usually needs a few minutes to publish or update the website.
-
-You can check the deployment status by opening the **Actions** tab. Wait until the deployment displays a green check mark.
-
-### Step 4 — Open the live website
-
-The published website address is:
-
-```text
-https://nyxdcz-pixel.github.io/greenscape-plant-library/
-```
-
-You can copy this address, open it in Chrome or Safari, and bookmark it for easier access.
-
-### Step 5 — Refresh after an update
-
-When a new version is uploaded to GitHub, wait a few minutes and refresh the website.
-
-On Mac, use:
-
-`Command + Shift + R`
-
-On Windows, use:
-
-`Ctrl + Shift + R`
-
-This forces the browser to load the newest files instead of an older cached version.
-
-## Opening the website on a phone
-
-1. Open Chrome or Safari on the phone.
-2. Enter the published website address.
-3. Use **Add to Home Screen** to create an app-like shortcut.
-
-## How to update the website later
-
-1. Replace the existing website files in the repository with the updated files.
-2. Commit the changes to the `main` branch.
-3. GitHub Pages will publish the update automatically.
-4. Wait a few minutes, then hard-refresh the live website.
-
-## Important note about plant edits
-
-Plant information edited inside the live website is saved in that browser using local storage.
+Plant edits made inside the live website are stored in the browser using **local storage**.
 
 This means:
 
-- The edits remain on the same browser and device.
-- They do not automatically update the GitHub repository.
-- They do not automatically appear on another computer or phone.
-- Use **Export Excel** regularly as a backup.
+- Changes remain on the same browser and device.
+- Changes do not automatically update the GitHub repository.
+- Changes do not automatically appear on another computer or phone.
+- Clearing browser data may remove locally saved edits.
+- Use **Export Excel** regularly to keep a backup of the plant database.
+
+## How to Open the Published Website
+
+1. Open Chrome, Safari, or another modern browser.
+2. Go to:
+
+   `https://nyxdcz-pixel.github.io/greenscape-plant-library/`
+
+3. Bookmark the page for easier access.
+4. On a phone, use **Add to Home Screen** to create an app-like shortcut.
+
+## How to Publish or Check GitHub Pages
+
+1. Open the repository:
+
+   `https://github.com/nyxdcz-pixel/greenscape-plant-library`
+
+2. Go to **Settings → Pages**.
+3. Under **Build and deployment**, confirm:
+   - **Source:** Deploy from a branch
+   - **Branch:** `main`
+   - **Folder:** `/ (root)`
+4. Open the **Actions** tab.
+5. Wait for the Pages deployment to show a green check mark.
+6. Open the live website link.
+
+## How to Update the Website
+
+Website design and function updates normally involve one or more of these files:
+
+- `index.html`
+- `assets/css/styles.css`
+- `assets/js/app.js`
+- `assets/js/data.js`
+
+To publish an update:
+
+1. Replace the updated file in the same repository folder.
+2. Commit the change to the `main` branch.
+3. Wait for GitHub Pages to redeploy.
+4. Open the live website and perform a hard refresh.
+
+Hard refresh shortcuts:
+
+- **Mac:** `Command + Shift + R`
+- **Windows:** `Ctrl + Shift + R`
+
+## Repository Structure
+
+```text
+index.html
+.nojekyll
+README.md
+favicon.svg
+favicon.ico
+site.webmanifest
+assets/
+├── css/
+│   └── styles.css
+├── js/
+│   ├── data.js
+│   └── app.js
+├── icons/
+│   └── app icons
+└── images/
+    └── plant and interface images
+```
 
 ## Troubleshooting
 
@@ -80,34 +109,23 @@ This means:
 
 Check that:
 
-- `index.html` is in the main repository folder, not inside another folder.
-- GitHub Pages is using the `main` branch and `/ (root)` folder.
+- `index.html` is located in the repository root.
+- GitHub Pages is using `main` and `/ (root)`.
 - The latest Pages deployment completed successfully.
 - The repository name is exactly `greenscape-plant-library`.
 
 ### The website shows an older version
 
-Wait a few minutes and use a hard refresh:
+Wait a few minutes after committing, then perform a hard refresh.
 
-- Mac: `Command + Shift + R`
-- Windows: `Ctrl + Shift + R`
+### Images or styles are missing
 
-### Images or files are missing
+Confirm that the full `assets` folder was uploaded and that file names and folder paths were not changed.
 
-Make sure the complete `assets` folder was uploaded together with `index.html`.
+### Plant edits disappeared
 
-## Repository structure
+The website stores edits in the browser. Check whether browser data was cleared or whether the site was opened on another device or browser.
 
-```text
-index.html
-.nojekyll
-README.md
-assets/
-├── css/
-│   └── styles.css
-├── js/
-│   ├── data.js
-│   └── app.js
-└── images/
-    └── plant image files
-```
+## Project Status
+
+The website is actively maintained and updated as the Greenscape plant database and landscape workflow develop.
