@@ -189,6 +189,87 @@
         padding-top: 14px !important;
       }
     }
+
+
+    /* Liquid-fill interaction adapted for all visible control buttons.
+       Hidden at rest; shown only on hover, press, or tap. */
+    button:not(.plant-image):not([disabled]) {
+      --liquid-wave: rgba(32, 83, 63, .16);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background-image:
+        radial-gradient(ellipse at 50% 100%, var(--liquid-wave) 0 58%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, var(--liquid-wave) 0 58%, transparent 60%),
+        linear-gradient(var(--liquid-wave), var(--liquid-wave)) !important;
+      background-repeat: repeat-x, repeat-x, no-repeat !important;
+      background-size: 56px 24px, 56px 24px, 100% 82% !important;
+      background-position:
+        0 calc(100% + 34px),
+        28px calc(100% + 29px),
+        0 calc(100% + 110px) !important;
+      transition:
+        background-position .68s cubic-bezier(.2,.72,.2,1),
+        transform .16s ease,
+        box-shadow .2s ease,
+        color .2s ease !important;
+    }
+
+    .button.primary,
+    .button.terracotta,
+    .button.danger,
+    .nav-item,
+    .feedback-launcher,
+    .feedback-close,
+    .sheet-category-delete,
+    button[style*="background:var(--forest"],
+    button[style*="background: var(--forest"] {
+      --liquid-wave: rgba(255, 255, 255, .22);
+    }
+
+    .button.secondary,
+    .button.ghost,
+    .icon-button,
+    .sheet-open-link,
+    .moodboard-zoom-controls button {
+      --liquid-wave: rgba(32, 83, 63, .15);
+    }
+
+    button:not(.plant-image):not([disabled]):hover,
+    button:not(.plant-image):not([disabled]):active,
+    button:not(.plant-image).liquid-fill-active {
+      background-position:
+        0 7px,
+        28px 13px,
+        0 100% !important;
+    }
+
+    button:not(.plant-image):not([disabled]):active,
+    button:not(.plant-image).liquid-fill-active {
+      transform: scale(.975);
+    }
+
+    @media (hover: none) {
+      button:not(.plant-image):not([disabled]):hover {
+        background-position:
+          0 calc(100% + 34px),
+          28px calc(100% + 29px),
+          0 calc(100% + 110px) !important;
+      }
+      button:not(.plant-image).liquid-fill-active {
+        background-position:
+          0 7px,
+          28px 13px,
+          0 100% !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      button:not(.plant-image):not([disabled]) {
+        transition-duration: .01ms !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -273,29 +354,8 @@
 
       <form class="feedback-form" id="feedbackForm">
         <label>
-          <span>Message type</span>
-          <select id="feedbackType" required>
-            <option value="Error report">Error report</option>
-            <option value="Suggestion">Suggestion</option>
-            <option value="Need assistance">Need assistance</option>
-            <option value="Other feedback">Other feedback</option>
-          </select>
-        </label>
-
-        <div class="feedback-form-row">
-          <label>
-            <span>Your name <small>(optional)</small></span>
-            <input id="feedbackName" type="text" autocomplete="name" placeholder="Name">
-          </label>
-          <label>
-            <span>Your email <small>(optional)</small></span>
-            <input id="feedbackEmail" type="email" autocomplete="email" placeholder="name@email.com">
-          </label>
-        </div>
-
-        <label>
           <span>Message</span>
-          <textarea id="feedbackMessage" rows="6" required placeholder="Describe what happened, your suggestion, or the assistance you need."></textarea>
+          <textarea id="feedbackMessage" rows="6" required placeholder="Describe the error, your suggestion, or the assistance you need."></textarea>
         </label>
 
         <div class="feedback-actions">
@@ -312,6 +372,68 @@
   <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
   <script src="assets/js/data.js?v=20260721-navlabels2"></script>
-  <script src="assets/js/app.js?v=20260721-feedback1"></script>
+  <script src="assets/js/app.js?v=20260722-feedback-simple1"></script>
+  <script>
+    (() => {
+      const form = document.getElementById('feedbackForm');
+      const messageInput = document.getElementById('feedbackMessage');
+      if (!form || !messageInput) return;
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (!form.reportValidity()) return;
+
+        const message = messageInput.value.trim();
+        const pageTitle = document.getElementById('pageTitle')?.textContent?.trim() || 'Unknown page';
+        const subject = `[Greenscape Beta] Website feedback — ${pageTitle}`;
+        const body = [
+          'GREENSCAPE PLANT LIBRARY FEEDBACK',
+          '',
+          `Page: ${pageTitle}`,
+          `URL: ${window.location.href}`,
+          '',
+          'MESSAGE',
+          message,
+          '',
+          'TECHNICAL DETAILS',
+          navigator.userAgent
+        ].join('\n');
+
+        const email = 'nyxdcz@gmail.com';
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const gmailWindow = window.open(gmailUrl, '_blank');
+        if (!gmailWindow) window.location.href = mailtoUrl;
+      }, true);
+    })();
+  </script>
+
+  <script>
+    (() => {
+      const selector = 'button:not(.plant-image):not([disabled])';
+      const timers = new WeakMap();
+
+      document.addEventListener('pointerdown', event => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest(selector);
+        if (!button) return;
+
+        const previousTimer = timers.get(button);
+        if (previousTimer) window.clearTimeout(previousTimer);
+
+        button.classList.remove('liquid-fill-active');
+        void button.offsetWidth;
+        button.classList.add('liquid-fill-active');
+
+        const timer = window.setTimeout(() => {
+          button.classList.remove('liquid-fill-active');
+          timers.delete(button);
+        }, 720);
+        timers.set(button, timer);
+      }, { passive: true });
+    })();
+  </script>
+
 </body>
 </html>
