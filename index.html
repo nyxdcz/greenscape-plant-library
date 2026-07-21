@@ -18,7 +18,7 @@
   <meta property="og:description" content="Plant Library & Landscape Database for Greenscape Landscaping Services.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
-<link rel="stylesheet" href="assets/css/styles.css?v=20260722-sheet-sticky1">
+<link rel="stylesheet" href="assets/css/styles.css?v=20260722-phone-sheet-toolbar1">
 
   <style>
     /* Compact sidebar + consistent navigation icons */
@@ -1084,6 +1084,116 @@
         inset 0 1px 0 rgba(255,255,255,.78),
         inset 0 -1px 0 rgba(14,73,49,.08),
         0 6px 16px rgba(7,53,39,.09) !important;
+    }
+
+    /* Phone: match the Plant List Editor toolbar to the compact Plant Library glass bar. */
+    @media (max-width: 760px) {
+      .toolbar.sheet-toolbar,
+      .toolbar.sheet-toolbar.is-stuck {
+        top: 46px !important;
+        z-index: 41 !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        margin: 0 0 10px !important;
+        padding: 6px !important;
+        gap: 6px !important;
+        border: 0 !important;
+        border-radius: 12px !important;
+        background: rgba(255,255,255,.22) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+        backdrop-filter: blur(12px) saturate(135%) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.62),
+          0 8px 22px rgba(21,45,35,.10) !important;
+      }
+
+      .sheet-toolbar .toolbar-group {
+        width: 100% !important;
+        min-width: 0 !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+      }
+
+      .sheet-toolbar .toolbar-group:first-child {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 112px !important;
+        align-items: center !important;
+      }
+
+      .sheet-toolbar .search-wrap {
+        width: auto !important;
+        min-width: 0 !important;
+      }
+
+      .sheet-toolbar .select-input {
+        width: 112px !important;
+        min-width: 112px !important;
+      }
+
+      .sheet-toolbar .toolbar-group:last-child {
+        display: flex !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        padding: 0 1px 2px !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .sheet-toolbar .toolbar-group:last-child::-webkit-scrollbar {
+        display: none;
+      }
+
+      .sheet-toolbar .result-count,
+      .sheet-toolbar .button {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+      }
+
+      .sheet-toolbar .result-count {
+        min-height: 30px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 4px 8px !important;
+        font-size: 9px !important;
+      }
+
+      .sheet-toolbar .button {
+        min-height: 30px !important;
+        padding: 4px 8px !important;
+        font-size: 9px !important;
+      }
+
+      /* Cancel the stronger desktop stuck-state styling on phones. */
+      .sheet-toolbar.is-stuck .search-input,
+      .sheet-toolbar.is-stuck .select-input {
+        border-color: #d9e3dc !important;
+        background: #fbfcfa !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+      }
+
+      .sheet-toolbar.is-stuck .result-count {
+        border: 0 !important;
+        color: var(--forest-700) !important;
+        background: var(--forest-100) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+      }
+
+      .sheet-toolbar.is-stuck .button {
+        border: 0 !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        -webkit-backdrop-filter: blur(15px) saturate(145%) !important;
+        backdrop-filter: blur(15px) saturate(145%) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.56),
+          inset 0 -1px 0 rgba(18,67,47,.08),
+          0 5px 14px rgba(12,56,40,.10),
+          0 1px 2px rgba(12,56,40,.07) !important;
+      }
     }
 
     /* End Plant Library sticky toolbar + responsive card defaults */
