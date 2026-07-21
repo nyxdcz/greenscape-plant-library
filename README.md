@@ -8,7 +8,7 @@ The website helps organize plant information, edit plant records, prepare projec
 
 Open the published website here:
 
-**https://nyxdcz-pixel.github.io/greenscape-plant-library/**
+**https://nyxdcz.github.io/greenscape-plant-library/**
 
 ## Main Features
 
