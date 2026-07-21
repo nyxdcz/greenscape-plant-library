@@ -2234,13 +2234,14 @@
     const categoriesList = categories();
     if (!categoriesList.includes('Heliconias & Aquatics')) categoriesList.push('Heliconias & Aquatics');
     const startingCode = plant?.code || generatePlantCode('', '', 'PLx');
-    const selectedCategory = plant?.category || preferredCategory || categoriesList[0] || 'Uncategorized';
-    const body = `<form id="plantForm" class="form-grid">
+    const selectedCategory = plant?.category || preferredCategory || '';
+    const body = `<form id="plantForm" class="form-grid" novalidate>
       <input type="hidden" name="id" value="${escapeHTML(plant?.id || '')}">
-      <div class="form-field"><label>Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="3" pattern="[A-Za-z]{3}" name="code" id="plantCodeInput" placeholder="AEg" value="${escapeHTML(startingCode)}"><span class="code-rule-label">3 letters</span></div><span class="form-help">Common-name initial + genus initial + species initial. Example: African Oil Palm + Elaeis guineensis = AEg. You may edit the code to resolve a duplicate.</span><span class="form-error" id="plantCodeError"></span></div>
-      <div class="form-field"><label>Category</label><select class="select-input" name="category">${categoriesList.sort().map(c => `<option value="${escapeHTML(c)}"${selectedCategory === c ? ' selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select></div>
-      <div class="form-field"><label>Common name *</label><input class="text-input" required name="commonName" id="plantCommonName" value="${escapeHTML(plant?.commonName || '')}"></div>
-      <div class="form-field"><label>Scientific name</label><input class="text-input" name="scientificName" id="plantScientificName" value="${escapeHTML(plant?.scientificName || '')}"></div>
+      <div id="plantFormAlert" class="plant-form-alert full" role="alert" aria-live="polite"><strong>Please correct the highlighted fields.</strong><span id="plantFormAlertText"></span></div>
+      <div class="form-field" data-plant-field="code"><label for="plantCodeInput">Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="3" pattern="[A-Za-z]{3}" name="code" id="plantCodeInput" placeholder="AEg" value="${escapeHTML(startingCode)}" aria-describedby="plantCodeHelp plantCodeError"><span class="code-rule-label">3 letters</span></div><span class="form-help" id="plantCodeHelp">Common-name initial + genus initial + species initial. Example: African Oil Palm + Elaeis guineensis = AEg. You may edit the code to resolve a duplicate.</span><span class="form-error" id="plantCodeError"></span></div>
+      <div class="form-field" data-plant-field="category"><label for="plantCategory">Category *</label><select class="select-input" required name="category" id="plantCategory" aria-describedby="plantCategoryError"><option value="">Select a category</option>${categoriesList.sort().map(c => `<option value="${escapeHTML(c)}"${selectedCategory === c ? ' selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select><span class="form-error" id="plantCategoryError"></span></div>
+      <div class="form-field" data-plant-field="commonName"><label for="plantCommonName">Common name *</label><input class="text-input" required name="commonName" id="plantCommonName" value="${escapeHTML(plant?.commonName || '')}" aria-describedby="plantCommonNameError"><span class="form-error" id="plantCommonNameError"></span></div>
+      <div class="form-field" data-plant-field="scientificName"><label for="plantScientificName">Scientific name *</label><input class="text-input" required name="scientificName" id="plantScientificName" value="${escapeHTML(plant?.scientificName || '')}" placeholder="Genus species" aria-describedby="plantScientificNameError"><span class="form-error" id="plantScientificNameError"></span></div>
       <div class="form-field"><label>Sun requirement</label><input class="text-input" name="sun" placeholder="Full sun, partial shade" value="${escapeHTML(plant?.sun || '')}"></div>
       <div class="form-field"><label>Water requirement</label><input class="text-input" name="water" placeholder="Low, moderate, high" value="${escapeHTML(plant?.water || '')}"></div>
       <div class="form-field"><label>Recommended spacing</label><input class="text-input" name="spacing" placeholder="e.g. 1.5 m O.C." value="${escapeHTML(plant?.spacing || '')}"></div>
@@ -2264,25 +2265,16 @@
   async function savePlantForm(event) {
     event.preventDefault();
     const form = event.currentTarget;
+    const initialData = new FormData(form);
+    const existing = initialData.get('id') ? getPlant(initialData.get('id')) : null;
+    if (!validatePlantForm(form, existing?.id, true)) return;
+
     const fd = new FormData(form);
-    const existing = fd.get('id') ? getPlant(fd.get('id')) : null;
-    const category = String(fd.get('category') || 'Uncategorized').trim();
+    const category = String(fd.get('category') || '').trim();
     const commonName = String(fd.get('commonName') || '').trim();
     const scientificName = String(fd.get('scientificName') || '').trim();
     const generatedCode = generatePlantCode(commonName, scientificName, existing?.code);
     const code = normalizePlantCode(fd.get('code')) || generatedCode;
-    if (!commonName) return;
-    const duplicates = plants.filter(plant => plant.id !== existing?.id && String(plant.code || '').toLowerCase() === code.toLowerCase());
-    if (duplicates.length) {
-      showPlantCodeError(form, `Code ${code} is already used by ${duplicates.map(plant => plant.commonName).join(', ')}.`);
-      toast(`Duplicate plant code: ${code}`, true);
-      return;
-    }
-    if (!/^[A-Z][A-Z][a-z]$/.test(code)) {
-      showPlantCodeError(form, 'Use three letters: first two uppercase and the third lowercase.');
-      toast('Plant code must follow the AEg format.', true);
-      return;
-    }
     let image = existing?.image || '';
     const link = String(fd.get('link') || '').trim();
     const file = fd.get('imageFile');
@@ -2399,48 +2391,111 @@
       .slice(0, 3);
   }
 
-  function showPlantCodeError(form, message) {
-    const input = form.querySelector('#plantCodeInput');
-    const error = form.querySelector('#plantCodeError');
-    if (input) input.classList.toggle('input-error', Boolean(message));
+  function setPlantFieldError(form, fieldName, message) {
+    const field = form.querySelector(`[data-plant-field="${fieldName}"]`);
+    const input = field?.querySelector('input, select, textarea');
+    const error = field?.querySelector('.form-error');
+    const hasError = Boolean(message);
+    field?.classList.toggle('has-error', hasError);
+    input?.classList.toggle('input-error', hasError);
+    if (input) input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
     if (error) {
       error.textContent = message || '';
-      error.classList.toggle('visible', Boolean(message));
+      error.classList.toggle('visible', hasError);
     }
   }
 
-  function validatePlantCode(form, excludingId) {
+  function showPlantFormAlert(form, messages = []) {
+    const alert = form.querySelector('#plantFormAlert');
+    const text = form.querySelector('#plantFormAlertText');
+    const unique = [...new Set(messages.filter(Boolean))];
+    if (text) text.textContent = unique.join(' ');
+    alert?.classList.toggle('visible', unique.length > 0);
+  }
+
+  function showPlantCodeError(form, message) {
+    setPlantFieldError(form, 'code', message);
+  }
+
+  function validatePlantCode(form, excludingId, showAlert = false) {
     const input = form.querySelector('#plantCodeInput');
     if (!input) return true;
     const code = normalizePlantCode(input.value);
     input.value = code;
-    if (!/^[A-Z][A-Z][a-z]$/.test(code)) {
-      showPlantCodeError(form, 'Use three letters: first two uppercase and the third lowercase.');
+    let message = '';
+    if (!code) message = 'Plant code is required.';
+    else if (!/^[A-Z][A-Z][a-z]$/.test(code)) message = 'Use three letters: first two uppercase and the third lowercase.';
+    else {
+      const duplicates = duplicateCodeMatches(code, excludingId);
+      if (duplicates.length) {
+        message = `Duplicate code detected: ${code} is already used by ${duplicates.map(plant => plant.commonName).join(', ')}. Enter a unique code.`;
+      }
+    }
+    showPlantCodeError(form, message);
+    if (showAlert && message) showPlantFormAlert(form, [message]);
+    return !message;
+  }
+
+  function validatePlantForm(form, excludingId, focusFirst = false) {
+    const category = String(form.elements.category?.value || '').trim();
+    const commonName = String(form.elements.commonName?.value || '').trim();
+    const scientificName = String(form.elements.scientificName?.value || '').trim();
+    const errors = [];
+
+    const codeValid = validatePlantCode(form, excludingId, false);
+    if (!codeValid) errors.push(form.querySelector('#plantCodeError')?.textContent || 'Check the plant code.');
+
+    const requiredFields = [
+      ['category', category, 'Select a category.'],
+      ['commonName', commonName, 'Common name is required.'],
+      ['scientificName', scientificName, 'Scientific name is required.']
+    ];
+    requiredFields.forEach(([name, value, message]) => {
+      setPlantFieldError(form, name, value ? '' : message);
+      if (!value) errors.push(message);
+    });
+
+    showPlantFormAlert(form, errors.length ? ['Complete all required fields and resolve any duplicate code before saving.'] : []);
+    if (errors.length) {
+      toast('Please correct the highlighted plant fields.', true);
+      if (focusFirst) {
+        const firstInvalid = form.querySelector('[aria-invalid="true"]');
+        firstInvalid?.focus({ preventScroll: true });
+        firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
-    const duplicate = plants.find(plant => plant.id !== excludingId && String(plant.code || '').toLowerCase() === code.toLowerCase());
-    if (duplicate) {
-      showPlantCodeError(form, `Code ${code} is already used by ${duplicate.commonName}.`);
-      return false;
-    }
-    showPlantCodeError(form, '');
     return true;
   }
 
   function setupPlantCodeForm(form, plant) {
     const commonInput = form.querySelector('#plantCommonName');
     const scientificInput = form.querySelector('#plantScientificName');
+    const categoryInput = form.querySelector('#plantCategory');
     const codeInput = form.querySelector('#plantCodeInput');
     let manual = Boolean(plant?.codeManual);
     const updateGenerated = () => {
       if (!manual) codeInput.value = generatePlantCode(commonInput.value, scientificInput.value, plant?.code);
       validatePlantCode(form, plant?.id);
     };
-    commonInput.addEventListener('input', updateGenerated);
-    scientificInput.addEventListener('input', updateGenerated);
+    commonInput.addEventListener('input', () => {
+      if (commonInput.value.trim()) setPlantFieldError(form, 'commonName', '');
+      updateGenerated();
+      showPlantFormAlert(form, []);
+    });
+    scientificInput.addEventListener('input', () => {
+      if (scientificInput.value.trim()) setPlantFieldError(form, 'scientificName', '');
+      updateGenerated();
+      showPlantFormAlert(form, []);
+    });
+    categoryInput.addEventListener('change', () => {
+      if (categoryInput.value.trim()) setPlantFieldError(form, 'category', '');
+      showPlantFormAlert(form, []);
+    });
     codeInput.addEventListener('input', () => {
       manual = Boolean(codeInput.value.trim());
       validatePlantCode(form, plant?.id);
+      showPlantFormAlert(form, []);
     });
     codeInput.addEventListener('blur', () => validatePlantCode(form, plant?.id));
     updateGenerated();
