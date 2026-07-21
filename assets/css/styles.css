@@ -1517,11 +1517,11 @@ th { color: #42604f; background: #edf3ef; }
   min-width: 128px;
 }
 .plant-grid {
-  grid-template-columns: repeat(var(--library-columns, 6), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--library-columns, 5), minmax(0, 1fr));
 }
 @media (max-width: 1050px) and (min-width: 761px) {
   .plant-grid {
-    grid-template-columns: repeat(min(var(--library-columns, 6), 5), minmax(0, 1fr));
+    grid-template-columns: repeat(min(var(--library-columns, 5), 5), minmax(0, 1fr));
   }
 }
 @media (max-width: 760px) {

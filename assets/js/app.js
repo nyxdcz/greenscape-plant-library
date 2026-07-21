@@ -9,7 +9,7 @@
     projects: 'greenscape-plant-library-projects-v1',
     categories: 'greenscape-plant-library-categories-v1',
     moodboard: 'greenscape-plant-library-moodboard-v1',
-    libraryColumns: 'greenscape-plant-library-columns-v1'
+    libraryColumns: 'greenscape-plant-library-columns-v2'
   };
 
   const titleByView = {
@@ -44,9 +44,9 @@
     librarySearch: '',
     libraryCategory: 'All',
     libraryLimit: 48,
-    libraryColumns: [4, 5, 6, 7].includes(Number(loadJSON(STORAGE.libraryColumns, 6)))
-      ? Number(loadJSON(STORAGE.libraryColumns, 6))
-      : 6,
+    libraryColumns: [4, 5, 6, 7].includes(Number(loadJSON(STORAGE.libraryColumns, 5)))
+      ? Number(loadJSON(STORAGE.libraryColumns, 5))
+      : 5,
     sheetSearch: '',
     sheetCategory: 'All',
     moodboardSearch: '',
@@ -2957,7 +2957,7 @@
     }
     if (event.target.id === 'libraryColumns') {
       const columns = Number(event.target.value);
-      state.libraryColumns = [4, 5, 6, 7].includes(columns) ? columns : 6;
+      state.libraryColumns = [4, 5, 6, 7].includes(columns) ? columns : 5;
       saveAll();
       updateLibraryResults();
     }
