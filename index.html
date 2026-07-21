@@ -19,7 +19,7 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
 
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260721-beta1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260721-feedback1">
 </head>
 <body>
   <div class="app-shell">
@@ -55,16 +55,6 @@
         </div>
       </div>
 
-      <div class="sidebar-beta-notice" role="note" aria-label="Beta website notice">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 3h6m-5 0v5l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 17l-5-9V3M8 14h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div>
-          <strong>Beta — Work in Progress</strong>
-          <span>Errors may occur. Send feedback or request assistance at <a href="mailto:nyxdcz@gmail.com?subject=Greenscape%20Plant%20Library%20Feedback">nyxdcz@gmail.com</a>.</span>
-        </div>
-      </div>
-
       <div class="sidebar-actions">
         <a class="website-link" href="https://greenscapelandscapingph.com/" target="_blank" rel="noopener">Visit Greenscape website <span>↗</span></a>
       </div>
@@ -87,15 +77,6 @@
               <span>Confidential — do not copy, distribute, publish, or share.</span>
             </div>
           </div>
-          <div class="beta-use-notice" role="note" aria-label="Beta website notice">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 3h6m-5 0v5l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 17l-5-9V3M8 14h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div>
-              <strong>Beta — Work in Progress</strong>
-              <span>Errors may occur. For suggestions or assistance, email <a href="mailto:nyxdcz@gmail.com?subject=Greenscape%20Plant%20Library%20Feedback">nyxdcz@gmail.com</a>.</span>
-            </div>
-          </div>
         </div>
       </header>
 
@@ -103,10 +84,65 @@
     </main>
   </div>
 
+
+  <div class="feedback-widget" id="feedbackWidget">
+    <button class="feedback-launcher" id="feedbackToggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">
+      <span class="feedback-help-icon" aria-hidden="true">?</span>
+      <span class="feedback-launcher-label">Help</span>
+      <span class="feedback-beta-badge">Beta</span>
+    </button>
+
+    <section class="feedback-panel" id="feedbackPanel" aria-labelledby="feedbackTitle" hidden>
+      <header class="feedback-panel-header">
+        <div>
+          <span class="feedback-panel-kicker">Beta — Work in Progress</span>
+          <h2 id="feedbackTitle">Report an issue or send a suggestion</h2>
+          <p>This website is still under development. Please describe any error, suggestion, or assistance you need.</p>
+        </div>
+        <button class="feedback-close" id="feedbackClose" type="button" aria-label="Close feedback form">×</button>
+      </header>
+
+      <form class="feedback-form" id="feedbackForm">
+        <label>
+          <span>Message type</span>
+          <select id="feedbackType" required>
+            <option value="Error report">Error report</option>
+            <option value="Suggestion">Suggestion</option>
+            <option value="Need assistance">Need assistance</option>
+            <option value="Other feedback">Other feedback</option>
+          </select>
+        </label>
+
+        <div class="feedback-form-row">
+          <label>
+            <span>Your name <small>(optional)</small></span>
+            <input id="feedbackName" type="text" autocomplete="name" placeholder="Name">
+          </label>
+          <label>
+            <span>Your email <small>(optional)</small></span>
+            <input id="feedbackEmail" type="email" autocomplete="email" placeholder="name@email.com">
+          </label>
+        </div>
+
+        <label>
+          <span>Message</span>
+          <textarea id="feedbackMessage" rows="6" required placeholder="Describe what happened, your suggestion, or the assistance you need."></textarea>
+        </label>
+
+        <div class="feedback-actions">
+          <button class="button secondary" id="feedbackCancel" type="button">Cancel</button>
+          <button class="button primary" type="submit">Send message</button>
+        </div>
+
+        <p class="feedback-email-note">Your email app or Gmail will open with the message prepared for <strong>nyxdcz@gmail.com</strong>.</p>
+      </form>
+    </section>
+  </div>
+
   <div id="modalRoot"></div>
   <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
   <script src="assets/js/data.js?v=20260721-navlabels2"></script>
-  <script src="assets/js/app.js?v=20260721-smartnav1"></script>
+  <script src="assets/js/app.js?v=20260721-feedback1"></script>
 </body>
 </html>

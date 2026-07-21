@@ -8,8 +8,7 @@
     plants: 'greenscape-plant-library-plants-v1',
     projects: 'greenscape-plant-library-projects-v1',
     categories: 'greenscape-plant-library-categories-v1',
-    moodboard: 'greenscape-plant-library-moodboard-v1',
-    libraryColumns: 'greenscape-plant-library-columns-v2'
+    moodboard: 'greenscape-plant-library-moodboard-v1'
   };
 
   const titleByView = {
@@ -44,9 +43,6 @@
     librarySearch: '',
     libraryCategory: 'All',
     libraryLimit: 48,
-    libraryColumns: [4, 5, 6, 7].includes(Number(loadJSON(STORAGE.libraryColumns, 5)))
-      ? Number(loadJSON(STORAGE.libraryColumns, 5))
-      : 5,
     sheetSearch: '',
     sheetCategory: 'All',
     moodboardSearch: '',
@@ -130,7 +126,6 @@
       localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
       localStorage.setItem(STORAGE.categories, JSON.stringify(customCategories));
       localStorage.setItem(STORAGE.moodboard, JSON.stringify(moodboard));
-      localStorage.setItem(STORAGE.libraryColumns, JSON.stringify(state.libraryColumns));
       storageAvailable = true;
     } catch (error) {
       storageAvailable = false;
@@ -248,37 +243,6 @@
     return `hsl(${Math.abs(hash) % 360} 38% 46%)`;
   }
 
-  function categoryTextColor(category) {
-    const color = categoryColor(category);
-    const match = /^#([0-9a-f]{6})$/i.exec(color);
-    if (!match) return '#ffffff';
-
-    const value = match[1];
-    const channels = [
-      parseInt(value.slice(0, 2), 16),
-      parseInt(value.slice(2, 4), 16),
-      parseInt(value.slice(4, 6), 16)
-    ].map(channel => {
-      const normalized = channel / 255;
-      return normalized <= 0.03928
-        ? normalized / 12.92
-        : Math.pow((normalized + 0.055) / 1.055, 2.4);
-    });
-
-    const backgroundLuminance =
-      (0.2126 * channels[0]) +
-      (0.7152 * channels[1]) +
-      (0.0722 * channels[2]);
-
-    const darkLuminance = 0.035;
-    const whiteContrast = 1.05 / (backgroundLuminance + 0.05);
-    const darkContrast =
-      (Math.max(backgroundLuminance, darkLuminance) + 0.05) /
-      (Math.min(backgroundLuminance, darkLuminance) + 0.05);
-
-    return whiteContrast >= darkContrast ? '#ffffff' : '#173728';
-  }
-
   function renderDashboard() {
     const categoryCounts = plants.reduce((acc, plant) => {
       acc[plant.category] = (acc[plant.category] || 0) + 1;
@@ -381,12 +345,6 @@
             <option value="All">All categories</option>
             ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
           </select>
-          <label class="library-column-control">
-            <span>Cards per row</span>
-            <select id="libraryColumns" class="select-input" aria-label="Cards per row">
-              ${[4, 5, 6, 7].map(columns => `<option value="${columns}"${state.libraryColumns === columns ? ' selected' : ''}>${columns} cards</option>`).join('')}
-            </select>
-          </label>
         </div>
         <div class="toolbar-group">
           <span id="resultCount" class="result-count"></span>
@@ -410,7 +368,7 @@
       return;
     }
     grid.innerHTML = `
-      <div class="plant-grid" style="--library-columns:${state.libraryColumns}">${shown.map(plantCard).join('')}</div>
+      <div class="plant-grid">${shown.map(plantCard).join('')}</div>
       ${shown.length < results.length ? `<div style="display:flex;justify-content:center;margin-top:22px;"><button class="button secondary" data-action="load-more">Show more (${results.length - shown.length} remaining)</button></div>` : ''}
     `;
   }
@@ -423,7 +381,7 @@
       <article class="plant-card">
         <button class="plant-image" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
           ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(initials(plant.commonName))}</div>`}
-          <span class="category-pill" style="background:${categoryColor(plant.category)};color:${categoryTextColor(plant.category)};">${escapeHTML(plant.category)}</span>
+          <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
           <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
@@ -433,6 +391,7 @@
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
             <button class="button secondary small" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
+            <button class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
           </div>
         </div>
       </article>`;
@@ -2954,12 +2913,6 @@
       state.libraryLimit = 48;
       updateLibraryResults();
     }
-    if (event.target.id === 'libraryColumns') {
-      const columns = Number(event.target.value);
-      state.libraryColumns = [4, 5, 6, 7].includes(columns) ? columns : 5;
-      saveAll();
-      updateLibraryResults();
-    }
     if (event.target.id === 'sheetCategoryFilter') {
       state.sheetCategory = event.target.value;
       renderPlantSheet();
@@ -2994,24 +2947,84 @@
     }
   });
 
-
-  // Keep the liquid-fill click effect visible long enough on touch devices.
-  document.addEventListener('pointerdown', event => {
-    const control = event.target.closest(
-      '.button, .nav-item, .website-link, .icon-button, .text-button, .sheet-open-link'
-    );
-    if (!control || control.hasAttribute('disabled')) return;
-
-    control.classList.remove('button-wave-click');
-    // Restart the animation when the same control is tapped repeatedly.
-    void control.offsetWidth;
-    control.classList.add('button-wave-click');
-
-    window.setTimeout(() => {
-      control.classList.remove('button-wave-click');
-    }, 920);
-  }, { passive: true });
-
   document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === state.view));
   render();
+})();
+
+
+(() => {
+  const widget = document.getElementById('feedbackWidget');
+  const toggle = document.getElementById('feedbackToggle');
+  const panel = document.getElementById('feedbackPanel');
+  const closeButton = document.getElementById('feedbackClose');
+  const cancelButton = document.getElementById('feedbackCancel');
+  const form = document.getElementById('feedbackForm');
+  const messageInput = document.getElementById('feedbackMessage');
+
+  if (!widget || !toggle || !panel || !form) return;
+
+  function openFeedback() {
+    panel.hidden = false;
+    toggle.setAttribute('aria-expanded', 'true');
+    window.setTimeout(() => messageInput?.focus(), 40);
+  }
+
+  function closeFeedback() {
+    panel.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.focus();
+  }
+
+  toggle.addEventListener('click', () => {
+    if (panel.hidden) openFeedback();
+    else closeFeedback();
+  });
+  closeButton?.addEventListener('click', closeFeedback);
+  cancelButton?.addEventListener('click', closeFeedback);
+
+  document.addEventListener('click', event => {
+    if (!panel.hidden && !widget.contains(event.target)) closeFeedback();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !panel.hidden) closeFeedback();
+  });
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const type = document.getElementById('feedbackType')?.value || 'Website feedback';
+    const name = document.getElementById('feedbackName')?.value.trim() || 'Not provided';
+    const email = document.getElementById('feedbackEmail')?.value.trim() || 'Not provided';
+    const message = messageInput?.value.trim() || '';
+    const pageTitle = document.getElementById('pageTitle')?.textContent?.trim() || 'Unknown page';
+    const pageUrl = window.location.href;
+    const browser = navigator.userAgent;
+
+    const subject = `[Greenscape Beta] ${type} — ${pageTitle}`;
+    const body = [
+      'GREENSCAPE PLANT LIBRARY FEEDBACK',
+      '',
+      `Type: ${type}`,
+      `Name: ${name}`,
+      `Reply email: ${email}`,
+      `Page: ${pageTitle}`,
+      `URL: ${pageUrl}`,
+      '',
+      'MESSAGE',
+      message,
+      '',
+      'TECHNICAL DETAILS',
+      browser
+    ].join('\n');
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent('nyxdcz@gmail.com')}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:nyxdcz@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    const gmailWindow = window.open(gmailUrl, '_blank');
+    if (!gmailWindow) window.location.href = mailtoUrl;
+
+    closeFeedback();
+  });
 })();
