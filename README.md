@@ -30,7 +30,9 @@ You can check the deployment status by opening the **Actions** tab. Wait until t
 
 The published website address is:
 
+```text
 `https://nyxdcz-pixel.github.io/greenscape-plant-library/`
+```
 
 You can copy this address, open it in Chrome or Safari, and bookmark it for easier access.
 
