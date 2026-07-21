@@ -19,7 +19,7 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
 
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260722-sidebar5">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260722-liquid2">
 
   <style>
     /* Compact sidebar + consistent navigation icons */
@@ -191,82 +191,76 @@
     }
 
 
-    /* Liquid-fill interaction adapted for all visible control buttons.
-       Hidden at rest; shown only on hover, press, or tap. */
+    /* Refined liquid-fill interaction for control buttons.
+       Fully hidden at rest; a soft liquid layer rises on hover or tap. */
     button:not(.plant-image):not([disabled]) {
-      --liquid-wave: rgba(32, 83, 63, .16);
       position: relative;
       overflow: hidden;
       isolation: isolate;
-      background-image:
-        radial-gradient(ellipse at 50% 100%, var(--liquid-wave) 0 58%, transparent 60%),
-        radial-gradient(ellipse at 50% 100%, var(--liquid-wave) 0 58%, transparent 60%),
-        linear-gradient(var(--liquid-wave), var(--liquid-wave)) !important;
-      background-repeat: repeat-x, repeat-x, no-repeat !important;
-      background-size: 56px 24px, 56px 24px, 100% 82% !important;
-      background-position:
-        0 calc(100% + 34px),
-        28px calc(100% + 29px),
-        0 calc(100% + 110px) !important;
+    }
+
+    button:not(.plant-image):not([disabled])::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      left: -12%;
+      top: 100%;
+      width: 124%;
+      height: 220%;
+      border-radius: 46% 54% 0 0 / 12% 16% 0 0;
+      color: inherit;
+      background: currentColor;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(0) rotate(-2deg);
+      transform-origin: 50% 0;
       transition:
-        background-position .68s cubic-bezier(.2,.72,.2,1),
-        transform .16s ease,
-        box-shadow .2s ease,
-        color .2s ease !important;
+        transform .52s cubic-bezier(.22,.76,.26,1),
+        opacity .18s ease;
     }
 
-    .button.primary,
-    .button.terracotta,
-    .button.danger,
-    .nav-item,
-    .feedback-launcher,
-    .feedback-close,
-    .sheet-category-delete,
-    button[style*="background:var(--forest"],
-    button[style*="background: var(--forest"] {
-      --liquid-wave: rgba(255, 255, 255, .22);
+    /* Keep icons and button content above the liquid layer. */
+    button:not(.plant-image):not([disabled]) > * {
+      position: relative;
+      z-index: 1;
     }
 
-    .button.secondary,
-    .button.ghost,
-    .icon-button,
-    .sheet-open-link,
-    .moodboard-zoom-controls button {
-      --liquid-wave: rgba(32, 83, 63, .15);
+    @media (hover: hover) and (pointer: fine) {
+      button:not(.plant-image):not([disabled]):hover::before {
+        opacity: .13;
+        transform: translateY(-59%) rotate(1deg);
+      }
     }
 
-    button:not(.plant-image):not([disabled]):hover,
-    button:not(.plant-image):not([disabled]):active,
-    button:not(.plant-image).liquid-fill-active {
-      background-position:
-        0 7px,
-        28px 13px,
-        0 100% !important;
+    button:not(.plant-image):not([disabled]):active::before,
+    button:not(.plant-image).liquid-fill-active::before {
+      opacity: .17;
+      transform: translateY(-63%) rotate(0deg);
     }
 
     button:not(.plant-image):not([disabled]):active,
     button:not(.plant-image).liquid-fill-active {
-      transform: scale(.975);
+      transform: translateY(0) scale(.985);
     }
 
     @media (hover: none) {
-      button:not(.plant-image):not([disabled]):hover {
-        background-position:
-          0 calc(100% + 34px),
-          28px calc(100% + 29px),
-          0 calc(100% + 110px) !important;
+      button:not(.plant-image):not([disabled]):hover::before {
+        opacity: 0;
+        transform: translateY(0) rotate(-2deg);
       }
-      button:not(.plant-image).liquid-fill-active {
-        background-position:
-          0 7px,
-          28px 13px,
-          0 100% !important;
+      button:not(.plant-image).liquid-fill-active::before {
+        opacity: .17;
+        transform: translateY(-63%) rotate(0deg);
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      button:not(.plant-image):not([disabled]) {
+      button:not(.plant-image):not([disabled])::before {
         transition-duration: .01ms !important;
+      }
+      button:not(.plant-image):not([disabled]):active,
+      button:not(.plant-image).liquid-fill-active {
+        transform: none;
       }
     }
 
@@ -429,7 +423,7 @@
         const timer = window.setTimeout(() => {
           button.classList.remove('liquid-fill-active');
           timers.delete(button);
-        }, 720);
+        }, 480);
         timers.set(button, timer);
       }, { passive: true });
     })();
