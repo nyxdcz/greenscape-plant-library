@@ -1789,7 +1789,7 @@
   <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
   <script src="assets/js/data.js?v=20260721-navlabels2"></script>
-  <script src="assets/js/app.js?v=20260722-feedback-simple1"></script>
+  <script src="assets/js/app.js?v=20260722-reference-names-only1"></script>
   <script>
     (() => {
       const form = document.getElementById('feedbackForm');
@@ -2300,8 +2300,7 @@
       };
 
       const googleAIReference = async query => {
-        const searchPrompt = `${query} plant profile growing conditions sun water spacing mature height landscape use`;
-        return `https://www.google.com/search?q=${encodeURIComponent(searchPrompt)}`;
+        return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       };
 
       const gbifReference = async query => {
@@ -2350,16 +2349,16 @@
       };
 
       const plantQuery = form => {
-        const scientific = String(form.querySelector('#plantScientificName')?.value || '').trim();
         const common = String(form.querySelector('#plantCommonName')?.value || '').trim();
-        return scientific || common;
+        const scientific = String(form.querySelector('#plantScientificName')?.value || '').trim();
+        return [common, scientific].filter(Boolean).join(' ').trim();
       };
 
       const findPlantReferences = async (form, replaceAll = false) => {
         if (!form?.isConnected) return;
         const query = plantQuery(form);
         if (query.length < 3) {
-          setReferenceStatus(form, 'Enter the common or scientific name to find references.', 'error');
+          setReferenceStatus(form, 'Enter the common and scientific names to find references.', 'error');
           return;
         }
 
@@ -2398,7 +2397,7 @@
           <div class="plant-reference-heading">
             <div>
               <label>Reference links</label>
-              <p>Three references are searched automatically using the common or scientific name.</p>
+              <p>Three references are searched automatically using only the common and scientific names.</p>
             </div>
             <button class="button ghost small" type="button" data-reference-search>Refresh references</button>
           </div>
@@ -2458,10 +2457,7 @@
         let searchTimer = 0;
         const scheduleAutomaticSearch = () => {
           clearTimeout(searchTimer);
-          searchTimer = setTimeout(() => {
-            const missing = referenceInputs(form).some(input => !cleanUrl(input.value));
-            if (missing) findPlantReferences(form, false);
-          }, 800);
+          searchTimer = setTimeout(() => findPlantReferences(form, true), 800);
         };
 
         form.querySelector('#plantCommonName')?.addEventListener('input', scheduleAutomaticSearch);
