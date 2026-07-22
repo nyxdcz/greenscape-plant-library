@@ -10,6 +10,9 @@
     categories: 'greenscape-plant-library-categories-v1',
     moodboard: 'greenscape-plant-library-moodboard-v1'
   };
+  const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
+  const MAX_EXCEL_FILE_BYTES = 10 * 1024 * 1024;
+  const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
   const titleByView = {
     dashboard: 'Dashboard',
@@ -152,7 +155,27 @@
   function safeImage(value) {
     const url = String(value || '').trim();
     if (!url) return '';
-    if (/^(assets\/|data:image\/|https?:\/\/)/i.test(url)) return escapeHTML(url);
+    if (/^(assets\/|https?:\/\/)/i.test(url) || /^data:image\/(?:gif|jpe?g|png|webp);base64,/i.test(url)) return escapeHTML(url);
+    return '';
+  }
+
+  function imageFileError(file) {
+    if (!file || !file.size) return 'Choose an image file.';
+    const mimeType = String(file.type || '').toLowerCase();
+    const filename = String(file.name || '').toLowerCase();
+    const supportedMimeTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    if (!supportedMimeTypes.includes(mimeType) && !/\.(?:gif|heic|heif|jpe?g|png|webp)$/.test(filename)) {
+      return 'Choose a JPG, PNG, WebP, GIF, HEIC, or HEIF image.';
+    }
+    if (file.size > MAX_IMAGE_FILE_BYTES) return 'Choose an image that is 20 MB or smaller.';
+    return '';
+  }
+
+  function excelFileError(file) {
+    if (!file || !file.size) return 'Choose an Excel workbook.';
+    const filename = String(file.name || '').toLowerCase();
+    if (!filename.endsWith('.xlsx') && file.type !== EXCEL_MIME_TYPE) return 'Choose an .xlsx Excel workbook.';
+    if (file.size > MAX_EXCEL_FILE_BYTES) return 'Choose an Excel workbook that is 10 MB or smaller.';
     return '';
   }
 
@@ -851,6 +874,12 @@
   }
 
   async function importPlantExcel(file) {
+    const validationError = excelFileError(file);
+    if (validationError) {
+      setSheetSaveStatus('Excel import blocked', 'error');
+      toast(validationError, true);
+      return;
+    }
     setSheetSaveStatus('Reading Excel file…', 'saving');
     try {
       const rows = await readPlantWorkbook(file);
@@ -951,6 +980,12 @@
   async function requestSheetImageConfirmation(input, file) {
     const plant = getPlant(input.dataset.sheetImage);
     if (!plant || !file) return;
+    const validationError = imageFileError(file);
+    if (validationError) {
+      input.value = '';
+      toast(validationError, true);
+      return;
+    }
     try {
       const resizedImage = await resizeImage(file);
       pendingSheetEdit = {
@@ -2367,8 +2402,16 @@
     const link = String(fd.get('link') || '').trim();
     const file = fd.get('imageFile');
     if (file && file.size) {
+      const validationError = imageFileError(file);
+      if (validationError) {
+        toast(validationError, true);
+        return;
+      }
       try { image = await resizeImage(file); }
-      catch (error) { toast('The selected image could not be processed.', true); }
+      catch (error) {
+        toast('The selected image could not be processed.', true);
+        return;
+      }
     }
     const labels = [...form.querySelectorAll('[name="sizeLabel"]')];
     const units = [...form.querySelectorAll('[name="sizeUnit"]')];
@@ -2816,7 +2859,8 @@
 
   function csvCell(value) {
     const text = String(value ?? '');
-    return `"${text.replace(/"/g, '""')}"`;
+    const safeText = /^[\s]*[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+    return `"${safeText.replace(/"/g, '""')}"`;
   }
 
   function downloadBlob(contentValue, filename, type) {
@@ -4531,7 +4575,7 @@
 
       function safeIdentifierImage(value) {
         const source = String(value || '').trim();
-        return /^(?:assets\/images\/|https?:\/\/|blob:|data:image\/)/i.test(source) ? source : '';
+        return /^(?:assets\/images\/|https?:\/\/|blob:)/i.test(source) || /^data:image\/(?:gif|jpe?g|png|webp);base64,/i.test(source) ? source : '';
       }
 
       async function wikipediaPlantImage(scientificName) {
