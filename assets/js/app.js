@@ -304,8 +304,11 @@
           <h2>Plan greener spaces with one organized plant library.</h2>
           <p>Browse Greenscape plants and garden essentials, prepare project lists, and produce clear planting schedules from one workspace.</p>
           <div class="hero-actions">
-            <button class="button terracotta" data-view="library">Browse plants</button>
-            <button class="button secondary" data-action="new-project">Create project list</button>
+            <button type="button" class="button terracotta" data-view="library">Browse plants</button>
+            <button type="button" class="button secondary greenscape-identifier-hero-button" data-action="open-google-lens-identifier">
+              <span class="identifier-button-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.3-2h7.4l1.3 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.8 3.8c-2.4.1-4.1 1.1-4.8 2.8 1.9.2 3.6-.5 4.8-2.8Z" fill="currentColor"/></svg></span>
+              <span>Plant Identifier</span>
+            </button>
           </div>
         </div>
         <div class="hero-art">
@@ -1512,11 +1515,11 @@
     const pages = paginateMoodboardPages(selected);
     const orientation = moodboard.orientation === 'portrait' ? 'portrait' : 'landscape';
     return `<div class="moodboard-pages">
-      ${pages.map((page, pageIndex) => moodboardPageHTML(page, pageIndex, pages.length, selected.length, orientation)).join('')}
+      ${pages.map((page, pageIndex) => moodboardPageHTML(page, pageIndex, orientation)).join('')}
     </div>`;
   }
 
-  function moodboardPageHTML(page, pageIndex, pageCount, selectedCount, orientation) {
+  function moodboardPageHTML(page, pageIndex, orientation) {
     const metrics = moodboardPageMetrics();
     const cqw = value => `${(Number(value || 0) / metrics.width * 100).toFixed(4)}cqw`;
     const boardStyle = [
@@ -1536,13 +1539,11 @@
     ].join(';');
     return `<section class="moodboard-page-preview" data-action="moodboard-fullscreen" data-page-index="${pageIndex}" data-orientation="${orientation}" tabindex="0" title="Click to view this A3 page full screen">
       <div class="moodboard-page-toolbar">
-        <strong>A3 ${orientation} · Page ${pageIndex + 1} of ${pageCount}</strong>
         <div class="moodboard-zoom-controls" aria-label="Board zoom controls">
           <button type="button" class="moodboard-zoom-button" data-action="moodboard-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
           <button type="button" class="moodboard-zoom-level" data-action="moodboard-zoom-reset" title="Reset zoom" aria-label="Reset zoom"><span data-moodboard-zoom-label>100%</span></button>
           <button type="button" class="moodboard-zoom-button" data-action="moodboard-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
         </div>
-        <span>Click board for full screen</span>
       </div>
       <div class="moodboard-board-viewport">
       <article class="moodboard-board" data-moodboard-page="${pageIndex}" data-orientation="${orientation}" data-rows="${metrics.rows}" data-board-zoom="1" style="${boardStyle}">
@@ -1650,6 +1651,23 @@
     setMoodboardPageZoom(page, delta === 0 ? 1 : current + delta);
   }
 
+  let moodboardSaveTimer = 0;
+
+  function flushMoodboardSave() {
+    if (!moodboardSaveTimer) return;
+    clearTimeout(moodboardSaveTimer);
+    moodboardSaveTimer = 0;
+    saveAll();
+  }
+
+  function scheduleMoodboardSave() {
+    clearTimeout(moodboardSaveTimer);
+    moodboardSaveTimer = window.setTimeout(() => {
+      moodboardSaveTimer = 0;
+      saveAll();
+    }, 250);
+  }
+
   function updateMoodboardSetting(input) {
     const key = input.dataset.moodboardSetting;
     if (!key || !(key in moodboard)) return;
@@ -1659,7 +1677,8 @@
       value = [6,7,8,9,10].includes(numericValue) ? numericValue : 6;
     }
     moodboard[key] = value;
-    saveAll();
+    if (input.type === 'checkbox' || input.type === 'select-one') saveAll();
+    else scheduleMoodboardSave();
     updateMoodboardPreview();
   }
 
@@ -3072,6 +3091,7 @@
   document.getElementById('quickPlantBtn')?.addEventListener('click', () => openPlantForm());
   document.getElementById('quickProjectBtn')?.addEventListener('click', () => openProjectForm());
   window.addEventListener('beforeunload', event => {
+    flushMoodboardSave();
     if (!pendingSheetEdit) return;
     event.preventDefault();
     event.returnValue = '';
@@ -3132,21 +3152,15 @@
     event.preventDefault();
     if (!form.reportValidity()) return;
 
-    const type = document.getElementById('feedbackType')?.value || 'Website feedback';
-    const name = document.getElementById('feedbackName')?.value.trim() || 'Not provided';
-    const email = document.getElementById('feedbackEmail')?.value.trim() || 'Not provided';
     const message = messageInput?.value.trim() || '';
     const pageTitle = document.getElementById('pageTitle')?.textContent?.trim() || 'Unknown page';
     const pageUrl = window.location.href;
     const browser = navigator.userAgent;
 
-    const subject = `[Greenscape Beta] ${type} — ${pageTitle}`;
+    const subject = `[Greenscape Beta] Website feedback — ${pageTitle}`;
     const body = [
       'GREENSCAPE PLANT LIBRARY FEEDBACK',
       '',
-      `Type: ${type}`,
-      `Name: ${name}`,
-      `Reply email: ${email}`,
       `Page: ${pageTitle}`,
       `URL: ${pageUrl}`,
       '',
@@ -3168,41 +3182,6 @@
 })();
 
 /* Consolidated page enhancements. */
-
-/* Migrated index script block 1. */
-(() => {
-      const form = document.getElementById('feedbackForm');
-      const messageInput = document.getElementById('feedbackMessage');
-      if (!form || !messageInput) return;
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        if (!form.reportValidity()) return;
-
-        const message = messageInput.value.trim();
-        const pageTitle = document.getElementById('pageTitle')?.textContent?.trim() || 'Unknown page';
-        const subject = `[Greenscape Beta] Website feedback — ${pageTitle}`;
-        const body = [
-          'GREENSCAPE PLANT LIBRARY FEEDBACK',
-          '',
-          `Page: ${pageTitle}`,
-          `URL: ${window.location.href}`,
-          '',
-          'MESSAGE',
-          message,
-          '',
-          'TECHNICAL DETAILS',
-          navigator.userAgent
-        ].join('\n');
-
-        const email = 'nyxdcz@gmail.com';
-        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        const gmailWindow = window.open(gmailUrl, '_blank');
-        if (!gmailWindow) window.location.href = mailtoUrl;
-      }, true);
-    })();
 
 /* Migrated index script block 2. */
 /* Apple-style interactive Liquid Glass controller.
@@ -4178,31 +4157,6 @@
       document.getElementById('feedbackCancel')?.addEventListener('click', revealHelp);
     })();
 
-/* Migrated index script block 10. */
-(() => {
-      'use strict';
-
-      const selector = '.moodboard-page-toolbar > strong, .moodboard-page-toolbar > span';
-
-      function removeLabels(root = document) {
-        if (root instanceof Element && root.matches(selector)) root.remove();
-        root.querySelectorAll?.(selector).forEach(label => label.remove());
-      }
-
-      removeLabels();
-
-      const target = document.getElementById('pageContent') || document.body;
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          mutation.addedNodes.forEach(node => {
-            if (node instanceof Element) removeLabels(node);
-          });
-        });
-      });
-
-      observer.observe(target, { childList: true, subtree: true });
-    })();
-
 /* Migrated index script block 11. */
 (() => {
       'use strict';
@@ -4229,20 +4183,6 @@
 
       function cameraLeafIcon() {
         return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.3-2h7.4l1.3 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.8 3.8c-2.4.1-4.1 1.1-4.8 2.8 1.9.2 3.6-.5 4.8-2.8Z" fill="currentColor"/></svg>`;
-      }
-
-      function installDashboardButton(root = document) {
-        const actions = root.querySelector?.('.hero-actions') || (root.matches?.('.hero-actions') ? root : null);
-        if (!actions) return;
-        actions.querySelector('[data-action="new-project"]')?.remove();
-        if (actions.querySelector('[data-action="open-google-lens-identifier"]')) return;
-        actions.querySelector('[data-action="open-local-identifier"]')?.remove();
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'button secondary greenscape-identifier-hero-button';
-        button.dataset.action = 'open-google-lens-identifier';
-        button.innerHTML = `<span class="identifier-button-icon">${cameraLeafIcon()}</span><span>Plant Identifier</span>`;
-        actions.appendChild(button);
       }
 
       function identifierPageHTML() {
@@ -4875,15 +4815,6 @@
         if (action === 'analyze-photo') analyzeSelectedImage();
       }, true);
 
-      const dashboardObserver = new MutationObserver(mutations => {
-        mutations.forEach(mutation => mutation.addedNodes.forEach(node => {
-          if (!(node instanceof Element)) return;
-          installDashboardButton(node);
-          node.querySelectorAll?.('.hero-actions').forEach(installDashboardButton);
-        }));
-      });
-      dashboardObserver.observe(pageContent || document.body, { childList: true, subtree: true });
-
       window.addEventListener('popstate', () => {
         if (location.hash === '#identifier') {
           showIdentifierPage(false);
@@ -4896,7 +4827,6 @@
       });
 
       requestAnimationFrame(() => {
-        installDashboardButton(document);
         if (location.hash === '#identifier') showIdentifierPage(false);
       });
     })();
