@@ -93,6 +93,10 @@
   function sanitizeProjects(records) {
     return (Array.isArray(records) ? records : []).map(project => ({
       ...project,
+      areaSize: String(project.areaSize || ''),
+      projectType: String(project.projectType || ''),
+      designCost: String(project.designCost || ''),
+      landscapingCost: String(project.landscapingCost || ''),
       items: (Array.isArray(project.items) ? project.items : []).map(item => ({ ...item }))
     }));
   }
@@ -163,6 +167,15 @@
     return new Intl.NumberFormat('en-PH', { maximumFractionDigits: 2 }).format(Number(value || 0));
   }
 
+  function projectCost(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return 'Not set';
+    const amount = Number(raw);
+    return Number.isFinite(amount)
+      ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', maximumFractionDigits: 2 }).format(amount)
+      : raw;
+  }
+
   function slug(value) {
     return String(value || 'plant-schedule')
       .toLowerCase()
@@ -184,8 +197,10 @@
 
   function projectTotals(project) {
     const items = Array.isArray(project?.items) ? project.items : [];
+    const categoryNames = items.map(item => getPlant(item.plantId)?.category || item.category || '').filter(Boolean);
     return {
       species: new Set(items.map(i => i.plantId)).size,
+      categories: new Set(categoryNames).size,
       quantity: items.reduce((sum, i) => sum + Number(i.quantity || 0), 0),
       lines: items.length
     };
@@ -298,7 +313,7 @@
               const totals = projectTotals(project);
               return `<button data-action="open-project" data-project-id="${escapeHTML(project.id)}" style="display:block;width:100%;padding:12px 0;border:0;border-bottom:1px solid #e8ebe6;background:transparent;text-align:left;color:inherit;">
                 <strong style="display:block;font-size:13px;">${escapeHTML(project.name)}</strong>
-                <span style="display:block;margin-top:3px;color:var(--muted);font-size:10px;">${totals.species} species · ${number(totals.quantity)} total quantity</span>
+                <span style="display:block;margin-top:3px;color:var(--muted);font-size:10px;">${totals.categories} categories · ${number(totals.quantity)} total quantity</span>
               </button>`;
             }).join('') : emptyMini('No project lists yet', 'Create a project and start adding plants.')}
           </div>
@@ -1966,7 +1981,7 @@
         <span class="badge">${formatDate(project.updatedAt)}</span>
       </div>
       <div class="project-stats">
-        <div class="project-stat"><strong>${totals.species}</strong><span>Species</span></div>
+        <div class="project-stat"><strong>${totals.categories}</strong><span>Categories</span></div>
         <div class="project-stat"><strong>${number(totals.quantity)}</strong><span>Quantity</span></div>
         <div class="project-stat"><strong>${totals.lines}</strong><span>Schedule lines</span></div>
       </div>
@@ -1983,7 +1998,7 @@
     content.innerHTML = `
       <div class="detail-header">
         <div>
-          <button class="text-button" style="padding:0;color:var(--terracotta-dark);" data-action="back-projects">← All project lists</button>
+          <button class="text-button project-back-button" data-action="back-projects">← All project lists</button>
           <p class="breadcrumb">Project plant list</p>
           <h2>${escapeHTML(project.name)}</h2>
           <p class="detail-subtitle">${escapeHTML(project.location || 'Location not set')}${project.client ? ` · ${escapeHTML(project.client)}` : ''}</p>
@@ -1994,9 +2009,16 @@
           <button class="button primary" data-action="add-to-project" data-project-id="${escapeHTML(project.id)}">Add plant</button>
         </div>
       </div>
+      <div class="project-info-grid">
+        <div><span>Area size</span><strong>${escapeHTML(project.areaSize ? `${project.areaSize} sqm` : 'Not set')}</strong></div>
+        <div><span>Project type</span><strong>${escapeHTML(project.projectType || 'Not set')}</strong></div>
+        <div><span>Design cost</span><strong>${escapeHTML(projectCost(project.designCost))}</strong></div>
+        <div><span>Landscaping cost</span><strong>${escapeHTML(projectCost(project.landscapingCost))}</strong></div>
+      </div>
       ${project.siteConditions ? `<p class="inline-note"><strong>Site conditions:</strong> ${escapeHTML(project.siteConditions)}</p>` : ''}
+      ${project.notes ? `<p class="inline-note"><strong>Project notes:</strong> ${escapeHTML(project.notes)}</p>` : ''}
       <div class="summary-strip">
-        ${summaryBox('Total species', totals.species)}
+        ${summaryBox('Total categories', totals.categories)}
         ${summaryBox('Schedule lines', totals.lines)}
         ${summaryBox('Total quantity', number(totals.quantity))}
       </div>
@@ -2061,7 +2083,7 @@
       </div>
       ${project.siteConditions ? `<p class="inline-note"><strong>Site conditions:</strong> ${escapeHTML(project.siteConditions)}</p>` : ''}
       <div class="summary-strip">
-        ${summaryBox('Total species', totals.species)}${summaryBox('Schedule lines', totals.lines)}${summaryBox('Total quantity', number(totals.quantity))}
+        ${summaryBox('Total categories', totals.categories)}${summaryBox('Schedule lines', totals.lines)}${summaryBox('Total quantity', number(totals.quantity))}
       </div>
       ${(project.items || []).length ? projectItemsTable(project, true) : emptyState('This schedule is empty', 'Return to the project list and add plants.', `<button class="button primary" data-action="open-project" data-project-id="${escapeHTML(project.id)}">Open project</button>`)}
     `;
@@ -2511,7 +2533,8 @@
           ...item,
           plantCode: plant.code,
           commonName: plant.commonName,
-          scientificName: plant.scientificName
+          scientificName: plant.scientificName,
+          category: plant.category
         } : item;
       })
     }));
@@ -2546,11 +2569,15 @@
       <div class="form-field full"><label>Project name *</label><input class="text-input" required name="name" value="${escapeHTML(project?.name || '')}" placeholder="e.g. Project M – Main Entrance"></div>
       <div class="form-field"><label>Location</label><input class="text-input" name="location" value="${escapeHTML(project?.location || '')}" placeholder="Palawan, Philippines"></div>
       <div class="form-field"><label>Client</label><input class="text-input" name="client" value="${escapeHTML(project?.client || '')}"></div>
+      <div class="form-field"><label>Area size (sqm)</label><input class="text-input" type="number" min="0" step="0.01" name="areaSize" value="${escapeHTML(project?.areaSize || '')}" placeholder="e.g. 850"></div>
+      <div class="form-field"><label>Project type</label><input class="text-input" name="projectType" value="${escapeHTML(project?.projectType || '')}" placeholder="e.g. Residential, resort, commercial"></div>
+      <div class="form-field"><label>Design cost</label><input class="text-input" type="number" min="0" step="0.01" name="designCost" value="${escapeHTML(project?.designCost || '')}" placeholder="PHP"></div>
+      <div class="form-field"><label>Landscaping cost</label><input class="text-input" type="number" min="0" step="0.01" name="landscapingCost" value="${escapeHTML(project?.landscapingCost || '')}" placeholder="PHP"></div>
       <div class="form-field full"><label>Site conditions</label><textarea name="siteConditions" placeholder="Coastal site, full sun, sandy and well-drained soil">${escapeHTML(project?.siteConditions || '')}</textarea></div>
       <div class="form-field full"><label>Project notes</label><textarea name="notes">${escapeHTML(project?.notes || '')}</textarea></div>
     </form>`;
-    openModal(project ? 'Edit project' : 'New project list', 'Store the site conditions and plants for one project or landscape sector.', body,
-      `<button class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="projectForm">${project ? 'Save changes' : 'Create project'}</button>`);
+    openModal(project ? 'Edit project' : 'New project list', 'Store project details, costs, site conditions, and plants for one landscape project or sector.', body,
+      `<button class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="projectForm">${project ? 'Save changes' : 'Create project'}</button>`, true);
     document.getElementById('projectForm').addEventListener('submit', saveProjectForm);
   }
 
@@ -2565,6 +2592,10 @@
       name: String(fd.get('name') || '').trim(),
       location: String(fd.get('location') || '').trim(),
       client: String(fd.get('client') || '').trim(),
+      areaSize: String(fd.get('areaSize') || '').trim(),
+      projectType: String(fd.get('projectType') || '').trim(),
+      designCost: String(fd.get('designCost') || '').trim(),
+      landscapingCost: String(fd.get('landscapingCost') || '').trim(),
       siteConditions: String(fd.get('siteConditions') || '').trim(),
       notes: String(fd.get('notes') || '').trim(),
       items: existing?.items || [],
@@ -2643,6 +2674,7 @@
       plantCode: plant.code,
       commonName: plant.commonName,
       scientificName: plant.scientificName,
+      category: plant.category,
       sizeLabel: size.label || size.size || 'Unspecified',
       unit: size.unit || 'pc/s',
       quantity: Number(fd.get('quantity') || 0),
