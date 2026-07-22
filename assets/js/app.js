@@ -380,7 +380,7 @@
     return `
       <article class="plant-card">
         <button class="plant-image" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
-          ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(initials(plant.commonName))}</div>`}
+          ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
@@ -1074,7 +1074,7 @@
     const duplicate = isDuplicateCode(plant.code);
     const duplicateHint = duplicateCodeTooltip(plant.code, plant.id);
     return `<tr data-sheet-row="${escapeHTML(plant.id)}">
-      <td><div class="sheet-photo" data-sheet-thumbnail="${escapeHTML(plant.id)}">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(initials(plant.commonName))}</div>`}</div><label class="sheet-photo-upload">${image ? 'Replace' : 'Add photo'}<input type="file" accept="image/*" data-sheet-image="${escapeHTML(plant.id)}" hidden></label></td>
+      <td><div class="sheet-photo" data-sheet-thumbnail="${escapeHTML(plant.id)}">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div><label class="sheet-photo-upload">${image ? 'Replace' : 'Add photo'}<input type="file" accept="image/*" data-sheet-image="${escapeHTML(plant.id)}" hidden></label></td>
       <td><div class="sheet-code-wrap${duplicate ? ' has-duplicate' : ''}" data-sheet-code-wrap="${escapeHTML(plant.id)}" title="${escapeHTML(duplicate ? duplicateHint : 'Plant code')}">${sheetField(plant, 'code', plant.code, `sheet-code-input${duplicate ? ' duplicate-code' : ''}`, 'AEg')}<span class="sheet-code-error${duplicate ? ' visible' : ''}" data-sheet-code-error="${escapeHTML(plant.id)}">${duplicate ? 'Duplicate code — hover to see matching plant' : ''}</span></div></td>
       <td>${sheetField(plant, 'commonName', plant.commonName, '', 'Common name')}</td>
       <td>${sheetField(plant, 'scientificName', plant.scientificName || plant.material, '', 'Genus species')}</td>
@@ -1189,8 +1189,9 @@
       footer: 'GREENSCAPE LANDSCAPING SERVICES',
       selectedIds: [],
       orientation: 'landscape',
-      columns: 6,
+      columns: 8,
       rows: 6,
+      layoutDefaultVersion: 2,
       showCodes: true,
       showScientific: true,
       showCommon: true
@@ -1209,8 +1210,9 @@
       footer: String(source.footer || base.footer),
       selectedIds: [...new Set(Array.isArray(source.selectedIds) ? source.selectedIds : [])].filter(id => plants.some(plant => plant.id === id)),
       orientation: String(source.orientation || base.orientation) === 'portrait' ? 'portrait' : 'landscape',
-      columns: [6,7,8,9,10].includes(Number(source.columns)) ? Number(source.columns) : base.columns,
-      rows: [6,7,8,9,10].includes(Number(source.rows)) ? Number(source.rows) : base.rows,
+      columns: source.layoutDefaultVersion === 2 && [6,7,8,9,10].includes(Number(source.columns)) ? Number(source.columns) : base.columns,
+      rows: source.layoutDefaultVersion === 2 && [6,7,8,9,10].includes(Number(source.rows)) ? Number(source.rows) : base.rows,
+      layoutDefaultVersion: 2,
       showCodes: source.showCodes !== false,
       showScientific: source.showScientific !== false,
       showCommon: source.showCommon !== false
@@ -1283,7 +1285,6 @@
 
           <section class="moodboard-control-section">
             <h3>Board layout</h3>
-            <label class="field"><span>Paper size</span><input class="input" value="A3" readonly></label>
             <label class="field"><span>Orientation</span><select class="select-input" data-moodboard-setting="orientation">
               <option value="landscape"${moodboard.orientation === 'landscape' ? ' selected' : ''}>Landscape</option>
               <option value="portrait"${moodboard.orientation === 'portrait' ? ' selected' : ''}>Portrait</option>
@@ -1342,7 +1343,7 @@
       const selected = moodboard.selectedIds.includes(plant.id);
       const image = safeImage(plant.image);
       return `<button class="moodboard-picker-item${selected ? ' selected' : ''}" data-action="moodboard-toggle-plant" data-plant-id="${escapeHTML(plant.id)}" title="${selected ? 'Remove from board' : 'Add to board'}">
-        <span class="moodboard-picker-image">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<span>${escapeHTML(initials(plant.commonName))}</span>`}</span>
+        <span class="moodboard-picker-image">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<span>${escapeHTML(plant.code || '—')}</span>`}</span>
         <span class="moodboard-picker-copy"><strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong><small>${escapeHTML(plant.scientificName || plant.material || plant.category)}</small></span>
         <span class="moodboard-picker-check">${selected ? '✓' : '+'}</span>
       </button>`;
@@ -1534,7 +1535,7 @@
     const [background, foreground] = moodboardPlantColor(plant);
     return `<article class="moodboard-plant-card" draggable="true" data-moodboard-card="${escapeHTML(plant.id)}">
       <button class="moodboard-remove-card no-export" data-action="moodboard-remove-plant" data-plant-id="${escapeHTML(plant.id)}" title="Remove from board">×</button>
-      <div class="moodboard-card-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="moodboard-card-fallback">${escapeHTML(initials(plant.commonName))}</div>`}</div>
+      <div class="moodboard-card-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" loading="lazy">` : `<div class="moodboard-card-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
       <div class="moodboard-card-caption" style="--moodboard-card-bg:${background};--moodboard-card-text:${foreground}">
         <div class="moodboard-card-names">
           ${moodboard.showCommon ? `<strong><span>CN:</span> ${escapeHTML(plant.commonName || 'Unnamed plant')}</strong>` : ''}
@@ -1823,7 +1824,7 @@
           context.font = `900 ${30 * scale}px Arial, sans-serif`;
           context.textAlign = 'center';
           context.textBaseline = 'middle';
-          context.fillText(initials(plant.commonName), x + cardWidth / 2, cardY + imageHeight / 2);
+          context.fillText(plant.code || '—', x + cardWidth / 2, cardY + imageHeight / 2);
           context.textAlign = 'left';
           context.textBaseline = 'alphabetic';
         }
@@ -2091,7 +2092,7 @@
     const tags = Array.isArray(plant.tags) ? plant.tags.filter(Boolean) : [];
     const body = `
       <div class="plant-detail-grid">
-        <div class="detail-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}">` : `<div class="image-fallback">${escapeHTML(initials(plant.commonName))}</div>`}</div>
+        <div class="detail-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
         <div class="detail-info">
           <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
           <h3>${escapeHTML(plant.commonName)}</h3>
