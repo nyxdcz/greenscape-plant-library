@@ -1603,6 +1603,18 @@
       background: rgba(255,255,255,.92);
     }
 
+    .plant-reference-detail-link.is-direct {
+      min-height: 44px;
+      margin: 7px 0 0;
+      padding: 11px 12px;
+      border: 1px solid rgba(23, 99, 66, .10);
+      background: rgba(226, 239, 231, .72);
+    }
+
+    .plant-reference-detail-link.is-direct:hover {
+      background: rgba(226, 239, 231, .96);
+    }
+
     .plant-reference-detail-link small {
       display: block;
       margin-top: 2px;
@@ -2711,13 +2723,10 @@
         linkPanel.innerHTML = `
           <span class="detail-panel-label">Reference</span>
           ${url ? `
-            <details class="plant-reference-details">
-              <summary>Google AI Overview</summary>
-              <a class="plant-reference-detail-link" href="${url}" target="_blank" rel="noopener noreferrer">
-                <span>Open plant reference<small>${escapeAttribute([commonName, scientificName].filter(Boolean).join(' '))}</small></span>
-                <span aria-hidden="true">↗</span>
-              </a>
-            </details>
+            <a class="plant-reference-detail-link is-direct" href="${url}" target="_blank" rel="noopener noreferrer" title="Open Google AI Overview">
+              <span>Google AI Overview<small>${escapeAttribute([commonName, scientificName].filter(Boolean).join(' '))}</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
           ` : '<span class="detail-empty">No plant name available for the reference.</span>'}
         `;
 
@@ -2871,6 +2880,81 @@
       function scan(root = document) {
         if (root instanceof Element && root.matches('#plantForm')) decoratePlantForm(root);
         root.querySelectorAll?.('#plantForm').forEach(decoratePlantForm);
+      }
+
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => mutation.addedNodes.forEach(node => {
+          if (node instanceof Element) scan(node);
+        }));
+      });
+
+      observer.observe(document.getElementById('modalRoot') || document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      scan();
+    })();
+  </script>
+
+
+  <script id="greenscape-plant-form-layout-controller">
+    (() => {
+      'use strict';
+
+      const fieldByName = (form, name) =>
+        form.querySelector(`[name="${name}"]`)?.closest('.form-field') || null;
+
+      function reorderPlantForm(form) {
+        if (!form) return;
+
+        const referenceField = form.querySelector('.plant-reference-field') || fieldByName(form, 'link');
+        const imageField = fieldByName(form, 'imageFile');
+        const sizesSection = [...form.querySelectorAll(':scope > .form-section')]
+          .find(section => /available sizes/i.test(String(section.querySelector(':scope > h3')?.textContent || '')));
+
+        // Wait until the automatic Google reference and image editor are installed.
+        if (!referenceField || !imageField || !sizesSection) return;
+
+        imageField.classList.add('full', 'plant-form-image-top');
+        referenceField.classList.add('full', 'plant-form-reference-top');
+        fieldByName(form, 'tags')?.classList.add('full');
+        fieldByName(form, 'plantingNotes')?.classList.add('full');
+        fieldByName(form, 'growingCondition')?.classList.add('full');
+
+        const desiredOrder = [
+          imageField,
+          fieldByName(form, 'code'),
+          fieldByName(form, 'category'),
+          referenceField,
+          fieldByName(form, 'commonName'),
+          fieldByName(form, 'scientificName'),
+          fieldByName(form, 'sun'),
+          fieldByName(form, 'water'),
+          fieldByName(form, 'spacing'),
+          fieldByName(form, 'landscapeUse'),
+          fieldByName(form, 'tags'),
+          fieldByName(form, 'plantingNotes'),
+          fieldByName(form, 'matureHeight'),
+          fieldByName(form, 'matureSpread'),
+          fieldByName(form, 'growingCondition'),
+          sizesSection
+        ].filter(Boolean);
+
+        desiredOrder.forEach(node => form.appendChild(node));
+        form.dataset.fieldLayoutInstalled = 'true';
+      }
+
+      function schedule(form) {
+        if (!form) return;
+        requestAnimationFrame(() => reorderPlantForm(form));
+        setTimeout(() => reorderPlantForm(form), 50);
+        setTimeout(() => reorderPlantForm(form), 180);
+      }
+
+      function scan(root = document) {
+        if (root instanceof Element && root.matches('#plantForm')) schedule(root);
+        root.querySelectorAll?.('#plantForm').forEach(schedule);
       }
 
       const observer = new MutationObserver(mutations => {
