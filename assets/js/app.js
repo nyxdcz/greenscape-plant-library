@@ -55,6 +55,7 @@
   const modalRoot = document.getElementById('modalRoot');
   const pageTitle = document.getElementById('pageTitle');
   const toastRoot = document.getElementById('toastRoot');
+  let modalReturnFocus = null;
 
   // Save the cleaned records once so older local data no longer keeps removed fields.
   syncProjectPlantCodes();
@@ -244,18 +245,26 @@
     if (!titleByView[view]) return;
     state.view = view;
     location.hash = view;
-    document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === view));
-    render();
+    render(true);
   }
 
-  function render() {
-    pageTitle.textContent = titleByView[state.view] || 'Greenscape Plant Library';
+  function render(focusHeading = false) {
+    const currentTitle = titleByView[state.view] || 'Greenscape Plant Library';
+    pageTitle.textContent = currentTitle;
+    document.title = `${currentTitle} | Greenscape Plant Library`;
+    document.querySelectorAll('.nav-item').forEach(button => {
+      const isCurrent = button.dataset.view === state.view;
+      button.classList.toggle('active', isCurrent);
+      if (isCurrent) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
     if (state.view === 'dashboard') renderDashboard();
     if (state.view === 'library') renderLibrary();
     if (state.view === 'sheet') renderPlantSheet();
     if (state.view === 'moodboard') renderMoodboard();
     if (state.view === 'projects') renderProjects();
     if (state.view === 'schedule') renderSchedule();
+    if (focusHeading) requestAnimationFrame(() => pageTitle.focus({ preventScroll: true }));
   }
 
   function categoryColor(category) {
@@ -374,8 +383,8 @@
     content.innerHTML = `
       <div class="toolbar library-toolbar">
         <div class="toolbar-group" style="flex:1;">
-          <label class="search-wrap"><span>⌕</span><input id="librarySearch" class="search-input" type="search" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}"></label>
-          <select id="categoryFilter" class="select-input" style="width:auto;min-width:210px;">
+          <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}"></label>
+          <select id="categoryFilter" class="select-input" aria-label="Filter plants by category" style="width:auto;min-width:210px;">
             <option value="All">All categories</option>
             ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
           </select>
@@ -413,13 +422,13 @@
     const sizeCount = (plant.sizes || []).length;
     return `
       <article class="plant-card">
-        <button class="plant-image" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
+        <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
           ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="480" height="407" loading="${index < 5 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
           <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
-          <h3>${escapeHTML(plant.commonName)}</h3>
+          <h2>${escapeHTML(plant.commonName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           ${badges.length ? `<div class="plant-badges">${badges.map(value => `<span class="plant-badge">${escapeHTML(value)}</span>`).join('')}</div>` : ''}
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
@@ -1012,11 +1021,13 @@
   }
 
   function sheetField(plant, field, value, className) {
-    return `<input class="sheet-cell-input ${className || ''}" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}" value="${escapeHTML(value || '')}">`;
+    const label = `${sheetFieldLabels[field] || field} for ${plant.commonName || 'unnamed plant'}`;
+    return `<input class="sheet-cell-input ${className || ''}" aria-label="${escapeHTML(label)}" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}" value="${escapeHTML(value || '')}">`;
   }
 
   function sheetTextarea(plant, field, value) {
-    return `<textarea class="sheet-cell-textarea" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(value || '')}</textarea>`;
+    const label = `${sheetFieldLabels[field] || field} for ${plant.commonName || 'unnamed plant'}`;
+    return `<textarea class="sheet-cell-textarea" aria-label="${escapeHTML(label)}" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(value || '')}</textarea>`;
   }
 
   function sheetLinkField(plant) {
@@ -1027,7 +1038,7 @@
   function sheetCategorySelect(plant) {
     const list = categories();
     if (!list.includes('Heliconias & Aquatics')) list.push('Heliconias & Aquatics');
-    return `<select class="sheet-cell-select" data-sheet-field="category" data-plant-id="${escapeHTML(plant.id)}"><option value=""${plant.category ? '' : ' selected'}></option>${list.sort().map(category => `<option value="${escapeHTML(category)}"${plant.category === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}</select>`;
+    return `<select class="sheet-cell-select" aria-label="Category for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-sheet-field="category" data-plant-id="${escapeHTML(plant.id)}"><option value=""${plant.category ? '' : ' selected'}></option>${list.sort().map(category => `<option value="${escapeHTML(category)}"${plant.category === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}</select>`;
   }
 
   function renderPlantSheet() {
@@ -1045,8 +1056,8 @@
     content.innerHTML = `
       <div class="toolbar sheet-toolbar">
         <div class="toolbar-group" style="flex:1;">
-          <label class="search-wrap"><span>⌕</span><input id="sheetSearch" class="search-input" type="search" placeholder="Search the plant list" value="${escapeHTML(state.sheetSearch)}"></label>
-          <select id="sheetCategoryFilter" class="select-input" style="width:auto;min-width:210px;">
+          <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="sheetSearch" class="search-input" type="search" aria-label="Search the plant list" placeholder="Search the plant list" value="${escapeHTML(state.sheetSearch)}"></label>
+          <select id="sheetCategoryFilter" class="select-input" aria-label="Filter plant list by category" style="width:auto;min-width:210px;">
             <option value="All">All categories</option>
             ${categories().map(category => `<option value="${escapeHTML(category)}"${state.sheetCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
           </select>
@@ -1057,7 +1068,7 @@
           <button class="button secondary" data-action="export-excel">Export Excel</button>
           <button class="button secondary" data-action="new-category">Add category</button>
           <button class="button primary" data-action="new-plant"${state.sheetCategory !== 'All' ? ` data-category="${escapeHTML(state.sheetCategory)}"` : ''}>Add plant</button>
-          <input id="plantExcelInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          <input id="plantExcelInput" type="file" aria-label="Import plant list from Excel" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
         </div>
       </div>
       ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} duplicate code${duplicateCount === 1 ? '' : 's'} detected</strong>Duplicate code cells are marked in red. Enter a unique code using the AEg format.</div></div>` : ''}
@@ -1078,24 +1089,25 @@
       </summary>
       <div class="sheet-scroll">
         <table class="plant-sheet-table">
+          <caption class="sr-only">${escapeHTML(category)} plant records</caption>
           <thead><tr>
-            <th class="sheet-photo-col">Photo</th>
-            <th class="sheet-code-col">Code</th>
-            <th class="sheet-name-col">Common name</th>
-            <th class="sheet-scientific-col">Scientific name</th>
-            <th class="sheet-category-col">Category</th>
-            <th class="sheet-sizes-col">Available sizes</th>
-            <th class="sheet-short-col">Sun</th>
-            <th class="sheet-short-col">Water</th>
-            <th class="sheet-short-col">Spacing</th>
-            <th class="sheet-short-col">Mature height</th>
-            <th class="sheet-short-col">Mature spread</th>
-            <th class="sheet-medium-col">Landscape use</th>
-            <th class="sheet-long-col">Growing condition</th>
-            <th class="sheet-long-col">Planting notes</th>
-            <th class="sheet-medium-col">Tags</th>
-            <th class="sheet-medium-col">Reference</th>
-            <th class="sheet-actions-col">Action</th>
+            <th scope="col" class="sheet-photo-col">Photo</th>
+            <th scope="col" class="sheet-code-col">Code</th>
+            <th scope="col" class="sheet-name-col">Common name</th>
+            <th scope="col" class="sheet-scientific-col">Scientific name</th>
+            <th scope="col" class="sheet-category-col">Category</th>
+            <th scope="col" class="sheet-sizes-col">Available sizes</th>
+            <th scope="col" class="sheet-short-col">Sun</th>
+            <th scope="col" class="sheet-short-col">Water</th>
+            <th scope="col" class="sheet-short-col">Spacing</th>
+            <th scope="col" class="sheet-short-col">Mature height</th>
+            <th scope="col" class="sheet-short-col">Mature spread</th>
+            <th scope="col" class="sheet-medium-col">Landscape use</th>
+            <th scope="col" class="sheet-long-col">Growing condition</th>
+            <th scope="col" class="sheet-long-col">Planting notes</th>
+            <th scope="col" class="sheet-medium-col">Tags</th>
+            <th scope="col" class="sheet-medium-col">Reference</th>
+            <th scope="col" class="sheet-actions-col">Action</th>
           </tr></thead>
           <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="17"><div class="sheet-empty-category">No plants in this category yet. <button class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add plant</button></div></td></tr>`}</tbody>
         </table>
@@ -1124,7 +1136,7 @@
       <td>${sheetTextarea(plant, 'plantingNotes', plant.plantingNotes)}</td>
       <td>${sheetTextarea(plant, 'tags', (plant.tags || []).join(', '))}</td>
       <td>${sheetLinkField(plant)}</td>
-      <td><div class="sheet-row-actions"><button class="icon-button" title="Open card details" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">↗</button><button class="icon-button" title="Delete plant" data-action="sheet-delete-plant" data-plant-id="${escapeHTML(plant.id)}">×</button></div></td>
+      <td><div class="sheet-row-actions"><button class="icon-button" type="button" aria-label="Open details for ${escapeHTML(plant.commonName || 'unnamed plant')}" title="Open card details" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">↗</button><button class="icon-button" type="button" aria-label="Delete ${escapeHTML(plant.commonName || 'unnamed plant')}" title="Delete plant" data-action="sheet-delete-plant" data-plant-id="${escapeHTML(plant.id)}">×</button></div></td>
     </tr>`;
   }
 
@@ -1344,7 +1356,7 @@
           <section class="moodboard-control-section">
             <h3>Load from project list</h3>
             <div class="moodboard-project-loader">
-              <select id="moodboardProjectSelect" class="select-input">
+              <select id="moodboardProjectSelect" class="select-input" aria-label="Choose a project list to load">
                 <option value="">Choose a project</option>
                 ${projects.map(project => `<option value="${escapeHTML(project.id)}">${escapeHTML(project.name)}</option>`).join('')}
               </select>
@@ -1357,8 +1369,8 @@
               <h3>Plant library</h3>
               <span id="moodboardSelectedCount">${moodboard.selectedIds.length} selected</span>
             </div>
-            <label class="search-wrap compact"><span>⌕</span><input id="moodboardSearch" class="search-input" type="search" placeholder="Search plants" value="${escapeHTML(state.moodboardSearch)}"></label>
-            <select id="moodboardCategoryFilter" class="select-input">
+            <label class="search-wrap compact"><span aria-hidden="true">⌕</span><input id="moodboardSearch" class="search-input" type="search" aria-label="Search mood board plants" placeholder="Search plants" value="${escapeHTML(state.moodboardSearch)}"></label>
+            <select id="moodboardCategoryFilter" class="select-input" aria-label="Filter mood board plants by category">
               <option value="All">All categories</option>
               ${categories().map(category => `<option value="${escapeHTML(category)}"${state.moodboardCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
             </select>
@@ -2096,7 +2108,7 @@
     content.innerHTML = `
       <div class="toolbar no-print">
         <div class="toolbar-group">
-          <select id="scheduleProjectSelect" class="select-input" style="min-width:280px;">
+          <select id="scheduleProjectSelect" class="select-input" aria-label="Choose project schedule" style="min-width:280px;">
             ${projects.map(p => `<option value="${escapeHTML(p.id)}"${p.id === project.id ? ' selected' : ''}>${escapeHTML(p.name)}</option>`).join('')}
           </select>
         </div>
@@ -2121,15 +2133,20 @@
   }
 
   function openModal(title, subtitle, body, footer, large) {
-    modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${large ? ' large' : ''}" role="dialog" aria-modal="true" aria-label="${escapeHTML(title)}">
-      <div class="modal-header"><div><h2>${escapeHTML(title)}</h2>${subtitle ? `<p>${escapeHTML(subtitle)}</p>` : ''}</div><button class="modal-close" data-action="close-modal" aria-label="Close">X</button></div>
+    modalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${large ? ' large' : ''}" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <div class="modal-header"><div><h2 id="modalTitle">${escapeHTML(title)}</h2>${subtitle ? `<p>${escapeHTML(subtitle)}</p>` : ''}</div><button class="modal-close" type="button" data-action="close-modal" aria-label="Close dialog">X</button></div>
       <div class="modal-body">${body}</div>
       ${footer ? `<div class="modal-footer">${footer}</div>` : ''}
     </div></div>`;
+    modalRoot.querySelector('.modal')?.focus({ preventScroll: true });
   }
 
   function closeModal() {
     modalRoot.innerHTML = '';
+    const returnTarget = modalReturnFocus;
+    modalReturnFocus = null;
+    if (returnTarget?.isConnected) requestAnimationFrame(() => returnTarget.focus({ preventScroll: true }));
   }
 
   function openPlantDetail(id) {
@@ -2968,6 +2985,25 @@
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && modalRoot.innerHTML) { if (pendingSheetEdit) cancelPendingSheetEdit(); else closeModal(); }
+    if (event.key === 'Tab' && modalRoot.innerHTML) {
+      const dialog = modalRoot.querySelector('.modal');
+      const focusable = Array.from(dialog?.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])') || [])
+        .filter(element => !element.hidden && element.getClientRects().length);
+      if (!focusable.length) {
+        event.preventDefault();
+        dialog?.focus();
+      } else {
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
     if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.moodboard-page-preview')) {
       event.preventDefault();
       if (document.fullscreenElement) document.exitFullscreen?.();
@@ -3045,8 +3081,7 @@
     const view = location.hash.slice(1);
     if (titleByView[view] && state.view !== view) {
       state.view = view;
-      document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === view));
-      render();
+      render(true);
     }
   });
 
@@ -4244,7 +4279,7 @@
                       </div>
                     </div>
                   </div>
-                  <input id="lensIdentifierGalleryInput" type="file" accept="image/*" hidden>
+                  <input id="lensIdentifierGalleryInput" type="file" aria-label="Choose a plant photo" accept="image/*" hidden>
                   <div class="lens-identifier-tip"><strong>Tip</strong><span>Choose a clear leaf, flower, fruit, bark, or full-plant photo against a simple background.</span></div>
                   <div class="lens-identifier-analysis-actions">
                     <button class="button primary lens-identifier-open-button" id="lensIdentifierAnalyzeButton" type="button" data-lens-identifier-action="analyze-photo" disabled>Analyze on this device</button>
@@ -4281,11 +4316,16 @@
       function showIdentifierPage(pushHistory = true) {
         if (!pageContent || !pageTitle) return;
         identifierOpen = true;
-        document.querySelectorAll('.nav-item').forEach(button => button.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(button => {
+          button.classList.remove('active');
+          button.removeAttribute('aria-current');
+        });
         pageTitle.textContent = 'Plant Identifier';
+        document.title = 'Plant Identifier | Greenscape Plant Library';
         pageContent.innerHTML = identifierPageHTML();
         bindIdentifierPage();
         if (pushHistory && location.hash !== '#identifier') history.pushState({ greenscapeIdentifier: true }, '', '#identifier');
+        requestAnimationFrame(() => pageTitle.focus({ preventScroll: true }));
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 

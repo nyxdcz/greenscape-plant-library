@@ -18,7 +18,7 @@
   <meta property="og:description" content="Plant Library & Landscape Database for Greenscape Landscaping Services.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
-<link rel="stylesheet" href="assets/css/styles.css?v=20260723-quality1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260723-quality5">
 
   <!-- MOODBOARD_BULK_ADD_SEARCH_FIT_START -->
 
@@ -31,6 +31,7 @@
   <!-- GREENSCAPE_COMPACT_ORGANIZED_PLANT_FORM_STYLES_END -->
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Main navigation">
       <div class="brand">
@@ -45,12 +46,12 @@
         </div>
       </div>
 
-      <nav class="nav-list">
-        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
-        <button class="nav-item" data-view="library"><span>⌕</span> Plant Library</button>
-        <button class="nav-item" data-view="sheet"><span>▤</span> Plant List Editor</button>
-        <button class="nav-item" data-view="moodboard"><span>▦</span> Mood Board Creator</button>
-        <button class="nav-item" data-view="projects"><span>▣</span> Project Lists</button>
+      <nav class="nav-list" aria-label="Primary navigation">
+        <button class="nav-item active" type="button" data-view="dashboard" aria-current="page"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" type="button" data-view="library"><span>⌕</span> Plant Library</button>
+        <button class="nav-item" type="button" data-view="sheet"><span>▤</span> Plant List Editor</button>
+        <button class="nav-item" type="button" data-view="moodboard"><span>▦</span> Mood Board Creator</button>
+        <button class="nav-item" type="button" data-view="projects"><span>▣</span> Project Lists</button>
       </nav>
 
       <div class="sidebar-confidentiality" role="note" aria-label="Confidentiality notice">
@@ -68,10 +69,10 @@
       </div>
     </aside>
 
-    <main class="main-area">
+    <main class="main-area" id="mainContent">
       <header class="topbar">
         <div class="topbar-title">
-          <h1 id="pageTitle">Dashboard</h1>
+          <h1 id="pageTitle" tabindex="-1">Dashboard</h1>
           <p class="topbar-context">Plant Library &amp; Landscape Database</p>
         </div>
         <div class="topbar-notices">
@@ -87,7 +88,7 @@
         </div>
       </header>
 
-      <section id="pageContent" class="page-content" aria-live="polite"></section>
+      <section id="pageContent" class="page-content"></section>
     </main>
   </div>
 
@@ -129,7 +130,7 @@
   <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
   <script src="assets/js/data.js?v=20260721-navlabels2"></script>
-  <script src="assets/js/app.js?v=20260723-quality2"></script>
+  <script src="assets/js/app.js?v=20260723-quality3"></script>
   <!-- MOODBOARD_BULK_ADD_SEARCH_FIT_END -->
 
   <!-- GREENSCAPE_TOP_IMAGE_REFERENCE_ROW_UPDATE -->
