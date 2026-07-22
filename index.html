@@ -4648,7 +4648,7 @@
                     <span id="lensIdentifierStatusText">The first use downloads approximately 225 MB and may take several minutes on mobile data.</span>
                     <div class="lens-identifier-progress"><span id="lensIdentifierProgressBar"></span></div>
                   </div>
-                  <p class="lens-identifier-privacy-copy">Local analysis keeps the selected photo in this browser. Google Lens opens separately and requires selecting the same photo again.</p>
+                  <p class="lens-identifier-privacy-copy">Google Lens opens in a new tab. For browser security, choose the same photo again when Google Lens asks for it.</p>
                 </div>
               </section>
 
@@ -4662,16 +4662,7 @@
                     <div class="lens-identifier-results-empty">Possible plant common name and scientific name matches will appear here after analysis.</div>
                   </div>
 
-                  <div class="lens-identifier-form">
-                    <label class="lens-identifier-field"><span>Common name</span><input id="lensIdentifierCommonName" type="text" autocomplete="off" placeholder="Example: Garden dahlia"></label>
-                    <label class="lens-identifier-field"><span>Scientific name</span><input id="lensIdentifierScientificName" type="text" autocomplete="off" placeholder="Example: Dahlia pinnata"></label>
-                    <div class="lens-identifier-duplicate" id="lensIdentifierDuplicate" hidden></div>
-                    <div class="lens-identifier-error" id="lensIdentifierError" hidden></div>
-                    <div class="lens-identifier-form-actions">
-                      <button class="button secondary" type="button" data-lens-identifier-action="verify-names">Verify names</button>
-                      <button class="button primary" type="button" data-lens-identifier-action="add-to-library">Open Add Plant form</button>
-                    </div>
-                  </div>
+                  <div class="lens-identifier-error" id="lensIdentifierError" hidden></div>
 
                   <div class="lens-identifier-warning"><strong>Important</strong><span>The local research model and Google Lens provide suggestions, not guaranteed identification. Confirm edible, toxic, medicinal, or important plants with a qualified plant professional.</span></div>
                 </div>
@@ -4949,8 +4940,7 @@
               <small>${result.inLibrary ? 'Common name matched from the Greenscape library.' : 'Verify the common name with Google Lens before saving.'}</small>
             </div>
             <div class="lens-identifier-result-actions">
-              <button class="button primary small" type="button" data-lens-identifier-action="select-result" data-result-index="${index}">Select</button>
-              <button class="button secondary small" type="button" data-lens-identifier-action="verify-result" data-result-index="${index}">Lens</button>
+              <button class="button secondary small" type="button" data-lens-identifier-action="verify-result" data-result-index="${index}">Verify with Google Lens</button>
             </div>
           </article>`;
         }).join('');
@@ -5167,13 +5157,9 @@
         if (action === 'choose-photo' || action === 'replace-photo') document.getElementById('lensIdentifierGalleryInput')?.click();
         if (action === 'remove-photo') removeSelectedImage();
         if (action === 'analyze-photo') analyzeSelectedImage();
-        if (action === 'select-result') selectIdentifierResult(actionTarget.dataset.resultIndex);
         if (action === 'verify-result') {
-          selectIdentifierResult(actionTarget.dataset.resultIndex);
           openGoogleLens();
         }
-        if (action === 'verify-names') verifyEnteredNames();
-        if (action === 'add-to-library') openAddPlantForm();
       }, true);
 
       const dashboardObserver = new MutationObserver(mutations => {
