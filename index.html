@@ -2914,6 +2914,29 @@
         radial-gradient(circle at 18% 0%, rgba(255,255,255,.58), transparent 38%);
     }
 
+    /* Final desktop/tablet proportions from the annotated 1102px layout. */
+    @media (min-width: 901px) {
+      .app-shell {
+        grid-template-columns: 220px minmax(0, 1fr) !important;
+      }
+      .sidebar {
+        width: 220px !important;
+      }
+      .topbar-notices {
+        flex: 0 0 300px !important;
+        width: 300px !important;
+        margin-left: 80px !important;
+      }
+      .topbar-notices .company-use-notice {
+        box-sizing: border-box !important;
+        width: 300px !important;
+        max-width: 300px !important;
+        height: 50px !important;
+        min-height: 50px !important;
+        justify-content: center !important;
+      }
+    }
+
     /* Use the same soft field treatment throughout the Mood Board controls. */
     .moodboard-controls .input,
     .moodboard-controls .select-input {
