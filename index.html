@@ -19,6 +19,7 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/icons/icon-512.png">
 <link rel="stylesheet" href="assets/css/styles.css?v=20260722-moodboard-full-bleed1">
+<link rel="stylesheet" href="assets/css/plant-identifier.css?v=20260722-on-device1">
 
   <style>
     /* Compact sidebar + consistent navigation icons */
@@ -2872,6 +2873,7 @@
       <nav class="nav-list">
         <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
         <button class="nav-item" data-view="library"><span>⌕</span> Plant Library</button>
+        <button class="nav-item" data-identifier-nav type="button"><span>AI</span> Plant Identifier</button>
         <button class="nav-item" data-view="sheet"><span>▤</span> Plant List Editor</button>
         <button class="nav-item" data-view="moodboard"><span>▦</span> Mood Board Creator</button>
         <button class="nav-item" data-view="projects"><span>▣</span> Project Lists</button>
@@ -4444,7 +4446,7 @@
     }
   </style>
 
-  <script id="greenscape-google-lens-identifier-controller">
+  <script id="greenscape-google-lens-identifier-controller" type="text/plain" data-disabled="replaced-by-on-device-identifier">
     (() => {
       'use strict';
 
@@ -4891,6 +4893,8 @@
     })();
   </script>
   <!-- /GREENSCAPE_GOOGLE_LENS_IDENTIFIER_V1 -->
+
+  <script type="module" src="assets/js/plant-identifier.js?v=20260722-on-device1"></script>
 
 </body>
 </html>

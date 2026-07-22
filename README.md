@@ -13,6 +13,7 @@ Open the published website here:
 ## Main Features
 
 - Searchable plant and landscape-material library
+- On-device Plant Identifier with ranked common and scientific name matches from the Greenscape library
 - Plant List Editor with save and cancel confirmation
 - Add and edit plant records, photos, sizes, notes, tags, and links
 - Duplicate plant-code detection and required-field validation
@@ -23,6 +24,10 @@ Open the published website here:
 - PNG export and Print / Save PDF
 - Excel import and export
 - Mobile home-screen support through the web app manifest
+
+## Plant Identifier Privacy
+
+The Plant Identifier downloads and caches its recognition model in the browser. Selected photos are analyzed on the device and are not uploaded to Greenscape or an identification server. Google Lens is available as a separate, optional verification step and follows Google's own service and privacy terms.
 
 ## Important Data Note
 
