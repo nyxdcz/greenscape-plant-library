@@ -4203,7 +4203,7 @@
     }
     .local-identifier-upload-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 8px;
       margin-top: 15px;
     }
@@ -4510,6 +4510,7 @@
       flex-wrap: wrap;
       gap: 8px;
     }
+
     .local-identifier-model-note {
       margin: 0;
       color: #718078;
@@ -4559,7 +4560,7 @@
         white-space: nowrap;
       }
       .hero-actions .greenscape-identifier-hero-button {
-        grid-column: 1 / -1;
+        grid-column: auto;
       }
       .local-identifier-page {
         gap: 12px;
@@ -4680,7 +4681,9 @@
 
       function installDashboardButton(root = document) {
         const actions = root.querySelector?.('.hero-actions') || (root.matches?.('.hero-actions') ? root : null);
-        if (!actions || actions.querySelector('[data-action="open-local-identifier"]')) return;
+        if (!actions) return;
+        actions.querySelector('[data-action="new-project"]')?.remove();
+        if (actions.querySelector('[data-action="open-local-identifier"]')) return;
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'button secondary greenscape-identifier-hero-button';
@@ -4696,7 +4699,7 @@
               <div>
                 <span class="local-identifier-kicker">${cameraLeafIcon()} On-device identification</span>
                 <h2>Identify a plant from a photo.</h2>
-                <p>Take or upload one clear plant photo. The identification model downloads to your browser on first use, then analyzes the image on your device without an API key.</p>
+                <p>Upload one clear plant photo. The identification model downloads to your browser on first use, then analyzes the image on your device without an API key.</p>
               </div>
               <div class="local-identifier-privacy">
                 <strong>No API key required</strong>
@@ -4714,11 +4717,10 @@
                   <div class="local-identifier-dropzone" id="localIdentifierDropzone">
                     <div id="localIdentifierEmptyUpload">
                       <span class="local-identifier-camera-icon">${cameraLeafIcon()}</span>
-                      <strong>Take or choose a plant photo</strong>
+                      <strong>Choose a plant photo</strong>
                       <p>JPG or PNG · maximum 15 MB</p>
                       <div class="local-identifier-upload-actions">
-                        <button class="button primary" type="button" data-local-identifier-action="take-photo">Take photo</button>
-                        <button class="button secondary" type="button" data-local-identifier-action="choose-photo">Choose photo</button>
+                        <button class="button primary" type="button" data-local-identifier-action="choose-photo">Choose photo</button>
                       </div>
                     </div>
                     <div class="local-identifier-preview" id="localIdentifierPreview" hidden>
@@ -4729,7 +4731,6 @@
                       </div>
                     </div>
                   </div>
-                  <input id="localIdentifierCameraInput" type="file" accept="image/jpeg,image/png" capture="environment" hidden>
                   <input id="localIdentifierGalleryInput" type="file" accept="image/jpeg,image/png" hidden>
                   <div class="local-identifier-tip"><span>Tip</span><span>For better results, photograph a clear leaf, flower, fruit, bark, or the full plant against a simple background.</span></div>
                   <div class="local-identifier-progress" id="localIdentifierProgress" hidden>
@@ -4770,11 +4771,9 @@
       }
 
       function bindIdentifierPage() {
-        const cameraInput = document.getElementById('localIdentifierCameraInput');
         const galleryInput = document.getElementById('localIdentifierGalleryInput');
         const identifyButton = document.getElementById('localIdentifierIdentifyButton');
         const dropzone = document.getElementById('localIdentifierDropzone');
-        cameraInput?.addEventListener('change', event => handleFiles(event.target.files));
         galleryInput?.addEventListener('change', event => handleFiles(event.target.files));
         identifyButton?.addEventListener('click', identifySelectedPhoto);
         if (dropzone) {
@@ -4877,9 +4876,7 @@
       }
 
       function clearFileInputs() {
-        const camera = document.getElementById('localIdentifierCameraInput');
         const gallery = document.getElementById('localIdentifierGalleryInput');
-        if (camera) camera.value = '';
         if (gallery) gallery.value = '';
       }
 
@@ -5194,7 +5191,6 @@
         const actionTarget = event.target.closest('[data-local-identifier-action]');
         if (!actionTarget) return;
         const action = actionTarget.dataset.localIdentifierAction;
-        if (action === 'take-photo') document.getElementById('localIdentifierCameraInput')?.click();
         if (action === 'choose-photo' || action === 'replace-photo') document.getElementById('localIdentifierGalleryInput')?.click();
         if (action === 'remove-photo') removeSelectedImage();
         if (action === 'select-result') selectPrediction(actionTarget.dataset.resultRank);
