@@ -2972,7 +2972,9 @@
       color: #0b4632 !important;
       background: rgba(255, 255, 255, .62) !important;
       border-color: rgba(185, 208, 194, .82) !important;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.94), 0 7px 18px rgba(14,62,44,.14) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.98), 0 0 0 2px rgba(19,79,56,.10), 0 9px 24px rgba(8,42,29,.25) !important;
+      font-size: 15px !important;
+      font-weight: 900 !important;
       opacity: 1 !important;
     }
     @media (min-width: 1051px) {
@@ -3007,6 +3009,7 @@
       font-size: 10px !important;
       font-weight: 850 !important;
       text-decoration: none !important;
+      margin-bottom: 10px !important;
     }
     .project-back-button:hover {
       background: rgba(255, 255, 255, .50) !important;
@@ -3022,7 +3025,7 @@
     }
     .project-info-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
       margin: 0 0 12px;
     }
@@ -3052,6 +3055,79 @@
     .project-info-grid strong {
       color: #123b2c;
       font-size: 12px;
+    }
+    .project-info-grid small {
+      display: block;
+      margin-top: 3px;
+      font-size: 8px;
+      font-weight: 750;
+    }
+    .project-summary-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    .project-deadline.deadline-safe {
+      color: #176a42 !important;
+      background: rgba(210, 239, 221, .74) !important;
+    }
+    .project-deadline.deadline-warning {
+      color: #8a5200 !important;
+      background: rgba(255, 230, 175, .80) !important;
+    }
+    .project-deadline.deadline-urgent {
+      color: #9a3229 !important;
+      background: rgba(250, 208, 204, .82) !important;
+    }
+    .project-deadline.deadline-neutral {
+      color: #63736a !important;
+    }
+    .project-deadline strong,
+    .project-deadline span,
+    .project-deadline small {
+      color: inherit !important;
+    }
+    #pageContent > .hero .hero-actions {
+      justify-content: center !important;
+    }
+    .plant-detail-modal .modal-header h2 {
+      font-size: 20px !important;
+    }
+    .plant-detail-modal .detail-info h3 {
+      font-size: 30px !important;
+    }
+    .plant-detail-modal .detail-info .scientific {
+      font-size: 15px !important;
+    }
+    .plant-detail-modal .detail-info .plant-code {
+      font-size: 15px !important;
+    }
+    .moodboard-side-project {
+      left: 12% !important;
+      right: 12% !important;
+      bottom: 2% !important;
+      height: 29% !important;
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 12% !important;
+      overflow: hidden;
+    }
+    .moodboard-side-meta {
+      min-width: 0;
+      min-height: 0;
+      display: flex !important;
+      align-items: center;
+      gap: .35cqw !important;
+      overflow: hidden;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+    }
+    .moodboard-side-meta small,
+    .moodboard-side-meta strong,
+    .moodboard-side-meta span {
+      writing-mode: inherit;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     @media (max-width: 900px) {
       .project-info-grid {
@@ -3278,7 +3354,7 @@
   <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
   <script src="assets/js/data.js?v=20260721-navlabels2"></script>
-  <script src="assets/js/app.js?v=20260723-sheet1"></script>
+  <script src="assets/js/app.js?v=20260723-deadlines1"></script>
   <script>
     (() => {
       const form = document.getElementById('feedbackForm');

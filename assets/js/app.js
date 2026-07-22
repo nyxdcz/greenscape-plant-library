@@ -97,6 +97,8 @@
       projectType: String(project.projectType || ''),
       designCost: String(project.designCost || ''),
       landscapingCost: String(project.landscapingCost || ''),
+      startDate: String(project.startDate || ''),
+      deadline: String(project.deadline || ''),
       items: (Array.isArray(project.items) ? project.items : []).map(item => ({ ...item }))
     }));
   }
@@ -174,6 +176,23 @@
     return Number.isFinite(amount)
       ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', maximumFractionDigits: 2 }).format(amount)
       : raw;
+  }
+
+  function projectDeadlineInfo(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return { tone: 'neutral', display: 'Not set', status: 'Deadline not set', days: null };
+    const deadline = new Date(`${raw}T00:00:00`);
+    if (Number.isNaN(deadline.getTime())) return { tone: 'neutral', display: raw, status: 'Deadline', days: null };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const days = Math.ceil((deadline.getTime() - today.getTime()) / 86400000);
+    const tone = days <= 2 ? 'urgent' : days <= 7 ? 'warning' : 'safe';
+    const status = days < 0
+      ? `${Math.abs(days)} day${Math.abs(days) === 1 ? '' : 's'} overdue`
+      : days === 0
+        ? 'Due today'
+        : `${days} day${days === 1 ? '' : 's'} left`;
+    return { tone, display: formatDate(raw), status, days };
   }
 
   function slug(value) {
@@ -857,7 +876,7 @@
     growingCondition: 'Growing condition',
     plantingNotes: 'Planting notes',
     tags: 'Tags',
-    link: 'Link'
+    link: 'Reference'
   };
 
   function storedSheetFieldValue(plant, field) {
@@ -1075,7 +1094,7 @@
             <th class="sheet-long-col">Growing condition</th>
             <th class="sheet-long-col">Planting notes</th>
             <th class="sheet-medium-col">Tags</th>
-            <th class="sheet-medium-col">Link</th>
+            <th class="sheet-medium-col">Reference</th>
             <th class="sheet-actions-col">Action</th>
           </tr></thead>
           <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="17"><div class="sheet-empty-category">No plants in this category yet. <button class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add plant</button></div></td></tr>`}</tbody>
@@ -1785,24 +1804,22 @@
     context.fillText(canvasFitText(context, footer, canvasHeight * 0.22), 0, 0);
     context.restore();
 
-    const metaX = 7 * scale;
-    const metaWidth = sideWidth - 14 * scale;
-    const projectBaseY = canvasHeight - 58 * scale;
-    context.fillStyle = '#d8ece3';
-    context.font = `800 ${Math.max(8, 6 * scale)}px Arial, sans-serif`;
-    context.textAlign = 'left';
-    context.textBaseline = 'alphabetic';
-    context.fillText('PROJECT NAME', metaX, projectBaseY);
-    context.fillStyle = '#ffffff';
-    context.font = `700 ${Math.max(9, 8 * scale)}px Arial, sans-serif`;
-    context.fillText(canvasFitText(context, moodboard.projectName || 'Not set', metaWidth), metaX, projectBaseY + 14 * scale);
-
-    context.fillStyle = '#d8ece3';
-    context.font = `800 ${Math.max(8, 6 * scale)}px Arial, sans-serif`;
-    context.fillText('LOCATION', metaX, projectBaseY + 34 * scale);
-    context.fillStyle = '#ffffff';
-    context.font = `700 ${Math.max(9, 8 * scale)}px Arial, sans-serif`;
-    context.fillText(canvasFitText(context, moodboard.location || 'Not set', metaWidth), metaX, projectBaseY + 48 * scale);
+    const drawVerticalMeta = (x, label, value) => {
+      context.save();
+      context.translate(x, canvasHeight * 0.91);
+      context.rotate(-Math.PI / 2);
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+      context.fillStyle = '#d8ece3';
+      context.font = `800 ${Math.max(7, 5.5 * scale)}px Arial, sans-serif`;
+      context.fillText(label, 0, 0);
+      context.fillStyle = '#ffffff';
+      context.font = `700 ${Math.max(8, 7 * scale)}px Arial, sans-serif`;
+      context.fillText(canvasFitText(context, value || 'Not set', canvasHeight * 0.24), 58 * scale, 0);
+      context.restore();
+    };
+    drawVerticalMeta(sideWidth * 0.34, 'PROJECT NAME', moodboard.projectName);
+    drawVerticalMeta(sideWidth * 0.68, 'LOCATION', moodboard.location);
 
     const pageX = sideWidth + pagePaddingX;
     let y = pagePaddingY;
@@ -1982,6 +1999,7 @@
 
   function projectCard(project) {
     const totals = projectTotals(project);
+    const deadline = projectDeadlineInfo(project.deadline);
     return `<article class="project-card">
       <div class="project-card-top">
         <div><h3>${escapeHTML(project.name)}</h3><p class="project-location">${escapeHTML(project.location || 'Location not set')}</p></div>
@@ -1990,7 +2008,7 @@
       <div class="project-stats">
         <div class="project-stat"><strong>${totals.categories}</strong><span>Categories</span></div>
         <div class="project-stat"><strong>${number(totals.quantity)}</strong><span>Quantity</span></div>
-        <div class="project-stat"><strong>${totals.lines}</strong><span>Schedule lines</span></div>
+        <div class="project-stat project-deadline deadline-${deadline.tone}"><strong>${escapeHTML(deadline.display)}</strong><span>${escapeHTML(deadline.status)}</span></div>
       </div>
       <div class="project-card-actions">
         <button class="button primary small" data-action="open-project" data-project-id="${escapeHTML(project.id)}">Open list</button>
@@ -2002,6 +2020,7 @@
   function renderProjectDetail(project) {
     const totals = projectTotals(project);
     const items = project.items || [];
+    const deadline = projectDeadlineInfo(project.deadline);
     content.innerHTML = `
       <div class="detail-header">
         <div>
@@ -2019,14 +2038,15 @@
       <div class="project-info-grid">
         <div><span>Area size</span><strong>${escapeHTML(project.areaSize ? `${project.areaSize} sqm` : 'Not set')}</strong></div>
         <div><span>Project type</span><strong>${escapeHTML(project.projectType || 'Not set')}</strong></div>
+        <div><span>Project start</span><strong>${escapeHTML(project.startDate ? formatDate(project.startDate) : 'Not set')}</strong></div>
+        <div class="project-deadline deadline-${deadline.tone}"><span>Deadline</span><strong>${escapeHTML(deadline.display)}</strong><small>${escapeHTML(deadline.status)}</small></div>
         <div><span>Design cost</span><strong>${escapeHTML(projectCost(project.designCost))}</strong></div>
         <div><span>Landscaping cost</span><strong>${escapeHTML(projectCost(project.landscapingCost))}</strong></div>
       </div>
       ${project.siteConditions ? `<p class="inline-note"><strong>Site conditions:</strong> ${escapeHTML(project.siteConditions)}</p>` : ''}
       ${project.notes ? `<p class="inline-note"><strong>Project notes:</strong> ${escapeHTML(project.notes)}</p>` : ''}
-      <div class="summary-strip">
+      <div class="summary-strip project-summary-strip">
         ${summaryBox('Total categories', totals.categories)}
-        ${summaryBox('Schedule lines', totals.lines)}
         ${summaryBox('Total quantity', number(totals.quantity))}
       </div>
       ${items.length ? projectItemsTable(project) : emptyState('This plant list is empty', 'Add plants from the library and select the size, quantity, spacing, and zone.', `<button class="button primary" data-action="add-to-project" data-project-id="${escapeHTML(project.id)}">Add first plant</button>`)}
@@ -2102,7 +2122,7 @@
 
   function openModal(title, subtitle, body, footer, large) {
     modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${large ? ' large' : ''}" role="dialog" aria-modal="true" aria-label="${escapeHTML(title)}">
-      <div class="modal-header"><div><h2>${escapeHTML(title)}</h2>${subtitle ? `<p>${escapeHTML(subtitle)}</p>` : ''}</div><button class="modal-close" data-action="close-modal" aria-label="Close">×</button></div>
+      <div class="modal-header"><div><h2>${escapeHTML(title)}</h2>${subtitle ? `<p>${escapeHTML(subtitle)}</p>` : ''}</div><button class="modal-close" data-action="close-modal" aria-label="Close">X</button></div>
       <div class="modal-body">${body}</div>
       ${footer ? `<div class="modal-footer">${footer}</div>` : ''}
     </div></div>`;
@@ -2152,8 +2172,9 @@
         </tbody></table></div>
       </details>
     `;
-    openModal(plant.commonName, plant.scientificName || plant.material || plant.category, body,
+    openModal(plant.commonName, '', body,
       `<button class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
+    document.querySelector('#modalRoot .modal')?.classList.add('plant-detail-modal');
   }
 
   function infoItem(label, value) {
@@ -2616,6 +2637,8 @@
       <div class="form-field"><label>Client</label><input class="text-input" name="client" value="${escapeHTML(project?.client || '')}"></div>
       <div class="form-field"><label>Area size (sqm)</label><input class="text-input" type="number" min="0" step="0.01" name="areaSize" value="${escapeHTML(project?.areaSize || '')}" placeholder="e.g. 850"></div>
       <div class="form-field"><label>Project type</label><input class="text-input" name="projectType" value="${escapeHTML(project?.projectType || '')}" placeholder="e.g. Residential, resort, commercial"></div>
+      <div class="form-field"><label>Project start date</label><input class="text-input" type="date" name="startDate" value="${escapeHTML(project?.startDate || '')}"></div>
+      <div class="form-field"><label>Project deadline</label><input class="text-input" type="date" name="deadline" value="${escapeHTML(project?.deadline || '')}"></div>
       <div class="form-field"><label>Design cost</label><input class="text-input" type="number" min="0" step="0.01" name="designCost" value="${escapeHTML(project?.designCost || '')}" placeholder="PHP"></div>
       <div class="form-field"><label>Landscaping cost</label><input class="text-input" type="number" min="0" step="0.01" name="landscapingCost" value="${escapeHTML(project?.landscapingCost || '')}" placeholder="PHP"></div>
       <div class="form-field full"><label>Site conditions</label><textarea name="siteConditions" placeholder="Coastal site, full sun, sandy and well-drained soil">${escapeHTML(project?.siteConditions || '')}</textarea></div>
@@ -2639,6 +2662,8 @@
       client: String(fd.get('client') || '').trim(),
       areaSize: String(fd.get('areaSize') || '').trim(),
       projectType: String(fd.get('projectType') || '').trim(),
+      startDate: String(fd.get('startDate') || '').trim(),
+      deadline: String(fd.get('deadline') || '').trim(),
       designCost: String(fd.get('designCost') || '').trim(),
       landscapingCost: String(fd.get('landscapingCost') || '').trim(),
       siteConditions: String(fd.get('siteConditions') || '').trim(),
