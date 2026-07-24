@@ -190,8 +190,8 @@
           spacing: item.spacing || plant.spacing || '',
           quantity: Math.max(0, numberValue(item.quantity)),
           unit: item.unit || 'pc/s',
-          materialCost: 0,
-          laborCost: 0
+          materialCost: Math.max(0, numberValue(item.referencePrice ?? item.materialCost ?? 0)),
+          laborCost: Math.max(0, numberValue(item.laborCost ?? 0))
         }
       };
     });

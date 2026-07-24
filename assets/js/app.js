@@ -2761,6 +2761,31 @@
     toast(existing ? 'Project updated.' : 'Project list created.');
   }
 
+  function filteredProjectPlants(searchValue, categoryValue) {
+    const query = String(searchValue || '').trim().toLowerCase();
+    const category = String(categoryValue || 'All');
+    return plants.filter(plant => {
+      if (category !== 'All' && plant.category !== category) return false;
+      if (!query) return true;
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...(plant.tags || [])]
+        .join(' ')
+        .toLowerCase()
+        .includes(query);
+    });
+  }
+
+  function projectPlantOptionHTML(plant, selectedId) {
+    const label = [plant.code, plant.commonName].filter(Boolean).join(' — ');
+    const category = plant.category ? ` · ${plant.category}` : '';
+    return `<option value="${escapeHTML(plant.id)}"${plant.id === selectedId ? ' selected' : ''}>${escapeHTML(label || 'Unnamed plant')}${escapeHTML(category)}</option>`;
+  }
+
+  function projectSizeReferencePrice(size) {
+    const raw = size?.price ?? size?.unitPrice ?? '';
+    const value = Number(String(raw).replace(/,/g, '').trim());
+    return Number.isFinite(value) && value > 0 ? value : '';
+  }
+
   function openAddToProject(options) {
     options = options || {};
     if (!projects.length) {
@@ -2774,21 +2799,32 @@
     const selectedPlant = getPlant(selectedPlantId) || plants[0];
     const sizeOptions = selectedPlant?.sizes?.length ? selectedPlant.sizes : [{label:'Unspecified', unit:'pc/s'}];
     const selectedSizeIndex = editingItem ? Math.max(0, sizeOptions.findIndex(s => (s.label || s.size) === editingItem.sizeLabel)) : 0;
+    const selectedSize = sizeOptions[selectedSizeIndex] || sizeOptions[0] || {};
+    const initialReferencePrice = editingItem?.referencePrice ?? projectSizeReferencePrice(selectedSize);
+    const plantCategories = [...new Set(plants.map(plant => String(plant.category || '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b));
     const body = `<form id="addToProjectForm" class="form-grid">
       <input type="hidden" name="itemId" value="${escapeHTML(editingItem?.id || '')}">
-      <div class="form-field"><label>Project list *</label><select class="select-input" name="projectId" id="addProjectSelect" ${project ? 'disabled' : ''}>${projects.map(p => `<option value="${escapeHTML(p.id)}"${p.id === (project?.id || options.projectId) ? ' selected' : ''}>${escapeHTML(p.name)}</option>`).join('')}</select>${project ? `<input type="hidden" name="projectIdHidden" value="${escapeHTML(project.id)}">` : ''}</div>
-      <div class="form-field"><label>Plant *</label><select class="select-input" name="plantId" id="addPlantSelect">${plants.map(p => `<option value="${escapeHTML(p.id)}"${p.id === selectedPlant?.id ? ' selected' : ''}>${escapeHTML(p.code)} — ${escapeHTML(p.commonName)}</option>`).join('')}</select></div>
+      <div class="form-field full"><label>Project list *</label><select class="select-input" name="projectId" id="addProjectSelect" ${project ? 'disabled' : ''}>${projects.map(p => `<option value="${escapeHTML(p.id)}"${p.id === (project?.id || options.projectId) ? ' selected' : ''}>${escapeHTML(p.name)}</option>`).join('')}</select>${project ? `<input type="hidden" name="projectIdHidden" value="${escapeHTML(project.id)}">` : ''}</div>
+      <div class="form-field full"><label for="addPlantSearch">Search plants</label><input class="text-input" type="search" id="addPlantSearch" placeholder="Search code, common name, scientific name, or category" autocomplete="off"><span class="form-help">The plant list updates while you type.</span></div>
+      <div class="form-field"><label for="addPlantCategoryFilter">Plant category</label><select class="select-input" id="addPlantCategoryFilter"><option value="All">All categories</option>${plantCategories.map(category => `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`).join('')}</select></div>
+      <div class="form-field"><label for="addPlantSelect">Plant * <span id="addPlantResultCount" class="form-help" role="status" aria-live="polite">${plants.length} available</span></label><select class="select-input" name="plantId" id="addPlantSelect">${plants.map(plant => projectPlantOptionHTML(plant, selectedPlant?.id)).join('')}</select></div>
       <div class="form-field"><label>Available size</label><select class="select-input" name="sizeIndex" id="addSizeSelect">${sizeOptions.map((s,i) => sizeOptionHTML(s, i, i === selectedSizeIndex)).join('')}</select></div>
       <div class="form-field"><label>Quantity *</label><input class="number-input" required min="0.01" step="0.01" type="number" name="quantity" value="${editingItem?.quantity ?? 1}"></div>
       <div class="form-field"><label>Planting zone / sector</label><input class="text-input" name="zone" value="${escapeHTML(editingItem?.zone || '')}" placeholder="e.g. Main Entrance"></div>
       <div class="form-field"><label>Spacing</label><input class="text-input" name="spacing" id="addSpacing" value="${escapeHTML(editingItem?.spacing || selectedPlant?.spacing || '')}" placeholder="e.g. 1.5 m O.C."></div>
-      <div class="form-field full"><label>Project planting notes</label><textarea name="notes" placeholder="Project-specific planting instruction">${escapeHTML(editingItem?.notes || selectedPlant?.plantingNotes || '')}</textarea></div>
+      <div class="form-field full"><label>BOQ reference material price (PHP / unit)</label><input class="number-input" min="0" step="0.01" type="number" name="referencePrice" id="addReferencePrice" value="${escapeHTML(initialReferencePrice)}" placeholder="0.00"><span class="form-help">This becomes the starting material unit cost when a BOQ is created or reset from the Project List. It can still be edited inside the BOQ.</span></div>
+      <div class="form-field full"><label>Project planting notes</label><textarea name="notes" id="addProjectPlantNotes" placeholder="Project-specific planting instruction">${escapeHTML(editingItem?.notes || selectedPlant?.plantingNotes || '')}</textarea></div>
     </form>`;
     openModal(editingItem ? 'Edit project plant' : 'Add plant to project', selectedPlant ? `${selectedPlant.commonName} · ${selectedPlant.scientificName || selectedPlant.category}` : '', body,
-      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="addToProjectForm">${editingItem ? 'Save changes' : 'Add to project'}</button>`);
+      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="addToProjectForm">${editingItem ? 'Save changes' : 'Add to project'}</button>`, true);
     const form = document.getElementById('addToProjectForm');
     form.addEventListener('submit', saveProjectItem);
-    document.getElementById('addPlantSelect').addEventListener('change', refreshAddPlantSizes);
+    document.getElementById('addPlantSearch').addEventListener('input', refreshAddPlantPicker);
+    document.getElementById('addPlantCategoryFilter').addEventListener('change', refreshAddPlantPicker);
+    document.getElementById('addPlantSelect').addEventListener('change', () => refreshAddPlantSizes(true));
+    document.getElementById('addSizeSelect').addEventListener('change', refreshAddReferencePriceFromSize);
+    requestAnimationFrame(() => document.getElementById('addPlantSearch')?.focus({ preventScroll: true }));
   }
 
   function sizeOptionHTML(size, index, selected) {
@@ -2796,12 +2832,60 @@
     return `<option value="${index}"${selected ? ' selected' : ''}>${escapeHTML(label)}</option>`;
   }
 
-  function refreshAddPlantSizes() {
-    const plant = getPlant(document.getElementById('addPlantSelect').value);
+  function refreshAddPlantPicker() {
+    const searchInput = document.getElementById('addPlantSearch');
+    const categoryInput = document.getElementById('addPlantCategoryFilter');
+    const plantSelect = document.getElementById('addPlantSelect');
+    const countNode = document.getElementById('addPlantResultCount');
+    if (!searchInput || !categoryInput || !plantSelect) return;
+
+    const previousPlantId = plantSelect.value;
+    const results = filteredProjectPlants(searchInput.value, categoryInput.value);
+    plantSelect.innerHTML = results.map(plant => projectPlantOptionHTML(plant, previousPlantId)).join('');
+    plantSelect.disabled = results.length === 0;
+    if (countNode) countNode.textContent = `${results.length} available`;
+
+    if (!results.length) {
+      const sizeSelect = document.getElementById('addSizeSelect');
+      if (sizeSelect) { sizeSelect.innerHTML = ''; sizeSelect.disabled = true; }
+      const spacing = document.getElementById('addSpacing');
+      const price = document.getElementById('addReferencePrice');
+      if (spacing) spacing.value = '';
+      if (price) price.value = '';
+      return;
+    }
+
+    const nextPlantId = results.some(plant => plant.id === previousPlantId) ? previousPlantId : results[0].id;
+    plantSelect.value = nextPlantId;
+    if (nextPlantId !== previousPlantId) refreshAddPlantSizes(true);
+  }
+
+  function refreshAddPlantSizes(resetReferencePrice = false) {
+    const plantSelect = document.getElementById('addPlantSelect');
+    const plant = getPlant(plantSelect?.value);
     const sizes = plant?.sizes?.length ? plant.sizes : [{label:'Unspecified', unit:'pc/s'}];
     const select = document.getElementById('addSizeSelect');
+    if (!select) return;
+    select.disabled = false;
     select.innerHTML = sizes.map((s,i) => sizeOptionHTML(s, i, i === 0)).join('');
-    document.getElementById('addSpacing').value = plant?.spacing || '';
+    const spacing = document.getElementById('addSpacing');
+    const notes = document.getElementById('addProjectPlantNotes');
+    if (spacing) spacing.value = plant?.spacing || '';
+    if (notes) notes.value = plant?.plantingNotes || '';
+    if (resetReferencePrice) {
+      const price = document.getElementById('addReferencePrice');
+      if (price) price.value = projectSizeReferencePrice(sizes[0]);
+    }
+  }
+
+  function refreshAddReferencePriceFromSize() {
+    const plant = getPlant(document.getElementById('addPlantSelect')?.value);
+    const sizes = plant?.sizes?.length ? plant.sizes : [{label:'Unspecified', unit:'pc/s'}];
+    const sizeIndex = Number(document.getElementById('addSizeSelect')?.value || 0);
+    const suggestedPrice = projectSizeReferencePrice(sizes[sizeIndex] || sizes[0]);
+    if (suggestedPrice === '') return;
+    const input = document.getElementById('addReferencePrice');
+    if (input) input.value = suggestedPrice;
   }
 
   function saveProjectItem(event) {
@@ -2829,6 +2913,7 @@
       quantity: Number(fd.get('quantity') || 0),
       zone: String(fd.get('zone') || '').trim(),
       spacing: String(fd.get('spacing') || '').trim(),
+      referencePrice: Math.max(0, Number(fd.get('referencePrice') || 0)),
       notes: String(fd.get('notes') || '').trim(),
       updatedAt: new Date().toISOString()
     };
@@ -2847,10 +2932,10 @@
   function exportCSV(projectId) {
     const project = getProject(projectId);
     if (!project) return;
-    const headers = ['Code','Common Name','Scientific Name','Category','Size','Quantity','Unit','Zone/Sector','Spacing','Planting Notes'];
+    const headers = ['Code','Common Name','Scientific Name','Category','Size','Quantity','Unit','Zone/Sector','Spacing','BOQ Reference Price','Planting Notes'];
     const rows = (project.items || []).map(item => {
       const plant = getPlant(item.plantId) || {};
-      return [plant.code || item.plantCode, plant.commonName || item.commonName, plant.scientificName || item.scientificName, plant.category || '', item.sizeLabel, item.quantity, item.unit, item.zone, item.spacing, item.notes || plant.plantingNotes || ''];
+      return [plant.code || item.plantCode, plant.commonName || item.commonName, plant.scientificName || item.scientificName, plant.category || '', item.sizeLabel, item.quantity, item.unit, item.zone, item.spacing, item.referencePrice || 0, item.notes || plant.plantingNotes || ''];
     });
     const csv = [headers, ...rows].map(row => row.map(csvCell).join(',')).join('\r\n');
     downloadBlob(`\ufeff${csv}`, `${slug(project.name)}-plant-schedule.csv`, 'text/csv;charset=utf-8');
