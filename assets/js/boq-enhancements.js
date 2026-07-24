@@ -14,6 +14,7 @@
   let zoomPercent = readStoredZoom();
   let pendingSyncCount = 0;
   let enhancementFrame = 0;
+  let helpScrollTimer = 0;
 
   function readJSON(key, fallback) {
     try {
@@ -318,6 +319,20 @@
     }
   }
 
+
+  function markBoqScrolling() {
+    if (!document.body.classList.contains('boq-open')) return;
+    document.body.classList.add('boq-is-scrolling');
+    window.clearTimeout(helpScrollTimer);
+    helpScrollTimer = window.setTimeout(() => {
+      document.body.classList.remove('boq-is-scrolling');
+    }, 520);
+  }
+
+  function isInsideBoq(target) {
+    return target instanceof Element && Boolean(target.closest('#boqCreatorBackdrop'));
+  }
+
   function scheduleEnhancements() {
     if (enhancementFrame) return;
     enhancementFrame = requestAnimationFrame(() => {
@@ -366,6 +381,21 @@
       event.preventDefault();
       event.stopPropagation();
       setZoom(100);
+    }
+  }, true);
+
+
+  document.addEventListener('wheel', event => {
+    if (isInsideBoq(event.target)) markBoqScrolling();
+  }, { capture: true, passive: true });
+
+  document.addEventListener('touchmove', event => {
+    if (isInsideBoq(event.target)) markBoqScrolling();
+  }, { capture: true, passive: true });
+
+  document.addEventListener('scroll', event => {
+    if (isInsideBoq(event.target) || (event.target === document && document.body.classList.contains('boq-open'))) {
+      markBoqScrolling();
     }
   }, true);
 

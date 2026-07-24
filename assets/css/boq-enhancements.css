@@ -1,11 +1,20 @@
-/* BOQ zoom position fix and help widget visibility fix */
+/* BOQ floating zoom controls and scroll-aware Help widget */
 
 body.boq-open #feedbackWidget,
 body.boq-open .feedback-widget {
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transition: opacity .16s ease;
+  z-index: 5450 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transition: opacity .16s ease, visibility 0s linear 0s !important;
+}
+
+body.boq-open.boq-is-scrolling #feedbackWidget,
+body.boq-open.boq-is-scrolling .feedback-widget {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity .16s ease, visibility 0s linear .16s !important;
 }
 
 .boq-dialog.boq-compact-mode {
@@ -114,7 +123,7 @@ body.boq-open .feedback-widget {
 
 .boq-compact-mode .boq-table-heading {
   display: grid;
-  grid-template-columns: minmax(0,1fr) auto auto;
+  grid-template-columns: minmax(0,1fr) auto;
   align-items: center;
   column-gap: 10px;
   row-gap: 6px;
@@ -132,26 +141,29 @@ body.boq-open .feedback-widget {
 }
 
 .boq-zoom-controls {
-  position: static !important;
+  position: fixed !important;
+  top: 50%;
+  right: 24px;
+  z-index: 5350;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 3px;
-  flex: 0 0 auto;
-  padding: 3px;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  padding: 5px;
   margin: 0;
-  border: 1px solid #cbd9d2;
-  border-radius: 9px;
-  background: #f6faf8;
-  box-shadow: none;
-  align-self: center;
-  justify-self: end;
-  z-index: auto;
+  border: 1px solid rgba(185, 205, 195, .95);
+  border-radius: 14px;
+  background: rgba(248, 251, 249, .94);
+  box-shadow: 0 12px 32px rgba(13, 54, 38, .2);
+  backdrop-filter: blur(10px);
+  transform: translateY(-50%);
 }
 
 .boq-zoom-controls button {
-  min-width: 30px;
-  height: 28px;
+  min-width: 34px;
+  height: 32px;
   border: 0;
   border-radius: 6px;
   background: #ffffff;
@@ -164,7 +176,7 @@ body.boq-open .feedback-widget {
 }
 
 .boq-zoom-controls button[data-boq-zoom-label] {
-  min-width: 52px;
+  min-width: 48px;
   padding: 0 7px;
   font-size: 10px;
 }
@@ -288,7 +300,9 @@ body.boq-open .feedback-widget {
   }
 
   .boq-zoom-controls {
-    width: 100%;
-    justify-content: flex-end;
+    top: 50%;
+    right: 8px;
+    width: auto;
+    justify-content: center;
   }
 }
