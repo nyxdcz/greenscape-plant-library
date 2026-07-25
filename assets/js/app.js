@@ -2078,8 +2078,8 @@
           <span>Area size</span>
           <strong>${escapeHTML(project.areaSize ? `${project.areaSize} sqm` : 'Not set')}</strong>
         </div>
-        <div class="project-stat">
-          <span>Categories</span>
+        <div class="project-stat project-stat-categories">
+          <span>${totals.categories === 1 ? 'Category' : 'Categories'}</span>
           <strong>${totals.categories}</strong>
         </div>
         <div class="project-stat project-deadline deadline-${deadline.tone}" title="${escapeHTML(deadline.status)}">

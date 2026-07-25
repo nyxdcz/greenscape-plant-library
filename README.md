@@ -12,6 +12,22 @@ Open the published website here:
 
 ## What's New
 
+### Project Card Summary V3
+
+The compact Project List summary now keeps category and deadline information fully readable.
+
+Changes:
+
+- Keeps **Category** or **Categories** on one line.
+- Uses singular or plural wording based on the category count.
+- Gives the Deadline cell more horizontal space.
+- Shows the complete deadline date without truncation or an ellipsis.
+- Keeps the days-left or overdue status below the full date.
+- On small mobile screens, the Deadline cell moves to a full-width second row.
+- Preserves the compact card, whole-card click, touch, Enter, and Space behavior.
+- Updated `assets/js/app.js`, `assets/css/styles.css`, `index.html`, and `README.md`.
+- Runs the full repository quality checks before deployment.
+
 ### Project Card Compact Summary V2
 
 The Project Lists summary cards now use a shorter and more readable information row.

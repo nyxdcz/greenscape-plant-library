@@ -6092,3 +6092,55 @@ textarea:disabled {
   }
 }
 /* GREENSCAPE_PROJECT_CARD_COMPACT_SUMMARY_V2_END */
+
+
+/* GREENSCAPE_PROJECT_CARD_SUMMARY_V3_START */
+.project-stats.project-stats-compact {
+  grid-template-columns: minmax(72px, 1fr) minmax(68px, .9fr) minmax(100px, 1.45fr);
+  gap: 6px;
+}
+
+.project-stats.project-stats-compact .project-stat-categories > span {
+  overflow: visible;
+  font-size: 7.5px;
+  letter-spacing: .035em;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.project-stats.project-stats-compact .project-deadline {
+  min-width: 100px;
+}
+
+.project-stats.project-stats-compact .project-deadline > strong,
+.project-stats.project-stats-compact .project-deadline > small {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.project-stats.project-stats-compact .project-deadline > strong {
+  font-size: 10px;
+  line-height: 1.15;
+}
+
+.project-stats.project-stats-compact .project-deadline > small {
+  font-size: 7.5px;
+  line-height: 1.15;
+}
+
+@media (max-width: 520px) {
+  .project-stats.project-stats-compact {
+    grid-template-columns: minmax(0, 1fr) minmax(82px, .8fr);
+  }
+
+  .project-stats.project-stats-compact .project-deadline {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .project-stats.project-stats-compact .project-deadline > strong {
+    font-size: 10px;
+  }
+}
+/* GREENSCAPE_PROJECT_CARD_SUMMARY_V3_END */
