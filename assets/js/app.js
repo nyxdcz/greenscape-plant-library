@@ -2068,7 +2068,7 @@
   function projectCard(project) {
     const totals = projectTotals(project);
     const deadline = projectDeadlineInfo(project.deadline);
-    return `<article class="project-card">
+    return `<article class="project-card project-card-link" role="button" tabindex="0" data-action="open-project" data-project-id="${escapeHTML(project.id)}" aria-label="Open project ${escapeHTML(project.name)}">
       <div class="project-card-top">
         <div><h3>${escapeHTML(project.name)}</h3><p class="project-location">${escapeHTML(project.location || 'Location not set')}</p></div>
         <span class="badge">${formatDate(project.updatedAt)}</span>
@@ -2077,10 +2077,6 @@
         <div class="project-stat"><strong>${totals.categories}</strong><span>Categories</span></div>
         <div class="project-stat"><strong>${number(totals.quantity)}</strong><span>Quantity</span></div>
         <div class="project-stat project-deadline deadline-${deadline.tone}"><strong>${escapeHTML(deadline.display)}</strong><span>${escapeHTML(deadline.status)}</span></div>
-      </div>
-      <div class="project-card-actions">
-        <button type="button" class="button primary small" data-action="open-project" data-project-id="${escapeHTML(project.id)}">Open list</button>
-        <button type="button" class="button secondary small" data-action="add-to-project" data-project-id="${escapeHTML(project.id)}">Add plants</button>
       </div>
     </article>`;
   }
@@ -3153,6 +3149,11 @@
           first.focus();
         }
       }
+    }
+    if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.project-card-link[data-action="open-project"]')) {
+      event.preventDefault();
+      event.target.click();
+      return;
     }
     if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.moodboard-page-preview')) {
       event.preventDefault();

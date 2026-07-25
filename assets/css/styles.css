@@ -6001,3 +6001,19 @@ textarea:disabled {
   }
 }
 /* GREENSCAPE_QUALITY_ACCESSIBILITY_END */
+
+
+/* GREENSCAPE_PROJECT_CARD_CLEANUP_V1_START */
+.project-card-link {
+  cursor: pointer;
+}
+
+.project-card-link:focus-visible {
+  outline: 3px solid var(--terracotta);
+  outline-offset: 4px;
+}
+
+.project-card-link:active {
+  transform: translateY(1px);
+}
+/* GREENSCAPE_PROJECT_CARD_CLEANUP_V1_END */

@@ -12,6 +12,20 @@ Open the published website here:
 
 ## What's New
 
+### Project List Card Cleanup V1
+
+The Project Lists page now uses cleaner summary cards without the crowded action-button row.
+
+Changes:
+
+- Removed **Open list**, **Add plants**, **Quotation**, **BOQ**, and **Costing** buttons from each Project List summary card.
+- Made the entire project card open the selected project.
+- Added keyboard access using **Enter** or **Space** while the card is focused.
+- Kept project tools inside the Project Detail page, where they are easier to organize and use.
+- Preserved Quotation, BOQ, Costing Suite, Add Plant, Edit Project, and View Schedule functionality.
+- Updated `assets/js/app.js`, `assets/css/styles.css`, `index.html`, and `README.md`.
+- The deployment runs `npm run quality` before pushing to `main`.
+
 ### Repository Quality Review V1
 
 The latest repository update improves performance, responsive behavior, accessibility, metadata, validation, and code quality while preserving the existing design, workflows, and browser-local data.
