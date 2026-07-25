@@ -2073,10 +2073,20 @@
         <div><h3>${escapeHTML(project.name)}</h3><p class="project-location">${escapeHTML(project.location || 'Location not set')}</p></div>
         <span class="badge">${formatDate(project.updatedAt)}</span>
       </div>
-      <div class="project-stats">
-        <div class="project-stat"><strong>${totals.categories}</strong><span>Categories</span></div>
-        <div class="project-stat"><strong>${number(totals.quantity)}</strong><span>Quantity</span></div>
-        <div class="project-stat project-deadline deadline-${deadline.tone}"><strong>${escapeHTML(deadline.display)}</strong><span>${escapeHTML(deadline.status)}</span></div>
+      <div class="project-stats project-stats-compact">
+        <div class="project-stat" title="${escapeHTML(project.areaSize ? `${project.areaSize} sqm` : 'Area size not set')}">
+          <span>Area size</span>
+          <strong>${escapeHTML(project.areaSize ? `${project.areaSize} sqm` : 'Not set')}</strong>
+        </div>
+        <div class="project-stat">
+          <span>Categories</span>
+          <strong>${totals.categories}</strong>
+        </div>
+        <div class="project-stat project-deadline deadline-${deadline.tone}" title="${escapeHTML(deadline.status)}">
+          <span>Deadline</span>
+          <strong>${escapeHTML(deadline.display)}</strong>
+          <small>${escapeHTML(deadline.status)}</small>
+        </div>
       </div>
     </article>`;
   }

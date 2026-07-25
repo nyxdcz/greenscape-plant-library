@@ -12,6 +12,20 @@ Open the published website here:
 
 ## What's New
 
+### Project Card Compact Summary V2
+
+The Project Lists summary cards now use a shorter and more readable information row.
+
+Changes:
+
+- Replaced the large **Quantity** summary cell with **Area Size**.
+- Displays **Area Size, Categories, and Deadline** in three compact cells.
+- Reduced cell height, spacing, padding, and typography.
+- Preserved the whole-card click, touch, Enter, and Space interaction.
+- Preserved all tools inside the Project Detail page.
+- Updated `assets/js/app.js`, `assets/css/styles.css`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Project List Card Cleanup V1
 
 The Project Lists page now uses cleaner summary cards without the crowded action-button row.
