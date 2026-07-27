@@ -12,6 +12,48 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Startup and Read-Only Mode V1
+
+The website now includes an optional maintenance startup page and read-only browsing mode.
+
+Included behavior:
+
+- Shows a branded maintenance startup page when maintenance mode is enabled.
+- Allows visitors to continue into the website using **Open read-only website**.
+- Keeps navigation, project viewing, plant details, searching, filtering, printing, exporting, and Help available.
+- Disables editing, saving, adding, deleting, importing, restoring, and other data-changing controls.
+- Blocks browser `localStorage` writes while maintenance mode is active, protecting existing plant, project, quotation, BOQ, and costing records.
+- Shows a persistent **Maintenance mode — Read-only access** banner.
+- Provides clear disabled-control states and a message when a blocked action is attempted.
+- Supports desktop, tablet, mobile, keyboard navigation, and reduced-motion preferences.
+- Adds `assets/js/maintenance-config.js`, `assets/js/maintenance.js`, and `assets/css/maintenance.css`.
+- Updates `index.html`, `package.json`, `scripts/validate.mjs`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
+#### Turn maintenance mode on or off
+
+Open `assets/js/maintenance-config.js` and change:
+
+```js
+enabled: false
+```
+
+to:
+
+```js
+enabled: true
+```
+
+Change it back to `false` when maintenance is complete. The title, message, status, and expected-return text can also be edited in the same file.
+
+For a temporary preview without enabling it for everyone, open the website with:
+
+```text
+?maintenance-preview=1
+```
+
+This read-only mode prevents accidental browser-side edits. It is not authentication or server-side access control.
+
 ### Project Card Summary V3
 
 The compact Project List summary now keeps category and deadline information fully readable.
@@ -236,12 +278,15 @@ Website design and function updates normally involve one or more of these files:
 - `assets/css/boq.css`
 - `assets/css/boq-enhancements.css`
 - `assets/css/project-costing.css`
+- `assets/css/maintenance.css`
 - `assets/js/app.js`
 - `assets/js/data.js`
 - `assets/js/quotation.js`
 - `assets/js/boq.js`
 - `assets/js/boq-enhancements.js`
 - `assets/js/project-costing.js`
+- `assets/js/maintenance.js`
+- `assets/js/maintenance-config.js`
 - `scripts/validate.mjs`
 - `scripts/audit.mjs`
 - `package.json`
