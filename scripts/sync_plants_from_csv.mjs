@@ -102,7 +102,7 @@ function publishedDataToCsv(plants) {
       publishedImageValue(plant.image),
       plant.link || ''
     ]);
-  return [headers, ...rows].map(row => row.map(csvEscape).join(',')).join('\r\n') + '\r\n';
+  return [headers, ...rows].map(row => row.map(csvEscape).join(',')).join('\n') + '\n';
 }
 
 function parseCsv(text) {
@@ -167,6 +167,86 @@ function slug(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+function plantWords(value) {
+  return String(value || '').match(/[A-Za-z]+/g) || [];
+}
+
+function botanicalBaseCode(commonName, scientificName) {
+  const common = plantWords(commonName);
+  const scientific = plantWords(scientificName);
+  if (!common[0] || scientific.length < 2) return '';
+  return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`;
+}
+
+function assignBotanicalCodes(records) {
+  const groups = new Map();
+
+  records.forEach(record => {
+    record.codeBase = '';
+    record.codeConflict = false;
+    record.codeIncomplete = false;
+
+    if (record.category === 'Landscape Materials') return;
+
+    const base = botanicalBaseCode(record.commonName, record.scientificName);
+    if (!base) {
+      record.codeIncomplete = true;
+      return;
+    }
+
+    record.codeBase = base;
+    if (!groups.has(base)) groups.set(base, []);
+    groups.get(base).push(record);
+  });
+
+  groups.forEach((group, base) => {
+    if (group.length === 1) {
+      group[0].code = base;
+      group[0].codeManual = false;
+      return;
+    }
+
+    const used = new Set();
+    const pending = [];
+    const suffixPattern = new RegExp(`^${base}-(\\d{2})$`);
+
+    group.forEach(record => {
+      const match = String(record.code || '').match(suffixPattern);
+      const suffix = match ? Number(match[1]) : 0;
+      if (suffix > 0 && !used.has(suffix)) {
+        used.add(suffix);
+        record.code = `${base}-${String(suffix).padStart(2, '0')}`;
+      } else {
+        pending.push(record);
+      }
+    });
+
+    pending
+      .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+      .forEach(record => {
+        let suffix = 1;
+        while (used.has(suffix)) suffix += 1;
+        used.add(suffix);
+        record.code = `${base}-${String(suffix).padStart(2, '0')}`;
+      });
+
+    group.forEach(record => {
+      record.codeConflict = true;
+      record.codeManual = false;
+    });
+  });
+
+  const finalCodes = new Set();
+  records.forEach(record => {
+    const key = String(record.code || '').toLowerCase();
+    if (!key) fail(`Record ID "${record.id}" has no usable code.`);
+    if (finalCodes.has(key)) fail(`Generated code "${record.code}" is not unique.`);
+    finalCodes.add(key);
+  });
+
+  return records;
 }
 
 function parseSizes(value, rowNumber) {
@@ -255,7 +335,6 @@ function recordsFromCsv(csvText, existingPlants) {
   });
 
   const ids = new Set();
-  const codes = new Set();
   const records = [];
 
   rows.slice(1).forEach((values, rowIndex) => {
@@ -280,8 +359,6 @@ function recordsFromCsv(csvText, existingPlants) {
     if (!category) fail(`Row ${rowNumber}: Category is required.`);
 
     const codeKey = code.toLowerCase();
-    if (codes.has(codeKey)) fail(`Row ${rowNumber}: duplicate Code "${code}".`);
-    codes.add(codeKey);
 
     const matchingExisting = existingByCode.get(codeKey);
     let id = data['Record ID'] || matchingExisting?.id || `plant-${slug(code)}`;
@@ -337,7 +414,7 @@ function recordsFromCsv(csvText, existingPlants) {
     fail(`The CSV has ${records.length} rows, below the deletion safety limit of ${minimumSafeCount}. Restore missing rows or run manually with --allow-large-delete.`);
   }
 
-  return records;
+  return assignBotanicalCodes(records);
 }
 
 function metadata(records) {
@@ -385,13 +462,15 @@ if (!fs.existsSync(csvPath)) fail('data/Greenscape_Plant_Library.csv is missing.
 
 const csvText = fs.readFileSync(csvPath, 'utf8').replace(/^\uFEFF/, '');
 const records = recordsFromCsv(csvText, published.plants);
+const canonicalCsv = publishedDataToCsv(records);
 const expectedData = generatedDataSource(records);
 const currentIndex = fs.readFileSync(indexPath, 'utf8');
-const expectedIndex = generatedIndexSource(currentIndex, csvText);
+const expectedIndex = generatedIndexSource(currentIndex, canonicalCsv);
 
 if (checkOnly) {
   const currentData = fs.readFileSync(dataPath, 'utf8');
   const failures = [];
+  if (csvText !== canonicalCsv) failures.push('The plant CSV does not contain the canonical automatic codes.');
   if (currentData !== expectedData) failures.push('assets/js/data.js is not synchronized with the CSV.');
   if (currentIndex !== expectedIndex) failures.push('index.html has an outdated data.js cache version.');
   if (failures.length) fail(failures.join(' '));
@@ -399,6 +478,7 @@ if (checkOnly) {
   process.exit(0);
 }
 
+if (csvText !== canonicalCsv) fs.writeFileSync(csvPath, canonicalCsv, 'utf8');
 fs.writeFileSync(dataPath, expectedData, 'utf8');
 if (currentIndex !== expectedIndex) fs.writeFileSync(indexPath, expectedIndex, 'utf8');
 console.log(`Plant CSV sync completed: ${records.length} records published.`);

@@ -368,7 +368,20 @@ tbody tr:hover { background: #fcfcf9; }
 .plant-image img { transition: transform .28s ease, filter .28s ease; }
 .plant-card:hover .plant-image img { transform: scale(1.075); filter: saturate(1.04); }
 .plant-code-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
-.plant-code.duplicate-code { color: var(--danger); }
+.plant-code.duplicate-code {
+  padding: 3px 7px;
+  border: 1px solid #e2a39d;
+  border-radius: 99px;
+  color: #9d302b;
+  background: #fff0ee;
+}
+.plant-code.incomplete-code {
+  padding: 3px 7px;
+  border: 1px solid #e2c376;
+  border-radius: 99px;
+  color: #755312;
+  background: #fff7dc;
+}
 .code-error-badge {
   display: inline-flex;
   align-items: center;
@@ -376,6 +389,18 @@ tbody tr:hover { background: #fcfcf9; }
   border-radius: 99px;
   color: #8a2824;
   background: #ffe1de;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.code-incomplete-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 99px;
+  color: #755312;
+  background: #ffefb7;
   font-size: 8px;
   font-weight: 850;
   letter-spacing: .06em;
@@ -987,6 +1012,12 @@ th { color: #42604f; background: #edf3ef; }
 .sheet-code-input { font-weight: 900; letter-spacing: .06em; }
 .sheet-code-input.duplicate-code,
 .sheet-code-input.input-error { border-color: #d96a62; color: #a13b35; background: #fff3f1; }
+.sheet-code-input.incomplete-code {
+  border-color: #d7b454;
+  color: #755312;
+  background: #fff8df;
+}
+.sheet-code-input[readonly] { cursor: default; }
 .sheet-code-error {
   display: none;
   margin-top: 4px;
@@ -996,6 +1027,7 @@ th { color: #42604f; background: #edf3ef; }
   line-height: 1.25;
 }
 .sheet-code-error.visible { display: block; }
+.sheet-code-error.incomplete { color: #856214; }
 .sheet-help { display: block; margin-top: 4px; color: #87918b; font-size: 8px; line-height: 1.25; }
 .sheet-row-actions { display: grid; gap: 5px; }
 .sheet-row-actions .icon-button { width: 32px; height: 30px; }
