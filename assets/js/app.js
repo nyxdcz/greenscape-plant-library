@@ -37,7 +37,12 @@
   };
 
   let storageAvailable = true;
-  let plants = sanitizePlants(hydratePlantImages(loadJSON(STORAGE.plants, null) || clone(seedPlants)));
+  const maintenanceReadOnlyAtStartup = document.body.classList.contains('maintenance-readonly');
+  let plants = sanitizePlants(hydratePlantImages(
+    maintenanceReadOnlyAtStartup
+      ? clone(seedPlants)
+      : (loadJSON(STORAGE.plants, null) || clone(seedPlants))
+  ));
   let projects = sanitizeProjects(loadJSON(STORAGE.projects, []));
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
   let moodboard = sanitizeMoodboard(loadJSON(STORAGE.moodboard, null));
@@ -85,10 +90,12 @@
   function sanitizePlants(records) {
     return (Array.isArray(records) ? records : []).map(plant => {
       const scientificName = String(plant.scientificName || plant.material || '').trim();
+      const normalizedCode = normalizePlantCode(plant.code);
       const generatedCode = generatePlantCode(plant.commonName, scientificName, plant.code);
       return {
         ...plant,
-        code: plant.codeManual ? normalizePlantCode(plant.code) || generatedCode : generatedCode,
+        code: normalizedCode || generatedCode,
+        codeManual: Boolean(normalizedCode || plant.codeManual),
         sizes: (Array.isArray(plant.sizes) ? plant.sizes : []).map(({ price, stock, ...size }) => ({ ...size }))
       };
     });
@@ -833,13 +840,13 @@
       const existing = findPlantForImport(data);
       const category = excelValue(data, ['Category', 'Plant Category']) || existing?.category || 'Uncategorized';
       const importedCode = normalizePlantCode(excelValue(data, ['Code', 'Plant Code']));
-      const validCode = /^[A-Z][A-Z][a-z]$/.test(importedCode) ? importedCode : generatePlantCode(commonName, scientificName, existing?.code);
+      const validCode = isValidPlantCode(importedCode) ? importedCode : generatePlantCode(commonName, scientificName, existing?.code);
       const link = excelValue(data, ['Link', 'URL', 'Website', 'Image URL']);
       const record = {
         ...(existing || {}),
         id: existing?.id || excelValue(data, ['Record ID', 'ID']) || uid('plant'),
         code: validCode,
-        codeManual: /^[A-Z][A-Z][a-z]$/.test(importedCode),
+        codeManual: isValidPlantCode(importedCode),
         commonName,
         scientificName,
         category,
@@ -1082,6 +1089,7 @@
   }
 
   function renderPlantSheet() {
+    const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');
     const results = filteredSheetPlants();
     const grouped = results.reduce((groups, plant) => {
       const category = plant.category || 'Uncategorized';
@@ -1104,14 +1112,16 @@
         </div>
         <div class="toolbar-group">
           <span class="result-count">${results.length} ${results.length === 1 ? 'entry' : 'entries'}</span>
-          <button type="button" class="button secondary" data-action="import-excel">Import Excel</button>
-          <button type="button" class="button secondary" data-action="export-excel">Export Excel</button>
-          <button type="button" class="button secondary" data-action="new-category">Add category</button>
-          <button type="button" class="button primary" data-action="new-plant"${state.sheetCategory !== 'All' ? ` data-category="${escapeHTML(state.sheetCategory)}"` : ''}>Add plant</button>
-          <input id="plantExcelInput" type="file" aria-label="Import plant list from Excel" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          ${maintenanceReadOnly ? '' : `
+            <button type="button" class="button secondary" data-action="import-excel">Import Excel</button>
+            <button type="button" class="button secondary" data-action="export-excel">Export Excel</button>
+            <button type="button" class="button secondary" data-action="new-category">Add category</button>
+            <button type="button" class="button primary" data-action="new-plant"${state.sheetCategory !== 'All' ? ` data-category="${escapeHTML(state.sheetCategory)}"` : ''}>Add plant</button>
+            <input id="plantExcelInput" type="file" aria-label="Import plant list from Excel" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          `}
         </div>
       </div>
-      ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} duplicate code${duplicateCount === 1 ? '' : 's'} detected</strong>Duplicate code cells are marked in red. Enter a unique code using the AEg format.</div></div>` : ''}
+      ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} duplicate code${duplicateCount === 1 ? '' : 's'} detected</strong>Duplicate code cells are marked in red. Enter a unique code such as AEg or PAL-014.</div></div>` : ''}
       <div id="sheetCategoryGroups">
         ${Object.keys(grouped).sort((a,b) => a.localeCompare(b)).map(category => renderSheetCategory(category, grouped[category])).join('') || emptyState('No matching plants', 'Try another name or category.', '<button type="button" class="button secondary" data-action="clear-sheet-filter">Clear filters</button>')}
       </div>`;
@@ -1218,11 +1228,11 @@
     if (field === 'code') {
       const code = normalizePlantCode(rawValue);
       const duplicate = plants.find(record => record.id !== plant.id && String(record.code || '').toLowerCase() === code.toLowerCase());
-      if (!/^[A-Z][A-Z][a-z]$/.test(code)) {
+      if (!isValidPlantCode(code)) {
         input.value = plant.code;
         input.classList.add('input-error');
         setSheetSaveStatus('Code was not saved', 'error');
-        toast('Use three letters: first two uppercase and the third lowercase.', true);
+        toast('Use a unique code such as AEg or PAL-014.', true);
         return false;
       }
       if (duplicate) {
@@ -2469,9 +2479,20 @@
   }
 
   function normalizePlantCode(value) {
-    const letters = String(value || '').replace(/[^A-Za-z]/g, '').slice(0, 3);
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+
+    const structured = raw.match(/^([A-Za-z]{2,8})[-\s]?(\d{1,6})$/);
+    if (structured) return `${structured[1].toUpperCase()}-${structured[2]}`;
+
+    const letters = raw.replace(/[^A-Za-z]/g, '').slice(0, 3);
     if (!letters) return '';
     return `${(letters[0] || '').toUpperCase()}${(letters[1] || '').toUpperCase()}${(letters[2] || '').toLowerCase()}`;
+  }
+
+  function isValidPlantCode(value) {
+    return /^[A-Z]{2,8}-\d{1,6}$/.test(String(value || '')) ||
+      isValidPlantCode(String(value || ''));
   }
 
   function generatePlantCode(commonName, scientificName, fallback) {
@@ -2600,7 +2621,7 @@
     input.value = code;
     let message = '';
     if (!code) message = 'Plant code is required.';
-    else if (!/^[A-Z][A-Z][a-z]$/.test(code)) message = 'Use three letters: first two uppercase and the third lowercase.';
+    else if (!isValidPlantCode(code)) message = 'Use a unique code such as AEg or PAL-014.';
     else {
       const duplicates = duplicateCodeMatches(code, excludingId);
       if (duplicates.length) {

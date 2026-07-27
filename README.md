@@ -12,6 +12,82 @@ Open the published website here:
 
 ## What's New
 
+### Google Sheets Plant Source V1.3
+
+The published Plant Library can now be maintained through a Google Sheets-compatible CSV stored directly in GitHub.
+
+Source file:
+
+```text
+data/Greenscape_Plant_Library.csv
+```
+
+GitHub workflow:
+
+1. Open the CSV file in the GitHub repository.
+2. Download the CSV from GitHub.
+3. Import or open it in Google Sheets.
+4. Edit the complete plant list.
+5. Download the active Google Sheets tab as a comma-separated values (`.csv`) file.
+6. Replace `data/Greenscape_Plant_Library.csv` directly in GitHub.
+7. Commit the replacement to `main`.
+8. Wait for **Plant CSV Sync** and **Website Checks** to pass.
+9. Hard-refresh the website.
+
+Website behavior:
+
+- No Google Sheets download or GitHub upload controls are added to the website.
+- During maintenance, **Import Excel**, **Export Excel**, **Add category**, and **Add plant** are hidden.
+- Search, category filtering, entry counts, plant details, and plant-image downloads remain available.
+- Excel export is removed from the maintenance allowlist.
+- During maintenance, the website loads the latest published GitHub plant data rather than stale browser-saved plant records.
+- Outside maintenance, existing browser Plant List editing and Excel tools remain available.
+
+CSV columns:
+
+- Record ID
+- Code
+- Common Name
+- Scientific Name
+- Category
+- Available Sizes
+- Sun
+- Water
+- Spacing
+- Mature Height
+- Mature Spread
+- Landscape Use
+- Growing Condition
+- Planting Notes
+- Tags
+- Image Path / URL
+- Plant Link
+
+Rules:
+
+- Keep existing Record IDs unchanged.
+- Leave Record ID blank only when adding a new plant.
+- Keep plant codes unique.
+- Codes may use the short `AEg` format or structured codes such as `PAL-014`.
+- Use `size | unit; size | unit` for Available Sizes.
+- Store local images in `assets/images/` and enter the repository path in the CSV.
+- HTTP and HTTPS image URLs already used by the website are preserved; use HTTPS for new records.
+- Local image paths may include safe spaces and parentheses and must remain inside `assets/`.
+- Supported embedded data images are preserved up to 8 MB.
+- Empty historical data-image placeholders are converted to blank image cells.
+- Plant-reference URLs must use HTTPS.
+- Spreadsheet formulas and unsafe formula-like values are rejected.
+- Duplicate IDs and codes, unsafe image paths, missing local images, malformed rows, and large accidental deletions stop publication.
+- Failed validation leaves the previously published website data unchanged.
+
+Automation:
+
+- `scripts/sync_plants_from_csv.mjs` validates and converts the CSV into `assets/js/data.js`.
+- `.github/workflows/sync-plant-csv.yml` runs when the CSV changes.
+- The workflow updates the plant-data cache version using a deterministic CSV hash.
+- The workflow runs the complete repository quality checks before committing generated plant data.
+- `README.md` is updated in the same release.
+
 ### Plant Image Download During Maintenance V1
 
 Plant images can now be downloaded from the Plant Detail view while the website is operating in read-only maintenance mode.

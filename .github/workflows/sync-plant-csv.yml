@@ -1,0 +1,51 @@
+name: Plant CSV Sync
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - data/Greenscape_Plant_Library.csv
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plant-csv-sync-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Convert Google Sheets CSV to website data
+        run: node scripts/sync_plants_from_csv.mjs
+
+      - name: Run website checks
+        run: npm run quality
+
+      - name: Publish generated plant data
+        shell: bash
+        run: |
+          if git diff --quiet -- assets/js/data.js index.html; then
+            echo "Plant data is already synchronized."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/js/data.js index.html
+          git commit -m "chore: sync plant data from Google Sheets CSV"
+          git push origin HEAD:main

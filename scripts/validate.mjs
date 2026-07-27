@@ -97,5 +97,12 @@ if (failures.length) {
   process.exit(1);
 }
 
+check(exists('data/Greenscape_Plant_Library.csv'), 'The Google Sheets plant CSV is required.');
+check(exists('scripts/sync_plants_from_csv.mjs'), 'The plant CSV sync script is required.');
+check(exists('.github/workflows/sync-plant-csv.yml'), 'The Plant CSV Sync workflow is required.');
+check(jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance mode must load published GitHub plant data.');
+check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
+check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
+
 const mode = process.argv.includes('--build') ? 'Static build validation' : 'Validation';
 console.log(`${mode} passed: all JavaScript files, HTML structure, metadata, accessibility hooks, manifest, security guards, and local assets.`);

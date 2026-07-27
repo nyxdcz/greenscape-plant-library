@@ -75,7 +75,6 @@
     'clear-filter',
     'clear-sheet-filter',
     'export-csv',
-    'export-excel',
     'moodboard-export-png',
     'moodboard-print',
     'moodboard-fullscreen',
