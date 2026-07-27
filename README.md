@@ -12,6 +12,27 @@ Open the published website here:
 
 ## What's New
 
+### Plant Image Download During Maintenance V1
+
+Plant images can now be downloaded from the Plant Detail view while the website is operating in read-only maintenance mode.
+
+Changes:
+
+- Adds a **Download image** button to Plant Detail whenever the selected plant has an image.
+- Downloads local, data-URL, and browser-accessible remote images.
+- Generates a clean filename using the plant code and common name.
+- Preserves the image extension when it can be detected from the file type or image URL.
+- Uses a direct browser-download fallback when a remote image host blocks `fetch` through CORS.
+- Adds `download-plant-image` to the maintenance action allowlist.
+- Keeps the download button enabled, readable, and keyboard-accessible during maintenance.
+- Does not write to `localStorage` or change any plant record.
+- Keeps plant editing, image replacement, adding, deleting, importing, restoring, and saving blocked.
+- Keeps project, quotation, BOQ, and costing data-changing actions blocked.
+- Hides the download control automatically when a plant has no image.
+- Changes cache versions for `app.js` and `maintenance.js`.
+- Updates `assets/js/app.js`, `assets/js/maintenance.js`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Navigation Icon and Project Header Contrast V1
 
 The primary navigation and Maintenance Mode control now use the supplied Greenscape interface icons, and the glowing Project Detail header has stronger text contrast.

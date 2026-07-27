@@ -2252,7 +2252,7 @@
       </details>
     `;
     openModal(plant.commonName, '', body,
-      `<button type="button" class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button type="button" class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
+      `${image ? `<button type="button" class="button secondary" data-action="download-plant-image" data-plant-id="${escapeHTML(plant.id)}">Download image</button>` : ''}<button type="button" class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button type="button" class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
     document.querySelector('#modalRoot .modal')?.classList.add('plant-detail-modal');
   }
 
@@ -2937,6 +2937,63 @@
     toast(existing ? 'Project plant updated.' : 'Plant added to project list.');
   }
 
+  function plantImageExtension(source, mimeType) {
+    const byMime = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+      'image/gif': 'gif',
+      'image/heic': 'heic',
+      'image/heif': 'heif'
+    };
+    const normalizedMime = String(mimeType || '').split(';')[0].trim().toLowerCase();
+    if (byMime[normalizedMime]) return byMime[normalizedMime];
+
+    const cleanSource = String(source || '').split(/[?#]/)[0];
+    const match = cleanSource.match(/\.([a-z0-9]{2,5})$/i);
+    const extension = String(match?.[1] || '').toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif'].includes(extension)
+      ? (extension === 'jpeg' ? 'jpg' : extension)
+      : 'jpg';
+  }
+
+  async function downloadPlantImage(plantId) {
+    const plant = getPlant(plantId);
+    const source = String(plant?.image || '').trim();
+
+    if (!plant || !source) {
+      toast('This plant does not have an image to download.', true);
+      return;
+    }
+
+    const filenameBase = slug(`${plant.code || ''}-${plant.commonName || 'plant-image'}`)
+      .replace(/^-|-$/g, '') || 'plant-image';
+
+    try {
+      const response = await fetch(source);
+      if (!response.ok) throw new Error(`Image request failed with ${response.status}.`);
+      const blob = await response.blob();
+      if (!blob.size) throw new Error('The image file is empty.');
+
+      const extension = plantImageExtension(source, blob.type);
+      downloadBlob(blob, `${filenameBase}.${extension}`, blob.type || 'application/octet-stream');
+      toast(`Image downloaded for ${plant.commonName}.`);
+    } catch (error) {
+      console.error(error);
+
+      const extension = plantImageExtension(source, '');
+      const anchor = document.createElement('a');
+      anchor.href = source;
+      anchor.download = `${filenameBase}.${extension}`;
+      anchor.rel = 'noopener';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      toast('The browser started the image download. If it opens in a new view, use Save Image As.', false);
+    }
+  }
+
   function exportCSV(projectId) {
     const project = getProject(projectId);
     if (!project) return;
@@ -3063,6 +3120,7 @@
         toast('Full-screen view is not available in this browser.', true);
       }
     }
+    if (action === 'download-plant-image') downloadPlantImage(target.dataset.plantId);
     if (action === 'edit-plant') openPlantForm(target.dataset.plantId);
     if (action === 'plant-detail') openPlantDetail(target.dataset.plantId);
     if (action === 'new-project') openProjectForm();

@@ -69,6 +69,7 @@
     'back-projects',
     'project-schedule',
     'plant-detail',
+    'download-plant-image',
     'filter-category',
     'load-more',
     'clear-filter',
@@ -84,6 +85,7 @@
   const allowedButtonSelectors = [
     '[data-view]',
     '[data-project-workspace-tab]',
+    '[data-action="download-plant-image"]',
     '[data-quotation-close]',
     '[data-quotation-print]',
     '[data-boq-close]',
