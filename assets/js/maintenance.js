@@ -144,7 +144,13 @@
 
   function bannerMarkup() {
     return `<button type="button" class="maintenance-readonly-banner feedback-launcher" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="Maintenance mode. Read-only access. Open maintenance details.">
-      <span class="maintenance-lock-icon" aria-hidden="true">🔒</span>
+      <span class="maintenance-lock-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 3.5v2.2m0 12.6v2.2M3.5 12h2.2m12.6 0h2.2M5.9 5.9l1.55 1.55m9.1 9.1 1.55 1.55m0-12.2-1.55 1.55m-9.1 9.1-1.55 1.55" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M10.1 12.1 11.4 13.4 14.2 10.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
       <span class="maintenance-banner-copy"><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small></span>
       <span class="maintenance-banner-details" aria-hidden="true">Details</span>
     </button>`;

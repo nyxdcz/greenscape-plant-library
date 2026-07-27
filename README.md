@@ -12,6 +12,31 @@ Open the published website here:
 
 ## What's New
 
+### Feature Glow Scale and Motion Refinement V2
+
+The Dashboard and Project Detail glow treatments now have a larger spread and faster, more visible motion.
+
+Changes:
+
+- Increases the Dashboard upper-left lime glow from approximately `620px` to `820px`.
+- Increases the Dashboard lower-right green glow from approximately `560px` to `760px`.
+- Expands the bloom radius, visible spread, and animated travel distance.
+- Speeds up the Dashboard lime animation from `9s` to `4.5s`.
+- Speeds up the Dashboard green animation from `11s` to `5.5s`.
+- Increases the Project Detail lime glow from `230px` to `340px`.
+- Increases the Project Detail green glow from `210px` to `320px`.
+- Adds restrained Project Detail breathing animations at `4.8s` and `5.8s`.
+- Keeps Project Detail motion softer than the Dashboard hero.
+- Enlarges both Dashboard glows on mobile while preserving clipped hero boundaries.
+- Replaces the maintenance lock emoji with a custom inline SVG maintenance/status icon.
+- On screens up to `760px`, reduces the maintenance pill to the icon and **Maintenance mode** title only.
+- Hides the read-only description and **Details** label on small screens while keeping the entire pill clickable.
+- Preserves the shared Help-style hover, focus, press, and scrolling behavior.
+- Extends reduced-motion support to the Project Detail glow animation.
+- Changes cache versions for `feature-glow.css`, `maintenance.css`, and `maintenance.js`.
+- Updates `assets/css/feature-glow.css`, `assets/css/maintenance.css`, `assets/js/maintenance.js`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Feature Glow Design System V1
 
 The maintenance-screen lighting language is now reused selectively across important feature areas without affecting data-entry clarity.

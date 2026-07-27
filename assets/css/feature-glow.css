@@ -1,4 +1,4 @@
-/* Greenscape Feature Glow Design System V1 */
+/* Greenscape Feature Glow Scale and Motion Refinement V2 */
 
 :root {
   --feature-glow-deep: #073c2c;
@@ -29,10 +29,10 @@
 }
 
 .hero::before {
-  width: min(48vw, 620px);
-  height: min(48vw, 620px);
-  top: -72%;
-  left: -18%;
+  width: min(64vw, 820px);
+  height: min(64vw, 820px);
+  top: -94%;
+  left: -27%;
   background: radial-gradient(
     circle,
     rgba(223, 243, 154, .46) 0%,
@@ -41,16 +41,16 @@
     transparent 74%
   );
   box-shadow:
-    0 0 70px rgba(223, 243, 154, .18),
-    0 0 145px rgba(212, 238, 145, .10);
-  animation: feature-glow-lime-breathe 9s ease-in-out infinite alternate;
+    0 0 96px rgba(223, 243, 154, .24),
+    0 0 205px rgba(212, 238, 145, .15);
+  animation: feature-glow-lime-breathe 4.5s ease-in-out infinite alternate;
 }
 
 .hero::after {
-  width: min(44vw, 560px);
-  height: min(44vw, 560px);
-  right: -17%;
-  bottom: -70%;
+  width: min(59vw, 760px);
+  height: min(59vw, 760px);
+  right: -27%;
+  bottom: -96%;
   background: radial-gradient(
     circle,
     rgba(66, 175, 124, .38) 0%,
@@ -59,9 +59,9 @@
     transparent 75%
   );
   box-shadow:
-    0 0 78px rgba(62, 171, 119, .16),
-    0 0 155px rgba(34, 126, 87, .10);
-  animation: feature-glow-green-breathe 11s ease-in-out infinite alternate;
+    0 0 105px rgba(62, 171, 119, .22),
+    0 0 215px rgba(34, 126, 87, .15);
+  animation: feature-glow-green-breathe 5.5s ease-in-out infinite alternate;
 }
 
 .hero-copy {
@@ -112,21 +112,23 @@
 }
 
 .feature-glow-project-header::before {
-  width: 230px;
-  height: 230px;
-  top: -150px;
-  left: -90px;
+  width: 340px;
+  height: 340px;
+  top: -225px;
+  left: -135px;
   background: rgba(223, 243, 154, .17);
-  box-shadow: 0 0 65px rgba(223, 243, 154, .10);
+  box-shadow: 0 0 92px rgba(223, 243, 154, .15);
+  animation: project-glow-lime-breathe 4.8s ease-in-out infinite alternate;
 }
 
 .feature-glow-project-header::after {
-  width: 210px;
-  height: 210px;
-  right: -100px;
-  bottom: -145px;
+  width: 320px;
+  height: 320px;
+  right: -145px;
+  bottom: -220px;
   background: rgba(49, 149, 103, .17);
-  box-shadow: 0 0 65px rgba(49, 149, 103, .10);
+  box-shadow: 0 0 92px rgba(49, 149, 103, .15);
+  animation: project-glow-green-breathe 5.8s ease-in-out infinite alternate;
 }
 
 .feature-glow-project-header > * {
@@ -264,25 +266,47 @@
 
 /* No glow is applied to tables, forms, cards, printable documents, or exports. */
 
-@keyframes feature-glow-lime-breathe {
+@keyframes project-glow-lime-breathe {
   from {
-    opacity: .68;
-    transform: scale(.94) translate(-1%, -1%);
+    opacity: .62;
+    transform: scale(.92) translate(-2%, -1%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.13) translate(4%, 2%);
+  }
+}
+
+@keyframes project-glow-green-breathe {
+  from {
+    opacity: .58;
+    transform: scale(.91) translate(2%, 3%);
   }
   to {
     opacity: .96;
-    transform: scale(1.07) translate(2%, 1%);
+    transform: scale(1.12) translate(-4%, -2%);
+  }
+}
+
+@keyframes feature-glow-lime-breathe {
+  from {
+    opacity: .68;
+    transform: scale(.88) translate(-3%, -2%);
+  }
+  to {
+    opacity: .96;
+    transform: scale(1.15) translate(5%, 3%);
   }
 }
 
 @keyframes feature-glow-green-breathe {
   from {
     opacity: .60;
-    transform: scale(.93) translate(2%, 2%);
+    transform: scale(.87) translate(4%, 4%);
   }
   to {
     opacity: .90;
-    transform: scale(1.08) translate(-2%, -1%);
+    transform: scale(1.16) translate(-5%, -3%);
   }
 }
 
@@ -293,23 +317,25 @@
   }
 
   .hero::before {
-    width: 520px;
-    height: 520px;
-    top: -310px;
-    left: -230px;
+    width: 650px;
+    height: 650px;
+    top: -405px;
+    left: -315px;
   }
 
   .hero::after {
-    width: 430px;
-    height: 430px;
-    right: -250px;
-    bottom: -280px;
+    width: 570px;
+    height: 570px;
+    right: -355px;
+    bottom: -385px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero::before,
-  .hero::after {
+  .hero::after,
+  .feature-glow-project-header::before,
+  .feature-glow-project-header::after {
     animation: none !important;
   }
 }
