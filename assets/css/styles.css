@@ -3683,7 +3683,7 @@ th { color: #42604f; background: #edf3ef; }
       position: relative;
     }
 
-    .plant-image-download {
+    button.plant-image-download {
       position: absolute;
       right: 10px;
       bottom: 10px;
@@ -3703,6 +3703,19 @@ th { color: #42604f; background: #edf3ef; }
       box-shadow: 0 7px 20px rgba(9,43,31,.18), inset 0 1px 0 rgba(255,255,255,.9);
       font-size: 9px;
       font-weight: 850;
+      cursor: pointer;
+      transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease;
+    }
+
+    button.plant-image-download:hover {
+      transform: translateY(-1px);
+      background: rgba(7, 60, 44, .96);
+      box-shadow: 0 9px 24px rgba(9,43,31,.26), inset 0 1px 0 rgba(255,255,255,.28);
+    }
+
+    button.plant-image-download:focus-visible {
+      outline: 3px solid rgba(225, 242, 132, .92);
+      outline-offset: 3px;
     }
 
     .plant-image-edit-preview {
@@ -4982,8 +4995,9 @@ th { color: #42604f; background: #edf3ef; }
       font-size: 38px !important;
       font-weight: 700 !important;
     }
-    .plant-image-download {
+    button.plant-image-download {
       color: #fff !important;
+      background: rgba(7, 60, 44, .90) !important;
     }
     .modal-close {
       width: 40px !important;
