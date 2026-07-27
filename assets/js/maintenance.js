@@ -143,11 +143,11 @@
   }
 
   function bannerMarkup() {
-    return `<div class="maintenance-readonly-banner" id="maintenanceReadonlyBanner" role="status" aria-live="polite">
-      <span aria-hidden="true">🔒</span>
-      <div><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small></div>
-      <button type="button" data-maintenance-show-startup>Details</button>
-    </div>`;
+    return `<button type="button" class="maintenance-readonly-banner feedback-launcher" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="Maintenance mode. Read-only access. Open maintenance details.">
+      <span class="maintenance-lock-icon" aria-hidden="true">🔒</span>
+      <span class="maintenance-banner-copy"><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small></span>
+      <span class="maintenance-banner-details" aria-hidden="true">Details</span>
+    </button>`;
   }
 
   function ensureStartup() {

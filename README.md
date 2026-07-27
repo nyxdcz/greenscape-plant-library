@@ -12,6 +12,27 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance and Help Control Match V6
+
+The bottom-right maintenance status now follows the same interaction and visual language as the Help control.
+
+Changes:
+
+- Converts the Maintenance Mode status into one fully clickable glass pill.
+- Uses the existing Help pill class so both controls share the same rounded glass treatment.
+- Adds a circular lock icon that matches the Help question-mark icon structure.
+- Applies the same hover lift, pressed state, keyboard focus treatment, reflection, blur, and shadow behavior.
+- Keeps the Maintenance Mode title, read-only explanation, and **Details** label.
+- Opens the maintenance details screen when any part of the maintenance pill is selected.
+- Hides both Maintenance Mode and Help while the page, a modal, or a nested work area is scrolling.
+- Restores both controls together shortly after scrolling stops.
+- Keeps both controls visible while the Help panel is open.
+- Preserves all maintenance read-only protection and browser-storage safeguards.
+- Keeps the controls aligned side by side on desktop and stacked on narrow mobile screens.
+- Changes cache-version strings for `maintenance.css`, `maintenance.js`, and `app.js`.
+- Updates `assets/css/maintenance.css`, `assets/js/maintenance.js`, `assets/js/app.js`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Maintenance Background and Button Refinement V5
 
 The maintenance startup now uses two atmospheric glowing light sources while retaining the existing dark-green read-only presentation.

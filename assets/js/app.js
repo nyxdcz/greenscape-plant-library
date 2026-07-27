@@ -4297,9 +4297,18 @@
         return launcher.getAttribute('aria-expanded') === 'true' || (panel && !panel.hidden);
       }
 
+      function floatingStatusControls() {
+        return [
+          launcher,
+          document.getElementById('maintenanceReadonlyBanner')
+        ].filter(Boolean);
+      }
+
       function revealHelp() {
         window.clearTimeout(revealTimer);
-        launcher.classList.remove('help-hidden-while-scrolling');
+        floatingStatusControls().forEach(control =>
+          control.classList.remove('help-hidden-while-scrolling')
+        );
       }
 
       function handleScrolling() {
@@ -4310,7 +4319,9 @@
           return;
         }
 
-        launcher.classList.add('help-hidden-while-scrolling');
+        floatingStatusControls().forEach(control =>
+          control.classList.add('help-hidden-while-scrolling')
+        );
         revealTimer = window.setTimeout(revealHelp, revealDelay);
       }
 
