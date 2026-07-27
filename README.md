@@ -12,13 +12,27 @@ Open the published website here:
 
 ## What's New
 
+### Dashboard Slideshow Speed Refinement V2
+
+The Dashboard hero slideshow now advances every three seconds, reduced from five seconds, so the 15 landscape photographs rotate more quickly.
+
+Changes:
+
+- Changes the automatic slide interval from `5s` to `3s`.
+- Preserves the smooth `0.9s` crossfade, progressive image preloading, responsive cropping, and feature glow.
+- Continues pausing the slideshow outside the Dashboard and while the browser tab is hidden.
+- Continues showing a static first image when reduced motion is preferred.
+- Adds automated validation for the three-second interval.
+- Refreshes the `app.js` browser cache version.
+- Updates `assets/js/app.js`, `scripts/validate.mjs`, `index.html`, and `README.md`.
+
 ### Dashboard Auto Slideshow V1
 
 The Dashboard hero now rotates through 15 supplied landscape photographs instead of displaying a single plant-record image.
 
 Changes:
 
-- Adds an automatic five-second slideshow with a smooth `0.9s` crossfade.
+- Originally added an automatic five-second slideshow with a smooth `0.9s` crossfade; V2 now uses a three-second interval.
 - Keeps the existing Dashboard hero layout, feature glow, text, and actions unchanged.
 - Uses two image layers so the current photo remains visible while the next photo loads.
 - Preloads the first image for faster initial rendering and progressively prepares later slides.

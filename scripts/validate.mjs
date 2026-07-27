@@ -73,6 +73,7 @@ for (const slide of new Set(dashboardSlides)) {
   check(exists(slide), `Missing Dashboard slideshow image: ${slide}`);
 }
 check(jsSources['assets/js/app.js'].includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'The Dashboard slideshow must respect reduced-motion preferences.');
+check(jsSources['assets/js/app.js'].includes('DASHBOARD_HERO_INTERVAL_MS = 3000'), 'The Dashboard slideshow must advance every three seconds.');
 check(styles.includes('.hero-photo.is-active'), 'The Dashboard slideshow crossfade style is required.');
 check(/rel="preload"[^>]*dashboard-slideshow\/01-david-genelhu\.jpg/i.test(html), 'The first Dashboard slideshow image must be preloaded.');
 
