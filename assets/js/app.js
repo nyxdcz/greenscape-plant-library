@@ -30,7 +30,7 @@
     'assets/images/dashboard-slideshow/14-aesthetes-id.jpg',
     'assets/images/dashboard-slideshow/15-moises-ferreira.jpg'
   ];
-  const DASHBOARD_HERO_INTERVAL_MS = 5000;
+  const DASHBOARD_HERO_INTERVAL_MS = 3000;
 
   const titleByView = {
     dashboard: 'Dashboard',
