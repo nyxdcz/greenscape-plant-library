@@ -2096,7 +2096,7 @@
     const items = project.items || [];
     const deadline = projectDeadlineInfo(project.deadline);
     content.innerHTML = `
-      <div class="detail-header">
+      <div class="detail-header feature-glow-project-header">
         <div>
           <button type="button" class="text-button project-back-button" data-action="back-projects">← All project lists</button>
           <p class="breadcrumb">Project plant list</p>

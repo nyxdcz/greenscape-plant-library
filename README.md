@@ -12,6 +12,30 @@ Open the published website here:
 
 ## What's New
 
+### Feature Glow Design System V1
+
+The maintenance-screen lighting language is now reused selectively across important feature areas without affecting data-entry clarity.
+
+Included applications:
+
+- **Dashboard hero:** animated upper-left lime glow and lower-right green glow at a softer intensity than the maintenance startup.
+- **Project Detail header:** compact static dark-green glow behind the project identity and primary actions.
+- **Quotation header:** restrained static lime and green corner glows.
+- **BOQ header:** restrained static lime and green corner glows.
+- **Costing header:** restrained static lime and green corner glows.
+- Tables, forms, plant cards, mood-board output, printable documents, and exported reports remain unchanged.
+- The Dashboard animation stops automatically for users who prefer reduced motion.
+- Print styles remove all decorative glow layers and restore clean white headers.
+- Adds `assets/css/feature-glow.css`.
+- Updates `assets/js/app.js`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
+The design system uses three levels:
+
+- **Full glow:** reserved for the maintenance startup.
+- **Feature glow:** used on the Dashboard hero.
+- **Static glow:** used on Project Detail and tool headers.
+
 ### Maintenance and Help Control Match V6
 
 The bottom-right maintenance status now follows the same interaction and visual language as the Help control.
@@ -380,6 +404,7 @@ Website design and function updates normally involve one or more of these files:
 - `assets/css/boq-enhancements.css`
 - `assets/css/project-costing.css`
 - `assets/css/maintenance.css`
+- `assets/css/feature-glow.css`
 - `assets/js/app.js`
 - `assets/js/data.js`
 - `assets/js/quotation.js`

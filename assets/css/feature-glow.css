@@ -1,0 +1,347 @@
+/* Greenscape Feature Glow Design System V1 */
+
+:root {
+  --feature-glow-deep: #073c2c;
+  --feature-glow-deep-soft: #0b4c38;
+  --feature-glow-lime: #dff39a;
+  --feature-glow-green: #319567;
+}
+
+/* Dashboard hero — animated feature glow */
+.hero {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(135deg, #073c2c 0%, #0b4c38 52%, #073c2c 100%);
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+
+.hero::before {
+  width: min(48vw, 620px);
+  height: min(48vw, 620px);
+  top: -72%;
+  left: -18%;
+  background: radial-gradient(
+    circle,
+    rgba(223, 243, 154, .46) 0%,
+    rgba(223, 243, 154, .20) 31%,
+    rgba(188, 221, 119, .08) 54%,
+    transparent 74%
+  );
+  box-shadow:
+    0 0 70px rgba(223, 243, 154, .18),
+    0 0 145px rgba(212, 238, 145, .10);
+  animation: feature-glow-lime-breathe 9s ease-in-out infinite alternate;
+}
+
+.hero::after {
+  width: min(44vw, 560px);
+  height: min(44vw, 560px);
+  right: -17%;
+  bottom: -70%;
+  background: radial-gradient(
+    circle,
+    rgba(66, 175, 124, .38) 0%,
+    rgba(49, 149, 103, .18) 34%,
+    rgba(23, 105, 74, .07) 56%,
+    transparent 75%
+  );
+  box-shadow:
+    0 0 78px rgba(62, 171, 119, .16),
+    0 0 155px rgba(34, 126, 87, .10);
+  animation: feature-glow-green-breathe 11s ease-in-out infinite alternate;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-art {
+  z-index: 1;
+}
+
+.hero-image-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7, 60, 44, .30), transparent 58%),
+    radial-gradient(circle at 86% 82%, rgba(49, 149, 103, .12), transparent 46%);
+}
+
+/* Project Detail — compact static glow */
+.feature-glow-project-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 20px 22px;
+  border: 1px solid rgba(223, 243, 154, .22);
+  border-radius: 20px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 8% 5%, rgba(223, 243, 154, .19), transparent 37%),
+    radial-gradient(circle at 94% 100%, rgba(49, 149, 103, .18), transparent 43%),
+    linear-gradient(135deg, #073c2c, #0b4c38 58%, #073c2c);
+  box-shadow:
+    0 18px 42px rgba(7, 60, 44, .16),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+.feature-glow-project-header::before,
+.feature-glow-project-header::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(18px);
+}
+
+.feature-glow-project-header::before {
+  width: 230px;
+  height: 230px;
+  top: -150px;
+  left: -90px;
+  background: rgba(223, 243, 154, .17);
+  box-shadow: 0 0 65px rgba(223, 243, 154, .10);
+}
+
+.feature-glow-project-header::after {
+  width: 210px;
+  height: 210px;
+  right: -100px;
+  bottom: -145px;
+  background: rgba(49, 149, 103, .17);
+  box-shadow: 0 0 65px rgba(49, 149, 103, .10);
+}
+
+.feature-glow-project-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.feature-glow-project-header h2 {
+  color: #ffffff;
+}
+
+.feature-glow-project-header .breadcrumb {
+  color: var(--feature-glow-lime);
+}
+
+.feature-glow-project-header .detail-subtitle {
+  color: rgba(235, 244, 239, .78);
+}
+
+.feature-glow-project-header .project-back-button,
+.feature-glow-project-header .text-button {
+  color: rgba(244, 249, 246, .88);
+}
+
+.feature-glow-project-header .button.secondary {
+  border-color: rgba(255, 255, 255, .22);
+  color: #ffffff;
+  background: rgba(255, 255, 255, .10);
+  box-shadow: none;
+}
+
+.feature-glow-project-header .button.secondary:hover {
+  background: rgba(255, 255, 255, .17);
+}
+
+.feature-glow-project-header .button.primary {
+  border-color: var(--feature-glow-lime);
+  color: #073c2c;
+  background: var(--feature-glow-lime);
+  box-shadow: 0 8px 20px rgba(0, 24, 16, .18);
+}
+
+/* Tool headers — restrained static feature glow */
+.quotation-dialog-header,
+.boq-dialog-header,
+.costing-dialog-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #ffffff;
+  border-bottom-color: rgba(223, 243, 154, .16);
+  background:
+    radial-gradient(circle at 7% 0%, rgba(223, 243, 154, .18), transparent 34%),
+    radial-gradient(circle at 94% 100%, rgba(49, 149, 103, .16), transparent 40%),
+    linear-gradient(135deg, #073c2c, #0b4c38 58%, #073c2c);
+  box-shadow: 0 10px 30px rgba(7, 60, 44, .12);
+}
+
+.quotation-dialog-header::before,
+.boq-dialog-header::before,
+.costing-dialog-header::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 260px;
+  height: 260px;
+  top: -190px;
+  left: -80px;
+  border-radius: 50%;
+  background: rgba(223, 243, 154, .14);
+  box-shadow: 0 0 72px rgba(223, 243, 154, .09);
+  filter: blur(17px);
+  pointer-events: none;
+}
+
+.quotation-dialog-header::after,
+.boq-dialog-header::after,
+.costing-dialog-header::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 230px;
+  height: 230px;
+  right: -100px;
+  bottom: -175px;
+  border-radius: 50%;
+  background: rgba(49, 149, 103, .15);
+  box-shadow: 0 0 70px rgba(49, 149, 103, .09);
+  filter: blur(17px);
+  pointer-events: none;
+}
+
+.quotation-dialog-header > *,
+.boq-dialog-header > *,
+.costing-dialog-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quotation-dialog-header h2,
+.boq-dialog-header h2,
+.costing-dialog-header h2 {
+  color: #ffffff;
+}
+
+.quotation-dialog-header p,
+.boq-dialog-header p,
+.costing-dialog-header p {
+  color: rgba(235, 244, 239, .76);
+}
+
+.quotation-dialog-kicker,
+.boq-kicker,
+.costing-dialog-header > div > span {
+  color: var(--feature-glow-lime);
+}
+
+.quotation-dialog-close,
+.boq-dialog-close,
+.costing-close {
+  border: 1px solid rgba(255, 255, 255, .19);
+  color: #ffffff;
+  background: rgba(255, 255, 255, .10);
+}
+
+.quotation-dialog-close:hover,
+.quotation-dialog-close:focus-visible,
+.boq-dialog-close:hover,
+.boq-dialog-close:focus-visible,
+.costing-close:hover,
+.costing-close:focus-visible {
+  color: #073c2c;
+  background: var(--feature-glow-lime);
+}
+
+/* No glow is applied to tables, forms, cards, printable documents, or exports. */
+
+@keyframes feature-glow-lime-breathe {
+  from {
+    opacity: .68;
+    transform: scale(.94) translate(-1%, -1%);
+  }
+  to {
+    opacity: .96;
+    transform: scale(1.07) translate(2%, 1%);
+  }
+}
+
+@keyframes feature-glow-green-breathe {
+  from {
+    opacity: .60;
+    transform: scale(.93) translate(2%, 2%);
+  }
+  to {
+    opacity: .90;
+    transform: scale(1.08) translate(-2%, -1%);
+  }
+}
+
+@media (max-width: 760px) {
+  .feature-glow-project-header {
+    padding: 18px;
+    border-radius: 17px;
+  }
+
+  .hero::before {
+    width: 520px;
+    height: 520px;
+    top: -310px;
+    left: -230px;
+  }
+
+  .hero::after {
+    width: 430px;
+    height: 430px;
+    right: -250px;
+    bottom: -280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .hero::after {
+    animation: none !important;
+  }
+}
+
+@media print {
+  .hero::before,
+  .hero::after,
+  .feature-glow-project-header::before,
+  .feature-glow-project-header::after,
+  .quotation-dialog-header::before,
+  .quotation-dialog-header::after,
+  .boq-dialog-header::before,
+  .boq-dialog-header::after,
+  .costing-dialog-header::before,
+  .costing-dialog-header::after {
+    display: none !important;
+  }
+
+  .feature-glow-project-header,
+  .quotation-dialog-header,
+  .boq-dialog-header,
+  .costing-dialog-header {
+    color: #173f31 !important;
+    border-color: #d7e2dc !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .feature-glow-project-header h2,
+  .quotation-dialog-header h2,
+  .boq-dialog-header h2,
+  .costing-dialog-header h2 {
+    color: #173f31 !important;
+  }
+}
