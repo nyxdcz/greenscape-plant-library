@@ -1,4 +1,4 @@
-/* Greenscape Maintenance Screen Design Refinement V3 */
+/* Greenscape Maintenance Controls Refinement V4 */
 
 html.maintenance-enabled {
   --maintenance-green: #073c2c;
@@ -74,15 +74,6 @@ html.maintenance-enabled {
   text-transform: uppercase;
 }
 
-.maintenance-update-label {
-  display: block;
-  margin-top: 13px;
-  color: #073c2c;
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
 
 .maintenance-startup-card h1 {
   margin: 9px 0 10px;
@@ -149,25 +140,35 @@ html.maintenance-enabled {
   cursor: pointer;
 }
 
-.maintenance-primary,
-.maintenance-primary:disabled {
+html.maintenance-enabled .maintenance-startup .maintenance-primary,
+html.maintenance-enabled .maintenance-startup .maintenance-primary:link,
+html.maintenance-enabled .maintenance-startup .maintenance-primary:visited,
+html.maintenance-enabled .maintenance-startup .maintenance-primary:disabled {
   min-width: 230px;
   border: 1px solid #073c2c !important;
   color: #ffffff !important;
-  background: #073c2c !important;
-  box-shadow: 0 10px 24px rgba(7, 60, 44, .24);
+  background-color: #073c2c !important;
+  background-image: none !important;
+  box-shadow: 0 10px 24px rgba(7, 60, 44, .28) !important;
   opacity: 1 !important;
   filter: none !important;
-  -webkit-text-fill-color: #ffffff;
+  mix-blend-mode: normal !important;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: none !important;
+  font-weight: 900;
 }
 
-.maintenance-primary:hover {
+html.maintenance-enabled .maintenance-startup .maintenance-primary:hover {
   border-color: #0a4b37 !important;
-  background: #0a4b37 !important;
+  color: #ffffff !important;
+  background-color: #0a4b37 !important;
+  background-image: none !important;
   transform: translateY(-1px);
 }
 
-.maintenance-primary:focus-visible {
+html.maintenance-enabled .maintenance-startup .maintenance-primary:focus-visible {
   outline: 3px solid #dff39a;
   outline-offset: 3px;
 }
@@ -180,23 +181,26 @@ html.maintenance-enabled {
 }
 
 .maintenance-readonly-banner {
-  position: fixed;
-  z-index: 7000;
-  top: 14px;
-  left: 50%;
+  position: static;
+  z-index: auto;
+  top: auto;
+  left: auto;
+  width: auto;
+  min-width: 250px;
+  max-width: 330px;
   display: flex;
   align-items: center;
   gap: 9px;
-  min-width: min(390px, calc(100vw - 28px));
   padding: 9px 10px 9px 13px;
   border: 1px solid rgba(11, 80, 57, .22);
-  border-radius: 16px;
+  border-radius: 999px;
   color: #174b37;
-  background: rgba(247, 250, 241, .95);
+  background: rgba(247, 250, 241, .97);
   box-shadow: 0 12px 32px rgba(12, 57, 41, .14);
-  transform: translateX(-50%);
+  transform: none;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+  pointer-events: auto;
 }
 
 .maintenance-readonly-banner div {
@@ -230,6 +234,35 @@ html.maintenance-enabled {
   font-size: 9px;
   font-weight: 850;
   cursor: pointer;
+}
+
+body.maintenance-readonly .feedback-widget {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+body.maintenance-readonly .feedback-widget > .maintenance-readonly-banner {
+  order: 1;
+}
+
+body.maintenance-readonly .feedback-widget > .feedback-launcher {
+  order: 2;
+  flex: 0 0 auto;
+}
+
+body.maintenance-readonly .feedback-widget > .feedback-panel {
+  order: 3;
+}
+
+body.maintenance-readonly .maintenance-readonly-banner button:hover {
+  border-color: #aebfb5;
+  background: #f4f7f5;
+}
+
+body.maintenance-readonly .maintenance-readonly-banner button:focus-visible {
+  outline: 3px solid #dff39a;
+  outline-offset: 2px;
 }
 
 .maintenance-readonly [data-maintenance-disabled="true"] {
@@ -292,9 +325,17 @@ body.maintenance-startup-open {
     width: 100%;
   }
 
+  body.maintenance-readonly .feedback-widget {
+    max-width: calc(100vw - 26px);
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 7px;
+  }
+
   .maintenance-readonly-banner {
-    top: 8px;
-    align-items: flex-start;
+    min-width: min(300px, calc(100vw - 26px));
+    max-width: calc(100vw - 26px);
+    align-items: center;
   }
 }
 

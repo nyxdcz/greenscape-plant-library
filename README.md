@@ -12,6 +12,25 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Controls Refinement V4
+
+The maintenance startup and read-only controls now use a cleaner, more compact layout.
+
+Changes:
+
+- Removes the duplicate **BETA — SYSTEM UPDATE IN PROGRESS** line.
+- Keeps **BETA · READ-ONLY MAINTENANCE MODE** as the only startup badge.
+- Forces the **Open read-only website** button to use a solid `#073c2c` background and readable white text in its normal, hover, focus, and disabled states.
+- Explicitly keeps the read-only startup action enabled when the maintenance details screen opens.
+- Moves the Maintenance Mode status from the top-center of the website into the existing bottom-right Help container.
+- Places the compact Maintenance Mode pill immediately to the left of Help on desktop and tablet.
+- Stacks the Maintenance Mode pill directly above Help on narrow mobile screens.
+- Keeps the **Details** action available to reopen the maintenance startup screen.
+- Preserves read-only protection, blocked data edits, protected browser storage, navigation, searching, viewing, printing, exporting, and Help.
+- Changes all maintenance cache-version strings so browsers request the revised files after deployment.
+- Updates `assets/js/maintenance.js`, `assets/css/maintenance.css`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Maintenance Screen Design Refinement V3
 
 The forced maintenance startup screen now has clearer wording, stronger branding, and a single readable action.

@@ -128,7 +128,6 @@
         <img src="assets/images/greenscape-logo.png" alt="Greenscape" width="600" height="70" decoding="async">
       </div>
       <span class="maintenance-kicker">BETA · READ-ONLY MAINTENANCE MODE</span>
-      <span class="maintenance-update-label">BETA — SYSTEM UPDATE IN PROGRESS</span>
       <h1 id="maintenanceTitle">${escapeHTML(config.title)}</h1>
       <p id="maintenanceMessage">${escapeHTML(config.message)}</p>
       <div class="maintenance-status">
@@ -169,6 +168,11 @@
     document.body.classList.add('maintenance-startup-open');
     document.querySelector('.app-shell')?.setAttribute('inert', '');
     document.getElementById('feedbackWidget')?.setAttribute('inert', '');
+    const continueButton = overlay.querySelector('[data-maintenance-continue]');
+    if (continueButton) {
+      continueButton.disabled = false;
+      continueButton.removeAttribute('aria-disabled');
+    }
     requestAnimationFrame(() => overlay.querySelector('.maintenance-startup-card')?.focus({ preventScroll: true }));
   }
 
@@ -184,11 +188,27 @@
   }
 
   function ensureBanner() {
-    if (document.getElementById('maintenanceReadonlyBanner')) return;
+    const existing = document.getElementById('maintenanceReadonlyBanner');
+    const feedbackWidget = document.getElementById('feedbackWidget');
+
+    if (existing) {
+      if (feedbackWidget && existing.parentElement !== feedbackWidget) {
+        feedbackWidget.insertBefore(existing, feedbackWidget.firstElementChild);
+      }
+      return existing;
+    }
+
     const banner = document.createElement('div');
     banner.innerHTML = bannerMarkup();
     const node = banner.firstElementChild;
-    document.body.appendChild(node);
+
+    if (feedbackWidget) {
+      feedbackWidget.insertBefore(node, feedbackWidget.firstElementChild);
+    } else {
+      document.body.appendChild(node);
+    }
+
+    return node;
   }
 
   function isAllowedField(control) {
