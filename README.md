@@ -12,6 +12,53 @@ Open the published website here:
 
 ## What's New
 
+### One-Word Scientific Name Code Rule V1
+
+Plants whose scientific name contains only a genus now receive a complete automatic code instead of retaining a legacy code.
+
+Code format:
+
+```text
+Common-name initial + genus initial + genus second letter
+```
+
+Examples:
+
+- Buho + *Schizostachyum* → `BSc`
+- Yellow Bamboo + *Schizostachyum* → `YSc`
+- Bogambilya + *Bougainvillea* → `BBo`
+- Peace Lily + *Spathiphyllum* → `PSp-01`
+- Peace Lily Silver + *Spathiphyllum* → `PSp-02`
+
+Changes:
+
+- Uses uppercase, uppercase, lowercase formatting for every generated code.
+- Keeps the existing common-name, genus, and species initials rule for scientific names containing two or more words.
+- Uses the genus second letter as the third code character when the scientific name contains only one word.
+- Marks the two `PSp` Peace Lily codes in red and gives them stable numeric suffixes.
+- Leaves plants without a scientific name unchanged and marked as incomplete.
+- Applies the same rule in the browser, Google Sheets CSV synchronization, and repository validation.
+- Preserves every permanent Record ID, image path, plant detail, project reference, mood board, quotation, BOQ, and costing record.
+
+Current migration:
+
+- 201 plants have a complete automatic botanical code.
+- 20 same-initial groups affecting 43 plants use stable numbered suffixes.
+- 23 plants without a scientific name retain their previous codes and show an amber warning.
+- All 235 published entries retain unique final codes.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+assets/js/app.js
+scripts/sync_plants_from_csv.mjs
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Plant Detail Image Download and Automatic Tags V1
 
 Plant Detail now uses one clear image-download control and generates searchable tags from the plant information already available in the website.

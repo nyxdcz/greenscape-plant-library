@@ -14,6 +14,7 @@ const check = (condition, message) => {
 const html = read('index.html');
 const styles = read('assets/css/styles.css');
 const workflow = read('.github/workflows/ci.yml');
+const syncScript = read('scripts/sync_plants_from_csv.mjs');
 const jsPaths = [
   'assets/js/app.js',
   'assets/js/data.js',
@@ -123,6 +124,8 @@ check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel
 check(jsSources['assets/js/app.js'].includes('assignBotanicalPlantCodes'), 'Automatic botanical plant-code assignment is required.');
 check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plant codes must expose their conflict state.');
 check(jsSources['assets/js/app.js'].includes('codeIncomplete'), 'Incomplete scientific names must expose a warning state.');
+check(jsSources['assets/js/app.js'].includes("scientific[0]?.[1]"), 'One-word scientific names must use the genus second letter.');
+check(syncScript.includes("scientific[0]?.[1]"), 'CSV synchronization must use the one-word genus second-letter rule.');
 check(styles.includes('.plant-code.duplicate-code'), 'Same-initial plant codes must have a red Library and Detail state.');
 check(styles.includes('.plant-code.incomplete-code'), 'Incomplete plant codes must have an amber warning state.');
 check(jsSources['assets/js/app.js'].includes('function effectivePlantTags(plant)'), 'Plant details and searches must use automatic effective tags.');
@@ -142,8 +145,10 @@ try {
       if (plant.category === 'Landscape Materials' || plant.isPlant === false) return '';
       const common = words(plant.commonName);
       const scientific = words(plant.scientificName);
-      return common[0] && scientific.length >= 2
-        ? `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`
+      if (!common[0] || !scientific[0]) return '';
+      const third = scientific[1]?.[0] || scientific[0]?.[1];
+      return third
+        ? `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${third.toLowerCase()}`
         : '';
     };
     const groups = new Map();

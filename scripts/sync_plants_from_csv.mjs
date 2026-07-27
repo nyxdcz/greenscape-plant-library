@@ -176,8 +176,10 @@ function plantWords(value) {
 function botanicalBaseCode(commonName, scientificName) {
   const common = plantWords(commonName);
   const scientific = plantWords(scientificName);
-  if (!common[0] || scientific.length < 2) return '';
-  return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`;
+  if (!common[0] || !scientific[0]) return '';
+  const third = scientific[1]?.[0] || scientific[0]?.[1];
+  if (!third) return '';
+  return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${third.toLowerCase()}`;
 }
 
 function assignBotanicalCodes(records) {

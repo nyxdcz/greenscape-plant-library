@@ -2549,7 +2549,7 @@
     const body = `<form id="plantForm" class="form-grid" novalidate>
       <input type="hidden" name="id" value="${escapeHTML(plant?.id || '')}">
       <div id="plantFormAlert" class="plant-form-alert full" role="alert" aria-live="polite"><strong>Please correct the highlighted fields.</strong><span id="plantFormAlertText"></span></div>
-      <div class="form-field" data-plant-field="code"><label for="plantCodeInput">Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="6" name="code" id="plantCodeInput" placeholder="BBm" value="${escapeHTML(startingCode)}" aria-describedby="plantCodeHelp plantCodeError"${automaticCode ? ' readonly aria-readonly="true"' : ''}><span class="code-rule-label">Automatic</span></div><span class="form-help" id="plantCodeHelp">Common-name initial + genus initial + species initial. Example: Bayog + Bambusa merrilliana = BBm. Same initials receive stable -01, -02 suffixes.</span><span class="form-error" id="plantCodeError"></span></div>
+      <div class="form-field" data-plant-field="code"><label for="plantCodeInput">Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="6" name="code" id="plantCodeInput" placeholder="BBm" value="${escapeHTML(startingCode)}" aria-describedby="plantCodeHelp plantCodeError"${automaticCode ? ' readonly aria-readonly="true"' : ''}><span class="code-rule-label">Automatic</span></div><span class="form-help" id="plantCodeHelp">Common-name initial + genus initial + species initial. For one-word scientific names, the genus second letter is used. Same initials receive stable -01, -02 suffixes.</span><span class="form-error" id="plantCodeError"></span></div>
       <div class="form-field" data-plant-field="category"><label for="plantCategory">Category *</label><select class="select-input" required name="category" id="plantCategory" aria-describedby="plantCategoryError"><option value="">Select a category</option>${categoriesList.sort().map(c => `<option value="${escapeHTML(c)}"${selectedCategory === c ? ' selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select><span class="form-error" id="plantCategoryError"></span></div>
       <div class="form-field" data-plant-field="commonName"><label for="plantCommonName">Common name *</label><input class="text-input" required name="commonName" id="plantCommonName" value="${escapeHTML(plant?.commonName || '')}" aria-describedby="plantCommonNameError"><span class="form-error" id="plantCommonNameError"></span></div>
       <div class="form-field" data-plant-field="scientificName"><label for="plantScientificName">Scientific name *</label><input class="text-input" required name="scientificName" id="plantScientificName" value="${escapeHTML(plant?.scientificName || '')}" placeholder="Genus species" aria-describedby="plantScientificNameError"><span class="form-error" id="plantScientificNameError"></span></div>
@@ -2680,8 +2680,8 @@
     const first = common[0]?.[0]?.toUpperCase();
     if (first && scientific.length >= 2) return `${first}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`;
     if (first && scientific.length === 1) {
-      const third = (common[1]?.[0] || common[0]?.[1] || 'x').toLowerCase();
-      return `${first}${scientific[0][0].toUpperCase()}${third}`;
+      const third = scientific[0]?.[1]?.toLowerCase();
+      if (third) return `${first}${scientific[0][0].toUpperCase()}${third}`;
     }
     if (first) {
       const second = (common[1]?.[0] || common[0]?.[1] || 'X').toUpperCase();
@@ -2695,8 +2695,10 @@
     if (!plant || plant.category === 'Landscape Materials' || plant.isPlant === false) return '';
     const common = plantWords(plant.commonName);
     const scientific = plantWords(plant.scientificName);
-    if (!common[0] || scientific.length < 2) return '';
-    return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`;
+    if (!common[0] || !scientific[0]) return '';
+    const third = scientific[1]?.[0] || scientific[0]?.[1];
+    if (!third) return '';
+    return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${third.toLowerCase()}`;
   }
 
   function assignBotanicalPlantCodes(records) {
@@ -2807,7 +2809,7 @@
     const incomplete = Boolean(plant.codeIncomplete);
     const title = conflict
       ? duplicateCodeTooltip(plant.code, plant.id)
-      : (incomplete ? 'A complete two-word scientific name is required before this code can be generated.' : 'Plant code');
+      : (incomplete ? 'A scientific name is required before this code can be generated.' : 'Plant code');
     const status = conflict
       ? '<span class="code-error-badge">Same initials</span>'
       : (incomplete ? '<span class="code-incomplete-badge">Name needed</span>' : '');
@@ -2985,8 +2987,9 @@
       setPlantFieldError(form, name, value ? '' : message);
       if (!value) errors.push(message);
     });
-    if (category && category !== 'Landscape Materials' && scientificName && plantWords(scientificName).length < 2) {
-      const message = 'Enter a complete scientific name with genus and species.';
+    if (category && category !== 'Landscape Materials' && scientificName &&
+      !botanicalBaseCode({ category, commonName, scientificName })) {
+      const message = 'Enter a scientific name with at least two genus letters.';
       setPlantFieldError(form, 'scientificName', message);
       errors.push(message);
     }
