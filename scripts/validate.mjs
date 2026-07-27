@@ -62,20 +62,24 @@ check(!jsSources['assets/js/app.js'].includes('.moodboard-page-toolbar > strong'
 check(jsSources['assets/js/app.js'].includes('MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024'), 'Image uploads must retain the 20 MB size limit.');
 check(jsSources['assets/js/app.js'].includes('MAX_EXCEL_FILE_BYTES = 10 * 1024 * 1024'), 'Excel imports must retain the 10 MB size limit.');
 check(/const safeText = \/\^\[\\s\]\*\[=\+\\-@\\t\\r\]\//.test(jsSources['assets/js/app.js']), 'CSV exports must guard against spreadsheet formula injection.');
-check(jsSources['assets/js/app.js'].includes('loading="${index < 5 ? \'eager\' : \'lazy\'}"'), 'Plant cards must retain responsive eager/lazy image loading.');
+check(jsSources['assets/js/app.js'].includes('loading="${index < 3 ? \'eager\' : \'lazy\'}"'), 'Only the first visible Plant Library row should load eagerly.');
 check(jsSources['assets/js/app.js'].includes('decoding="async"'), 'Rendered images should use asynchronous decoding.');
 check(jsSources['assets/js/app.js'].includes('GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_START'), 'Shared dialog keyboard support is required.');
+check(jsSources['assets/js/app.js'].includes('ensureProjectToolsLoaded()'), 'Project-only tools must use the deferred feature loader.');
+check(!/(?:quotation|boq|boq-enhancements|project-costing)\.(?:css|js)[^"]*"[^>]*(?:rel="stylesheet"|defer)/i.test(html), 'Project-only CSS and JavaScript must not block the initial page.');
 
 const dashboardSlides = [...jsSources['assets/js/app.js'].matchAll(/'(assets\/images\/dashboard-slideshow\/[^']+\.jpg)'/g)]
   .map(match => match[1]);
 check(new Set(dashboardSlides).size === 15, 'The Dashboard slideshow must contain 15 unique images.');
 for (const slide of new Set(dashboardSlides)) {
   check(exists(slide), `Missing Dashboard slideshow image: ${slide}`);
+  check(exists(slide.replace(/\.jpg$/i, '-900.jpg')), `Missing responsive Dashboard slideshow image: ${slide}`);
 }
 check(jsSources['assets/js/app.js'].includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'The Dashboard slideshow must respect reduced-motion preferences.');
 check(jsSources['assets/js/app.js'].includes('DASHBOARD_HERO_INTERVAL_MS = 3000'), 'The Dashboard slideshow must advance every three seconds.');
+check(jsSources['assets/js/app.js'].includes('DASHBOARD_HERO_SIZES'), 'The Dashboard slideshow must provide responsive image sizes.');
 check(styles.includes('.hero-photo.is-active'), 'The Dashboard slideshow crossfade style is required.');
-check(/rel="preload"[^>]*dashboard-slideshow\/01-david-genelhu\.jpg/i.test(html), 'The first Dashboard slideshow image must be preloaded.');
+check(/rel="preload"[^>]*dashboard-slideshow\/01-david-genelhu\.jpg[^>]*imagesrcset=/i.test(html), 'The first Dashboard slideshow image must have a responsive preload.');
 
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);

@@ -13,9 +13,27 @@ const html = read('index.html');
 const jsFiles = listFiles('assets/js').filter(file => file.endsWith('.js'));
 const cssFiles = listFiles('assets/css').filter(file => file.endsWith('.css'));
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/gi)];
-const stylesheets = [...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/gi)];
+const stylesheets = [...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*\bhref="([^"]+)"[^>]*>/gi)];
 const staticImages = [...html.matchAll(/<img\b[^>]*>/gi)];
 const templateImages = jsFiles.flatMap(file => [...read(file).matchAll(/<img\b[^>]*>/gi)].map(match => ({ file, tag: match[0] })));
+const localAssetPath = source => source.split('?')[0];
+const initialJsFiles = scripts.map(match => localAssetPath(match[1])).filter(file => fs.existsSync(path.join(root, file)));
+const initialCssFiles = stylesheets.map(match => localAssetPath(match[1])).filter(file => fs.existsSync(path.join(root, file)));
+const projectToolJsFiles = [
+  'assets/js/quotation.js',
+  'assets/js/boq.js',
+  'assets/js/boq-enhancements.js',
+  'assets/js/project-costing.js'
+];
+const projectToolCssFiles = [
+  'assets/css/quotation.css',
+  'assets/css/boq.css',
+  'assets/css/boq-enhancements.css',
+  'assets/css/project-costing.css'
+];
+const slideshowFiles = listFiles('assets/images/dashboard-slideshow').filter(file => file.endsWith('.jpg'));
+const responsiveSlideshowFiles = slideshowFiles.filter(file => file.endsWith('-900.jpg'));
+const desktopSlideshowFiles = slideshowFiles.filter(file => !file.endsWith('-900.jpg'));
 
 const report = {
   htmlBytes: bytes('index.html'),
@@ -26,6 +44,12 @@ const report = {
   stylesheetLinks: stylesheets.length,
   scriptTags: scripts.length,
   deferredScripts: scripts.filter(match => /\bdefer\b/i.test(match[0])).length,
+  initialCssBytes: initialCssFiles.reduce((total, file) => total + bytes(file), 0),
+  initialJsBytes: initialJsFiles.reduce((total, file) => total + bytes(file), 0),
+  deferredProjectToolCssBytes: projectToolCssFiles.reduce((total, file) => total + bytes(file), 0),
+  deferredProjectToolJsBytes: projectToolJsFiles.reduce((total, file) => total + bytes(file), 0),
+  desktopSlideshowBytes: desktopSlideshowFiles.reduce((total, file) => total + bytes(file), 0),
+  responsiveSlideshowBytes: responsiveSlideshowFiles.reduce((total, file) => total + bytes(file), 0),
   staticImages: staticImages.length,
   staticImagesMissingDimensions: staticImages.filter(match => !/\bwidth=/.test(match[0]) || !/\bheight=/.test(match[0])).length,
   templateImages: templateImages.length,
