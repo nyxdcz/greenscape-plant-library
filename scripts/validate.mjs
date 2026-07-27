@@ -12,6 +12,7 @@ const check = (condition, message) => {
 };
 
 const html = read('index.html');
+const styles = read('assets/css/styles.css');
 const jsPaths = [
   'assets/js/app.js',
   'assets/js/data.js',
@@ -64,6 +65,16 @@ check(/const safeText = \/\^\[\\s\]\*\[=\+\\-@\\t\\r\]\//.test(jsSources['assets
 check(jsSources['assets/js/app.js'].includes('loading="${index < 5 ? \'eager\' : \'lazy\'}"'), 'Plant cards must retain responsive eager/lazy image loading.');
 check(jsSources['assets/js/app.js'].includes('decoding="async"'), 'Rendered images should use asynchronous decoding.');
 check(jsSources['assets/js/app.js'].includes('GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_START'), 'Shared dialog keyboard support is required.');
+
+const dashboardSlides = [...jsSources['assets/js/app.js'].matchAll(/'(assets\/images\/dashboard-slideshow\/[^']+\.jpg)'/g)]
+  .map(match => match[1]);
+check(new Set(dashboardSlides).size === 15, 'The Dashboard slideshow must contain 15 unique images.');
+for (const slide of new Set(dashboardSlides)) {
+  check(exists(slide), `Missing Dashboard slideshow image: ${slide}`);
+}
+check(jsSources['assets/js/app.js'].includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'The Dashboard slideshow must respect reduced-motion preferences.');
+check(styles.includes('.hero-photo.is-active'), 'The Dashboard slideshow crossfade style is required.');
+check(/rel="preload"[^>]*dashboard-slideshow\/01-david-genelhu\.jpg/i.test(html), 'The first Dashboard slideshow image must be preloaded.');
 
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
