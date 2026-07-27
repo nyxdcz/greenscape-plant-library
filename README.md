@@ -12,6 +12,28 @@ Open the published website here:
 
 ## What's New
 
+### Malakatmon Plant Identifier Fix V1
+
+The newly uploaded Malakatmon record now uses its own stable identifier instead of duplicating the existing Katmon record.
+
+Changes:
+
+- Keeps Katmon as `tre-010` / `TRE-010`.
+- Assigns Malakatmon the next available identifier, `tre-028` / `TRE-028`.
+- Preserves the supplied Malakatmon name, scientific name, sizes, category, and `assets/images/malakatmon.jpg` image.
+- Regenerates `assets/js/data.js` from the corrected Google Sheets-compatible CSV.
+- Refreshes the generated plant-data cache version in `index.html`.
+- Restores the Plant CSV synchronization and Website Checks workflows.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+index.html
+README.md
+```
+
 ### Repository Quality Review V2
 
 This focused review improves initial loading, responsive interaction, accessibility, validation, and CI safety without changing the website architecture, stored browser data, maintenance protection, or visual direction.
@@ -29,7 +51,7 @@ Measured static results:
 
 | Metric | Before | After | Change |
 |---|---:|---:|---:|
-| Initial JavaScript | 578,455 bytes | 427,756 bytes | −150,699 bytes (−26.1%) |
+| Initial JavaScript | 578,455 bytes | 428,427 bytes | −150,028 bytes (−25.9%) |
 | Initial CSS | 247,197 bytes | 214,773 bytes | −32,424 bytes (−13.1%) |
 | Slideshow source set selected on smaller screens | 9,971,436 bytes | 2,991,601 bytes | −6,979,835 bytes (−70.0%) |
 | Initial script tags | 9 | 5 | −4 |
