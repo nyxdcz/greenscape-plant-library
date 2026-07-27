@@ -12,6 +12,28 @@ Open the published website here:
 
 ## What's New
 
+### Malakatmon Plant Record Update V1
+
+The Malakatmon plant record now includes searchable identification tags while preserving its stable project references and supplied photograph.
+
+Changes:
+
+- Keeps Malakatmon as `tre-028` / `TRE-028`.
+- Keeps the common name **Malakatmon**, scientific name *Dillenia luzoniensis*, and canonical **Trees** category.
+- Adds the searchable tags `Dillenia`, `tree`, and `yellow flower`.
+- Preserves the supplied `assets/images/malakatmon.jpg` photograph without unnecessary recompression.
+- Uses the existing automatic **Google AI Overview** reference generated from the common and scientific names; no external summary text is copied into the repository.
+- Regenerates `assets/js/data.js` from the Google Sheets-compatible CSV and refreshes its cache version in `index.html`.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+index.html
+README.md
+```
+
 ### Malakatmon Plant Identifier Fix V1
 
 The newly uploaded Malakatmon record now uses its own stable identifier instead of duplicating the existing Katmon record.
