@@ -12,6 +12,35 @@ Open the published website here:
 
 ## What's New
 
+### Plant Detail Tags and Overview Planting Notes V1
+
+Plant tags now stay inside **View Details**, keeping Plant Library cards compact, and verified overview descriptions can supply a concise planting-note fallback.
+
+Changes:
+
+- Removes tag chips from Plant Library cards without removing tag data.
+- Keeps automatic and manual tags searchable and visible in Plant Detail.
+- Adds an **Overview Description** field to the plant form, Plant List Editor, Excel workflow, and Google Sheets CSV source.
+- Uses the first complete sentence of **Overview Description** as the automatic planting note when the manual **Planting Notes** field is empty.
+- Always gives a manually written planting note priority over the automatic overview sentence.
+- Uses the same effective planting note in Plant Detail, project plant defaults, project schedules, and CSV exports.
+- Keeps the Google AI Overview link as a research shortcut only. The website does not scrape Google, invent descriptions, or copy generated text automatically.
+- Leaves existing overview descriptions blank until verified text is entered through the editor or `data/Greenscape_Plant_Library.csv`.
+- Removes the unused Plant Library tag-badge CSS and refreshes the affected browser caches.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+assets/js/app.js
+assets/css/styles.css
+scripts/sync_plants_from_csv.mjs
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### One-Word Scientific Name Code Rule V1
 
 Plants whose scientific name contains only a genus now receive a complete automatic code instead of retaining a legacy code.

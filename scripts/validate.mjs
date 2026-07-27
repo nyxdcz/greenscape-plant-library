@@ -129,9 +129,39 @@ check(syncScript.includes("scientific[0]?.[1]"), 'CSV synchronization must use t
 check(styles.includes('.plant-code.duplicate-code'), 'Same-initial plant codes must have a red Library and Detail state.');
 check(styles.includes('.plant-code.incomplete-code'), 'Incomplete plant codes must have an amber warning state.');
 check(jsSources['assets/js/app.js'].includes('function effectivePlantTags(plant)'), 'Plant details and searches must use automatic effective tags.');
+check(jsSources['assets/js/app.js'].includes('function firstDescriptionSentence(value)'), 'Overview descriptions must support first-sentence extraction.');
+check(jsSources['assets/js/app.js'].includes('function effectivePlantingNotes(plant)'), 'Planting notes must use the overview fallback helper.');
+check(jsSources['assets/js/app.js'].includes('manualNotes || firstDescriptionSentence(plant?.overviewDescription)'), 'Manual planting notes must take priority over an overview description.');
+check(!jsSources['assets/js/app.js'].includes('class="plant-badges"'), 'Plant Library cards must not render tag badges.');
+check(jsSources['assets/js/app.js'].includes('class="detail-tags"'), 'Automatic tags must remain visible in Plant Detail.');
+check(!styles.includes('.plant-badge'), 'Unused Plant Library badge styling should be removed.');
+check(syncScript.includes("'Overview Description'"), 'The Google Sheets CSV must include the Overview Description column.');
 check(jsSources['assets/js/app.js'].includes("button.dataset.action = 'download-plant-image'"), 'The photograph overlay must remain the image-download control.');
 check(!jsSources['assets/js/app.js'].includes('data-action="download-plant-image"'), 'Plant Detail must not render a duplicate image-download button in the modal footer.');
 check(styles.includes('background: rgba(7, 60, 44, .90) !important;'), 'The photograph download control must retain a readable high-contrast background.');
+
+try {
+  const helperSource = jsSources['assets/js/app.js'].match(
+    /  function firstDescriptionSentence\(value\) \{[\s\S]*?\n  \}\n\n  function effectivePlantingNotes\(plant\) \{[\s\S]*?\n  \}/
+  )?.[0];
+  check(Boolean(helperSource), 'The planting-note helper functions must remain testable.');
+  if (helperSource) {
+    const sandbox = {};
+    vm.runInNewContext(`${helperSource}
+      result = {
+        first: firstDescriptionSentence('First verified sentence. Second sentence.'),
+        manual: effectivePlantingNotes({ plantingNotes: 'Manual instruction.', overviewDescription: 'Overview fallback.' }),
+        fallback: effectivePlantingNotes({ plantingNotes: '', overviewDescription: 'Overview fallback. More detail.' }),
+        unpunctuated: effectivePlantingNotes({ overviewDescription: 'Short verified description' })
+      };`, sandbox, { filename: 'planting-note-helpers.js' });
+    check(sandbox.result.first === 'First verified sentence.', 'Overview planting notes must use only the first complete sentence.');
+    check(sandbox.result.manual === 'Manual instruction.', 'Manual planting notes must override the overview fallback.');
+    check(sandbox.result.fallback === 'Overview fallback.', 'An empty manual note must use the overview sentence.');
+    check(sandbox.result.unpunctuated === 'Short verified description', 'A short unpunctuated overview must remain usable.');
+  }
+} catch (error) {
+  failures.push(`Overview planting-note validation failed: ${error.message}`);
+}
 
 try {
   const sandbox = { window: {} };
@@ -140,6 +170,7 @@ try {
   check(Array.isArray(plantData), 'Published plant data must be an array.');
 
   if (Array.isArray(plantData)) {
+    check(plantData.every(plant => Object.hasOwn(plant, 'overviewDescription')), 'Every published record must include an Overview Description field.');
     const words = value => String(value || '').match(/[A-Za-z]+/g) || [];
     const baseCode = plant => {
       if (plant.category === 'Landscape Materials' || plant.isPlant === false) return '';

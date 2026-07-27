@@ -133,6 +133,8 @@
         ...plant,
         code: normalizedCode || generatedCode,
         codeManual: Boolean(normalizedCode || plant.codeManual),
+        overviewDescription: String(plant.overviewDescription || ''),
+        plantingNotes: String(plant.plantingNotes || ''),
         sizes: (Array.isArray(plant.sizes) ? plant.sizes : []).map(({ price, stock, ...size }) => ({ ...size }))
       };
     });
@@ -578,7 +580,16 @@
       const matchesCategory = state.libraryCategory === 'All' || plant.category === state.libraryCategory;
       if (!matchesCategory) return false;
       if (!q) return true;
-      const haystack = [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, ...effectivePlantTags(plant)].join(' ').toLowerCase();
+      const haystack = [
+        plant.code,
+        plant.commonName,
+        plant.scientificName,
+        plant.category,
+        plant.material,
+        plant.overviewDescription,
+        effectivePlantingNotes(plant),
+        ...effectivePlantTags(plant)
+      ].join(' ').toLowerCase();
       return haystack.includes(q);
     });
   }
@@ -623,7 +634,6 @@
 
   function plantCard(plant, index = 0) {
     const image = safeImage(plant.image);
-    const badges = plantBadgeValues(plant);
     const sizeCount = (plant.sizes || []).length;
     return `
       <article class="plant-card">
@@ -635,7 +645,6 @@
           ${plantCodeMarkup(plant)}
           <h2>${escapeHTML(plant.commonName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
-          ${badges.length ? `<div class="plant-badges">${badges.map(value => `<span class="plant-badge">${escapeHTML(value)}</span>`).join('')}</div>` : ''}
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
             <button type="button" class="button secondary small" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
@@ -652,7 +661,7 @@
     return plants.filter(plant => {
       if (state.sheetCategory !== 'All' && plant.category !== state.sheetCategory) return false;
       if (!q) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, plant.sun, plant.water, plant.spacing, plant.landscapeUse, plant.growingCondition, plant.plantingNotes, plant.link, ...effectivePlantTags(plant)]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, plant.sun, plant.water, plant.spacing, plant.landscapeUse, plant.growingCondition, plant.overviewDescription, effectivePlantingNotes(plant), plant.link, ...effectivePlantTags(plant)]
         .join(' ').toLowerCase().includes(q);
     });
   }
@@ -678,7 +687,7 @@
   const EXCEL_HEADERS = [
     'Record ID', 'Code', 'Common Name', 'Scientific Name', 'Category',
     'Available Sizes', 'Sun', 'Water', 'Spacing', 'Mature Height',
-    'Mature Spread', 'Landscape Use', 'Growing Condition', 'Planting Notes',
+    'Mature Spread', 'Landscape Use', 'Growing Condition', 'Overview Description', 'Planting Notes',
     'Tags', 'Photo', 'Link'
   ];
 
@@ -719,6 +728,7 @@
         plant.matureSpread || '',
         plant.landscapeUse || '',
         plant.growingCondition || '',
+        plant.overviewDescription || '',
         plant.plantingNotes || '',
         effectivePlantTags(plant).join(', '),
         plant.image ? 'Yes' : 'No',
@@ -739,7 +749,7 @@
       return `<row r="${rowIndex + 1}"${rowIndex === 0 ? ' ht="28" customHeight="1"' : ''}>${cells}</row>`;
     }).join('');
     const lastCell = `${excelColumnName(EXCEL_HEADERS.length - 1)}${Math.max(1, allRows.length)}`;
-    const widths = [18, 10, 27, 28, 25, 30, 16, 16, 16, 18, 18, 28, 34, 38, 24, 10, 28];
+    const widths = [18, 10, 27, 28, 25, 30, 16, 16, 16, 18, 18, 28, 34, 38, 38, 24, 10, 28];
     const columns = widths.map((width, index) => `<col min="${index + 1}" max="${index + 1}" width="${width}" customWidth="1"/>`).join('');
     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -1030,6 +1040,7 @@
         matureSpread: excelValue(data, ['Mature Spread', 'Spread']),
         landscapeUse: excelValue(data, ['Landscape Use', 'Use']),
         growingCondition: excelValue(data, ['Growing Condition', 'Growing Conditions']),
+        overviewDescription: excelValue(data, ['Overview Description', 'Description', 'Overview']),
         plantingNotes: excelValue(data, ['Planting Notes', 'Notes']),
         tags: excelValue(data, ['Tags']).split(/[,;]/).map(value => value.trim()).filter(Boolean),
         image: existing?.image || '',
@@ -1094,6 +1105,7 @@
     matureSpread: 'Mature spread',
     landscapeUse: 'Landscape use',
     growingCondition: 'Growing condition',
+    overviewDescription: 'Overview description',
     plantingNotes: 'Planting notes',
     tags: 'Tags',
     link: 'Reference'
@@ -1325,12 +1337,13 @@
             <th scope="col" class="sheet-short-col">Mature spread</th>
             <th scope="col" class="sheet-medium-col">Landscape use</th>
             <th scope="col" class="sheet-long-col">Growing condition</th>
+            <th scope="col" class="sheet-long-col">Overview description</th>
             <th scope="col" class="sheet-long-col">Planting notes</th>
             <th scope="col" class="sheet-medium-col">Tags</th>
             <th scope="col" class="sheet-medium-col">Reference</th>
             <th scope="col" class="sheet-actions-col">Action</th>
           </tr></thead>
-          <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="17"><div class="sheet-empty-category">No plants in this category yet. <button type="button" class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add plant</button></div></td></tr>`}</tbody>
+          <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="18"><div class="sheet-empty-category">No plants in this category yet. <button type="button" class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add plant</button></div></td></tr>`}</tbody>
         </table>
       </div>
     </details>`;
@@ -1357,6 +1370,7 @@
       <td>${sheetField(plant, 'matureSpread', plant.matureSpread)}</td>
       <td>${sheetTextarea(plant, 'landscapeUse', plant.landscapeUse)}</td>
       <td>${sheetTextarea(plant, 'growingCondition', plant.growingCondition)}</td>
+      <td>${sheetTextarea(plant, 'overviewDescription', plant.overviewDescription)}</td>
       <td>${sheetTextarea(plant, 'plantingNotes', plant.plantingNotes)}</td>
       <td>${sheetTextarea(plant, 'tags', (plant.tags || []).join(', '))}</td>
       <td>${sheetLinkField(plant)}</td>
@@ -1528,7 +1542,7 @@
     return plants.filter(plant => {
       if (state.moodboardCategory !== 'All' && plant.category !== state.moodboardCategory) return false;
       if (!query) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...effectivePlantTags(plant)]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.overviewDescription, effectivePlantingNotes(plant), ...effectivePlantTags(plant)]
         .join(' ').toLowerCase().includes(query);
     });
   }
@@ -2331,7 +2345,7 @@
             <td>${escapeHTML(item.unit || 'pc/s')}</td>
             <td>${escapeHTML(item.zone || '—')}</td>
             <td>${escapeHTML(item.spacing || '—')}</td>
-            <td>${escapeHTML(item.notes || plant?.plantingNotes || '—')}</td>
+            <td>${escapeHTML(item.notes || effectivePlantingNotes(plant) || '—')}</td>
             ${scheduleMode ? '' : `<td class="no-print"><div class="row-actions"><button type="button" class="icon-button" title="Edit" data-action="edit-project-item" data-project-id="${escapeHTML(project.id)}" data-item-id="${escapeHTML(item.id)}">✎</button><button type="button" class="icon-button" title="Remove" data-action="remove-project-item" data-project-id="${escapeHTML(project.id)}" data-item-id="${escapeHTML(item.id)}">×</button></div></td>`}
           </tr>`;
         }).join('')}</tbody>
@@ -2398,6 +2412,7 @@
     const sizes = plant.sizes || [];
     const link = safeLink(plant.link);
     const tags = effectivePlantTags(plant);
+    const plantingNotes = effectivePlantingNotes(plant);
     const body = `
       <div class="plant-detail-grid">
         <div class="detail-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="900" height="900" decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
@@ -2408,7 +2423,7 @@
           <div class="detail-content-stack">
             <section class="detail-panel">
               <span class="detail-panel-label">Planting notes</span>
-              ${plant.plantingNotes ? `<p>${escapeHTML(plant.plantingNotes)}</p>` : `<span class="detail-empty">No planting notes added.</span>`}
+              ${plantingNotes ? `<p>${escapeHTML(plantingNotes)}</p>` : `<span class="detail-empty">No planting notes added.</span>`}
             </section>
             <section class="detail-panel">
               <span class="detail-panel-label">Tags</span>
@@ -2559,7 +2574,8 @@
       <div class="form-field"><label>Mature height</label><input class="text-input" name="matureHeight" value="${escapeHTML(plant?.matureHeight || '')}"></div>
       <div class="form-field"><label>Mature spread</label><input class="text-input" name="matureSpread" value="${escapeHTML(plant?.matureSpread || '')}"></div>
       <div class="form-field full"><label>Growing condition</label><input class="text-input" name="growingCondition" placeholder="Coastal, well-drained soil, sheltered shade" value="${escapeHTML(plant?.growingCondition || '')}"></div>
-      <div class="form-field full"><label>Planting notes</label><textarea name="plantingNotes">${escapeHTML(plant?.plantingNotes || '')}</textarea></div>
+      <div class="form-field full"><label>Overview description</label><textarea name="overviewDescription" placeholder="Add a verified plant overview description.">${escapeHTML(plant?.overviewDescription || '')}</textarea><span class="form-help">When manual planting notes are empty, the first sentence becomes the automatic planting note.</span></div>
+      <div class="form-field full"><label>Planting notes</label><textarea name="plantingNotes">${escapeHTML(plant?.plantingNotes || '')}</textarea><span class="form-help">Manual planting notes take priority over the automatic overview sentence.</span></div>
       <div class="form-field full"><label>Tags</label><input class="text-input" name="tags" placeholder="Add manual tags separated by commas" value="${escapeHTML((plant?.tags || []).join(', '))}"><span class="form-help">Common name, scientific name, category, and available overview fields are added automatically. You can also add manual tags.</span></div>
       <div class="form-field"><label>Link</label><input class="text-input" type="url" name="link" placeholder="Optional website or reference link" value="${escapeHTML(plant?.link || (plant?.image && /^https?:/i.test(plant.image) ? plant.image : ''))}"><span class="form-help">This link appears as a clickable reference in plant details.</span></div>
       <div class="form-field"><label>Upload image</label><input class="text-input" style="padding:8px;" name="imageFile" type="file" accept="image/*"><span class="form-help">Uploaded images are resized before saving.</span></div>
@@ -2630,6 +2646,7 @@
       matureSpread: String(fd.get('matureSpread') || '').trim(),
       landscapeUse: existing?.landscapeUse || '',
       growingCondition: String(fd.get('growingCondition') || '').trim(),
+      overviewDescription: String(fd.get('overviewDescription') || '').trim(),
       plantingNotes: String(fd.get('plantingNotes') || '').trim(),
       tags: String(fd.get('tags') || '').split(',').map(v => v.trim()).filter(Boolean),
       link,
@@ -2816,13 +2833,16 @@
     return `<div class="plant-code-row" title="${escapeHTML(title)}"><span class="plant-code${conflict ? ' duplicate-code' : ''}${incomplete ? ' incomplete-code' : ''}">${escapeHTML(plant.code)}</span>${status}</div>`;
   }
 
-  function plantBadgeValues(plant) {
-    const values = [plant.sun, plant.water, ...(plant.tags || [])]
-      .map(value => String(value || '').trim())
-      .filter(Boolean);
-    return [...new Set(values.map(value => value.toLowerCase()))]
-      .map(key => values.find(value => value.toLowerCase() === key))
-      .slice(0, 3);
+  function firstDescriptionSentence(value) {
+    const description = String(value || '').replace(/\s+/g, ' ').trim();
+    if (!description) return '';
+    const match = description.match(/^.*?[.!?](?=\s|$)/);
+    return (match?.[0] || description).trim();
+  }
+
+  function effectivePlantingNotes(plant) {
+    const manualNotes = String(plant?.plantingNotes || '').trim();
+    return manualNotes || firstDescriptionSentence(plant?.overviewDescription);
   }
 
   function uniquePlantTags(values) {
@@ -3145,7 +3165,7 @@
     return plants.filter(plant => {
       if (category !== 'All' && plant.category !== category) return false;
       if (!query) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...effectivePlantTags(plant)]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.overviewDescription, effectivePlantingNotes(plant), ...effectivePlantTags(plant)]
         .join(' ')
         .toLowerCase()
         .includes(query);
@@ -3192,7 +3212,7 @@
       <div class="form-field"><label>Planting zone / sector</label><input class="text-input" name="zone" value="${escapeHTML(editingItem?.zone || '')}" placeholder="e.g. Main Entrance"></div>
       <div class="form-field"><label>Spacing</label><input class="text-input" name="spacing" id="addSpacing" value="${escapeHTML(editingItem?.spacing || selectedPlant?.spacing || '')}" placeholder="e.g. 1.5 m O.C."></div>
       <div class="form-field full"><label>BOQ reference material price (PHP / unit)</label><input class="number-input" min="0" step="0.01" type="number" name="referencePrice" id="addReferencePrice" value="${escapeHTML(initialReferencePrice)}" placeholder="0.00"><span class="form-help">This becomes the starting material unit cost when a BOQ is created or reset from the Project List. It can still be edited inside the BOQ.</span></div>
-      <div class="form-field full"><label>Project planting notes</label><textarea name="notes" id="addProjectPlantNotes" placeholder="Project-specific planting instruction">${escapeHTML(editingItem?.notes || selectedPlant?.plantingNotes || '')}</textarea></div>
+      <div class="form-field full"><label>Project planting notes</label><textarea name="notes" id="addProjectPlantNotes" placeholder="Project-specific planting instruction">${escapeHTML(editingItem?.notes || effectivePlantingNotes(selectedPlant) || '')}</textarea></div>
     </form>`;
     openModal(editingItem ? 'Edit project plant' : 'Add plant to project', selectedPlant ? `${selectedPlant.commonName} · ${selectedPlant.scientificName || selectedPlant.category}` : '', body,
       `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="addToProjectForm">${editingItem ? 'Save changes' : 'Add to project'}</button>`, true);
@@ -3249,7 +3269,7 @@
     const spacing = document.getElementById('addSpacing');
     const notes = document.getElementById('addProjectPlantNotes');
     if (spacing) spacing.value = plant?.spacing || '';
-    if (notes) notes.value = plant?.plantingNotes || '';
+    if (notes) notes.value = effectivePlantingNotes(plant);
     if (resetReferencePrice) {
       const price = document.getElementById('addReferencePrice');
       if (price) price.value = projectSizeReferencePrice(sizes[0]);
@@ -3370,7 +3390,7 @@
     const headers = ['Code','Common Name','Scientific Name','Category','Size','Quantity','Unit','Zone/Sector','Spacing','BOQ Reference Price','Planting Notes'];
     const rows = (project.items || []).map(item => {
       const plant = getPlant(item.plantId) || {};
-      return [plant.code || item.plantCode, plant.commonName || item.commonName, plant.scientificName || item.scientificName, plant.category || '', item.sizeLabel, item.quantity, item.unit, item.zone, item.spacing, item.referencePrice || 0, item.notes || plant.plantingNotes || ''];
+      return [plant.code || item.plantCode, plant.commonName || item.commonName, plant.scientificName || item.scientificName, plant.category || '', item.sizeLabel, item.quantity, item.unit, item.zone, item.spacing, item.referencePrice || 0, item.notes || effectivePlantingNotes(plant) || ''];
     });
     const csv = [headers, ...rows].map(row => row.map(csvCell).join(',')).join('\r\n');
     downloadBlob(`\ufeff${csv}`, `${slug(project.name)}-plant-schedule.csv`, 'text/csv;charset=utf-8');
@@ -4517,6 +4537,7 @@
         matureHeight: 'optional',
         matureSpread: 'optional',
         growingCondition: 'optional',
+        overviewDescription: 'optional',
         plantingNotes: 'optional',
         tags: 'automatic',
         imageFile: 'optional',
@@ -4660,6 +4681,7 @@
         );
         move(notes.grid, [
           fieldByName(form, 'tags'),
+          fieldByName(form, 'overviewDescription'),
           fieldByName(form, 'plantingNotes')
         ]);
 

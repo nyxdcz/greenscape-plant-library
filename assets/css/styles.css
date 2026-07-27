@@ -406,20 +406,6 @@ tbody tr:hover { background: #fcfcf9; }
   letter-spacing: .06em;
   text-transform: uppercase;
 }
-.plant-badges { display: flex; flex-wrap: wrap; gap: 5px; min-height: 20px; margin-top: 10px; }
-.plant-badge {
-  max-width: 100%;
-  padding: 3px 7px;
-  overflow: hidden;
-  border-radius: 99px;
-  color: var(--forest-800);
-  background: var(--forest-100);
-  font-size: 8px;
-  font-weight: 750;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .code-input-wrap { position: relative; }
 .code-input-wrap .text-input { padding-right: 86px; }
 .code-rule-label {
@@ -747,7 +733,6 @@ h1 {
 .plant-card h2 { margin-top: 7px; color: var(--ink); font-size: 17px; letter-spacing: -.015em; }
 .scientific { color: #718178; font-family: Georgia, "Times New Roman", serif; }
 .plant-meta { margin-top: 14px; border-top-color: #e8eee9; }
-.plant-badge { color: #315b45; background: #e8f1eb; }
 
 .project-card, .summary-box, .table-wrap, .modal { border-color: transparent; box-shadow: var(--soft-shadow); }
 .project-card { border: 0; border-radius: 22px; }
@@ -2963,17 +2948,6 @@ th { color: #42604f; background: #edf3ef; }
         font-size: 8px !important;
       }
 
-      #plantGrid .plant-badges {
-        gap: 3px !important;
-        min-height: 16px !important;
-        margin-top: 6px !important;
-      }
-
-      #plantGrid .plant-badge {
-        padding: 2px 5px !important;
-        font-size: 6.8px !important;
-      }
-
       #plantGrid .plant-card-actions {
         margin-top: 8px !important;
       }
@@ -3023,8 +2997,7 @@ th { color: #42604f; background: #edf3ef; }
       }
 
       #plantGrid .plant-code,
-      #plantGrid .plant-meta,
-      #plantGrid .plant-badge {
+      #plantGrid .plant-meta {
         font-size: 7px !important;
       }
 
