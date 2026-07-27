@@ -578,7 +578,7 @@
       const matchesCategory = state.libraryCategory === 'All' || plant.category === state.libraryCategory;
       if (!matchesCategory) return false;
       if (!q) return true;
-      const haystack = [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, ...(plant.tags || [])].join(' ').toLowerCase();
+      const haystack = [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, ...effectivePlantTags(plant)].join(' ').toLowerCase();
       return haystack.includes(q);
     });
   }
@@ -652,7 +652,7 @@
     return plants.filter(plant => {
       if (state.sheetCategory !== 'All' && plant.category !== state.sheetCategory) return false;
       if (!q) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, plant.sun, plant.water, plant.spacing, plant.landscapeUse, plant.growingCondition, plant.plantingNotes, plant.link, ...(plant.tags || [])]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, plant.material, plant.sun, plant.water, plant.spacing, plant.landscapeUse, plant.growingCondition, plant.plantingNotes, plant.link, ...effectivePlantTags(plant)]
         .join(' ').toLowerCase().includes(q);
     });
   }
@@ -720,7 +720,7 @@
         plant.landscapeUse || '',
         plant.growingCondition || '',
         plant.plantingNotes || '',
-        (plant.tags || []).join(', '),
+        effectivePlantTags(plant).join(', '),
         plant.image ? 'Yes' : 'No',
         plant.link || (/^https?:\/\//i.test(String(plant.image || '')) ? plant.image : '')
       ]);
@@ -1403,6 +1403,7 @@
     if (!plant || !field) return false;
     setSheetSaveStatus('Saving…', 'saving');
     const rawValue = String(input.value || '').trim();
+    const previousAutomaticTags = automaticPlantTags(plant);
 
     if (field === 'code') {
       const code = normalizePlantCode(rawValue);
@@ -1420,12 +1421,11 @@
       plant.sizes = parseSheetSizes(rawValue);
     } else if (field === 'tags') {
       plant.tags = rawValue.split(',').map(value => value.trim()).filter(Boolean);
-      syncPlantCareTags(plant, [plant.sun, plant.water]);
+      syncPlantCareTags(plant, previousAutomaticTags);
     } else {
-      const previousCareTags = [plant.sun, plant.water];
       plant[field] = rawValue;
-      if (field === 'sun' || field === 'water') {
-        syncPlantCareTags(plant, previousCareTags);
+      if (['commonName', 'scientificName', 'category', 'sun', 'water', 'growingCondition'].includes(field)) {
+        syncPlantCareTags(plant, previousAutomaticTags);
         const tagsInput = document.querySelector(`[data-sheet-field="tags"][data-plant-id="${CSS.escape(plant.id)}"]`);
         if (tagsInput) tagsInput.value = (plant.tags || []).join(', ');
       }
@@ -1528,7 +1528,7 @@
     return plants.filter(plant => {
       if (state.moodboardCategory !== 'All' && plant.category !== state.moodboardCategory) return false;
       if (!query) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...(plant.tags || [])]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...effectivePlantTags(plant)]
         .join(' ').toLowerCase().includes(query);
     });
   }
@@ -2397,7 +2397,7 @@
     const image = safeImage(plant.image);
     const sizes = plant.sizes || [];
     const link = safeLink(plant.link);
-    const tags = Array.isArray(plant.tags) ? plant.tags.filter(Boolean) : [];
+    const tags = effectivePlantTags(plant);
     const body = `
       <div class="plant-detail-grid">
         <div class="detail-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="900" height="900" decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
@@ -2432,7 +2432,7 @@
       </details>
     `;
     openModal(plant.commonName, '', body,
-      `${image ? `<button type="button" class="button secondary" data-action="download-plant-image" data-plant-id="${escapeHTML(plant.id)}">Download image</button>` : ''}<button type="button" class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button type="button" class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
+      `<button type="button" class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button type="button" class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
     document.querySelector('#modalRoot .modal')?.classList.add('plant-detail-modal');
   }
 
@@ -2560,7 +2560,7 @@
       <div class="form-field"><label>Mature spread</label><input class="text-input" name="matureSpread" value="${escapeHTML(plant?.matureSpread || '')}"></div>
       <div class="form-field full"><label>Growing condition</label><input class="text-input" name="growingCondition" placeholder="Coastal, well-drained soil, sheltered shade" value="${escapeHTML(plant?.growingCondition || '')}"></div>
       <div class="form-field full"><label>Planting notes</label><textarea name="plantingNotes">${escapeHTML(plant?.plantingNotes || '')}</textarea></div>
-      <div class="form-field full"><label>Tags</label><input class="text-input" name="tags" placeholder="Add manual tags separated by commas" value="${escapeHTML((plant?.tags || []).join(', '))}"><span class="form-help">Sun and water requirements are added automatically. You can also add manual tags.</span></div>
+      <div class="form-field full"><label>Tags</label><input class="text-input" name="tags" placeholder="Add manual tags separated by commas" value="${escapeHTML((plant?.tags || []).join(', '))}"><span class="form-help">Common name, scientific name, category, and available overview fields are added automatically. You can also add manual tags.</span></div>
       <div class="form-field"><label>Link</label><input class="text-input" type="url" name="link" placeholder="Optional website or reference link" value="${escapeHTML(plant?.link || (plant?.image && /^https?:/i.test(plant.image) ? plant.image : ''))}"><span class="form-help">This link appears as a clickable reference in plant details.</span></div>
       <div class="form-field"><label>Upload image</label><input class="text-input" style="padding:8px;" name="imageFile" type="file" accept="image/*"><span class="form-help">Uploaded images are resized before saving.</span></div>
       <div class="form-section"><h3>Available sizes</h3><p>Add one row for each nursery size.</p><div id="sizeEditor" class="size-editor">${(plant?.sizes?.length ? plant.sizes : [{}]).map(sizeRow).join('')}</div><button type="button" class="button ghost small" style="margin-top:9px;" data-action="add-size-row">+ Add size</button></div>
@@ -2833,29 +2833,90 @@
     });
   }
 
-  function syncPlantCareTags(plant, previousCareTags) {
-    const previous = new Set((previousCareTags || []).map(value => String(value || '').trim().toLowerCase()).filter(Boolean));
+  function categoryTagValues(category) {
+    const full = String(category || '').trim();
+    if (!full) return [];
+    const singular = value => {
+      const text = String(value || '').trim();
+      if (/ies$/i.test(text)) return `${text.slice(0, -3)}y`;
+      if (/s$/i.test(text) && !/ss$/i.test(text)) return text.slice(0, -1);
+      return text;
+    };
+    return uniquePlantTags([
+      full,
+      ...full.split(/[&,/]+/).map(part => singular(part))
+    ]);
+  }
+
+  function overviewTagValues(plant) {
+    return uniquePlantTags([
+      plant.sun,
+      plant.water,
+      plant.landscapeUse,
+      plant.growingCondition
+    ].flatMap(value => String(value || '').split(/[,;/|]+/)))
+      .filter(value => value.length <= 48)
+      .slice(0, 6);
+  }
+
+  function automaticPlantTags(plant) {
+    const commonName = String(plant?.commonName || '').trim();
+    const scientificName = String(plant?.scientificName || plant?.material || '').trim();
+    const scientificWords = plantWords(scientificName);
+    return uniquePlantTags([
+      commonName,
+      scientificName,
+      scientificWords[0],
+      scientificWords[1],
+      ...categoryTagValues(plant?.category),
+      ...overviewTagValues(plant || {})
+    ]);
+  }
+
+  function effectivePlantTags(plant) {
+    return uniquePlantTags([
+      ...automaticPlantTags(plant),
+      ...(Array.isArray(plant?.tags) ? plant.tags : [])
+    ]).slice(0, 16);
+  }
+
+  function syncPlantCareTags(plant, previousAutomaticTags) {
+    const previous = new Set((previousAutomaticTags || []).map(value => String(value || '').trim().toLowerCase()).filter(Boolean));
     const manual = (plant.tags || []).filter(tag => !previous.has(String(tag || '').trim().toLowerCase()));
-    plant.tags = uniquePlantTags([plant.sun, plant.water, ...manual]);
+    plant.tags = uniquePlantTags([...automaticPlantTags(plant), ...manual]);
     return plant.tags;
   }
 
   function setupAutomaticPlantTags(form, plant) {
     const tagsInput = form?.elements?.tags;
-    const sunInput = form?.elements?.sun;
-    const waterInput = form?.elements?.water;
-    if (!tagsInput || !sunInput || !waterInput) return;
+    if (!tagsInput) return;
 
-    let automaticTags = [plant?.sun, plant?.water].map(value => String(value || '').trim()).filter(Boolean);
+    const currentPlantValues = () => ({
+      ...(plant || {}),
+      commonName: form.elements.commonName?.value || '',
+      scientificName: form.elements.scientificName?.value || '',
+      category: form.elements.category?.value || '',
+      sun: form.elements.sun?.value || '',
+      water: form.elements.water?.value || '',
+      growingCondition: form.elements.growingCondition?.value || ''
+    });
+
+    let automaticTags = automaticPlantTags(currentPlantValues());
     const sync = () => {
       const automaticKeys = new Set(automaticTags.map(value => value.toLowerCase()));
       const manualTags = String(tagsInput.value || '').split(/[,;]/).map(value => value.trim()).filter(value => value && !automaticKeys.has(value.toLowerCase()));
-      automaticTags = [sunInput.value, waterInput.value].map(value => String(value || '').trim()).filter(Boolean);
+      automaticTags = automaticPlantTags(currentPlantValues());
       tagsInput.value = uniquePlantTags([...automaticTags, ...manualTags]).join(', ');
     };
 
-    sunInput.addEventListener('input', sync);
-    waterInput.addEventListener('input', sync);
+    [
+      form.elements.commonName,
+      form.elements.scientificName,
+      form.elements.category,
+      form.elements.sun,
+      form.elements.water,
+      form.elements.growingCondition
+    ].filter(Boolean).forEach(input => input.addEventListener('input', sync));
     form.syncAutomaticTags = sync;
     sync();
   }
@@ -3081,7 +3142,7 @@
     return plants.filter(plant => {
       if (category !== 'All' && plant.category !== category) return false;
       if (!query) return true;
-      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...(plant.tags || [])]
+      return [plant.code, plant.commonName, plant.scientificName, plant.category, ...effectivePlantTags(plant)]
         .join(' ')
         .toLowerCase()
         .includes(query);
@@ -3426,8 +3487,6 @@
         toast('Full-screen view is not available in this browser.', true);
       }
     }
-    if (action === 'download-plant-image') downloadPlantImage(target.dataset.plantId);
-    if (action === 'download-plant-image') downloadPlantImage(target.dataset.plantId);
     if (action === 'edit-plant') openPlantForm(target.dataset.plantId);
     if (action === 'plant-detail') openPlantDetail(target.dataset.plantId);
     if (action === 'new-project') openProjectForm();
@@ -4314,10 +4373,14 @@
         const photo = modal.querySelector('.detail-photo');
         const image = photo?.querySelector('img');
         if (!photo || !image || photo.querySelector('[data-plant-image-download]')) return;
+        const { commonName } = detailNames(modal);
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'plant-image-download';
+        button.dataset.action = 'download-plant-image';
         button.dataset.plantImageDownload = 'true';
+        button.setAttribute('aria-label', `Download image for ${commonName || 'this plant'}`);
+        button.title = `Download image for ${commonName || 'this plant'}`;
         button.innerHTML = '<span aria-hidden="true">↓</span> Download image';
         photo.appendChild(button);
       };

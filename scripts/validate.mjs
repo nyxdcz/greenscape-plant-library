@@ -125,6 +125,10 @@ check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plan
 check(jsSources['assets/js/app.js'].includes('codeIncomplete'), 'Incomplete scientific names must expose a warning state.');
 check(styles.includes('.plant-code.duplicate-code'), 'Same-initial plant codes must have a red Library and Detail state.');
 check(styles.includes('.plant-code.incomplete-code'), 'Incomplete plant codes must have an amber warning state.');
+check(jsSources['assets/js/app.js'].includes('function effectivePlantTags(plant)'), 'Plant details and searches must use automatic effective tags.');
+check(jsSources['assets/js/app.js'].includes("button.dataset.action = 'download-plant-image'"), 'The photograph overlay must remain the image-download control.');
+check(!jsSources['assets/js/app.js'].includes('data-action="download-plant-image"'), 'Plant Detail must not render a duplicate image-download button in the modal footer.');
+check(styles.includes('background: rgba(7, 60, 44, .90) !important;'), 'The photograph download control must retain a readable high-contrast background.');
 
 try {
   const sandbox = { window: {} };

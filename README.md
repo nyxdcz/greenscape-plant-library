@@ -12,6 +12,32 @@ Open the published website here:
 
 ## What's New
 
+### Plant Detail Image Download and Automatic Tags V1
+
+Plant Detail now uses one clear image-download control and generates searchable tags from the plant information already available in the website.
+
+Changes:
+
+- Keeps **Download image** over the plant photograph as the single image-download control.
+- Removes the duplicate **Download image** button from the modal footer.
+- Keeps the photo download available during maintenance read-only mode.
+- Gives the photo control an accessible plant-specific label, visible focus treatment, and stronger contrast.
+- Automatically derives tags from the common name, scientific name, genus, species, category, sun, water, landscape use, and growing condition.
+- Merges automatic tags with any manually supplied tags without repeating the same value.
+- Uses the effective tag set in Plant Detail, Plant Library search, Plant List Editor search, Mood Board search, project plant search, badges, and Excel exports.
+- Updates automatic tags when plant identity, category, or overview fields are edited.
+- Does not scrape or copy Google AI Overview text; the automatic tags use the plant metadata stored locally in Greenscape.
+
+Updated files:
+
+```text
+assets/js/app.js
+assets/css/styles.css
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Automatic Botanical Plant Code System V1
 
 Plant codes now follow a consistent botanical initials rule while permanent Record IDs continue to protect project and document references.
