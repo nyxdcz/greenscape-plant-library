@@ -3121,6 +3121,7 @@
       }
     }
     if (action === 'download-plant-image') downloadPlantImage(target.dataset.plantId);
+    if (action === 'download-plant-image') downloadPlantImage(target.dataset.plantId);
     if (action === 'edit-plant') openPlantForm(target.dataset.plantId);
     if (action === 'plant-detail') openPlantDetail(target.dataset.plantId);
     if (action === 'new-project') openProjectForm();
