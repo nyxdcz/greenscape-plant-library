@@ -171,7 +171,9 @@
     const continueButton = overlay.querySelector('[data-maintenance-continue]');
     if (continueButton) {
       continueButton.disabled = false;
+      continueButton.removeAttribute('disabled');
       continueButton.removeAttribute('aria-disabled');
+      continueButton.dataset.maintenanceActionReady = 'true';
     }
     requestAnimationFrame(() => overlay.querySelector('.maintenance-startup-card')?.focus({ preventScroll: true }));
   }

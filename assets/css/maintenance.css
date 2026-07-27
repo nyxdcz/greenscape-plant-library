@@ -1,4 +1,4 @@
-/* Greenscape Maintenance Controls Refinement V4 */
+/* Greenscape Maintenance Background and Button Refinement V5 */
 
 html.maintenance-enabled {
   --maintenance-green: #073c2c;
@@ -21,21 +21,97 @@ html.maintenance-enabled {
   padding: 24px;
   overflow: auto;
   color: #163a2d;
+  isolation: isolate;
   background:
-    radial-gradient(circle at 15% 15%, rgba(223, 243, 154, .3), transparent 32%),
-    radial-gradient(circle at 90% 80%, rgba(34, 112, 78, .18), transparent 34%),
-    rgba(6, 49, 35, .92);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+    radial-gradient(circle at 14% 14%, rgba(223, 243, 154, .28) 0%, rgba(223, 243, 154, .13) 18%, transparent 43%),
+    radial-gradient(circle at 89% 82%, rgba(49, 149, 103, .22) 0%, rgba(25, 107, 76, .11) 22%, transparent 46%),
+    linear-gradient(135deg, rgba(14, 82, 58, .18), transparent 48%),
+    rgba(6, 49, 35, .93);
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  backdrop-filter: blur(16px) saturate(1.08);
+}
+
+.maintenance-startup::before,
+.maintenance-startup::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(26px);
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+
+.maintenance-startup::before {
+  width: min(52vw, 680px);
+  height: min(52vw, 680px);
+  top: -18%;
+  left: -14%;
+  background: radial-gradient(
+    circle,
+    rgba(223, 243, 154, .58) 0%,
+    rgba(223, 243, 154, .25) 30%,
+    rgba(181, 216, 110, .10) 52%,
+    transparent 72%
+  );
+  box-shadow:
+    0 0 90px rgba(223, 243, 154, .26),
+    0 0 190px rgba(206, 235, 135, .16);
+  animation: maintenance-lime-glow 5.8s ease-in-out infinite alternate;
+}
+
+.maintenance-startup::after {
+  width: min(48vw, 620px);
+  height: min(48vw, 620px);
+  right: -13%;
+  bottom: -20%;
+  background: radial-gradient(
+    circle,
+    rgba(62, 171, 119, .44) 0%,
+    rgba(39, 133, 93, .21) 32%,
+    rgba(16, 92, 65, .10) 55%,
+    transparent 74%
+  );
+  box-shadow:
+    0 0 100px rgba(59, 168, 116, .20),
+    0 0 210px rgba(26, 117, 81, .15);
+  animation: maintenance-green-glow 6.8s ease-in-out infinite alternate;
+}
+
+@keyframes maintenance-lime-glow {
+  from {
+    opacity: .72;
+    transform: scale(.94) translate(-1.5%, -1%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08) translate(2%, 1.5%);
+  }
+}
+
+@keyframes maintenance-green-glow {
+  from {
+    opacity: .64;
+    transform: scale(.93) translate(1.5%, 2%);
+  }
+  to {
+    opacity: .96;
+    transform: scale(1.09) translate(-2%, -1.5%);
+  }
 }
 
 .maintenance-startup-card {
+  position: relative;
+  z-index: 1;
   width: min(570px, 100%);
   padding: 36px;
   border: 1px solid rgba(255, 255, 255, .65);
   border-radius: 28px;
   background: rgba(250, 251, 242, .98);
-  box-shadow: 0 32px 90px rgba(0, 27, 18, .35);
+  box-shadow:
+    0 34px 96px rgba(0, 27, 18, .42),
+    0 0 46px rgba(223, 243, 154, .08);
   text-align: center;
   outline: none;
 }
@@ -140,10 +216,11 @@ html.maintenance-enabled {
   cursor: pointer;
 }
 
-html.maintenance-enabled .maintenance-startup .maintenance-primary,
-html.maintenance-enabled .maintenance-startup .maintenance-primary:link,
-html.maintenance-enabled .maintenance-startup .maintenance-primary:visited,
-html.maintenance-enabled .maintenance-startup .maintenance-primary:disabled {
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue],
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:link,
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:visited,
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:disabled,
+html.maintenance-enabled .maintenance-startup button[data-maintenance-action-ready="true"] {
   min-width: 230px;
   border: 1px solid #073c2c !important;
   color: #ffffff !important;
@@ -160,7 +237,7 @@ html.maintenance-enabled .maintenance-startup .maintenance-primary:disabled {
   font-weight: 900;
 }
 
-html.maintenance-enabled .maintenance-startup .maintenance-primary:hover {
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:hover {
   border-color: #0a4b37 !important;
   color: #ffffff !important;
   background-color: #0a4b37 !important;
@@ -168,7 +245,7 @@ html.maintenance-enabled .maintenance-startup .maintenance-primary:hover {
   transform: translateY(-1px);
 }
 
-html.maintenance-enabled .maintenance-startup .maintenance-primary:focus-visible {
+html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:focus-visible {
   outline: 3px solid #dff39a;
   outline-offset: 3px;
 }
@@ -340,6 +417,11 @@ body.maintenance-startup-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .maintenance-startup::before,
+  .maintenance-startup::after {
+    animation: none !important;
+  }
+
   .maintenance-blocked-notice,
   .maintenance-startup-actions button {
     transition: none !important;

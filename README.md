@@ -12,6 +12,25 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Background and Button Refinement V5
+
+The maintenance startup now uses two atmospheric glowing light sources while retaining the existing dark-green read-only presentation.
+
+Changes:
+
+- Keeps the upper-left lime light and turns it into a brighter, softly blurred glow with bloom and a gentle breathing animation.
+- Keeps the lower-right green light and turns it into a balanced green glow with bloom and a slower breathing animation.
+- Uses layered radial gradients, blurred pseudo-elements, soft box-shadow bloom, and a deep-green translucent overlay.
+- Increases backdrop blur and saturation slightly while preserving visibility of the website behind the maintenance screen.
+- Strengthens the maintenance card shadow and adds a subtle lime halo for separation.
+- Keeps only **BETA · READ-ONLY MAINTENANCE MODE**.
+- Explicitly enables the **Open read-only website** action whenever the startup screen opens.
+- Uses a stronger high-specificity selector so the normal button state remains solid `#073c2c` with white text.
+- Disables glow animation for users who prefer reduced motion.
+- Changes all maintenance cache-version strings so every browser requests the V5 files after deployment.
+- Updates `assets/css/maintenance.css`, `assets/js/maintenance.js`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Maintenance Controls Refinement V4
 
 The maintenance startup and read-only controls now use a cleaner, more compact layout.
