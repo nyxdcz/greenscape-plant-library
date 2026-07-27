@@ -20,6 +20,7 @@ const jsPaths = [
   'assets/js/boq-enhancements.js',
   'assets/js/project-costing.js',
   'assets/js/maintenance-config.js',
+  'assets/js/maintenance-force.js',
   'assets/js/maintenance.js'
 ];
 const jsSources = Object.fromEntries(jsPaths.map(file => [file, read(file)]));

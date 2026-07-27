@@ -12,6 +12,28 @@ Open the published website here:
 
 ## What's New
 
+### Forced Maintenance Cache Refresh V2
+
+Maintenance mode is now force-enabled for all visitors using a new uncached override file.
+
+Changes:
+
+- Confirms `enabled: true` in `assets/js/maintenance-config.js`.
+- Adds `assets/js/maintenance-force.js`, which forces maintenance mode on even when a browser has cached the older disabled configuration.
+- Loads the force script after the configuration file and before the maintenance controller.
+- Changes the cache versions for `maintenance.css`, `maintenance-config.js`, `maintenance-force.js`, and `maintenance.js`.
+- Forces browsers to request the new maintenance startup and read-only files after GitHub Pages redeploys.
+- Keeps the maintenance startup screen, read-only browsing, blocked editing, and protected `localStorage` behavior.
+- Updates `index.html`, `package.json`, `scripts/validate.mjs`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
+To disable forced maintenance later:
+
+1. Remove the `maintenance-force.js` script tag from `index.html`.
+2. Change `enabled: true` to `enabled: false` in `assets/js/maintenance-config.js`.
+3. Change the maintenance cache-version strings again.
+4. Update `README.md` and deploy the change.
+
 ### Maintenance Startup and Read-Only Mode V1
 
 The website now includes an optional maintenance startup page and read-only browsing mode.
@@ -287,6 +309,7 @@ Website design and function updates normally involve one or more of these files:
 - `assets/js/project-costing.js`
 - `assets/js/maintenance.js`
 - `assets/js/maintenance-config.js`
+- `assets/js/maintenance-force.js`
 - `scripts/validate.mjs`
 - `scripts/audit.mjs`
 - `package.json`
