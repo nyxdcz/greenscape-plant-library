@@ -31,6 +31,19 @@
     'assets/images/dashboard-slideshow/15-moises-ferreira.jpg'
   ];
   const DASHBOARD_HERO_INTERVAL_MS = 3000;
+  const DASHBOARD_HERO_SIZES = '(max-width: 980px) calc(100vw - 28px), 50vw';
+  const PROJECT_TOOL_STYLES = [
+    'assets/css/quotation.css?v=20260725-quotation1',
+    'assets/css/boq.css?v=20260725-boq1',
+    'assets/css/boq-enhancements.css?v=20260725-quality1',
+    'assets/css/project-costing.css?v=20260725-costing1'
+  ];
+  const PROJECT_TOOL_SCRIPTS = [
+    'assets/js/quotation.js?v=20260725-quotation1',
+    'assets/js/boq.js?v=20260725-boqprice2',
+    'assets/js/boq-enhancements.js?v=20260725-quality1',
+    'assets/js/project-costing.js?v=20260725-costing1'
+  ];
 
   const titleByView = {
     dashboard: 'Dashboard',
@@ -84,6 +97,7 @@
   let modalReturnFocus = null;
   let dashboardHeroSlideshowTimer = null;
   let dashboardHeroSlideshowToken = 0;
+  let projectToolsLoadPromise = null;
 
   // Save the cleaned records once so older local data no longer keeps removed fields.
   syncProjectPlantCodes();
@@ -315,7 +329,10 @@
     if (state.view === 'library') renderLibrary();
     if (state.view === 'sheet') renderPlantSheet();
     if (state.view === 'moodboard') renderMoodboard();
-    if (state.view === 'projects') renderProjects();
+    if (state.view === 'projects') {
+      void ensureProjectToolsLoaded();
+      renderProjects();
+    }
     if (state.view === 'schedule') renderSchedule();
     if (focusHeading) requestAnimationFrame(() => pageTitle.focus({ preventScroll: true }));
   }
@@ -326,6 +343,59 @@
       dashboardHeroSlideshowTimer = null;
     }
     dashboardHeroSlideshowToken += 1;
+  }
+
+  function responsiveDashboardSlide(source) {
+    return source.replace(/\.jpg$/i, '-900.jpg');
+  }
+
+  function setDashboardSlideSource(image, source) {
+    image.srcset = `${responsiveDashboardSlide(source)} 900w, ${source} 1800w`;
+    image.sizes = DASHBOARD_HERO_SIZES;
+    image.src = source;
+  }
+
+  function ensureProjectToolsLoaded() {
+    if (projectToolsLoadPromise) return projectToolsLoadPromise;
+
+    PROJECT_TOOL_STYLES.forEach(href => {
+      if (document.querySelector(`link[data-project-tool-href="${href}"]`)) return;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.dataset.projectToolHref = href;
+      document.head.appendChild(link);
+    });
+
+    projectToolsLoadPromise = PROJECT_TOOL_SCRIPTS.reduce((chain, src) => chain.then(() => new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[data-project-tool-src="${src}"]`);
+      if (existing?.dataset.loaded === 'true') {
+        resolve();
+        return;
+      }
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = false;
+      script.dataset.projectToolSrc = src;
+      script.addEventListener('load', () => {
+        script.dataset.loaded = 'true';
+        resolve();
+      }, { once: true });
+      script.addEventListener('error', reject, { once: true });
+      document.body.appendChild(script);
+    })), Promise.resolve()).catch(error => {
+      projectToolsLoadPromise = null;
+      toast('Project tools could not be loaded. Check the connection and try again.', true);
+      console.error('Project tool loading failed.', error);
+    });
+
+    return projectToolsLoadPromise;
   }
 
   function startDashboardHeroSlideshow() {
@@ -342,7 +412,7 @@
 
     const preloadSlide = index => {
       const preload = new Image();
-      preload.src = DASHBOARD_HERO_SLIDES[index % DASHBOARD_HERO_SLIDES.length];
+      setDashboardSlideSource(preload, DASHBOARD_HERO_SLIDES[index % DASHBOARD_HERO_SLIDES.length]);
     };
 
     const advanceSlide = () => {
@@ -384,7 +454,7 @@
         loading = false;
         preloadSlide(slideIndex + 1);
       };
-      nextImage.src = DASHBOARD_HERO_SLIDES[nextSlideIndex];
+      setDashboardSlideSource(nextImage, DASHBOARD_HERO_SLIDES[nextSlideIndex]);
       if (nextImage.complete) requestAnimationFrame(reveal);
     };
 
@@ -436,7 +506,7 @@
           </div>
         </div>
         <div class="hero-art" data-dashboard-slideshow role="img" aria-label="Rotating collection of lush landscape plants">
-          <img class="hero-photo is-active" src="${DASHBOARD_HERO_SLIDES[0]}" alt="" aria-hidden="true" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
+          <img class="hero-photo is-active" src="${DASHBOARD_HERO_SLIDES[0]}" srcset="${responsiveDashboardSlide(DASHBOARD_HERO_SLIDES[0])} 900w, ${DASHBOARD_HERO_SLIDES[0]} 1800w" sizes="${DASHBOARD_HERO_SIZES}" alt="" aria-hidden="true" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
           <img class="hero-photo" alt="" aria-hidden="true" width="1800" height="1200" loading="lazy" fetchpriority="low" decoding="async">
           <div class="hero-image-shade"></div>
         </div>
@@ -519,7 +589,7 @@
           </select>
         </div>
         <div class="toolbar-group">
-          <span id="resultCount" class="result-count" role="status" aria-live="polite"></span>
+          <span id="resultCount" class="result-count" role="status" aria-live="polite" aria-atomic="true"></span>
           <button type="button" class="button primary" data-action="new-plant">Add plant</button>
         </div>
       </div>
@@ -552,7 +622,7 @@
     return `
       <article class="plant-card">
         <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
-          ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="480" height="407" loading="${index < 5 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
+          ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="480" height="407" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
@@ -562,7 +632,7 @@
           ${badges.length ? `<div class="plant-badges">${badges.map(value => `<span class="plant-badge">${escapeHTML(value)}</span>`).join('')}</div>` : ''}
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
-            <button type="button" class="button secondary small" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
+            <button type="button" class="button secondary small" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
             <button type="button" class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
           </div>
         </div>
@@ -1205,7 +1275,7 @@
           </select>
         </div>
         <div class="toolbar-group">
-          <span class="result-count">${results.length} ${results.length === 1 ? 'entry' : 'entries'}</span>
+          <span class="result-count" role="status" aria-live="polite" aria-atomic="true">${results.length} ${results.length === 1 ? 'entry' : 'entries'}</span>
           ${maintenanceReadOnly ? '' : `
             <button type="button" class="button secondary" data-action="import-excel">Import Excel</button>
             <button type="button" class="button secondary" data-action="export-excel">Export Excel</button>
