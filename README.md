@@ -12,6 +12,79 @@ Open the published website here:
 
 ## What's New
 
+### Repository Quality Review V2
+
+This focused review improves initial loading, responsive interaction, accessibility, validation, and CI safety without changing the website architecture, stored browser data, maintenance protection, or visual direction.
+
+Performance:
+
+- Loads Quotation, BOQ, BOQ enhancements, and Project Costing assets only after **Project Lists** is opened.
+- Removes four feature stylesheets and four feature scripts from the initial page request.
+- Adds 15 responsive `900 × 600` Dashboard slideshow sources while retaining the original `1800 × 1200` files for larger or high-density displays.
+- Adds responsive preload metadata for the first Dashboard slide.
+- Reduces eagerly loaded Plant Library photos from five to the first three visible cards.
+- Preserves the three-second crossfade, progressive preloading, reduced-motion behavior, and existing Dashboard crop.
+
+Measured static results:
+
+| Metric | Before | After | Change |
+|---|---:|---:|---:|
+| Initial JavaScript | 578,455 bytes | 427,756 bytes | −150,699 bytes (−26.1%) |
+| Initial CSS | 247,197 bytes | 214,773 bytes | −32,424 bytes (−13.1%) |
+| Slideshow source set selected on smaller screens | 9,971,436 bytes | 2,991,601 bytes | −6,979,835 bytes (−70.0%) |
+| Initial script tags | 9 | 5 | −4 |
+| Initial stylesheet links | 7 | 3 | −4 |
+
+Responsive design and accessibility:
+
+- Restores minimum 44 px interaction targets on phones, tablets, and coarse-pointer devices where later compact-layout rules previously reduced them to approximately 27–32 px.
+- Covers Plant Library actions, search and filters, Plant List Editor controls, Mood Board controls, category rows, and key icon actions.
+- Gives every visible **View details** action a plant-specific accessible label.
+- Makes Plant Library and Plant List result announcements polite and atomic for assistive technology.
+- Keeps keyboard focus, reduced-motion support, maintenance read-only behavior, and the current responsive card layouts unchanged.
+
+Quality, security, and workflow:
+
+- Extends the static audit with initial CSS and JavaScript transfer metrics, deferred Project-tool totals, and responsive slideshow totals.
+- Validates all responsive slideshow files, responsive preload metadata, deferred Project-tool loading, touch safeguards, accessible Plant actions, and CI limits.
+- Gives **Website Checks** explicit read-only repository permission.
+- Adds a ten-minute timeout to prevent a stalled validation job from running indefinitely.
+- Preserves the intentional `noindex`, `nofollow`, canonical URL, and `robots.txt` crawler block for this internal company tool.
+
+Files changed:
+
+```text
+.github/workflows/ci.yml
+README.md
+index.html
+assets/css/styles.css
+assets/js/app.js
+assets/images/dashboard-slideshow/*-900.jpg
+scripts/audit.mjs
+scripts/validate.mjs
+```
+
+Validation:
+
+```text
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
+All listed checks passed locally on July 28, 2026. Browser verification covered Dashboard and Plant Library loading, deferred Project-tool initialization, maintenance read-only entry, desktop, tablet, and mobile layouts, responsive image selection, touch targets, overflow, and console errors.
+
+Remaining follow-up work:
+
+- Run Lighthouse and real-user Core Web Vitals against the deployed pull-request revision; the local browser bridge does not expose reliable navigation timing entries.
+- Consolidate the historical appended sections in `assets/css/styles.css` only in a dedicated visual-regression project because a broad rewrite would be higher risk.
+- Visually recheck Quotation, BOQ, and Costing documents with representative saved project data after deployment.
+- No TypeScript type check is available because this repository contains no TypeScript configuration or files.
+
 ### Dashboard Slideshow Speed Refinement V2
 
 The Dashboard hero slideshow now advances every three seconds, reduced from five seconds, so the 15 landscape photographs rotate more quickly.
