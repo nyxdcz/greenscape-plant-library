@@ -5979,7 +5979,7 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (max-width: 980px) {
   .button,
   .nav-item,
   .website-link,
@@ -6221,3 +6221,45 @@ textarea:disabled {
   }
 }
 /* NAVIGATION_ICON_SYSTEM_V1_END */
+
+/* REPOSITORY_QUALITY_REVIEW_V2_TOUCH_TARGETS_START */
+@media (pointer: coarse), (max-width: 980px) {
+  .library-toolbar .search-input,
+  .library-toolbar .select-input,
+  .library-toolbar .button,
+  .sheet-toolbar .search-input,
+  .sheet-toolbar .select-input,
+  .sheet-toolbar .button,
+  #plantGrid .plant-card-actions .button,
+  .moodboard-top-actions .button,
+  .moodboard-control-section .input,
+  .moodboard-control-section .select-input,
+  #plantForm .plant-reference-heading .button,
+  .maintenance-readonly-banner button,
+  .category-row {
+    min-height: 44px !important;
+    height: auto !important;
+  }
+
+  .sheet-cell-input,
+  .sheet-cell-select {
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .sheet-cell-textarea {
+    min-height: 44px !important;
+  }
+
+  .sheet-row-actions .icon-button,
+  .sheet-category-delete,
+  .sheet-open-link,
+  .plant-reference-open,
+  .moodboard-zoom-button {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+}
+/* REPOSITORY_QUALITY_REVIEW_V2_TOUCH_TARGETS_END */

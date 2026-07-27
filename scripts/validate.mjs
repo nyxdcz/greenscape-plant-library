@@ -13,6 +13,7 @@ const check = (condition, message) => {
 
 const html = read('index.html');
 const styles = read('assets/css/styles.css');
+const workflow = read('.github/workflows/ci.yml');
 const jsPaths = [
   'assets/js/app.js',
   'assets/js/data.js',
@@ -67,6 +68,10 @@ check(jsSources['assets/js/app.js'].includes('decoding="async"'), 'Rendered imag
 check(jsSources['assets/js/app.js'].includes('GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_START'), 'Shared dialog keyboard support is required.');
 check(jsSources['assets/js/app.js'].includes('ensureProjectToolsLoaded()'), 'Project-only tools must use the deferred feature loader.');
 check(!/(?:quotation|boq|boq-enhancements|project-costing)\.(?:css|js)[^"]*"[^>]*(?:rel="stylesheet"|defer)/i.test(html), 'Project-only CSS and JavaScript must not block the initial page.');
+check(/aria-label="View details for \$\{escapeHTML\(plant\.commonName/i.test(jsSources['assets/js/app.js']), 'Plant detail actions must include the plant name in their accessible label.');
+check(styles.includes('REPOSITORY_QUALITY_REVIEW_V2_TOUCH_TARGETS_START'), 'Touch target safeguards are required.');
+check(/permissions:\s*\n\s+contents:\s+read/.test(workflow), 'Website Checks must use read-only repository permissions.');
+check(/timeout-minutes:\s*10/.test(workflow), 'Website Checks must have a bounded timeout.');
 
 const dashboardSlides = [...jsSources['assets/js/app.js'].matchAll(/'(assets\/images\/dashboard-slideshow\/[^']+\.jpg)'/g)]
   .map(match => match[1]);

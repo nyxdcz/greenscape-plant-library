@@ -589,7 +589,7 @@
           </select>
         </div>
         <div class="toolbar-group">
-          <span id="resultCount" class="result-count" role="status" aria-live="polite"></span>
+          <span id="resultCount" class="result-count" role="status" aria-live="polite" aria-atomic="true"></span>
           <button type="button" class="button primary" data-action="new-plant">Add plant</button>
         </div>
       </div>
@@ -632,7 +632,7 @@
           ${badges.length ? `<div class="plant-badges">${badges.map(value => `<span class="plant-badge">${escapeHTML(value)}</span>`).join('')}</div>` : ''}
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
-            <button type="button" class="button secondary small" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
+            <button type="button" class="button secondary small" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
             <button type="button" class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
           </div>
         </div>
@@ -1275,7 +1275,7 @@
           </select>
         </div>
         <div class="toolbar-group">
-          <span class="result-count">${results.length} ${results.length === 1 ? 'entry' : 'entries'}</span>
+          <span class="result-count" role="status" aria-live="polite" aria-atomic="true">${results.length} ${results.length === 1 ? 'entry' : 'entries'}</span>
           ${maintenanceReadOnly ? '' : `
             <button type="button" class="button secondary" data-action="import-excel">Import Excel</button>
             <button type="button" class="button secondary" data-action="export-excel">Export Excel</button>
