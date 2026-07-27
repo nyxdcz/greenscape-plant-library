@@ -12,6 +12,41 @@ Open the published website here:
 
 ## What's New
 
+### Dashboard Auto Slideshow V1
+
+The Dashboard hero now rotates through 15 supplied landscape photographs instead of displaying a single plant-record image.
+
+Changes:
+
+- Adds an automatic five-second slideshow with a smooth `0.9s` crossfade.
+- Keeps the existing Dashboard hero layout, feature glow, text, and actions unchanged.
+- Uses two image layers so the current photo remains visible while the next photo loads.
+- Preloads the first image for faster initial rendering and progressively prepares later slides.
+- Pauses slide changes while the browser tab or Dashboard view is not active.
+- Keeps the first photo static when the visitor prefers reduced motion.
+- Crops every supplied source photograph to a consistent `1800 × 1200` hero asset.
+- Optimizes the photographs as JPEG files in `assets/images/dashboard-slideshow/`.
+- Reduces the combined supplied-image size from `52,143,275` bytes to `9,971,436` bytes (`80.9%` smaller).
+- Preserves responsive `object-fit: cover` behavior on desktop, tablet, and mobile.
+- Adds automated validation for the 15 image files, preload hint, reduced-motion support, and crossfade styling.
+- Refreshes the browser cache versions for `styles.css` and `app.js`.
+- Updates `assets/js/app.js`, `assets/css/styles.css`, `scripts/validate.mjs`, `index.html`, slideshow image assets, and `README.md`.
+
+Photo source filenames retain their Unsplash contributor names: David Genelhu, Francisco Perez, Chuttersnap, The Maker Jess, Karla Santana, Ke Tang, MK S, Krystal Ng, Joe R. Harris, Christian Holzinger, Mo, David Clode, Mackenzie Martin, Aesthetes ID, and Moises Ferreira.
+
+Validation:
+
+```text
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+```
+
+All listed checks passed before deployment on July 28, 2026. Local browser verification also confirmed automatic image changes with no console errors.
+
 ### Google Sheets Plant Source V1.3
 
 The published Plant Library can now be maintained through a Google Sheets-compatible CSV stored directly in GitHub.

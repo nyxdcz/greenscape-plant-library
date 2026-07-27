@@ -13,6 +13,24 @@
   const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
   const MAX_EXCEL_FILE_BYTES = 10 * 1024 * 1024;
   const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const DASHBOARD_HERO_SLIDES = [
+    'assets/images/dashboard-slideshow/01-david-genelhu.jpg',
+    'assets/images/dashboard-slideshow/02-francisco-perez.jpg',
+    'assets/images/dashboard-slideshow/03-chuttersnap.jpg',
+    'assets/images/dashboard-slideshow/04-the-maker-jess.jpg',
+    'assets/images/dashboard-slideshow/05-karla-santana.jpg',
+    'assets/images/dashboard-slideshow/06-ke-tang.jpg',
+    'assets/images/dashboard-slideshow/07-mk-s.jpg',
+    'assets/images/dashboard-slideshow/08-krystal-ng.jpg',
+    'assets/images/dashboard-slideshow/09-joe-r-harris.jpg',
+    'assets/images/dashboard-slideshow/10-christian-holzinger.jpg',
+    'assets/images/dashboard-slideshow/11-mo.jpg',
+    'assets/images/dashboard-slideshow/12-david-clode.jpg',
+    'assets/images/dashboard-slideshow/13-mackenzie-martin.jpg',
+    'assets/images/dashboard-slideshow/14-aesthetes-id.jpg',
+    'assets/images/dashboard-slideshow/15-moises-ferreira.jpg'
+  ];
+  const DASHBOARD_HERO_INTERVAL_MS = 5000;
 
   const titleByView = {
     dashboard: 'Dashboard',
@@ -64,6 +82,8 @@
   const pageTitle = document.getElementById('pageTitle');
   const toastRoot = document.getElementById('toastRoot');
   let modalReturnFocus = null;
+  let dashboardHeroSlideshowTimer = null;
+  let dashboardHeroSlideshowToken = 0;
 
   // Save the cleaned records once so older local data no longer keeps removed fields.
   syncProjectPlantCodes();
@@ -281,6 +301,7 @@
   }
 
   function render(focusHeading = false) {
+    stopDashboardHeroSlideshow();
     const currentTitle = titleByView[state.view] || 'Greenscape Plant Library';
     pageTitle.textContent = currentTitle;
     document.title = `${currentTitle} | Greenscape Plant Library`;
@@ -297,6 +318,78 @@
     if (state.view === 'projects') renderProjects();
     if (state.view === 'schedule') renderSchedule();
     if (focusHeading) requestAnimationFrame(() => pageTitle.focus({ preventScroll: true }));
+  }
+
+  function stopDashboardHeroSlideshow() {
+    if (dashboardHeroSlideshowTimer !== null) {
+      window.clearInterval(dashboardHeroSlideshowTimer);
+      dashboardHeroSlideshowTimer = null;
+    }
+    dashboardHeroSlideshowToken += 1;
+  }
+
+  function startDashboardHeroSlideshow() {
+    const frame = content.querySelector('[data-dashboard-slideshow]');
+    const images = frame ? Array.from(frame.querySelectorAll('.hero-photo')) : [];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!frame || images.length !== 2 || DASHBOARD_HERO_SLIDES.length < 2 || reducedMotion) return;
+
+    const token = dashboardHeroSlideshowToken;
+    let slideIndex = 0;
+    let activeImageIndex = 0;
+    let loading = false;
+
+    const preloadSlide = index => {
+      const preload = new Image();
+      preload.src = DASHBOARD_HERO_SLIDES[index % DASHBOARD_HERO_SLIDES.length];
+    };
+
+    const advanceSlide = () => {
+      if (
+        token !== dashboardHeroSlideshowToken
+        || document.hidden
+        || state.view !== 'dashboard'
+        || loading
+      ) return;
+
+      const nextSlideIndex = (slideIndex + 1) % DASHBOARD_HERO_SLIDES.length;
+      const nextImageIndex = activeImageIndex === 0 ? 1 : 0;
+      const currentImage = images[activeImageIndex];
+      const nextImage = images[nextImageIndex];
+      let revealed = false;
+      loading = true;
+
+      const reveal = () => {
+        if (revealed) return;
+        revealed = true;
+        nextImage.onload = null;
+        nextImage.onerror = null;
+
+        if (token !== dashboardHeroSlideshowToken || state.view !== 'dashboard') return;
+
+        nextImage.classList.add('is-active');
+        currentImage.classList.remove('is-active');
+        slideIndex = nextSlideIndex;
+        activeImageIndex = nextImageIndex;
+        loading = false;
+        preloadSlide(slideIndex + 1);
+      };
+
+      nextImage.onload = reveal;
+      nextImage.onerror = () => {
+        if (revealed) return;
+        revealed = true;
+        slideIndex = nextSlideIndex;
+        loading = false;
+        preloadSlide(slideIndex + 1);
+      };
+      nextImage.src = DASHBOARD_HERO_SLIDES[nextSlideIndex];
+      if (nextImage.complete) requestAnimationFrame(reveal);
+    };
+
+    preloadSlide(1);
+    dashboardHeroSlideshowTimer = window.setInterval(advanceSlide, DASHBOARD_HERO_INTERVAL_MS);
   }
 
   function categoryColor(category) {
@@ -327,7 +420,6 @@
     const withPhotos = plants.filter(p => p.image).length;
     const totalProjectPlants = projects.reduce((sum, p) => sum + (p.items || []).length, 0);
     const recentProjects = [...projects].sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)).slice(0, 4);
-    const heroImage = safeImage((plants.find(plant => plant.image) || {}).image);
 
     content.innerHTML = `
       <section class="hero">
@@ -343,8 +435,9 @@
             </button>
           </div>
         </div>
-        <div class="hero-art">
-          ${heroImage ? `<img class="hero-photo" src="${heroImage}" alt="Greenscape plant collection" width="960" height="640" loading="eager" fetchpriority="high" decoding="async">` : '<div class="leaf-shape"></div>'}
+        <div class="hero-art" data-dashboard-slideshow role="img" aria-label="Rotating collection of lush landscape plants">
+          <img class="hero-photo is-active" src="${DASHBOARD_HERO_SLIDES[0]}" alt="" aria-hidden="true" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
+          <img class="hero-photo" alt="" aria-hidden="true" width="1800" height="1200" loading="lazy" fetchpriority="low" decoding="async">
           <div class="hero-image-shade"></div>
         </div>
       </section>
@@ -384,6 +477,7 @@
       </section>
       ${!storageAvailable ? '<p class="inline-note" style="margin-top:18px;">Browser storage is unavailable. Changes may not remain after closing the page.</p>' : ''}
     `;
+    startDashboardHeroSlideshow();
   }
 
   function statCard(label, value, foot) {
@@ -5154,4 +5248,3 @@
   });
 })();
 /* GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_END */
-
