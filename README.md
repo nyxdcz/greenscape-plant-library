@@ -12,6 +12,30 @@ Open the published website here:
 
 ## What's New
 
+### Navigation Icon and Project Header Contrast V1
+
+The primary navigation and Maintenance Mode control now use the supplied Greenscape interface icons, and the glowing Project Detail header has stronger text contrast.
+
+Changes:
+
+- Replaces the Dashboard text symbol with the uploaded dashboard/house icon.
+- Replaces the Plant Library text symbol with the uploaded plant-library icon.
+- Replaces the Plant List Editor text symbol with the uploaded plant-and-document icon.
+- Replaces the Mood Board Creator text symbol with the uploaded image/location icon.
+- Replaces the Project Lists text symbol with the uploaded circular project icon.
+- Stores all navigation icons in `assets/icons/navigation/`.
+- Uses CSS masks so icons inherit the correct inactive, hover, active, desktop, and compact-navigation colors.
+- Keeps navigation labels, keyboard focus, active-page state, and routing unchanged.
+- Replaces the generated Maintenance Mode SVG with the uploaded wrench icon.
+- Uses the wrench icon as a CSS mask inside the same circular Help-style control.
+- Keeps the compact mobile Maintenance Mode layout and shared Help hover, focus, press, and scroll-hide behavior.
+- Forces Project Detail breadcrumbs, project title, subtitle, and action labels to remain readable in white.
+- Applies a translucent glass treatment to Project Detail buttons.
+- Keeps disabled maintenance controls readable while clearly unavailable.
+- Changes cache versions for `styles.css`, `feature-glow.css`, `maintenance.css`, and `maintenance.js`.
+- Updates `index.html`, `assets/css/styles.css`, `assets/css/feature-glow.css`, `assets/css/maintenance.css`, `assets/js/maintenance.js`, icon assets, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Feature Glow Scale and Motion Refinement V2
 
 The Dashboard and Project Detail glow treatments now have a larger spread and faster, more visible motion.

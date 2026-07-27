@@ -371,3 +371,72 @@
     color: #173f31 !important;
   }
 }
+
+/* PROJECT_HEADER_CONTRAST_V1_START */
+.feature-glow-project-header,
+.feature-glow-project-header h2,
+.feature-glow-project-header .breadcrumb,
+.feature-glow-project-header .detail-subtitle,
+.feature-glow-project-header .project-back-button,
+.feature-glow-project-header .text-button,
+.feature-glow-project-header .detail-actions,
+.feature-glow-project-header .detail-actions button,
+.feature-glow-project-header .detail-actions .button {
+  color: #ffffff !important;
+}
+
+.feature-glow-project-header .breadcrumb {
+  opacity: .94;
+}
+
+.feature-glow-project-header .detail-subtitle {
+  color: rgba(255, 255, 255, .78) !important;
+}
+
+.feature-glow-project-header .project-back-button,
+.feature-glow-project-header .detail-actions button,
+.feature-glow-project-header .detail-actions .button {
+  border: 1px solid rgba(255, 255, 255, .26) !important;
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, .10) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .10),
+    0 7px 18px rgba(0, 24, 16, .12) !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.feature-glow-project-header .project-back-button:hover,
+.feature-glow-project-header .detail-actions button:hover:not(:disabled),
+.feature-glow-project-header .detail-actions .button:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, .42) !important;
+  background: rgba(255, 255, 255, .18) !important;
+}
+
+.feature-glow-project-header button:focus-visible {
+  outline: 3px solid var(--feature-glow-lime);
+  outline-offset: 3px;
+}
+
+.feature-glow-project-header button:disabled,
+.feature-glow-project-header [aria-disabled="true"],
+.feature-glow-project-header [data-maintenance-disabled="true"] {
+  border-color: rgba(255, 255, 255, .18) !important;
+  color: rgba(255, 255, 255, .72) !important;
+  background: rgba(255, 255, 255, .07) !important;
+  opacity: .72 !important;
+  filter: none !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, .72) !important;
+}
+
+@media (max-width: 760px) {
+  .feature-glow-project-header .detail-actions {
+    gap: 7px;
+  }
+
+  .feature-glow-project-header .project-back-button,
+  .feature-glow-project-header .detail-actions button,
+  .feature-glow-project-header .detail-actions .button {
+    min-height: 40px;
+  }
+}
+/* PROJECT_HEADER_CONTRAST_V1_END */

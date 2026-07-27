@@ -6144,3 +6144,65 @@ textarea:disabled {
   }
 }
 /* GREENSCAPE_PROJECT_CARD_SUMMARY_V3_END */
+
+/* NAVIGATION_ICON_SYSTEM_V1_START */
+.nav-item .nav-icon {
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  flex: 0 0 19px;
+  background-color: currentColor;
+  opacity: .76;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.nav-item .nav-icon-dashboard {
+  -webkit-mask-image: url("../icons/navigation/nav-dashboard.png");
+  mask-image: url("../icons/navigation/nav-dashboard.png");
+}
+
+.nav-item .nav-icon-plant-library {
+  -webkit-mask-image: url("../icons/navigation/nav-plant-library.png");
+  mask-image: url("../icons/navigation/nav-plant-library.png");
+}
+
+.nav-item .nav-icon-plant-list-editor {
+  -webkit-mask-image: url("../icons/navigation/nav-plant-list-editor.png");
+  mask-image: url("../icons/navigation/nav-plant-list-editor.png");
+}
+
+.nav-item .nav-icon-mood-board {
+  -webkit-mask-image: url("../icons/navigation/nav-mood-board.png");
+  mask-image: url("../icons/navigation/nav-mood-board.png");
+}
+
+.nav-item .nav-icon-project-lists {
+  -webkit-mask-image: url("../icons/navigation/nav-project-lists.png");
+  mask-image: url("../icons/navigation/nav-project-lists.png");
+}
+
+.nav-item:hover .nav-icon,
+.nav-item:focus-visible .nav-icon,
+.nav-item.active .nav-icon {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.nav-item.active .nav-icon {
+  background-color: #efd8bd;
+}
+
+@media (max-width: 980px) {
+  .nav-item .nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+}
+/* NAVIGATION_ICON_SYSTEM_V1_END */

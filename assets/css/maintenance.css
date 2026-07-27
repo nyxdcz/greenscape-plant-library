@@ -590,3 +590,34 @@ body.maintenance-startup-open {
   }
 }
 /* MAINTENANCE_COMPACT_MOBILE_V2_END */
+
+/* UPLOADED_MAINTENANCE_ICON_V1_START */
+.maintenance-readonly-banner.feedback-launcher .maintenance-icon-mask {
+  position: relative;
+  overflow: hidden;
+  color: currentColor;
+}
+
+.maintenance-readonly-banner.feedback-launcher .maintenance-icon-mask::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  display: block;
+  background-color: currentColor;
+  -webkit-mask-image: url("../icons/navigation/icon-maintenance.png");
+  mask-image: url("../icons/navigation/icon-maintenance.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+@media (max-width: 760px) {
+  .maintenance-readonly-banner.feedback-launcher .maintenance-icon-mask::before {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* UPLOADED_MAINTENANCE_ICON_V1_END */
