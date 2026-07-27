@@ -12,6 +12,58 @@ Open the published website here:
 
 ## What's New
 
+### Automatic Botanical Plant Code System V1
+
+Plant codes now follow a consistent botanical initials rule while permanent Record IDs continue to protect project and document references.
+
+Code format:
+
+```text
+Common-name initial + genus initial + species initial
+```
+
+Examples:
+
+- Bayog + *Bambusa merrilliana* → `BBm`
+- Malakatmon + *Dillenia luzoniensis* → `MDl`
+- Katmon + *Dillenia philippinensis* → `KDp`
+
+Changes:
+
+- Generates the first letter from the common name in uppercase.
+- Generates the genus initial in uppercase and the species initial in lowercase.
+- Applies the automatic botanical code to every plant with a complete two-word scientific name.
+- Keeps all permanent Record IDs, image paths, project references, mood boards, quotation drafts, BOQ drafts, and costing records unchanged.
+- Gives plants with the same initials stable numeric suffixes such as `TTg-01` and `TTg-02`.
+- Marks every same-initial code in red in the Plant Library, Plant Detail, and Plant List Editor.
+- Shows the other plants using the same initials in the code tooltip.
+- Marks plants without a complete genus and species in amber while retaining their previous code.
+- Keeps Landscape Materials on structured manual codes such as `MAT-001`.
+- Makes botanical codes read-only and automatically recalculates them after a common name, scientific name, or category changes.
+- Canonicalizes the Google Sheets CSV and generated website data through the Plant CSV Sync workflow.
+- Adds repository validation for botanical initials, suffixes, uniqueness, red conflict states, amber incomplete states, and preserved synchronization.
+
+Current migration:
+
+- 196 plants received an automatic botanical code.
+- 19 same-initial groups affecting 41 plants received stable numbered suffixes.
+- 28 plants with incomplete scientific names retain their previous codes and show an amber warning.
+- All 235 published entries retain unique final codes.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+assets/js/app.js
+assets/css/styles.css
+scripts/sync_plants_from_csv.mjs
+scripts/validate.mjs
+.github/workflows/sync-plant-csv.yml
+index.html
+README.md
+```
+
 ### Maintenance Published Plant Data Fix V1
 
 The read-only Plant Library now loads the latest GitHub-published catalogue as soon as maintenance mode starts.

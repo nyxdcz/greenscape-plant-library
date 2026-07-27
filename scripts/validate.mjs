@@ -112,12 +112,6 @@ check(exists('robots.txt'), 'robots.txt is required.');
 check(/Disallow:\s*\//i.test(read('robots.txt')), 'robots.txt must match the internal noindex policy.');
 check(exists('.gitignore') && /^\.env(?:\.\*)?$/m.test(read('.gitignore')), '.gitignore must exclude environment files.');
 
-if (failures.length) {
-  console.error(`Validation failed (${failures.length}):`);
-  failures.forEach(message => console.error(`- ${message}`));
-  process.exit(1);
-}
-
 check(exists('data/Greenscape_Plant_Library.csv'), 'The Google Sheets plant CSV is required.');
 check(exists('scripts/sync_plants_from_csv.mjs'), 'The plant CSV sync script is required.');
 check(exists('.github/workflows/sync-plant-csv.yml'), 'The Plant CSV Sync workflow is required.');
@@ -126,6 +120,66 @@ check(jsSources['assets/js/app.js'].includes("document.documentElement.classList
 check(!jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance startup must not depend on the late body read-only class.');
 check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
 check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
+check(jsSources['assets/js/app.js'].includes('assignBotanicalPlantCodes'), 'Automatic botanical plant-code assignment is required.');
+check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plant codes must expose their conflict state.');
+check(jsSources['assets/js/app.js'].includes('codeIncomplete'), 'Incomplete scientific names must expose a warning state.');
+check(styles.includes('.plant-code.duplicate-code'), 'Same-initial plant codes must have a red Library and Detail state.');
+check(styles.includes('.plant-code.incomplete-code'), 'Incomplete plant codes must have an amber warning state.');
+
+try {
+  const sandbox = { window: {} };
+  vm.runInNewContext(jsSources['assets/js/data.js'], sandbox, { filename: 'assets/js/data.js' });
+  const plantData = sandbox.window.GREENSCAPE_PLANT_DATA;
+  check(Array.isArray(plantData), 'Published plant data must be an array.');
+
+  if (Array.isArray(plantData)) {
+    const words = value => String(value || '').match(/[A-Za-z]+/g) || [];
+    const baseCode = plant => {
+      if (plant.category === 'Landscape Materials' || plant.isPlant === false) return '';
+      const common = words(plant.commonName);
+      const scientific = words(plant.scientificName);
+      return common[0] && scientific.length >= 2
+        ? `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`
+        : '';
+    };
+    const groups = new Map();
+    plantData.forEach(plant => {
+      const base = baseCode(plant);
+      if (!base) return;
+      if (!groups.has(base)) groups.set(base, []);
+      groups.get(base).push(plant);
+    });
+
+    const codeKeys = plantData.map(plant => String(plant.code || '').toLowerCase());
+    check(new Set(codeKeys).size === codeKeys.length, 'Every published plant and material code must be unique.');
+
+    plantData.forEach(plant => {
+      const base = baseCode(plant);
+      if (plant.category === 'Landscape Materials' || plant.isPlant === false) return;
+      if (!base) {
+        check(plant.codeIncomplete === true, `${plant.id}: incomplete scientific names must be marked.`);
+        return;
+      }
+      const group = groups.get(base) || [];
+      check(plant.codeBase === base, `${plant.id}: codeBase must match the botanical initials ${base}.`);
+      if (group.length === 1) {
+        check(plant.code === base, `${plant.id}: unique botanical code must be ${base}.`);
+        check(plant.codeConflict === false, `${plant.id}: a unique botanical code must not be marked as a conflict.`);
+      } else {
+        check(new RegExp(`^${base}-\\d{2}$`).test(plant.code), `${plant.id}: same-initial code must use ${base}-NN.`);
+        check(plant.codeConflict === true, `${plant.id}: same-initial code must be marked as a conflict.`);
+      }
+    });
+  }
+} catch (error) {
+  failures.push(`Automatic botanical plant-code validation failed: ${error.message}`);
+}
+
+if (failures.length) {
+  console.error(`Validation failed (${failures.length}):`);
+  failures.forEach(message => console.error(`- ${message}`));
+  process.exit(1);
+}
 
 const mode = process.argv.includes('--build') ? 'Static build validation' : 'Validation';
 console.log(`${mode} passed: all JavaScript files, HTML structure, metadata, accessibility hooks, manifest, security guards, and local assets.`);

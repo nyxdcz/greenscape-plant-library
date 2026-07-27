@@ -125,7 +125,7 @@
   }
 
   function sanitizePlants(records) {
-    return (Array.isArray(records) ? records : []).map(plant => {
+    const sanitized = (Array.isArray(records) ? records : []).map(plant => {
       const scientificName = String(plant.scientificName || plant.material || '').trim();
       const normalizedCode = normalizePlantCode(plant.code);
       const generatedCode = generatePlantCode(plant.commonName, scientificName, plant.code);
@@ -136,6 +136,7 @@
         sizes: (Array.isArray(plant.sizes) ? plant.sizes : []).map(({ price, stock, ...size }) => ({ ...size }))
       };
     });
+    return assignBotanicalPlantCodes(sanitized);
   }
 
   function sanitizeProjects(records) {
@@ -176,6 +177,8 @@
 
   function saveAll() {
     try {
+      plants = assignBotanicalPlantCodes(plants);
+      syncProjectPlantCodes();
       localStorage.setItem(STORAGE.plants, JSON.stringify(compactPlantsForStorage()));
       localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
       localStorage.setItem(STORAGE.categories, JSON.stringify(customCategories));
@@ -629,7 +632,7 @@
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
-          <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
+          ${plantCodeMarkup(plant)}
           <h2>${escapeHTML(plant.commonName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           ${badges.length ? `<div class="plant-badges">${badges.map(value => `<span class="plant-badge">${escapeHTML(value)}</span>`).join('')}</div>` : ''}
@@ -1236,7 +1239,8 @@
 
   function sheetField(plant, field, value, className) {
     const label = `${sheetFieldLabels[field] || field} for ${plant.commonName || 'unnamed plant'}`;
-    return `<input class="sheet-cell-input ${className || ''}" aria-label="${escapeHTML(label)}" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}" value="${escapeHTML(value || '')}">`;
+    const automaticCode = field === 'code' && plant.category !== 'Landscape Materials';
+    return `<input class="sheet-cell-input ${className || ''}" aria-label="${escapeHTML(label)}" data-sheet-field="${escapeHTML(field)}" data-plant-id="${escapeHTML(plant.id)}" value="${escapeHTML(value || '')}"${automaticCode ? ' readonly aria-readonly="true"' : ''}>`;
   }
 
   function sheetTextarea(plant, field, value) {
@@ -1288,7 +1292,7 @@
           `}
         </div>
       </div>
-      ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} duplicate code${duplicateCount === 1 ? '' : 's'} detected</strong>Duplicate code cells are marked in red. Enter a unique code such as AEg or PAL-014.</div></div>` : ''}
+      ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} same-initial group${duplicateCount === 1 ? '' : 's'} detected</strong>Codes with the same botanical initials are marked in red and receive stable numbered suffixes automatically.</div></div>` : ''}
       <div id="sheetCategoryGroups">
         ${Object.keys(grouped).sort((a,b) => a.localeCompare(b)).map(category => renderSheetCategory(category, grouped[category])).join('') || emptyState('No matching plants', 'Try another name or category.', '<button type="button" class="button secondary" data-action="clear-sheet-filter">Clear filters</button>')}
       </div>`;
@@ -1334,11 +1338,14 @@
 
   function sheetPlantRow(plant) {
     const image = safeImage(plant.image);
-    const duplicate = isDuplicateCode(plant.code);
+    const duplicate = isDuplicateCode(plant.code, plant.id);
+    const incomplete = Boolean(plant.codeIncomplete);
     const duplicateHint = duplicateCodeTooltip(plant.code, plant.id);
+    const codeHint = duplicate ? duplicateHint : (incomplete ? 'Complete the scientific name to generate this plant code.' : 'Plant code');
+    const codeMessage = duplicate ? 'Same initials — unique suffix added automatically' : (incomplete ? 'Scientific name required for automatic code' : '');
     return `<tr data-sheet-row="${escapeHTML(plant.id)}">
       <td><div class="sheet-photo" data-sheet-thumbnail="${escapeHTML(plant.id)}">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="96" height="96" loading="lazy" decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div></td>
-      <td><div class="sheet-code-wrap${duplicate ? ' has-duplicate' : ''}" data-sheet-code-wrap="${escapeHTML(plant.id)}" title="${escapeHTML(duplicate ? duplicateHint : 'Plant code')}">${sheetField(plant, 'code', plant.code, `sheet-code-input${duplicate ? ' duplicate-code' : ''}`)}<span class="sheet-code-error${duplicate ? ' visible' : ''}" data-sheet-code-error="${escapeHTML(plant.id)}">${duplicate ? 'Duplicate code — hover to see matching plant' : ''}</span></div></td>
+      <td><div class="sheet-code-wrap${duplicate ? ' has-duplicate' : ''}${incomplete ? ' has-incomplete' : ''}" data-sheet-code-wrap="${escapeHTML(plant.id)}" title="${escapeHTML(codeHint)}">${sheetField(plant, 'code', plant.code, `sheet-code-input${duplicate ? ' duplicate-code' : ''}${incomplete ? ' incomplete-code' : ''}`)}<span class="sheet-code-error${duplicate || incomplete ? ' visible' : ''}${incomplete ? ' incomplete' : ''}" data-sheet-code-error="${escapeHTML(plant.id)}">${escapeHTML(codeMessage)}</span></div></td>
       <td>${sheetField(plant, 'commonName', plant.commonName)}</td>
       <td>${sheetField(plant, 'scientificName', plant.scientificName || plant.material)}</td>
       <td>${sheetCategorySelect(plant)}</td>
@@ -1367,19 +1374,24 @@
 
   function updateSheetDuplicateIndicators() {
     document.querySelectorAll('[data-sheet-field="code"]').forEach(input => {
-      const duplicate = isDuplicateCode(input.value);
+      const plant = getPlant(input.dataset.plantId);
+      const duplicate = isDuplicateCode(input.value, input.dataset.plantId);
+      const incomplete = Boolean(plant?.codeIncomplete);
       const hint = duplicateCodeTooltip(input.value, input.dataset.plantId);
       input.classList.toggle('duplicate-code', duplicate);
-      input.title = duplicate ? hint : 'Plant code';
+      input.classList.toggle('incomplete-code', incomplete);
+      input.title = duplicate ? hint : (incomplete ? 'Complete the scientific name to generate this plant code.' : 'Plant code');
       const wrap = document.querySelector(`[data-sheet-code-wrap="${CSS.escape(input.dataset.plantId)}"]`);
       if (wrap) {
         wrap.classList.toggle('has-duplicate', duplicate);
-        wrap.title = duplicate ? hint : 'Plant code';
+        wrap.classList.toggle('has-incomplete', incomplete);
+        wrap.title = duplicate ? hint : (incomplete ? 'Complete the scientific name to generate this plant code.' : 'Plant code');
       }
       const error = document.querySelector(`[data-sheet-code-error="${CSS.escape(input.dataset.plantId)}"]`);
       if (error) {
-        error.textContent = duplicate ? 'Duplicate code — hover to see matching plant' : '';
-        error.classList.toggle('visible', duplicate);
+        error.textContent = duplicate ? 'Same initials — unique suffix added automatically' : (incomplete ? 'Scientific name required for automatic code' : '');
+        error.classList.toggle('visible', duplicate || incomplete);
+        error.classList.toggle('incomplete', incomplete);
         error.title = duplicate ? hint : '';
       }
     });
@@ -1394,19 +1406,11 @@
 
     if (field === 'code') {
       const code = normalizePlantCode(rawValue);
-      const duplicate = plants.find(record => record.id !== plant.id && String(record.code || '').toLowerCase() === code.toLowerCase());
       if (!isValidPlantCode(code)) {
         input.value = plant.code;
         input.classList.add('input-error');
         setSheetSaveStatus('Code was not saved', 'error');
-        toast('Use a unique code such as AEg or PAL-014.', true);
-        return false;
-      }
-      if (duplicate) {
-        input.value = plant.code;
-        input.classList.add('input-error');
-        setSheetSaveStatus('Duplicate code not saved', 'error');
-        toast(`Code ${code} is already used by ${duplicate.commonName}.`, true);
+        toast('Use a code such as BBm, BBm-01, or MAT-001.', true);
         return false;
       }
       input.classList.remove('input-error');
@@ -1430,15 +1434,14 @@
         plant.isPlant = rawValue !== 'Landscape Materials';
         plant.material = rawValue === 'Landscape Materials' ? plant.scientificName : '';
       }
-      if ((field === 'commonName' || field === 'scientificName') && !plant.codeManual) {
-        plant.code = generatePlantCode(plant.commonName, plant.scientificName || plant.material, plant.code);
-        const codeInput = document.querySelector(`[data-sheet-field="code"][data-plant-id="${CSS.escape(plant.id)}"]`);
-        if (codeInput) codeInput.value = plant.code;
-      }
     }
 
     syncProjectPlantCodes();
     saveAll();
+    if (field === 'commonName' || field === 'scientificName' || field === 'category') {
+      const codeInput = document.querySelector(`[data-sheet-field="code"][data-plant-id="${CSS.escape(plant.id)}"]`);
+      if (codeInput) codeInput.value = plant.code;
+    }
     updateSheetDuplicateIndicators();
     setSheetSaveStatus('All changes saved');
 
@@ -2399,7 +2402,7 @@
       <div class="plant-detail-grid">
         <div class="detail-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="900" height="900" decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
         <div class="detail-info">
-          <div class="plant-code-row" title="Plant code"><span class="plant-code">${escapeHTML(plant.code)}</span></div>
+          ${plantCodeMarkup(plant)}
           <h3>${escapeHTML(plant.commonName)}</h3>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || '')}</p>
           <div class="detail-content-stack">
@@ -2542,10 +2545,11 @@
     if (!categoriesList.includes('Heliconias & Aquatics')) categoriesList.push('Heliconias & Aquatics');
     const startingCode = plant?.code || generatePlantCode('', '', 'PLx');
     const selectedCategory = plant?.category || preferredCategory || '';
+    const automaticCode = selectedCategory !== 'Landscape Materials';
     const body = `<form id="plantForm" class="form-grid" novalidate>
       <input type="hidden" name="id" value="${escapeHTML(plant?.id || '')}">
       <div id="plantFormAlert" class="plant-form-alert full" role="alert" aria-live="polite"><strong>Please correct the highlighted fields.</strong><span id="plantFormAlertText"></span></div>
-      <div class="form-field" data-plant-field="code"><label for="plantCodeInput">Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="3" pattern="[A-Za-z]{3}" name="code" id="plantCodeInput" placeholder="AEg" value="${escapeHTML(startingCode)}" aria-describedby="plantCodeHelp plantCodeError"><span class="code-rule-label">3 letters</span></div><span class="form-help" id="plantCodeHelp">Common-name initial + genus initial + species initial. Example: African Oil Palm + Elaeis guineensis = AEg. You may edit the code to resolve a duplicate.</span><span class="form-error" id="plantCodeError"></span></div>
+      <div class="form-field" data-plant-field="code"><label for="plantCodeInput">Plant code *</label><div class="code-input-wrap"><input class="text-input" required maxlength="6" name="code" id="plantCodeInput" placeholder="BBm" value="${escapeHTML(startingCode)}" aria-describedby="plantCodeHelp plantCodeError"${automaticCode ? ' readonly aria-readonly="true"' : ''}><span class="code-rule-label">Automatic</span></div><span class="form-help" id="plantCodeHelp">Common-name initial + genus initial + species initial. Example: Bayog + Bambusa merrilliana = BBm. Same initials receive stable -01, -02 suffixes.</span><span class="form-error" id="plantCodeError"></span></div>
       <div class="form-field" data-plant-field="category"><label for="plantCategory">Category *</label><select class="select-input" required name="category" id="plantCategory" aria-describedby="plantCategoryError"><option value="">Select a category</option>${categoriesList.sort().map(c => `<option value="${escapeHTML(c)}"${selectedCategory === c ? ' selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select><span class="form-error" id="plantCategoryError"></span></div>
       <div class="form-field" data-plant-field="commonName"><label for="plantCommonName">Common name *</label><input class="text-input" required name="commonName" id="plantCommonName" value="${escapeHTML(plant?.commonName || '')}" aria-describedby="plantCommonNameError"><span class="form-error" id="plantCommonNameError"></span></div>
       <div class="form-field" data-plant-field="scientificName"><label for="plantScientificName">Scientific name *</label><input class="text-input" required name="scientificName" id="plantScientificName" value="${escapeHTML(plant?.scientificName || '')}" placeholder="Genus species" aria-describedby="plantScientificNameError"><span class="form-error" id="plantScientificNameError"></span></div>
@@ -2582,7 +2586,9 @@
     const commonName = String(fd.get('commonName') || '').trim();
     const scientificName = String(fd.get('scientificName') || '').trim();
     const generatedCode = generatePlantCode(commonName, scientificName, existing?.code);
-    const code = normalizePlantCode(fd.get('code')) || generatedCode;
+    const code = category === 'Landscape Materials'
+      ? (normalizePlantCode(fd.get('code')) || existing?.code || 'MAT-001')
+      : generatedCode;
     let image = existing?.image || '';
     const link = String(fd.get('link') || '').trim();
     const file = fd.get('imageFile');
@@ -2609,7 +2615,7 @@
       ...(existing || {}),
       id: existing?.id || uid('custom'),
       code,
-      codeManual: code !== generatedCode,
+      codeManual: category === 'Landscape Materials',
       commonName,
       scientificName,
       category,
@@ -2649,6 +2655,12 @@
     const raw = String(value || '').trim();
     if (!raw) return '';
 
+    const botanical = raw.match(/^([A-Za-z])([A-Za-z])([A-Za-z])(?:-(\d{1,2}))?$/);
+    if (botanical) {
+      const base = `${botanical[1].toUpperCase()}${botanical[2].toUpperCase()}${botanical[3].toLowerCase()}`;
+      return botanical[4] ? `${base}-${botanical[4].padStart(2, '0')}` : base;
+    }
+
     const structured = raw.match(/^([A-Za-z]{2,8})[-\s]?(\d{1,6})$/);
     if (structured) return `${structured[1].toUpperCase()}-${structured[2]}`;
 
@@ -2658,8 +2670,8 @@
   }
 
   function isValidPlantCode(value) {
-    return /^[A-Z]{2,8}-\d{1,6}$/.test(String(value || '')) ||
-      isValidPlantCode(String(value || ''));
+    return /^[A-Z][A-Z][a-z](?:-\d{2})?$/.test(String(value || '')) ||
+      /^[A-Z]{2,8}-\d{1,6}$/.test(String(value || ''));
   }
 
   function generatePlantCode(commonName, scientificName, fallback) {
@@ -2679,10 +2691,81 @@
     return normalizePlantCode(fallback) || 'PLx';
   }
 
+  function botanicalBaseCode(plant) {
+    if (!plant || plant.category === 'Landscape Materials' || plant.isPlant === false) return '';
+    const common = plantWords(plant.commonName);
+    const scientific = plantWords(plant.scientificName);
+    if (!common[0] || scientific.length < 2) return '';
+    return `${common[0][0].toUpperCase()}${scientific[0][0].toUpperCase()}${scientific[1][0].toLowerCase()}`;
+  }
+
+  function assignBotanicalPlantCodes(records) {
+    const list = Array.isArray(records) ? records : [];
+    const groups = new Map();
+
+    list.forEach(plant => {
+      plant.codeBase = '';
+      plant.codeConflict = false;
+      plant.codeIncomplete = false;
+
+      if (plant.category === 'Landscape Materials' || plant.isPlant === false) return;
+
+      const base = botanicalBaseCode(plant);
+      if (!base) {
+        plant.codeIncomplete = true;
+        plant.code = normalizePlantCode(plant.code) || generatePlantCode(plant.commonName, plant.scientificName, plant.code);
+        return;
+      }
+
+      plant.codeBase = base;
+      if (!groups.has(base)) groups.set(base, []);
+      groups.get(base).push(plant);
+    });
+
+    groups.forEach((group, base) => {
+      if (group.length === 1) {
+        group[0].code = base;
+        group[0].codeManual = false;
+        return;
+      }
+
+      const used = new Set();
+      const pending = [];
+      const suffixPattern = new RegExp(`^${base}-(\\d{2})$`);
+
+      group.forEach(plant => {
+        const match = String(plant.code || '').match(suffixPattern);
+        const suffix = match ? Number(match[1]) : 0;
+        if (suffix > 0 && !used.has(suffix)) {
+          used.add(suffix);
+          plant.code = `${base}-${String(suffix).padStart(2, '0')}`;
+        } else {
+          pending.push(plant);
+        }
+      });
+
+      pending
+        .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+        .forEach(plant => {
+          let suffix = 1;
+          while (used.has(suffix)) suffix += 1;
+          used.add(suffix);
+          plant.code = `${base}-${String(suffix).padStart(2, '0')}`;
+        });
+
+      group.forEach(plant => {
+        plant.codeConflict = true;
+        plant.codeManual = false;
+      });
+    });
+
+    return list;
+  }
+
   function duplicateCodeGroups() {
     const groups = new Map();
     plants.forEach(plant => {
-      const key = String(plant.code || '').toLowerCase();
+      const key = botanicalBaseCode(plant);
       if (!key) return;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(plant);
@@ -2690,23 +2773,45 @@
     return new Map([...groups].filter(([, records]) => records.length > 1));
   }
 
-  function isDuplicateCode(code) {
-    return (duplicateCodeGroups().get(String(code || '').toLowerCase()) || []).length > 1;
+  function isDuplicateCode(code, plantId) {
+    const plant = plants.find(record => record.id === plantId) ||
+      plants.find(record => String(record.code || '').toLowerCase() === String(code || '').toLowerCase());
+    const key = botanicalBaseCode(plant);
+    return key ? (duplicateCodeGroups().get(key) || []).length > 1 : false;
   }
 
   function duplicateCodeMatches(code, excludingId) {
-    const key = String(code || '').toLowerCase();
-    if (!key) return [];
-    return plants.filter(plant => plant.id !== excludingId && String(plant.code || '').toLowerCase() === key);
+    const source = plants.find(record => record.id === excludingId) ||
+      plants.find(record => String(record.code || '').toLowerCase() === String(code || '').toLowerCase());
+    const key = botanicalBaseCode(source);
+    if (!key) {
+      const exact = String(code || '').toLowerCase();
+      return exact
+        ? plants.filter(plant => plant.id !== excludingId && String(plant.code || '').toLowerCase() === exact)
+        : [];
+    }
+    return plants.filter(plant => plant.id !== excludingId && botanicalBaseCode(plant) === key);
   }
 
   function duplicateCodeTooltip(code, excludingId) {
     const matches = duplicateCodeMatches(code, excludingId);
     if (!matches.length) return '';
-    return `Same code used by: ${matches.map(plant => {
+    return `Same botanical initials used by: ${matches.map(plant => {
       const scientific = String(plant.scientificName || plant.material || '').trim();
       return scientific ? `${plant.commonName} — ${scientific}` : plant.commonName;
     }).join('; ')}`;
+  }
+
+  function plantCodeMarkup(plant) {
+    const conflict = Boolean(plant.codeConflict || isDuplicateCode(plant.code, plant.id));
+    const incomplete = Boolean(plant.codeIncomplete);
+    const title = conflict
+      ? duplicateCodeTooltip(plant.code, plant.id)
+      : (incomplete ? 'A complete two-word scientific name is required before this code can be generated.' : 'Plant code');
+    const status = conflict
+      ? '<span class="code-error-badge">Same initials</span>'
+      : (incomplete ? '<span class="code-incomplete-badge">Name needed</span>' : '');
+    return `<div class="plant-code-row" title="${escapeHTML(title)}"><span class="plant-code${conflict ? ' duplicate-code' : ''}${incomplete ? ' incomplete-code' : ''}">${escapeHTML(plant.code)}</span>${status}</div>`;
   }
 
   function plantBadgeValues(plant) {
@@ -2784,15 +2889,16 @@
   function validatePlantCode(form, excludingId, showAlert = false) {
     const input = form.querySelector('#plantCodeInput');
     if (!input) return true;
+    const isMaterial = String(form.elements.category?.value || '') === 'Landscape Materials';
     const code = normalizePlantCode(input.value);
     input.value = code;
     let message = '';
     if (!code) message = 'Plant code is required.';
-    else if (!isValidPlantCode(code)) message = 'Use a unique code such as AEg or PAL-014.';
-    else {
+    else if (!isValidPlantCode(code)) message = 'Use an automatic botanical code such as BBm or a material code such as MAT-001.';
+    else if (isMaterial) {
       const duplicates = duplicateCodeMatches(code, excludingId);
       if (duplicates.length) {
-        message = `Duplicate code detected: ${code} is already used by ${duplicates.map(plant => plant.commonName).join(', ')}. Enter a unique code.`;
+        message = `Duplicate material code detected: ${code} is already used by ${duplicates.map(plant => plant.commonName).join(', ')}.`;
       }
     }
     showPlantCodeError(form, message);
@@ -2818,8 +2924,13 @@
       setPlantFieldError(form, name, value ? '' : message);
       if (!value) errors.push(message);
     });
+    if (category && category !== 'Landscape Materials' && scientificName && plantWords(scientificName).length < 2) {
+      const message = 'Enter a complete scientific name with genus and species.';
+      setPlantFieldError(form, 'scientificName', message);
+      errors.push(message);
+    }
 
-    showPlantFormAlert(form, errors.length ? ['Complete all required fields and resolve any duplicate code before saving.'] : []);
+    showPlantFormAlert(form, errors.length ? ['Complete all required fields before saving.'] : []);
     if (errors.length) {
       toast('Please correct the highlighted plant fields.', true);
       if (focusFirst) {
@@ -2837,9 +2948,16 @@
     const scientificInput = form.querySelector('#plantScientificName');
     const categoryInput = form.querySelector('#plantCategory');
     const codeInput = form.querySelector('#plantCodeInput');
-    let manual = Boolean(plant?.codeManual);
+    const codeRuleLabel = form.querySelector('.code-rule-label');
     const updateGenerated = () => {
-      if (!manual) codeInput.value = generatePlantCode(commonInput.value, scientificInput.value, plant?.code);
+      const isMaterial = categoryInput.value === 'Landscape Materials';
+      codeInput.readOnly = !isMaterial;
+      codeInput.setAttribute('aria-readonly', isMaterial ? 'false' : 'true');
+      if (codeRuleLabel) codeRuleLabel.textContent = isMaterial ? 'Manual' : 'Automatic';
+      if (!isMaterial) {
+        const generated = generatePlantCode(commonInput.value, scientificInput.value, plant?.code);
+        codeInput.value = plant?.codeBase === generated ? plant.code : generated;
+      }
       validatePlantCode(form, plant?.id);
     };
     commonInput.addEventListener('input', () => {
@@ -2854,10 +2972,10 @@
     });
     categoryInput.addEventListener('change', () => {
       if (categoryInput.value.trim()) setPlantFieldError(form, 'category', '');
+      updateGenerated();
       showPlantFormAlert(form, []);
     });
     codeInput.addEventListener('input', () => {
-      manual = Boolean(codeInput.value.trim());
       validatePlantCode(form, plant?.id);
       showPlantFormAlert(form, []);
     });
