@@ -1,7 +1,7 @@
 window.GREENSCAPE_MAINTENANCE = Object.freeze({
   enabled: true,
-  title: 'Website maintenance in progress',
-  message: 'We are improving the Greenscape Plant Library. You may continue in read-only mode while maintenance is underway.',
+  title: 'We’re improving your Greenscape workspace',
+  message: 'You can continue browsing the Plant Library and project records in read-only mode while updates are being completed.',
   status: 'Editing, saving, importing, and deleting are temporarily disabled.',
   estimatedReturn: '',
   allowReadOnlyAccess: true

@@ -12,6 +12,26 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Screen Design Refinement V3
+
+The forced maintenance startup screen now has clearer wording, stronger branding, and a single readable action.
+
+Changes:
+
+- Adds the badge **BETA · READ-ONLY MAINTENANCE MODE**.
+- Adds the update label **BETA — SYSTEM UPDATE IN PROGRESS**.
+- Changes the main heading to **We’re improving your Greenscape workspace**.
+- Explains that the Plant Library and project records remain available in read-only mode.
+- Recolors the maintenance Greenscape logo to exactly `#073c2c`.
+- Uses `#073c2c` for the primary button with high-contrast white text.
+- Adds clear hover and keyboard-focus states to the primary button.
+- Removes the **Check again** button.
+- Keeps **Open read-only website** as the only startup action.
+- Preserves maintenance protection, read-only browsing, blocked data edits, and protected browser storage.
+- Changes all maintenance cache-version strings so browsers request the refined screen after deployment.
+- Updates `assets/js/maintenance-config.js`, `assets/js/maintenance.js`, `assets/css/maintenance.css`, `index.html`, and `README.md`.
+- Runs the complete repository quality checks before deployment.
+
 ### Forced Maintenance Cache Refresh V2
 
 Maintenance mode is now force-enabled for all visitors using a new uncached override file.

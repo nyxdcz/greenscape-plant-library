@@ -1,7 +1,7 @@
-/* Greenscape Maintenance Read-Only Mode V1 */
+/* Greenscape Maintenance Screen Design Refinement V3 */
 
 html.maintenance-enabled {
-  --maintenance-green: #0b5039;
+  --maintenance-green: #073c2c;
   --maintenance-deep: #073c2c;
   --maintenance-lime: #dff39a;
   --maintenance-cream: #f8f8ef;
@@ -41,14 +41,25 @@ html.maintenance-enabled {
 }
 
 .maintenance-logo-wrap {
-  width: min(270px, 78%);
-  margin: 0 auto 24px;
+  width: min(310px, 82%);
+  min-height: 58px;
+  margin: 0 auto 22px;
+  background: #073c2c;
+  -webkit-mask-image: url("../images/greenscape-logo.png");
+  mask-image: url("../images/greenscape-logo.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .maintenance-logo-wrap img {
   width: 100%;
   height: auto;
   display: block;
+  opacity: 0;
 }
 
 .maintenance-kicker {
@@ -63,8 +74,18 @@ html.maintenance-enabled {
   text-transform: uppercase;
 }
 
+.maintenance-update-label {
+  display: block;
+  margin-top: 13px;
+  color: #073c2c;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
 .maintenance-startup-card h1 {
-  margin: 15px 0 10px;
+  margin: 9px 0 10px;
   color: var(--maintenance-deep);
   font-size: clamp(28px, 5vw, 43px);
   line-height: 1.02;
@@ -128,17 +149,27 @@ html.maintenance-enabled {
   cursor: pointer;
 }
 
-.maintenance-primary {
-  border: 1px solid var(--maintenance-green);
-  color: #fff;
-  background: var(--maintenance-green);
-  box-shadow: 0 10px 24px rgba(11, 80, 57, .2);
+.maintenance-primary,
+.maintenance-primary:disabled {
+  min-width: 230px;
+  border: 1px solid #073c2c !important;
+  color: #ffffff !important;
+  background: #073c2c !important;
+  box-shadow: 0 10px 24px rgba(7, 60, 44, .24);
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-text-fill-color: #ffffff;
 }
 
-.maintenance-secondary {
-  border: 1px solid #cbd9d1;
-  color: #1a4d39;
-  background: #fff;
+.maintenance-primary:hover {
+  border-color: #0a4b37 !important;
+  background: #0a4b37 !important;
+  transform: translateY(-1px);
+}
+
+.maintenance-primary:focus-visible {
+  outline: 3px solid #dff39a;
+  outline-offset: 3px;
 }
 
 .maintenance-startup-card > small {

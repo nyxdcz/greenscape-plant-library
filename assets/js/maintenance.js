@@ -127,7 +127,8 @@
       <div class="maintenance-logo-wrap">
         <img src="assets/images/greenscape-logo.png" alt="Greenscape" width="600" height="70" decoding="async">
       </div>
-      <span class="maintenance-kicker">Read-only maintenance mode</span>
+      <span class="maintenance-kicker">BETA · READ-ONLY MAINTENANCE MODE</span>
+      <span class="maintenance-update-label">BETA — SYSTEM UPDATE IN PROGRESS</span>
       <h1 id="maintenanceTitle">${escapeHTML(config.title)}</h1>
       <p id="maintenanceMessage">${escapeHTML(config.message)}</p>
       <div class="maintenance-status">
@@ -137,7 +138,6 @@
       ${estimated}
       <div class="maintenance-startup-actions">
         ${config.allowReadOnlyAccess ? '<button type="button" class="maintenance-primary" data-maintenance-continue>Open read-only website</button>' : ''}
-        <button type="button" class="maintenance-secondary" data-maintenance-reload>Check again</button>
       </div>
       <small>Your saved browser records remain unchanged.</small>
     </section>`;
@@ -318,11 +318,6 @@
       return;
     }
 
-    if (event.target.closest('[data-maintenance-reload]')) {
-      event.preventDefault();
-      window.location.reload();
-      return;
-    }
 
     if (event.target.closest('[data-maintenance-show-startup]')) {
       event.preventDefault();
