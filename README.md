@@ -12,6 +12,29 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Published Plant Data Fix V1
+
+The read-only Plant Library now loads the latest GitHub-published catalogue as soon as maintenance mode starts.
+
+Changes:
+
+- Fixes a startup timing issue that allowed an older browser-saved plant list to override newly published GitHub records during maintenance.
+- Detects maintenance mode from the document state established before the main application initializes.
+- Makes newly published records such as **Malakatmon — Dillenia luzoniensis — TRE-028** immediately searchable in maintenance read-only access.
+- Keeps saved projects, project schedules, mood boards, categories, quotation drafts, BOQ drafts, and costing records unchanged.
+- Preserves normal-mode browser editing and storage behavior.
+- Refreshes the `app.js` cache version so existing browsers receive the correction.
+- Adds validation that prevents maintenance startup from depending on the later body read-only class.
+
+Updated files:
+
+```text
+assets/js/app.js
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Malakatmon Plant Record Update V1
 
 The Malakatmon plant record now includes searchable identification tags while preserving its stable project references and supplied photograph.

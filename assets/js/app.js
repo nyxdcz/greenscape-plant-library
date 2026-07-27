@@ -68,9 +68,12 @@
   };
 
   let storageAvailable = true;
-  const maintenanceReadOnlyAtStartup = document.body.classList.contains('maintenance-readonly');
+  // maintenance.js marks the document before app.js runs; the body becomes
+  // maintenance-readonly only after the visitor opens the read-only website.
+  const maintenanceModeAtStartup = document.documentElement.classList.contains('maintenance-enabled')
+    || Boolean(window.GREENSCAPE_MAINTENANCE?.enabled);
   let plants = sanitizePlants(hydratePlantImages(
-    maintenanceReadOnlyAtStartup
+    maintenanceModeAtStartup
       ? clone(seedPlants)
       : (loadJSON(STORAGE.plants, null) || clone(seedPlants))
   ));

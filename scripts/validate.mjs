@@ -121,7 +121,9 @@ if (failures.length) {
 check(exists('data/Greenscape_Plant_Library.csv'), 'The Google Sheets plant CSV is required.');
 check(exists('scripts/sync_plants_from_csv.mjs'), 'The plant CSV sync script is required.');
 check(exists('.github/workflows/sync-plant-csv.yml'), 'The Plant CSV Sync workflow is required.');
-check(jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance mode must load published GitHub plant data.');
+check(jsSources['assets/js/app.js'].includes('maintenanceModeAtStartup'), 'Maintenance mode must identify the published-data startup path.');
+check(jsSources['assets/js/app.js'].includes("document.documentElement.classList.contains('maintenance-enabled')"), 'Maintenance mode must select published GitHub plant data before read-only access opens.');
+check(!jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance startup must not depend on the late body read-only class.');
 check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
 check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
 
