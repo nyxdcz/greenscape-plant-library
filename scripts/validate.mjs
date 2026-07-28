@@ -135,6 +135,14 @@ check(jsSources['assets/js/app.js'].includes('manualNotes || firstDescriptionSen
 check(!jsSources['assets/js/app.js'].includes('class="plant-badges"'), 'Plant Library cards must not render tag badges.');
 check(jsSources['assets/js/app.js'].includes('class="detail-tags"'), 'Automatic tags must remain visible in Plant Detail.');
 check(!styles.includes('.plant-badge'), 'Unused Plant Library badge styling should be removed.');
+// DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
+check(jsSources['assets/js/app.js'].includes('DUPLICATE_PLANT_CONSOLIDATION_V1_START'), 'Duplicate plant consolidation migration is required.');
+check(jsSources['assets/js/app.js'].includes("'bam-012': 'bam-006'"), 'Variegated Bamboo duplicate migration is required.');
+check(jsSources['assets/js/app.js'].includes("'bam-007': 'bam-008'"), 'Yellow Bamboo duplicate migration is required.');
+check(jsSources['assets/js/app.js'].includes("'pal-025': 'pal-037'"), 'Bunga duplicate migration is required.');
+check(jsSources['assets/js/app.js'].includes("'shr-035': 'shr-010'"), 'Golden Miagos duplicate migration is required.');
+check(jsSources['assets/js/app.js'].includes('migrateDuplicateProjectRecords'), 'Saved project plant IDs must be migrated.');
+check(jsSources['assets/js/app.js'].includes('migrateDuplicateMoodboardRecord'), 'Saved mood-board plant IDs must be migrated.');
 check(syncScript.includes("'Overview Description'"), 'The Google Sheets CSV must include the Overview Description column.');
 check(jsSources['assets/js/app.js'].includes("button.dataset.action = 'download-plant-image'"), 'The photograph overlay must remain the image-download control.');
 check(!jsSources['assets/js/app.js'].includes('data-action="download-plant-image"'), 'Plant Detail must not render a duplicate image-download button in the modal footer.');
@@ -171,6 +179,17 @@ try {
 
   if (Array.isArray(plantData)) {
     check(plantData.every(plant => Object.hasOwn(plant, 'overviewDescription')), 'Every published record must include an Overview Description field.');
+    const removedDuplicateIds = ['bam-012', 'bam-007', 'pal-025', 'shr-035'];
+    const survivingDuplicateIds = ['bam-006', 'bam-008', 'pal-037', 'shr-010'];
+    check(plantData.length === 231, `Published plant data must contain 231 consolidated entries, found ${plantData.length}.`);
+    removedDuplicateIds.forEach(id => check(!plantData.some(plant => plant.id === id), `${id}: removed duplicate must not be published.`));
+    survivingDuplicateIds.forEach(id => check(plantData.some(plant => plant.id === id), `${id}: surviving consolidated plant is required.`));
+    const consolidatedById = new Map(plantData.map(plant => [plant.id, plant]));
+    check(consolidatedById.get('bam-006')?.scientificName === "Bambusa multiplex 'Variegata'", 'Variegated Bamboo must retain the approved cultivar name.');
+    check((consolidatedById.get('bam-006')?.sizes || []).length === 6, 'Variegated Bamboo must retain six merged size options.');
+    check((consolidatedById.get('bam-008')?.sizes || []).length === 5, 'Yellow Bamboo must retain five merged size options.');
+    check((consolidatedById.get('pal-037')?.sizes || []).length === 5, 'Bunga must retain five merged size options.');
+    check((consolidatedById.get('shr-010')?.sizes || []).length === 7, 'Golden Miagos must retain seven merged size options.');
     const words = value => String(value || '').match(/[A-Za-z]+/g) || [];
     const baseCode = plant => {
       if (plant.category === 'Landscape Materials' || plant.isPlant === false) return '';

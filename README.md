@@ -12,6 +12,45 @@ Open the published website here:
 
 ## What's New
 
+### Duplicate Plant Consolidation V1
+
+Four duplicate plant records were consolidated into one permanent surviving record per plant while retaining their unique nursery size options.
+
+Removed duplicate Record IDs:
+
+- `bam-012` — `VBm-02` — Variegated Bamboo
+- `bam-007` — `YBv-01` — Yellow Buho
+- `pal-025` — `BAc-01` — Bunga
+- `shr-035` — `GOl-02` — Golden Miagos
+
+Surviving records and final automatic codes:
+
+- `bam-006` — `VBm` — Variegated Bamboo — *Bambusa multiplex* 'Variegata'
+- `bam-008` — `YBv` — Yellow Bamboo — *Bambusa vulgaris*
+- `pal-037` — `BAc` — Bunga — *Areca catechu*
+- `shr-010` — `GOl` — Golden Miagos — *Osmoxylon lineare*
+
+Changes:
+
+- Reduces the published library from 235 to 231 entries and from 224 to 220 plant records; all 11 Landscape Materials remain unchanged.
+- Merges unique available-size options into each surviving record before deleting the duplicate row.
+- Keeps the surviving image path and leaves the four unused duplicate image assets in the repository for rollback or later review.
+- Migrates browser-saved plant records, project plant references, and mood-board selections from removed IDs to surviving IDs.
+- Preserves project quantities, sizes, zones, spacing, notes, prices, and other line details; only otherwise identical numeric-quantity lines are combined.
+- Regenerates automatic botanical codes so the four surviving plants no longer require duplicate suffixes.
+- Adds regression checks for removed IDs, survivor IDs, merged sizes, published totals, project migration, and mood-board migration.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+assets/js/app.js
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Plant Common and Scientific Name Corrections V1.2
 
 Plant Library common and scientific names were synchronized from the reviewed **Flagged Records and Scientific Names** correction file.

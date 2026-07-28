@@ -3,7 +3,17 @@
 
   const seedPlants = Array.isArray(window.GREENSCAPE_PLANT_DATA) ? window.GREENSCAPE_PLANT_DATA : [];
   const seedImageById = new Map(seedPlants.map(plant => [plant.id, plant.image || '']));
+  const seedPlantById = new Map(seedPlants.map(plant => [plant.id, plant]));
   const sourceMeta = window.GREENSCAPE_PLANT_META || {};
+
+  // DUPLICATE_PLANT_CONSOLIDATION_V1_START
+  const DUPLICATE_PLANT_ID_MAP = Object.freeze({
+    'bam-012': 'bam-006',
+    'bam-007': 'bam-008',
+    'pal-025': 'pal-037',
+    'shr-035': 'shr-010'
+  });
+  // DUPLICATE_PLANT_CONSOLIDATION_V1_END
   const STORAGE = {
     plants: 'greenscape-plant-library-plants-v1',
     projects: 'greenscape-plant-library-projects-v1',
@@ -72,14 +82,13 @@
   // maintenance-readonly only after the visitor opens the read-only website.
   const maintenanceModeAtStartup = document.documentElement.classList.contains('maintenance-enabled')
     || Boolean(window.GREENSCAPE_MAINTENANCE?.enabled);
-  let plants = sanitizePlants(hydratePlantImages(
-    maintenanceModeAtStartup
-      ? clone(seedPlants)
-      : (loadJSON(STORAGE.plants, null) || clone(seedPlants))
-  ));
-  let projects = sanitizeProjects(loadJSON(STORAGE.projects, []));
+  const startupPlantRecords = maintenanceModeAtStartup
+    ? clone(seedPlants)
+    : (loadJSON(STORAGE.plants, null) || clone(seedPlants));
+  let plants = sanitizePlants(hydratePlantImages(migrateDuplicatePlantRecords(startupPlantRecords)));
+  let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
-  let moodboard = sanitizeMoodboard(loadJSON(STORAGE.moodboard, null));
+  let moodboard = sanitizeMoodboard(migrateDuplicateMoodboardRecord(loadJSON(STORAGE.moodboard, null)));
   let state = {
     view: ['dashboard', 'library', 'sheet', 'moodboard', 'projects', 'schedule'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'dashboard',
     librarySearch: '',
@@ -108,6 +117,121 @@
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
+  }
+
+  function duplicatePlantTargetId(value) {
+    const id = String(value || '');
+    return DUPLICATE_PLANT_ID_MAP[id] || id;
+  }
+
+  function duplicatePlantSizeKey(size) {
+    return [size?.label || size?.size || '', size?.unit || '', size?.variant || '']
+      .map(value => String(value || '').trim().toLowerCase())
+      .join('|');
+  }
+
+  function mergeDuplicatePlantSizes(...groups) {
+    const merged = [];
+    const seen = new Set();
+    groups.flatMap(group => Array.isArray(group) ? group : []).forEach(size => {
+      const key = duplicatePlantSizeKey(size);
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      const label = String(size?.label || size?.size || '').trim();
+      merged.push({ ...size, label, size: label });
+    });
+    return merged;
+  }
+
+  function migrateDuplicatePlantRecords(records) {
+    const source = (Array.isArray(records) ? records : []).map(plant => ({
+      ...plant,
+      sizes: Array.isArray(plant?.sizes) ? plant.sizes.map(size => ({ ...size })) : []
+    }));
+    const byId = new Map(source.map(plant => [plant.id, plant]));
+
+    Object.entries(DUPLICATE_PLANT_ID_MAP).forEach(([removedId, survivorId]) => {
+      const removed = byId.get(removedId);
+      const survivor = byId.get(survivorId);
+      const published = seedPlantById.get(survivorId);
+      if (!removed && !survivor && !published) return;
+
+      const merged = { ...(removed || {}), ...(survivor || {}), id: survivorId };
+      if (published) {
+        merged.code = published.code;
+        merged.codeManual = published.codeManual;
+        merged.commonName = published.commonName;
+        merged.scientificName = published.scientificName;
+        merged.category = published.category;
+        merged.isPlant = published.isPlant;
+        merged.material = published.material;
+      }
+      merged.sizes = mergeDuplicatePlantSizes(published?.sizes, survivor?.sizes, removed?.sizes);
+      merged.image = survivor?.image || removed?.image || published?.image || '';
+      byId.set(survivorId, merged);
+      byId.delete(removedId);
+    });
+
+    return [...byId.values()];
+  }
+
+  function duplicateProjectItemKey(item) {
+    const ignored = new Set(['id', 'quantity', 'plantCode', 'commonName', 'scientificName', 'category']);
+    const comparable = {};
+    Object.keys(item || {}).sort().forEach(key => {
+      if (!ignored.has(key)) comparable[key] = item[key];
+    });
+    return JSON.stringify(comparable);
+  }
+
+  function migrateDuplicateProjectItems(items) {
+    const migrated = [];
+    const mergeIndex = new Map();
+
+    (Array.isArray(items) ? items : []).forEach(item => {
+      const plantId = duplicatePlantTargetId(item?.plantId);
+      const plant = plants.find(record => record.id === plantId);
+      const next = { ...item, plantId };
+      if (plant) {
+        next.plantCode = plant.code;
+        next.commonName = plant.commonName;
+        next.scientificName = plant.scientificName || plant.material || '';
+        next.category = plant.category;
+      }
+
+      const rawQuantity = String(next.quantity ?? '').trim();
+      const quantity = Number(next.quantity);
+      const canMerge = rawQuantity !== '' && Number.isFinite(quantity);
+      const key = duplicateProjectItemKey(next);
+      const existingIndex = canMerge ? mergeIndex.get(key) : undefined;
+
+      if (existingIndex !== undefined) {
+        migrated[existingIndex].quantity = Number(migrated[existingIndex].quantity || 0) + quantity;
+        return;
+      }
+
+      migrated.push(next);
+      if (canMerge) mergeIndex.set(key, migrated.length - 1);
+    });
+
+    return migrated;
+  }
+
+  function migrateDuplicateProjectRecords(records) {
+    return (Array.isArray(records) ? records : []).map(project => ({
+      ...project,
+      items: migrateDuplicateProjectItems(project?.items)
+    }));
+  }
+
+  function migrateDuplicateMoodboardRecord(record) {
+    if (!record || typeof record !== 'object') return record;
+    const selectedIds = [...new Set(
+      (Array.isArray(record.selectedIds) ? record.selectedIds : [])
+        .map(duplicatePlantTargetId)
+        .filter(Boolean)
+    )];
+    return { ...record, selectedIds };
   }
 
   function hydratePlantImages(records) {
