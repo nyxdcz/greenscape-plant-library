@@ -12,6 +12,83 @@ Open the published website here:
 
 ## What's New
 
+### Responsive Bento Workspace and Magnetic Phone Dock V1
+
+The workspace now uses a responsive bento-style presentation on desktop, tablet, and phone, with a dedicated glass navigation dock on small screens.
+
+Changes:
+
+- Gives the desktop sidebar and header consistent rounded bento corners, including the left side of the header.
+- Removes the extra inner brand and title boxes that created double or irregular corners.
+- Uses the 15-photo Dashboard slideshow as a full-bleed hero background at every supported size.
+- Keeps hero text readable with responsive shading, feature glow, rounded clipping, and phone-specific typography.
+- Uses `object-fit: cover` for the slideshow and applies a source-specific horizontal fill correction to the padded MK S photograph.
+- Turns the phone sidebar into a fixed glass dock containing Dashboard, Plant Library, Plant List Editor, Mood Board Creator, Project Lists, Maintenance Mode, and Help.
+- Uses centered, consistently sized icons, a dark-green active state, a brief click glow, and reduced-motion support.
+- Keeps Maintenance Mode and Help visible in the phone dock instead of hiding them while scrolling.
+- Marks Plant List Editor, Mood Board Creator, and Project Lists as disabled **Soon** destinations during maintenance.
+- Keeps tablet and desktop navigation behavior separate from the phone dock.
+- Adds iPhone 14 Pro refinements at `430px` and below, including a compact header, shorter hero, 44px dock controls, safe-area spacing, and an 18px minimum dock bottom gap.
+- Moves the sticky Plant Library toolbar slightly higher on phone screens.
+- Refreshes stylesheet and script cache keys so deployed browsers receive the latest layout.
+
+Updated files:
+
+```text
+assets/css/styles.css
+assets/js/app.js
+assets/js/maintenance.js
+assets/js/magnetic-dock.js
+index.html
+README.md
+```
+
+Validation:
+
+```text
+npm test -- --runInBand
+git diff --check
+```
+
+Responsive browser verification covered desktop bento corners, the full-photo Dashboard hero, the Plant Library sticky toolbar, the phone dock, iPhone safe-area clearance, maintenance-only destinations, Maintenance Mode, and Help.
+
+### On-Device Plant Identifier V1
+
+The Dashboard now opens a Plant Identifier that analyzes an uploaded plant photograph in the browser and returns possible common-name and scientific-name matches.
+
+Changes:
+
+- Accepts JPG, PNG, WEBP, and supported phone images up to 20 MB.
+- Downloads and caches the quantized `onnx-community/FloraSense-ONNX` image-classification model on first use.
+- Processes the selected photograph locally in the browser and returns up to five possible matches with model-confidence percentages.
+- Matches scientific names against the Greenscape Plant Library to show known common names and library photographs.
+- Uses iNaturalist and Wikipedia only to enrich missing reference names or photographs when available.
+- Provides **Verify with Google Lens** as a separate confirmation step.
+- Requires the user to choose the same photograph again in Google Lens because browsers cannot transfer a local upload directly between websites.
+- Warns that automated suggestions are not guaranteed identification and that edible, toxic, medicinal, or otherwise important plants require professional confirmation.
+- Keeps the first-use model size visible: approximately 225 MB, which may take several minutes on mobile data.
+
+Usage:
+
+1. Open **Plant Identifier** from the Dashboard.
+2. Choose a clear plant photograph.
+3. Select **Analyze on this device**.
+4. Review the possible common and scientific name matches.
+5. Use **Verify with Google Lens** and select the same photograph again.
+
+The local model is downloaded from the internet on first use. After it is cached by the browser, later analyses can start faster. Google Lens verification always opens an external Google page.
+
+The Plant Identifier remains visible on the Dashboard but is unavailable while forced maintenance read-only mode is enabled.
+
+Updated files:
+
+```text
+assets/js/app.js
+assets/css/styles.css
+index.html
+README.md
+```
+
 ### Duplicate Plant Consolidation V1
 
 Four duplicate plant records were consolidated into one permanent surviving record per plant while retaining their unique nursery size options.
@@ -859,7 +936,13 @@ The Costing Suite connects to the selected project's plant list, quantities, BOQ
 
 ## Main Features
 
+- On-device Plant Identifier with possible common and scientific name matches
+- Optional Google Lens verification for uploaded plant photographs
 - Searchable plant and landscape-material library
+- Responsive bento workspace for desktop, tablet, and phone
+- Glass magnetic phone dock with safe-area support
+- Full-photo, 15-image Dashboard slideshow with feature glow
+- Maintenance read-only mode with clear **Soon** destinations
 - Plant List Editor with save and cancel confirmation
 - Add and edit plant records, photos, sizes, notes, tags, and links
 - Duplicate plant-code detection and required-field validation
@@ -1013,6 +1096,8 @@ robots.txt
 assets/
 ├── css/
 │   ├── styles.css
+│   ├── maintenance.css
+│   ├── feature-glow.css
 │   ├── quotation.css
 │   ├── boq.css
 │   ├── boq-enhancements.css
@@ -1020,20 +1105,28 @@ assets/
 ├── js/
 │   ├── data.js
 │   ├── app.js
+│   ├── maintenance-config.js
+│   ├── maintenance-force.js
+│   ├── maintenance.js
+│   ├── magnetic-dock.js
 │   ├── quotation.js
 │   ├── boq.js
 │   ├── boq-enhancements.js
 │   └── project-costing.js
 ├── icons/
-│   └── app icons
+│   ├── app icons
+│   └── navigation/
 └── images/
-    └── plant and interface images
+    ├── plant and interface images
+    └── dashboard-slideshow/
 scripts/
+├── sync_plants_from_csv.mjs
 ├── validate.mjs
 └── audit.mjs
 .github/
 └── workflows/
-    └── ci.yml
+    ├── ci.yml
+    └── sync-plant-csv.yml
 ```
 
 ## Local Validation
@@ -1114,4 +1207,6 @@ The website stores user-created records in the browser. Check whether browser da
 
 ## Project Status
 
-The website is actively maintained and updated as the Greenscape plant database, landscape workflow, project documentation, quotation, BOQ, and costing tools develop.
+The website is actively maintained and updated as the Greenscape plant database, Plant Identifier, landscape workflow, project documentation, quotation, BOQ, and costing tools develop.
+
+Forced maintenance mode is currently enabled. Dashboard and Plant Library browsing, Plant Detail, plant-image downloads, searching, filtering, Maintenance details, and Help remain available. The Plant Identifier remains visible but unavailable during maintenance. Plant List Editor, Mood Board Creator, and Project Lists are currently marked **Soon** and cannot be opened until maintenance mode is disabled.
