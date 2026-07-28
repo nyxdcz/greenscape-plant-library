@@ -498,6 +498,7 @@
   }
 
   function setDashboardSlideSource(image, source) {
+    image.classList.toggle('hero-photo-horizontal-fill', /\/07-mk-s\.jpg$/i.test(source));
     image.srcset = `${responsiveDashboardSlide(source)} 900w, ${source} 1800w`;
     image.sizes = DASHBOARD_HERO_SIZES;
     image.src = source;

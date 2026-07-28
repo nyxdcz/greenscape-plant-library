@@ -6745,6 +6745,13 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   filter: saturate(1.08) contrast(1.03);
 }
 
+/* The mk-s source contains dark side padding. Fill from its real horizontal
+   photo edges while preserving the file and centering the composition. */
+#pageContent > .hero .hero-photo.hero-photo-horizontal-fill {
+  transform: scale(1.135);
+  transform-origin: center center;
+}
+
 #pageContent > .hero .hero-image-shade {
   z-index: 2 !important;
   background:
