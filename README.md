@@ -12,6 +12,31 @@ Open the published website here:
 
 ## What's New
 
+### Plant Common and Scientific Name Corrections V1.2
+
+Plant Library common and scientific names were synchronized from the reviewed **Flagged Records and Scientific Names** correction file.
+
+Changes:
+
+- Reviews 129 approved plant-name records and sets their Common Name and Scientific Name values by permanent Record ID.
+- Applies 126 record updates in this publication run; 3 reviewed records already matched the approved values.
+- Changes 62 common names and 108 scientific names in this run, including 44 records where both fields changed.
+- Fills 23 scientific-name cells that were blank immediately before this run.
+- Uses category guards and exact Record IDs, avoiding fragile checks against previous spelling errors.
+- Regenerates automatic botanical codes and keeps all 235 final codes unique.
+- Current code result: 224 plants have complete code inputs; 17 same-initial groups affecting 38 plants use stable numbered suffixes.
+- Keeps 1 species-level `sp.` placeholder record for an intentionally unresolved identification.
+- Preserves every permanent Record ID, category, image path, size, plant detail, project reference, mood board, quotation, BOQ, and costing record.
+
+Updated files:
+
+```text
+data/Greenscape_Plant_Library.csv
+assets/js/data.js
+index.html
+README.md
+```
+
 ### Plant Detail Tags and Overview Planting Notes V1
 
 Plant tags now stay inside **View Details**, keeping Plant Library cards compact, and verified overview descriptions can supply a concise planting-note fallback.
@@ -71,9 +96,9 @@ Changes:
 
 Current migration:
 
-- 201 plants have a complete automatic botanical code.
-- 20 same-initial groups affecting 43 plants use stable numbered suffixes.
-- 23 plants without a scientific name retain their previous codes and show an amber warning.
+- 224 plants have a complete automatic botanical code.
+- 17 same-initial groups affecting 38 plants use stable numbered suffixes.
+- 0 plants are missing a scientific name; every plant now has a complete code input.
 - All 235 published entries retain unique final codes.
 
 Updated files:
