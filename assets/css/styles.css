@@ -7283,11 +7283,11 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
    Tablet and desktop layouts remain unchanged. */
 @media (max-width: 430px) {
   body {
-    padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(106px + env(safe-area-inset-bottom)) !important;
   }
 
   .main-area {
-    padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(106px + env(safe-area-inset-bottom)) !important;
   }
 
   .topbar {
@@ -7359,7 +7359,7 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 
   .sidebar {
-    inset: auto auto max(6px, env(safe-area-inset-bottom)) 50% !important;
+    inset: auto auto max(18px, env(safe-area-inset-bottom)) 50% !important;
     width: calc(100vw - 16px) !important;
     height: 66px !important;
     min-height: 66px !important;
