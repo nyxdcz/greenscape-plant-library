@@ -4919,6 +4919,7 @@ th { color: #42604f; background: #edf3ef; }
       background:
         linear-gradient(110deg, rgba(255,255,255,.30), transparent 28%, rgba(255,255,255,.12) 70%, transparent),
         radial-gradient(circle at 18% 0%, rgba(255,255,255,.58), transparent 38%);
+      border-radius: inherit;
     }
 
     /* Final desktop/tablet proportions from the annotated 1102px layout. */
