@@ -63,6 +63,12 @@
     projects: 'Project Lists',
     schedule: 'Plant Schedule'
   };
+  const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
+
+  function isMaintenanceLockedView(view) {
+    return document.documentElement.classList.contains('maintenance-enabled')
+      && maintenanceLockedViews.has(String(view || ''));
+  }
 
   const categoryPrefixes = {
     'Palms': 'PAL',
@@ -89,8 +95,15 @@
   let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
   let moodboard = sanitizeMoodboard(migrateDuplicateMoodboardRecord(loadJSON(STORAGE.moodboard, null)));
+  const requestedInitialView = location.hash.slice(1);
+  const initialView = ['dashboard', 'library', 'sheet', 'moodboard', 'projects', 'schedule'].includes(requestedInitialView)
+    ? (isMaintenanceLockedView(requestedInitialView) ? 'library' : requestedInitialView)
+    : 'dashboard';
+  if (initialView !== requestedInitialView && isMaintenanceLockedView(requestedInitialView)) {
+    history.replaceState(null, '', '#library');
+  }
   let state = {
-    view: ['dashboard', 'library', 'sheet', 'moodboard', 'projects', 'schedule'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'dashboard',
+    view: initialView,
     librarySearch: '',
     libraryCategory: 'All',
     libraryLimit: 48,
@@ -441,6 +454,9 @@
 
   function setView(view) {
     if (!titleByView[view]) return;
+    if (isMaintenanceLockedView(view)) {
+      view = 'library';
+    }
     state.view = view;
     location.hash = view;
     render(true);
@@ -2513,6 +2529,7 @@
   }
 
   function openModal(title, subtitle, body, footer, large) {
+    document.body.classList.remove('plant-detail-open');
     modalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${large ? ' large' : ''}" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
       <div class="modal-header"><div><h2 id="modalTitle">${escapeHTML(title)}</h2>${subtitle ? `<p>${escapeHTML(subtitle)}</p>` : ''}</div><button class="modal-close" type="button" data-action="close-modal" aria-label="Close dialog">X</button></div>
@@ -2523,6 +2540,7 @@
   }
 
   function closeModal() {
+    document.body.classList.remove('plant-detail-open');
     modalRoot.innerHTML = '';
     const returnTarget = modalReturnFocus;
     modalReturnFocus = null;
@@ -2573,6 +2591,7 @@
     openModal(plant.commonName, '', body,
       `<button type="button" class="button secondary" data-action="edit-plant" data-plant-id="${escapeHTML(plant.id)}">Edit plant</button><button type="button" class="button primary" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to project</button>`, true);
     document.querySelector('#modalRoot .modal')?.classList.add('plant-detail-modal');
+    document.body.classList.add('plant-detail-open');
   }
 
   function infoItem(label, value) {
@@ -3812,6 +3831,14 @@
 
   window.addEventListener('hashchange', () => {
     const view = location.hash.slice(1);
+    if (isMaintenanceLockedView(view)) {
+      history.replaceState(null, '', '#library');
+      if (state.view !== 'library') {
+        state.view = 'library';
+        render(true);
+      }
+      return;
+    }
     if (titleByView[view] && state.view !== view) {
       state.view = view;
       render(true);

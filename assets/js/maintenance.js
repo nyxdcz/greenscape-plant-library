@@ -62,6 +62,7 @@
     'scheduleProjectSelect',
     'feedbackMessage'
   ]);
+  const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
 
   const allowedActionNames = new Set([
     'close-modal',
@@ -82,8 +83,10 @@
   ]);
 
   const allowedButtonSelectors = [
-    '[data-view]',
+    '[data-view="dashboard"]',
+    '[data-view="library"]',
     '[data-project-workspace-tab]',
+    '[data-plant-image-download]',
     '[data-action="download-plant-image"]',
     '[data-quotation-close]',
     '[data-quotation-print]',
@@ -146,7 +149,7 @@
   function bannerMarkup() {
     return `<button type="button" class="maintenance-readonly-banner feedback-launcher" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="Maintenance mode. Read-only access. Open maintenance details.">
       <span class="maintenance-lock-icon maintenance-icon-mask" aria-hidden="true"></span>
-      <span class="maintenance-banner-copy"><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small></span>
+      <span class="maintenance-banner-copy"><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small><span class="maintenance-banner-compact-copy">Read-only access</span></span>
       <span class="maintenance-banner-details" aria-hidden="true">Details</span>
     </button>`;
   }
@@ -228,9 +231,42 @@
 
   function isAllowedButton(control) {
     if (!(control instanceof HTMLElement)) return false;
+    const view = String(control.closest('[data-view]')?.dataset.view || '');
+    if (maintenanceLockedViews.has(view)) return false;
     if (control.matches(allowedButtonSelectors)) return true;
     const action = actionName(control);
     return allowedActionNames.has(action);
+  }
+
+  function markUnavailableNavigation() {
+    document.querySelectorAll('.nav-item[data-view]').forEach(button => {
+      const view = String(button.dataset.view || '');
+      if (!maintenanceLockedViews.has(view)) return;
+
+      button.dataset.maintenanceSoon = 'true';
+      button.dataset.maintenanceDisabled = 'true';
+      button.setAttribute('aria-disabled', 'true');
+      button.removeAttribute('aria-current');
+      button.classList.remove('active');
+      button.disabled = true;
+      button.title = 'Coming soon after maintenance.';
+
+      if (!button.querySelector('.maintenance-soon-label')) {
+        const badge = document.createElement('span');
+        badge.className = 'maintenance-soon-label';
+        badge.textContent = 'Soon';
+        badge.setAttribute('aria-hidden', 'true');
+        const icon = button.querySelector('.nav-icon');
+        if (icon) icon.insertAdjacentElement('afterend', badge);
+        else button.prepend(badge);
+      }
+    });
+  }
+
+  function enforceAvailableView() {
+    const requestedView = location.hash.slice(1);
+    if (!maintenanceLockedViews.has(requestedView)) return;
+    history.replaceState(null, '', '#library');
   }
 
   function setReadonlyControl(control) {
@@ -295,7 +331,10 @@
     if (controlRefreshFrame) return;
     controlRefreshFrame = requestAnimationFrame(() => {
       controlRefreshFrame = 0;
-      if (document.body.classList.contains('maintenance-readonly')) applyReadOnlyControls();
+      if (document.body.classList.contains('maintenance-readonly')) {
+        markUnavailableNavigation();
+        applyReadOnlyControls();
+      }
     });
   }
 
@@ -379,6 +418,8 @@
 
   function initialize() {
     document.body.classList.add('maintenance-mode');
+    markUnavailableNavigation();
+    enforceAvailableView();
     observer.observe(document.body, { childList: true, subtree: true });
     showStartup();
   }
