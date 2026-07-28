@@ -7270,3 +7270,153 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_PHONE_MAGNETIC_DOCK_END */
+
+/* GREENSCAPE_IPHONE_COMPACT_REFINEMENT_START
+   Small-phone tuning based on the iPhone 14 Pro viewport.
+   Tablet and desktop layouts remain unchanged. */
+@media (max-width: 430px) {
+  body {
+    padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .main-area {
+    padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .topbar {
+    margin: 8px 8px 0 !important;
+    padding: 7px !important;
+    gap: 6px !important;
+    border-radius: 18px !important;
+  }
+
+  .topbar-title,
+  .topbar-notices {
+    padding: 8px 10px !important;
+    border-radius: 13px !important;
+  }
+
+  .topbar h1 {
+    font-size: clamp(29px, 8.2vw, 33px) !important;
+  }
+
+  .topbar-notices .company-use-notice {
+    min-height: 46px !important;
+    height: auto !important;
+    padding: 7px 9px !important;
+  }
+
+  .page-content {
+    padding: 12px 12px 32px !important;
+  }
+
+  #pageContent > .hero {
+    height: 420px !important;
+    min-height: 420px !important;
+    overflow: hidden !important;
+    border-radius: 24px !important;
+    clip-path: inset(0 round 24px);
+    transform: translateZ(0);
+  }
+
+  #pageContent > .hero .hero-copy {
+    padding: 24px 20px !important;
+  }
+
+  #pageContent > .hero .hero-copy .overline {
+    font-size: 8px !important;
+    letter-spacing: .14em !important;
+  }
+
+  #pageContent > .hero .hero-copy h2 {
+    margin: 8px 0 10px !important;
+    font-size: clamp(28px, 7.8vw, 32px) !important;
+    line-height: 1.03 !important;
+    letter-spacing: -.035em !important;
+  }
+
+  #pageContent > .hero .hero-copy p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+
+  #pageContent > .hero .hero-actions {
+    gap: 7px !important;
+    margin-top: 17px !important;
+  }
+
+  #pageContent > .hero .hero-actions .button {
+    min-height: 40px !important;
+    padding: 8px 10px !important;
+    font-size: 10px !important;
+  }
+
+  .sidebar {
+    inset: auto auto max(6px, env(safe-area-inset-bottom)) 50% !important;
+    width: calc(100vw - 16px) !important;
+    height: 66px !important;
+    min-height: 66px !important;
+    padding: 7px 8px !important;
+    border-radius: 22px !important;
+  }
+
+  .sidebar::before {
+    inset: 4px !important;
+    border-radius: 18px !important;
+  }
+
+  .sidebar .nav-list {
+    height: 48px !important;
+    padding: 0 1px !important;
+    justify-content: space-between !important;
+    gap: 3px !important;
+  }
+
+  .sidebar .nav-list .nav-item,
+  .maintenance-readonly .sidebar .nav-list .nav-item[data-maintenance-soon="true"],
+  .sidebar .nav-list .dock-utility {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    flex: 0 0 44px !important;
+    border-radius: 15px !important;
+  }
+
+  .sidebar .nav-list .nav-item.active {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .sidebar .nav-list .nav-item .nav-icon,
+  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-lock-icon,
+  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    flex-basis: 22px !important;
+  }
+
+  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
+    font-size: 19px !important;
+  }
+
+  .maintenance-readonly .sidebar .nav-list .nav-item[data-maintenance-soon="true"] .maintenance-soon-label {
+    top: -3px !important;
+    right: -2px !important;
+    padding: 2px 3px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .sidebar .nav-list .nav-item,
+  .maintenance-readonly .sidebar .nav-list .nav-item[data-maintenance-soon="true"],
+  .sidebar .nav-list .dock-utility {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    flex-basis: 40px !important;
+  }
+}
+/* GREENSCAPE_IPHONE_COMPACT_REFINEMENT_END */
