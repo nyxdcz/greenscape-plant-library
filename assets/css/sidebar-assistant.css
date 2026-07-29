@@ -195,6 +195,11 @@ body.sidebar-assistant-enhanced .website-link {
     margin-bottom: 0 !important;
   }
 
+  body.sidebar-assistant-enhanced .sidebar-utility-section {
+    flex: 0 0 auto;
+    margin-top: 10px;
+  }
+
   body.sidebar-assistant-enhanced .sidebar-actions {
     margin-top: 8px !important;
   }

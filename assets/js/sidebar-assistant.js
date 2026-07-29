@@ -4,6 +4,7 @@
   const RETURN_DURATION = 220;
   const FLOATING_Z_INDEX = 2147483000;
   const NORMAL_GIF = 'assets/images/greenscape-pet.gif';
+  const HOVER_GIF = 'assets/images/greenscape-pet-look-around.gif';
   const DRAG_GIF = 'assets/images/greenscape-pet-drag.gif';
 
   function qs(selector, root = document) {
@@ -62,10 +63,20 @@
   }
 
   function preloadPetAnimations() {
-    [NORMAL_GIF, DRAG_GIF].forEach((source) => {
+    [NORMAL_GIF, HOVER_GIF, DRAG_GIF].forEach((source) => {
       const image = new Image();
       image.src = source;
     });
+  }
+
+  function syncIdlePetAnimation(handle, image, card) {
+    if (!handle || !image || card?.classList.contains('is-dragging')) return;
+
+    const isLooking =
+      window.innerWidth >= DESKTOP_BREAKPOINT &&
+      (handle.matches(':hover') || document.activeElement === handle);
+
+    image.src = isLooking ? HOVER_GIF : NORMAL_GIF;
   }
 
   function viewportBounds(card) {
@@ -187,7 +198,6 @@
         // Pointer capture may already be released.
       }
 
-      image.src = NORMAL_GIF;
       document.body.classList.remove('greenie-drag-active');
 
       if (dragging) {
@@ -201,6 +211,7 @@
 
       dragging = false;
       origin = null;
+      syncIdlePetAnimation(handle, image, card);
     }
 
     handle.addEventListener('pointerdown', (event) => {
@@ -249,6 +260,18 @@
     handle.addEventListener('pointerup', finishPointer);
     handle.addEventListener('pointercancel', finishPointer);
     handle.addEventListener('lostpointercapture', finishPointer);
+    handle.addEventListener('pointerenter', () => {
+      syncIdlePetAnimation(handle, image, card);
+    });
+    handle.addEventListener('pointerleave', () => {
+      if (!dragging) image.src = NORMAL_GIF;
+    });
+    handle.addEventListener('focus', () => {
+      syncIdlePetAnimation(handle, image, card);
+    });
+    handle.addEventListener('blur', () => {
+      if (!dragging) image.src = NORMAL_GIF;
+    });
 
     handle.addEventListener('click', (event) => {
       if (event.detail === 0) {
@@ -268,7 +291,8 @@
     if (!section) {
       section = document.createElement('div');
       section.className = 'sidebar-utility-section';
-      navigation.insertAdjacentElement('afterend', section);
+      const confidentiality = qs('.sidebar-confidentiality', sidebar);
+      (confidentiality || navigation).insertAdjacentElement('afterend', section);
     }
 
     const existingCard = qs('.sidebar-pet-card');
