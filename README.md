@@ -12,42 +12,39 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_SIDEBAR_CODE_REFINEMENT_V1_START -->
-### Sidebar and Plant-Code Refinement V1
+<!-- GREENSCAPE_GREENIE_SPEECH_FIRST_V1_START -->
+### Greenie Speech-First Help and Drag Close V1
 
-Latest UI and interaction changes:
+Latest Greenie interaction:
 
-- Clicking Greenie without dragging opens the existing Help panel containing **Beta — Work in Progress** and **Report an issue or send a suggestion**.
-- Clicking Greenie’s visible speech box opens the same Help panel.
-- Keeps the 6px drag threshold so dragging never opens Help.
-- Moves Greenie 10px lower in the desktop sidebar.
-- During dragging, temporarily portals Greenie to `document.body` with `z-index: 2147483000`, keeping it above headers, dialogs, cards, toolbars, and notices.
-- Keeps the alternate drag GIF while moving, then returns Greenie to its original sidebar location and normal GIF after release.
-- Removes the desktop bento border, background, shadow, and blur around the official Greenscape logo while preserving the logo, leaf mark, and tagline.
-- Removes the desktop bento border and background around **Visit Greenscape website** while preserving its URL, new-tab behavior, hover/focus feedback, arrow, and full clickability.
-- Removes plant-code badges from plant photographs.
-- Places every plant code in the card body directly above the common name, with the scientific name remaining above the code.
-- Keeps the category badge on each photograph.
-- Preserves the dynamic header titles **Dashboard** and **Plant Library**, including browser-tab title updates.
-- Keeps the phone dock, existing glass styling elsewhere, maintenance notice and restrictions, existing breakpoints, catalogue column counts, toolbar, and card actions unchanged.
+- Greenie starts exactly 20px below the desktop navigation.
+- Clicking Greenie without dragging reveals and pins only the speech box.
+- Clicking Greenie does not open the Help panel.
+- Clicking the visible speech box is the only Greenie action that opens the existing Help panel.
+- The Help panel retains **Beta — Work in Progress** and **Report an issue or send a suggestion**.
+- Hovering or focusing Greenie continues to reveal the speech box.
+- Clicking outside Greenie and the speech box, or pressing Escape, removes the pinned speech state.
+- Crossing the 6px movement threshold starts dragging.
+- Starting a drag closes the Help panel and hides the speech box immediately.
+- Dragging switches to `assets/images/greenscape-pet-drag.gif`, portals Greenie to `document.body`, and uses `z-index: 2147483000`.
+- Releasing after a drag returns Greenie to its original sidebar position, restores the normal GIF, and keeps both Help and speech closed.
+- The existing desktop viewport boundaries and mobile Help control remain unchanged.
+- The approved logo cleanup, website-link cleanup, plant-code placement, dynamic page titles, phone dock, maintenance notice, glass styling, and responsive layouts remain unchanged.
 
-Plant-card title order:
+Interaction sequence:
 
 ```text
-Scientific name
-Plant code
-Common name
-Available sizes
+Click Greenie       → speech box only
+Click speech box    → Help panel
+Start dragging      → close Help + hide speech
+Release after drag  → return Greenie; keep both closed
 ```
 
 Affected files:
 
 ```text
-assets/js/app.js
 assets/js/sidebar-assistant.js
-assets/css/styles.css
 assets/css/sidebar-assistant.css
-assets/css/plant-library-refinements.css
 index.html
 README.md
 ```
@@ -55,41 +52,35 @@ README.md
 Responsive behavior:
 
 ```text
-Desktop/tablet sidebar: logo and website outer bento shells removed
-Desktop Greenie:        lowered, draggable above all page elements
-Below 1024px:           existing mobile Help and Greenie visibility unchanged
-Plant cards:            existing 6/5/4/3/2 responsive grid preserved
+Desktop 1024px+: Greenie speech-first click and temporary dragging enabled
+Below 1024px:    desktop Greenie remains hidden; existing mobile Help retained
 ```
 
 Current cache keys:
 
 ```text
-assets/css/styles.css?v=20260729-sidebar-code-cleanup2
-assets/css/plant-library-refinements.css?v=20260729-sidebar-code-cleanup2
-assets/css/sidebar-assistant.css?v=20260729-sidebar-code-cleanup2
-assets/js/app.js?v=20260729-sidebar-code-cleanup2
-assets/js/sidebar-assistant.js?v=20260729-sidebar-code-cleanup2
+assets/css/sidebar-assistant.css?v=20260729-greenie-speech-first1
+assets/js/sidebar-assistant.js?v=20260729-greenie-speech-first1
 ```
 
 Deployment:
 
-1. Upload `.github/workflows/apply-sidebar-code-refinements-fixed.yml`.
-2. The workflow patches and validates the approved files.
-3. It commits the result to `main`.
-4. It packages and deploys GitHub Pages from the same validated working tree.
-5. Confirm the workflow and deployment steps are green, then hard-refresh the live website.
+1. Upload `.github/workflows/apply-greenie-speech-first-drag.yml`.
+2. The workflow replaces the Greenie interaction files and refreshes cache keys.
+3. It validates JavaScript, repository quality, and formatting.
+4. It commits to `main` and deploys GitHub Pages from the same validated working tree.
+5. Confirm the workflow and deployment steps are green, then hard-refresh the website.
 
 Verification:
 
 ```text
-node --check assets/js/app.js
 node --check assets/js/sidebar-assistant.js
 npm run quality
 git diff --check
 ```
 
-Current version status: packaged for a validated same-run commit and GitHub Pages deployment.
-<!-- GREENSCAPE_SIDEBAR_CODE_REFINEMENT_V1_END -->
+Current version status: packaged for validated same-run commit and GitHub Pages deployment.
+<!-- GREENSCAPE_GREENIE_SPEECH_FIRST_V1_END -->
 
 
 

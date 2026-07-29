@@ -32,6 +32,35 @@
     }, 80);
   }
 
+  function closeHelpPanel() {
+    const panel = qs('#feedbackPanel');
+    const toggle = qs('#feedbackToggle');
+
+    if (!panel || !toggle) return;
+
+    panel.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function setSpeechOpen(card, open) {
+    if (!card) return;
+
+    card.classList.toggle('is-speech-open', Boolean(open));
+    qs('.sidebar-pet-avatar', card)?.setAttribute(
+      'aria-expanded',
+      open ? 'true' : 'false'
+    );
+  }
+
+  function showSpeechBox(card) {
+    closeHelpPanel();
+    setSpeechOpen(card, true);
+  }
+
+  function hideSpeechBox(card) {
+    setSpeechOpen(card, false);
+  }
+
   function reorderPlantNames(root = document) {
     qsa('#plantGrid .plant-card, #plantGrid .plant-list-card', root).forEach((card) => {
       const commonName = qs('.plant-common-name', card) || qs('h2', card);
@@ -133,6 +162,24 @@
     return placeholder;
   }
 
+  function beginDrag(card, image, origin, startLeft, startTop) {
+    hideSpeechBox(card);
+    closeHelpPanel();
+
+    createDragPlaceholder(card, origin);
+    document.body.appendChild(card);
+
+    card.classList.add('is-floating', 'is-dragging');
+    card.style.position = 'fixed';
+    card.style.width = `${origin.width}px`;
+    card.style.left = `${startLeft}px`;
+    card.style.top = `${startTop}px`;
+    card.style.zIndex = String(FLOATING_Z_INDEX);
+
+    image.src = DRAG_GIF;
+    document.body.classList.add('greenie-drag-active');
+  }
+
   function enableGreenieDragging(card) {
     const handle = qs('.sidebar-pet-avatar', card);
     const image = qs('.sidebar-pet-gif', card);
@@ -154,7 +201,7 @@
       if (event && event.pointerId !== undefined && event.pointerId !== pointerId) return;
 
       const activePointerId = pointerId;
-      const shouldOpenHelp = !dragging && event?.type === 'pointerup';
+      const shouldShowSpeech = !dragging && event?.type === 'pointerup';
       pointerId = null;
 
       try {
@@ -167,10 +214,12 @@
       document.body.classList.remove('greenie-drag-active');
 
       if (dragging) {
+        hideSpeechBox(card);
+        closeHelpPanel();
         returnToSidebar(card);
       } else {
         restoreCardToPlaceholder(card);
-        if (shouldOpenHelp) openHelpPanel();
+        if (shouldShowSpeech) showSpeechBox(card);
       }
 
       dragging = false;
@@ -206,18 +255,7 @@
 
       if (!dragging && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) {
         dragging = true;
-        createDragPlaceholder(card, origin);
-        document.body.appendChild(card);
-
-        card.classList.add('is-floating', 'is-dragging');
-        card.style.position = 'fixed';
-        card.style.width = `${origin.width}px`;
-        card.style.left = `${startLeft}px`;
-        card.style.top = `${startTop}px`;
-        card.style.zIndex = String(FLOATING_Z_INDEX);
-
-        image.src = DRAG_GIF;
-        document.body.classList.add('greenie-drag-active');
+        beginDrag(card, image, origin, startLeft, startTop);
       }
 
       if (!dragging) return;
@@ -237,7 +275,7 @@
 
     handle.addEventListener('click', (event) => {
       if (event.detail === 0) {
-        openHelpPanel();
+        showSpeechBox(card);
       }
     });
   }
@@ -265,13 +303,13 @@
 
     section.innerHTML = `
       <div class="sidebar-pet-card">
-        <button type="button" class="sidebar-pet-speech" aria-label="Ask Greenie for help">
+        <button id="greenieSpeechBox" type="button" class="sidebar-pet-speech" aria-label="Open Greenie Help">
           <strong>Hi! I’m Greenie 🌿</strong>
           <span>Need help finding the perfect plant?</span>
           <em>Ask me anything</em>
         </button>
 
-        <button type="button" class="sidebar-pet-avatar" aria-label="Open Help or drag Greenie">
+        <button type="button" class="sidebar-pet-avatar" aria-label="Show Greenie message or drag Greenie" aria-controls="greenieSpeechBox" aria-expanded="false">
           <img class="sidebar-pet-gif" src="${NORMAL_GIF}" alt="Greenie animated assistant" width="68" height="68">
         </button>
       </div>
@@ -280,7 +318,12 @@
     const card = qs('.sidebar-pet-card', section);
     const speech = qs('.sidebar-pet-speech', card);
 
-    speech.addEventListener('click', openHelpPanel);
+    speech.addEventListener('click', (event) => {
+      event.stopPropagation();
+      hideSpeechBox(card);
+      openHelpPanel();
+    });
+
     enableGreenieDragging(card);
 
     return card;
@@ -312,6 +355,17 @@
       subtree: true
     });
 
+    document.addEventListener('click', (event) => {
+      const card = qs('.sidebar-pet-card');
+      if (!card || card.contains(event.target)) return;
+      hideSpeechBox(card);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      hideSpeechBox(qs('.sidebar-pet-card'));
+    });
+
     window.addEventListener('resize', () => {
       const card = qs('.sidebar-pet-card');
 
@@ -320,6 +374,8 @@
       if (window.innerWidth < DESKTOP_BREAKPOINT) {
         qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
         document.body.classList.remove('greenie-drag-active');
+        hideSpeechBox(card);
+        closeHelpPanel();
         restoreCardToPlaceholder(card);
       }
     });
