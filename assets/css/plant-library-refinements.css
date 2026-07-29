@@ -776,3 +776,74 @@ body:has(#plantGrid) .library-category-chip span:last-child {
   #plantGrid .library-results-footer .button { width: 100%; }
 }
 /* GREENSCAPE_PLANT_LIBRARY_PULSE_V1_END */
+
+/* GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_START */
+/* Removes the summary strip, restores the original detail button, and keeps catalogue filters usable in read-only mode. */
+
+#plantGrid .plant-card h2,
+#plantGrid .plant-title-link,
+#plantGrid .scientific {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#plantGrid .plant-meta {
+  margin-top: 8px !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+#plantGrid .plant-card-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+
+#plantGrid .plant-view-details {
+  width: 100%;
+  min-width: 0;
+}
+
+.maintenance-readonly body:has(#plantGrid) .library-filter-chip,
+.maintenance-readonly body:has(#plantGrid) .library-category-chip {
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+.maintenance-readonly #plantGrid .plant-card-actions {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.maintenance-readonly #plantGrid [data-action="add-to-project"] {
+  display: none !important;
+}
+
+.maintenance-readonly #plantGrid .plant-view-details {
+  width: 100% !important;
+  min-height: 38px !important;
+}
+
+@media (max-width: 760px) {
+  #plantGrid .plant-meta {
+    margin-top: 7px !important;
+  }
+
+  #plantGrid .plant-card-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #plantGrid .plant-view-details,
+  #plantGrid .plant-card-actions [data-action="add-to-project"] {
+    width: 100%;
+    min-height: 38px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #plantGrid .plant-view-details,
+  #plantGrid .plant-card-actions [data-action="add-to-project"] {
+    min-height: 40px !important;
+  }
+}
+/* GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_END */

@@ -12,24 +12,23 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_PLANT_LIBRARY_PULSE_V1_START -->
-### Plant Library Pulse Layout V1
+<!-- GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_START -->
+### Plant Library Catalogue Cleanup V1
 
-The Plant Library now uses a compact Pulse-style overview and control hierarchy while keeping every plant catalogue card uniform for easy visual comparison.
+The Plant Library keeps its responsive catalogue and bento search controls while removing the extra summary strip and simplifying each plant card for maintenance-mode browsing.
 
-Changes:
+Latest UI and layout changes:
 
-- Adds four live summary cards for total library entries, photo coverage, category count, and current filtered results.
-- Reorganizes search, category selection, result count, and Add Plant into one responsive bento control bar.
-- Adds quick filters for All, Plants, Materials, With Photos, and Missing Photos, plus a removable active-category chip.
-- Uses a uniform responsive plant-card grid with 6 columns on large desktops, 5 on compact desktops, 4 on tablets, 3 on mobile, and 2 on small mobile screens.
-- Keeps 4:3 plant images, equal card heights, aligned titles, and bottom-aligned actions.
-- Makes the plant title and photograph open Plant Details and changes the repeated large details action into a lighter Details link.
-- Replaces the inline Load More area with a full-width results footer showing the visible and total entry counts.
-- Uses 9px category badges, 13–14px common names, 10–11px scientific names, 9–10px metadata, 10–11px action labels, 38–40px controls, and 12px card padding on phones.
-- Refreshes the Plant Library stylesheet and application cache keys for GitHub Pages.
+- Removes the four Library Pulse statistic cards so the search and filter toolbar sits directly below the Plant Library header.
+- Keeps the All, Plants, Materials, With Photos, Missing Photos, and removable category filters active during read-only maintenance mode.
+- Removes the horizontal divider and shadow below the plant-name information.
+- Restores the original full-width **View details** button during maintenance mode.
+- Keeps the plant photograph and common name clickable for Plant Details.
+- Keeps **Add plant** and **Add to list** unavailable during maintenance because they change saved data.
+- Retains the styled results footer and the responsive 6/5/4/3/2 catalogue grid.
+- Retains the approved mobile typography, 12px card padding, and 38–40px controls.
 
-Responsive grid:
+Responsive catalogue grid:
 
 ```text
 Large desktop:   1440px and above   6 columns
@@ -39,23 +38,42 @@ Mobile:          391px–760px        3 columns
 Small mobile:    390px and below    2 columns
 ```
 
-Updated files:
+Affected files:
 
 ```text
-assets/css/plant-library-refinements.css
 assets/js/app.js
+assets/js/maintenance.js
+assets/css/plant-library-refinements.css
 index.html
 README.md
 ```
 
-Validation:
+Current cache keys:
+
+```text
+plant-library-refinements.css?v=20260729-library-catalog-cleanup1
+maintenance.js?v=20260729-library-filters1
+app.js?v=20260729-library-catalog-cleanup1
+```
+
+Deployment:
+
+1. Upload `.github/workflows/apply-plant-library-catalog-cleanup.yml`.
+2. The workflow validates, commits, packages, and deploys the current website in one run.
+3. Confirm both the update and GitHub Pages deployment steps are green.
+4. Hard-refresh the live Plant Library after deployment.
+
+Verification:
 
 ```text
 node --check assets/js/app.js
+node --check assets/js/maintenance.js
 npm run quality
 git diff --check
 ```
-<!-- GREENSCAPE_PLANT_LIBRARY_PULSE_V1_END -->
+
+Current version status: implemented by the catalogue-cleanup workflow and deployed from the same validated working tree.
+<!-- GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_END -->
 
 ### Catalog Pulse Bento Dashboard V1
 

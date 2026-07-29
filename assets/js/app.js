@@ -805,35 +805,8 @@
   }
 
   function renderLibrary() {
-    const totalEntries = plants.length;
-    const withPhotos = plants.filter(plant => safeImage(plant.image)).length;
-    const categoryCount = categories().length;
-    const currentResults = filteredPlants().length;
-    const photoCoverage = Math.round((withPhotos / Math.max(totalEntries, 1)) * 100);
 
     content.innerHTML = `
-      <section class="library-pulse-grid" aria-label="Plant Library summary">
-        <article class="library-pulse-card">
-          <span>Library entries</span>
-          <strong>${totalEntries}</strong>
-          <small>Published catalogue records</small>
-        </article>
-        <article class="library-pulse-card">
-          <span>With photos</span>
-          <strong>${withPhotos}</strong>
-          <small>${photoCoverage}% photo coverage</small>
-        </article>
-        <article class="library-pulse-card">
-          <span>Categories</span>
-          <strong>${categoryCount}</strong>
-          <small>Plants and materials</small>
-        </article>
-        <article class="library-pulse-card library-results-pulse">
-          <span>Current results</span>
-          <strong id="libraryResultsPulse">${currentResults}</strong>
-          <small>Matching active filters</small>
-        </article>
-      </section>
 
       <div class="toolbar library-toolbar">
         <label class="search-wrap library-search">
@@ -884,13 +857,11 @@
   function updateLibraryResults() {
     const grid = document.getElementById('plantGrid');
     const count = document.getElementById('resultCount');
-    const pulse = document.getElementById('libraryResultsPulse');
     if (!grid || !count) return;
 
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
     count.textContent = `${results.length} ${results.length === 1 ? 'entry' : 'entries'}`;
-    if (pulse) pulse.textContent = String(results.length);
 
     if (!results.length) {
       grid.innerHTML = emptyState(
@@ -932,7 +903,7 @@
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
-            <button type="button" class="plant-details-link" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">Details <span aria-hidden="true">→</span></button>
+            <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
             <button type="button" class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
           </div>
         </div>

@@ -74,6 +74,8 @@
     'filter-category',
     'load-more',
     'clear-filter',
+    'library-quick-filter',
+    'clear-library-category',
     'clear-sheet-filter',
     'export-csv',
     'moodboard-export-png',
