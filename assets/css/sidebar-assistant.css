@@ -191,7 +191,7 @@ body.sidebar-assistant-enhanced .website-link {
 
 @media (min-width: 1024px) {
   body.sidebar-assistant-enhanced .sidebar-confidentiality {
-    margin-top: 12px !important;
+    margin-top: auto !important;
     margin-bottom: 0 !important;
   }
 
@@ -214,6 +214,7 @@ body.sidebar-assistant-enhanced .website-link {
       0 8px 22px rgba(0, 28, 19, .18) !important;
     -webkit-backdrop-filter: blur(14px) saturate(135%) !important;
     backdrop-filter: blur(14px) saturate(135%) !important;
+    font-size: 9px !important;
     text-decoration: none !important;
     transition:
       color .16s ease,

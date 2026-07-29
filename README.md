@@ -12,6 +12,54 @@ Open the published website here:
 
 ## What's New
 
+### Sidebar Bottom Utilities Refinement V1
+
+Moves the desktop confidentiality and website controls into a dedicated bottom utility area while preserving Greenie and the existing bento styling.
+
+Changes:
+
+- Keeps Greenie below the primary navigation.
+- Uses flexible sidebar space to keep **Company Use Only** near the bottom on taller desktop screens.
+- Places the **Visit Greenscape website** bento directly below the confidentiality notice as the final desktop sidebar item.
+- Changes only the desktop website-link text from `11px` to `9px`.
+- Preserves the bento gradient, arrow tile, hover, pressed, keyboard-focus, and secure external-link behavior.
+- Keeps the sidebar internally scrollable when the available desktop height is limited.
+- Leaves tablet and mobile navigation unchanged.
+- Refreshes the sidebar asset cache keys.
+
+Desktop order:
+
+```text
+Greenscape logo
+Primary navigation
+Greenie
+Flexible space
+Company Use Only
+Visit Greenscape website
+```
+
+Affected files:
+
+```text
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Sidebar Utility Reordering and Website Bento V1
 
 Reorganizes the desktop sidebar utilities without changing navigation or Greenie functionality.
