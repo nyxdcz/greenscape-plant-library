@@ -10,10 +10,6 @@
     return root.querySelector(selector);
   }
 
-  function qsa(selector, root = document) {
-    return Array.from(root.querySelectorAll(selector));
-  }
-
   function openHelpPanel() {
     const panel = qs('#feedbackPanel');
     const toggle = qs('#feedbackToggle');
@@ -61,31 +57,8 @@
     setSpeechOpen(card, false);
   }
 
-  function reorderPlantNames(root = document) {
-    qsa('#plantGrid .plant-card, #plantGrid .plant-list-card', root).forEach((card) => {
-      const commonName = qs('.plant-common-name', card) || qs('h2', card);
-      const scientificName = qs('.scientific', card);
-      const plantCode = qs('.plant-code-body', card);
-
-      if (!commonName || !scientificName) return;
-
-      const parent = commonName.parentElement;
-      if (!parent || scientificName.parentElement !== parent) return;
-
-      if (plantCode && plantCode.parentElement === parent) {
-        parent.insertBefore(scientificName, plantCode);
-        parent.insertBefore(plantCode, commonName);
-      } else if (commonName.previousElementSibling !== scientificName) {
-        parent.insertBefore(scientificName, commonName);
-      }
-
-      scientificName.classList.add('scientific-name-top');
-      commonName.classList.add('common-name-bottom');
-    });
-  }
-
   function preloadPetAnimations() {
-    [NORMAL_GIF, DRAG_GIF].forEach((source) => {
+    [NORMAL_GIF, DRAG_GIF].forEach(source => {
       const image = new Image();
       image.src = source;
     });
@@ -159,7 +132,6 @@
     placeholder.style.height = `${rectangle.height}px`;
 
     card.insertAdjacentElement('beforebegin', placeholder);
-    return placeholder;
   }
 
   function beginDrag(card, image, origin, startLeft, startTop) {
@@ -198,7 +170,11 @@
 
     function finishPointer(event) {
       if (pointerId === null) return;
-      if (event && event.pointerId !== undefined && event.pointerId !== pointerId) return;
+      if (
+        event
+        && event.pointerId !== undefined
+        && event.pointerId !== pointerId
+      ) return;
 
       const activePointerId = pointerId;
       const shouldShowSpeech = !dragging && event?.type === 'pointerup';
@@ -226,8 +202,11 @@
       origin = null;
     }
 
-    handle.addEventListener('pointerdown', (event) => {
-      if (window.innerWidth < DESKTOP_BREAKPOINT || event.button !== 0) return;
+    handle.addEventListener('pointerdown', event => {
+      if (
+        window.innerWidth < DESKTOP_BREAKPOINT
+        || event.button !== 0
+      ) return;
 
       pointerId = event.pointerId;
       startX = event.clientX;
@@ -247,13 +226,16 @@
       event.preventDefault();
     });
 
-    handle.addEventListener('pointermove', (event) => {
+    handle.addEventListener('pointermove', event => {
       if (pointerId !== event.pointerId || !origin) return;
 
       const deltaX = event.clientX - startX;
       const deltaY = event.clientY - startY;
 
-      if (!dragging && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) {
+      if (
+        !dragging
+        && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD
+      ) {
         dragging = true;
         beginDrag(card, image, origin, startLeft, startTop);
       }
@@ -261,8 +243,16 @@
       if (!dragging) return;
 
       const bounds = viewportBounds(card);
-      const left = clamp(startLeft + deltaX, bounds.minLeft, bounds.maxLeft);
-      const top = clamp(startTop + deltaY, bounds.minTop, bounds.maxTop);
+      const left = clamp(
+        startLeft + deltaX,
+        bounds.minLeft,
+        bounds.maxLeft
+      );
+      const top = clamp(
+        startTop + deltaY,
+        bounds.minTop,
+        bounds.maxTop
+      );
 
       card.style.left = `${left}px`;
       card.style.top = `${top}px`;
@@ -273,10 +263,8 @@
     handle.addEventListener('pointercancel', finishPointer);
     handle.addEventListener('lostpointercapture', finishPointer);
 
-    handle.addEventListener('click', (event) => {
-      if (event.detail === 0) {
-        showSpeechBox(card);
-      }
+    handle.addEventListener('click', event => {
+      if (event.detail === 0) showSpeechBox(card);
     });
   }
 
@@ -318,71 +306,52 @@
     const card = qs('.sidebar-pet-card', section);
     const speech = qs('.sidebar-pet-speech', card);
 
-    speech.addEventListener('click', (event) => {
+    speech.addEventListener('click', event => {
       event.stopPropagation();
       hideSpeechBox(card);
       openHelpPanel();
     });
 
     enableGreenieDragging(card);
-
     return card;
-  }
-
-  function resetLegacyPosition() {
-    try {
-      localStorage.removeItem('greenscape-greenie-position-v1');
-    } catch (error) {
-      // Legacy position data is optional.
-    }
   }
 
   function onReady() {
     document.body.classList.add('sidebar-assistant-enhanced');
-    resetLegacyPosition();
     preloadPetAnimations();
     ensureGreenieAssistant();
-    reorderPlantNames();
 
-    const observer = new MutationObserver(() => {
-      ensureGreenieAssistant();
-      reorderPlantNames();
-    });
-
-    const pageContent = qs('#pageContent') || document.body;
-    observer.observe(pageContent, {
-      childList: true,
-      subtree: true
-    });
-
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', event => {
       const card = qs('.sidebar-pet-card');
       if (!card || card.contains(event.target)) return;
       hideSpeechBox(card);
     });
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape') return;
-      hideSpeechBox(qs('.sidebar-pet-card'));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        hideSpeechBox(qs('.sidebar-pet-card'));
+      }
     });
 
     window.addEventListener('resize', () => {
       const card = qs('.sidebar-pet-card');
 
-      if (!card) return;
+      if (!card || window.innerWidth >= DESKTOP_BREAKPOINT) return;
 
-      if (window.innerWidth < DESKTOP_BREAKPOINT) {
-        qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
-        document.body.classList.remove('greenie-drag-active');
-        hideSpeechBox(card);
-        closeHelpPanel();
-        restoreCardToPlaceholder(card);
-      }
+      qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
+      document.body.classList.remove('greenie-drag-active');
+      hideSpeechBox(card);
+      closeHelpPanel();
+      restoreCardToPlaceholder(card);
     });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', onReady, { once: true });
+    document.addEventListener(
+      'DOMContentLoaded',
+      onReady,
+      { once: true }
+    );
   } else {
     onReady();
   }
