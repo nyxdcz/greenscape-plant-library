@@ -828,3 +828,43 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_LIBRARY_GLASS_TITLES_V1_END */
+
+/* GREENSCAPE_PLANT_CODE_BODY_V1_START
+   Plant code now sits in the text body directly above the common name. */
+#plantGrid .plant-code-badge {
+  display: none !important;
+}
+
+#plantGrid .plant-code-body {
+  display: block;
+  margin: 1px 0 5px;
+  color: var(--forest-700);
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+#plantGrid .scientific + .plant-code-body {
+  margin-top: 1px;
+}
+
+#plantGrid .plant-code-body + .plant-common-name {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 760px) {
+  #plantGrid .plant-code-body {
+    margin-bottom: 4px;
+    font-size: 8px;
+    letter-spacing: .08em;
+  }
+}
+
+@media (max-width: 390px) {
+  #plantGrid .plant-code-body {
+    font-size: 7.5px;
+  }
+}
+/* GREENSCAPE_PLANT_CODE_BODY_V1_END */

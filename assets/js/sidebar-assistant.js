@@ -2,6 +2,7 @@
   const DESKTOP_BREAKPOINT = 1024;
   const DRAG_THRESHOLD = 6;
   const RETURN_DURATION = 220;
+  const FLOATING_Z_INDEX = 2147483000;
   const NORMAL_GIF = 'assets/images/greenscape-pet.gif';
   const DRAG_GIF = 'assets/images/greenscape-pet-drag.gif';
 
@@ -35,13 +36,17 @@
     qsa('#plantGrid .plant-card, #plantGrid .plant-list-card', root).forEach((card) => {
       const commonName = qs('.plant-common-name', card) || qs('h2', card);
       const scientificName = qs('.scientific', card);
+      const plantCode = qs('.plant-code-body', card);
 
       if (!commonName || !scientificName) return;
 
       const parent = commonName.parentElement;
       if (!parent || scientificName.parentElement !== parent) return;
 
-      if (commonName.previousElementSibling !== scientificName) {
+      if (plantCode && plantCode.parentElement === parent) {
+        parent.insertBefore(scientificName, plantCode);
+        parent.insertBefore(plantCode, commonName);
+      } else if (commonName.previousElementSibling !== scientificName) {
         parent.insertBefore(scientificName, commonName);
       }
 
@@ -78,19 +83,54 @@
     card.style.removeProperty('left');
     card.style.removeProperty('top');
     card.style.removeProperty('width');
+    card.style.removeProperty('z-index');
     card.style.removeProperty('transition');
   }
 
-  function returnToSidebar(card, origin) {
+  function restoreCardToPlaceholder(card) {
+    const placeholder = qs('.sidebar-pet-placeholder');
+
+    if (placeholder?.isConnected) {
+      placeholder.replaceWith(card);
+    } else {
+      qs('.sidebar-utility-section')?.appendChild(card);
+    }
+
+    clearTemporaryPosition(card);
+  }
+
+  function returnToSidebar(card) {
+    const placeholder = qs('.sidebar-pet-placeholder');
+
+    if (!placeholder?.isConnected) {
+      restoreCardToPlaceholder(card);
+      return;
+    }
+
+    const target = placeholder.getBoundingClientRect();
+
     card.classList.remove('is-dragging');
     card.classList.add('is-returning');
     card.style.transition = `left ${RETURN_DURATION}ms ease, top ${RETURN_DURATION}ms ease`;
-    card.style.left = `${origin.left}px`;
-    card.style.top = `${origin.top}px`;
+    card.style.left = `${target.left}px`;
+    card.style.top = `${target.top}px`;
 
     window.setTimeout(() => {
-      clearTemporaryPosition(card);
+      restoreCardToPlaceholder(card);
     }, RETURN_DURATION + 30);
+  }
+
+  function createDragPlaceholder(card, rectangle) {
+    qs('.sidebar-pet-placeholder')?.remove();
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'sidebar-pet-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    placeholder.style.width = `${rectangle.width}px`;
+    placeholder.style.height = `${rectangle.height}px`;
+
+    card.insertAdjacentElement('beforebegin', placeholder);
+    return placeholder;
   }
 
   function enableGreenieDragging(card) {
@@ -114,6 +154,7 @@
       if (event && event.pointerId !== undefined && event.pointerId !== pointerId) return;
 
       const activePointerId = pointerId;
+      const shouldOpenHelp = !dragging && event?.type === 'pointerup';
       pointerId = null;
 
       try {
@@ -125,11 +166,11 @@
       image.src = NORMAL_GIF;
       document.body.classList.remove('greenie-drag-active');
 
-      if (dragging && origin) {
-        returnToSidebar(card, origin);
+      if (dragging) {
+        returnToSidebar(card);
       } else {
-        clearTemporaryPosition(card);
-        openHelpPanel();
+        restoreCardToPlaceholder(card);
+        if (shouldOpenHelp) openHelpPanel();
       }
 
       dragging = false;
@@ -147,7 +188,8 @@
       origin = {
         left: rectangle.left,
         top: rectangle.top,
-        width: rectangle.width
+        width: rectangle.width,
+        height: rectangle.height
       };
       startLeft = rectangle.left;
       startTop = rectangle.top;
@@ -164,11 +206,16 @@
 
       if (!dragging && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) {
         dragging = true;
+        createDragPlaceholder(card, origin);
+        document.body.appendChild(card);
+
         card.classList.add('is-floating', 'is-dragging');
         card.style.position = 'fixed';
         card.style.width = `${origin.width}px`;
         card.style.left = `${startLeft}px`;
         card.style.top = `${startTop}px`;
+        card.style.zIndex = String(FLOATING_Z_INDEX);
+
         image.src = DRAG_GIF;
         document.body.classList.add('greenie-drag-active');
       }
@@ -209,7 +256,7 @@
       navigation.insertAdjacentElement('afterend', section);
     }
 
-    const existingCard = qs('.sidebar-pet-card', section);
+    const existingCard = qs('.sidebar-pet-card');
 
     if (existingCard) {
       enableGreenieDragging(existingCard);
@@ -271,9 +318,9 @@
       if (!card) return;
 
       if (window.innerWidth < DESKTOP_BREAKPOINT) {
-        clearTemporaryPosition(card);
         qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
         document.body.classList.remove('greenie-drag-active');
+        restoreCardToPlaceholder(card);
       }
     });
   }

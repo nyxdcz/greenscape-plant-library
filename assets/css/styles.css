@@ -7972,3 +7972,45 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_END */
+
+/* GREENSCAPE_SIDEBAR_CHROME_CLEANUP_V1_START
+   Remove only the desktop bento shells around the official logo and website link. */
+@media (min-width: 761px) {
+  .sidebar .brand {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .sidebar .sidebar-actions {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    padding-inline: 0 !important;
+  }
+
+  .sidebar .website-link {
+    padding: 8px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .sidebar .website-link:hover,
+  .sidebar .website-link:focus-visible {
+    color: #ffffff !important;
+    background: transparent !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+/* GREENSCAPE_SIDEBAR_CHROME_CLEANUP_V1_END */

@@ -1,4 +1,4 @@
-/* Hover-reveal Greenie help box with temporary drag-and-return behavior */
+/* Hover-reveal Greenie help box with body-level temporary drag and return */
 
 body.sidebar-assistant-enhanced .sidebar {
   min-height: 0;
@@ -19,7 +19,14 @@ body.sidebar-assistant-enhanced .sidebar::-webkit-scrollbar-thumb {
 
 body.sidebar-assistant-enhanced .sidebar-utility-section {
   display: block;
-  margin: 14px 0 0;
+  margin: 24px 0 0;
+}
+
+body.sidebar-assistant-enhanced .sidebar-pet-placeholder {
+  display: block;
+  max-width: 190px;
+  min-height: 82px;
+  margin: 0 auto;
 }
 
 body.sidebar-assistant-enhanced .sidebar-pet-card {
@@ -37,9 +44,12 @@ body.sidebar-assistant-enhanced .sidebar-pet-card {
   box-shadow: none;
 }
 
-body.sidebar-assistant-enhanced .sidebar-pet-card.is-floating {
-  z-index: 70;
+body.sidebar-assistant-enhanced .sidebar-pet-card.is-floating,
+body.sidebar-assistant-enhanced .sidebar-pet-card.is-returning {
+  z-index: 2147483000 !important;
+  max-width: none;
   margin: 0;
+  isolation: isolate;
 }
 
 body.sidebar-assistant-enhanced .sidebar-pet-card.is-dragging,
@@ -179,7 +189,6 @@ body.sidebar-assistant-enhanced .website-link {
 }
 
 #plantGrid .scientific.scientific-name-top {
-  order: -1;
   min-height: 0 !important;
   margin: 0 0 3px !important;
 }

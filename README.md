@@ -12,52 +12,84 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_GREENIE_HOVER_RETURN_V1_START -->
-### Greenie Hover Help and Drag Return V1
+<!-- GREENSCAPE_SIDEBAR_CODE_REFINEMENT_V1_START -->
+### Sidebar and Plant-Code Refinement V1
 
-Current desktop interaction:
+Latest UI and interaction changes:
 
-- Greenie appears in its original sidebar location.
-- The simple dark-green speech box is hidden by default.
-- Hovering or focusing Greenie reveals the speech box above the pet.
-- Moving the pointer from Greenie into the speech box keeps it visible.
-- Leaving both Greenie and the speech box hides it.
-- Clicking Greenie without dragging opens the existing Help panel.
-- Clicking the visible speech box opens the same Help panel.
-- Dragging beyond the 6px threshold hides the speech box and switches to `assets/images/greenscape-pet-drag.gif`.
-- Releasing after a drag animates Greenie back to its original sidebar location.
-- The normal GIF returns after release.
-- Dragging never opens Help and no position is saved.
-- Settings, Help & Support, and Greenie’s close button remain removed.
-- The mobile Help control remains unchanged.
-- Scientific names remain above common names in Grid and List views.
-- Company Use Only and Visit Greenscape website remain available through the scrollable sidebar.
+- Clicking Greenie without dragging opens the existing Help panel containing **Beta — Work in Progress** and **Report an issue or send a suggestion**.
+- Clicking Greenie’s visible speech box opens the same Help panel.
+- Keeps the 6px drag threshold so dragging never opens Help.
+- Moves Greenie 10px lower in the desktop sidebar.
+- During dragging, temporarily portals Greenie to `document.body` with `z-index: 2147483000`, keeping it above headers, dialogs, cards, toolbars, and notices.
+- Keeps the alternate drag GIF while moving, then returns Greenie to its original sidebar location and normal GIF after release.
+- Removes the desktop bento border, background, shadow, and blur around the official Greenscape logo while preserving the logo, leaf mark, and tagline.
+- Removes the desktop bento border and background around **Visit Greenscape website** while preserving its URL, new-tab behavior, hover/focus feedback, arrow, and full clickability.
+- Removes plant-code badges from plant photographs.
+- Places every plant code in the card body directly above the common name, with the scientific name remaining above the code.
+- Keeps the category badge on each photograph.
+- Preserves the dynamic header titles **Dashboard** and **Plant Library**, including browser-tab title updates.
+- Keeps the phone dock, existing glass styling elsewhere, maintenance notice and restrictions, existing breakpoints, catalogue column counts, toolbar, and card actions unchanged.
+
+Plant-card title order:
+
+```text
+Scientific name
+Plant code
+Common name
+Available sizes
+```
 
 Affected files:
 
 ```text
+assets/js/app.js
 assets/js/sidebar-assistant.js
+assets/css/styles.css
 assets/css/sidebar-assistant.css
-assets/images/greenscape-pet-drag.gif
+assets/css/plant-library-refinements.css
 index.html
 README.md
+```
+
+Responsive behavior:
+
+```text
+Desktop/tablet sidebar: logo and website outer bento shells removed
+Desktop Greenie:        lowered, draggable above all page elements
+Below 1024px:           existing mobile Help and Greenie visibility unchanged
+Plant cards:            existing 6/5/4/3/2 responsive grid preserved
 ```
 
 Current cache keys:
 
 ```text
-assets/css/sidebar-assistant.css?v=20260729-greenie-hover-return1
-assets/js/sidebar-assistant.js?v=20260729-greenie-hover-return1
+assets/css/styles.css?v=20260729-sidebar-code-cleanup2
+assets/css/plant-library-refinements.css?v=20260729-sidebar-code-cleanup2
+assets/css/sidebar-assistant.css?v=20260729-sidebar-code-cleanup2
+assets/js/app.js?v=20260729-sidebar-code-cleanup2
+assets/js/sidebar-assistant.js?v=20260729-sidebar-code-cleanup2
 ```
+
+Deployment:
+
+1. Upload `.github/workflows/apply-sidebar-code-refinements-fixed.yml`.
+2. The workflow patches and validates the approved files.
+3. It commits the result to `main`.
+4. It packages and deploys GitHub Pages from the same validated working tree.
+5. Confirm the workflow and deployment steps are green, then hard-refresh the live website.
 
 Verification:
 
 ```text
+node --check assets/js/app.js
 node --check assets/js/sidebar-assistant.js
 npm run quality
 git diff --check
 ```
-<!-- GREENSCAPE_GREENIE_HOVER_RETURN_V1_END -->
+
+Current version status: packaged for a validated same-run commit and GitHub Pages deployment.
+<!-- GREENSCAPE_SIDEBAR_CODE_REFINEMENT_V1_END -->
 
 
 
@@ -80,7 +112,7 @@ Latest UI and layout changes:
 - Converts common plant names from clickable buttons to plain `<h2>` text in both Grid and List views.
 - Removes common-name hover color changes, focus effects, backgrounds, text shadows, box shadows, transforms, and pointer behavior.
 - Keeps Plant Details accessible through the plant photograph and the View button.
-- Keeps the category badge, plant code badge, scientific name, available-size count, View action, and Add to List action.
+- Keeps the category badge, plant code in the card body, scientific name, available-size count, View action, and Add to List action.
 - Retains maintenance-mode restrictions and the responsive 6/5/4/3/2 Grid layout.
 
 Responsive catalogue grid:

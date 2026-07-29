@@ -900,11 +900,11 @@
         <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
           ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="480" height="360" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
-          <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
         </button>
         <div class="plant-card-body">
-          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
+          <span class="plant-code-body">${escapeHTML(plant.code || '—')}</span>
+          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <div class="plant-meta"><span>${escapeHTML(sizeText)}</span></div>
           <div class="plant-card-actions">
             <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${libraryIcon('eye')}<span>View</span></button>
@@ -925,11 +925,11 @@
         <button class="plant-list-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
           ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="240" height="180" loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async">` : `<span class="image-fallback">${escapeHTML(plant.code || '—')}</span>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
-          <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
         </button>
         <div class="plant-list-copy">
-          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
+          <span class="plant-code-body">${escapeHTML(plant.code || '—')}</span>
+          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <span class="plant-list-category">${escapeHTML(plant.category || 'Uncategorized')}</span>
         </div>
         <div class="plant-list-size">${escapeHTML(sizeText)}</div>
