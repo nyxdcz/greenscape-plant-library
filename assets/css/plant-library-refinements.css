@@ -20,7 +20,8 @@
   }
 
   body:has(#plantGrid) .topbar h1 {
-    font-size: clamp(26px, 2.4vw, 34px) !important;
+    font-size: clamp(27px, 3vw, 38px) !important;
+    line-height: 1.1 !important;
   }
 
   body:has(#plantGrid) .company-use-notice {

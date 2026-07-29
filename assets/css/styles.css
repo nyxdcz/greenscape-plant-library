@@ -7962,3 +7962,13 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_DASHBOARD_UNIFORM_WIDTH_V1_END */
+
+/* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_START */
+/* Dashboard and desktop page titles share one responsive scale. */
+@media (min-width: 761px) {
+  .topbar h1 {
+    font-size: clamp(27px, 3vw, 38px) !important;
+    line-height: 1.1 !important;
+  }
+}
+/* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_END */
