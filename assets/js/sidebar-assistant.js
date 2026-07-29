@@ -61,29 +61,6 @@
     setSpeechOpen(card, false);
   }
 
-  function reorderPlantNames(root = document) {
-    qsa('#plantGrid .plant-card, #plantGrid .plant-list-card', root).forEach((card) => {
-      const commonName = qs('.plant-common-name', card) || qs('h2', card);
-      const scientificName = qs('.scientific', card);
-      const plantCode = qs('.plant-code-body', card);
-
-      if (!commonName || !scientificName) return;
-
-      const parent = commonName.parentElement;
-      if (!parent || scientificName.parentElement !== parent) return;
-
-      if (plantCode && plantCode.parentElement === parent) {
-        parent.insertBefore(scientificName, plantCode);
-        parent.insertBefore(plantCode, commonName);
-      } else if (commonName.previousElementSibling !== scientificName) {
-        parent.insertBefore(scientificName, commonName);
-      }
-
-      scientificName.classList.add('scientific-name-top');
-      commonName.classList.add('common-name-bottom');
-    });
-  }
-
   function preloadPetAnimations() {
     [NORMAL_GIF, DRAG_GIF].forEach((source) => {
       const image = new Image();
@@ -342,18 +319,6 @@
     resetLegacyPosition();
     preloadPetAnimations();
     ensureGreenieAssistant();
-    reorderPlantNames();
-
-    const observer = new MutationObserver(() => {
-      ensureGreenieAssistant();
-      reorderPlantNames();
-    });
-
-    const pageContent = qs('#pageContent') || document.body;
-    observer.observe(pageContent, {
-      childList: true,
-      subtree: true
-    });
 
     document.addEventListener('click', (event) => {
       const card = qs('.sidebar-pet-card');
