@@ -12,6 +12,51 @@ Open the published website here:
 
 ## What's New
 
+<!-- GREENSCAPE_PLANT_LIBRARY_PULSE_V1_START -->
+### Plant Library Pulse Layout V1
+
+The Plant Library now uses a compact Pulse-style overview and control hierarchy while keeping every plant catalogue card uniform for easy visual comparison.
+
+Changes:
+
+- Adds four live summary cards for total library entries, photo coverage, category count, and current filtered results.
+- Reorganizes search, category selection, result count, and Add Plant into one responsive bento control bar.
+- Adds quick filters for All, Plants, Materials, With Photos, and Missing Photos, plus a removable active-category chip.
+- Uses a uniform responsive plant-card grid with 6 columns on large desktops, 5 on compact desktops, 4 on tablets, 3 on mobile, and 2 on small mobile screens.
+- Keeps 4:3 plant images, equal card heights, aligned titles, and bottom-aligned actions.
+- Makes the plant title and photograph open Plant Details and changes the repeated large details action into a lighter Details link.
+- Replaces the inline Load More area with a full-width results footer showing the visible and total entry counts.
+- Uses 9px category badges, 13–14px common names, 10–11px scientific names, 9–10px metadata, 10–11px action labels, 38–40px controls, and 12px card padding on phones.
+- Refreshes the Plant Library stylesheet and application cache keys for GitHub Pages.
+
+Responsive grid:
+
+```text
+Large desktop:   1440px and above   6 columns
+Compact desktop: 1181px–1439px      5 columns
+Tablet:          761px–1180px       4 columns
+Mobile:          391px–760px        3 columns
+Small mobile:    390px and below    2 columns
+```
+
+Updated files:
+
+```text
+assets/css/plant-library-refinements.css
+assets/js/app.js
+index.html
+README.md
+```
+
+Validation:
+
+```text
+node --check assets/js/app.js
+npm run quality
+git diff --check
+```
+<!-- GREENSCAPE_PLANT_LIBRARY_PULSE_V1_END -->
+
 ### Catalog Pulse Bento Dashboard V1
 
 The original Greenscape workspace now uses a more complete bento dashboard while preserving its established colors, rounded glass surfaces, glow effects, and responsive structure.

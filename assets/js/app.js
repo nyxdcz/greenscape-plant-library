@@ -106,6 +106,7 @@
     view: initialView,
     librarySearch: '',
     libraryCategory: 'All',
+    libraryQuickFilter: 'All',
     libraryLimit: 48,
     sheetSearch: '',
     sheetCategory: 'All',
@@ -773,9 +774,17 @@
 
   function filteredPlants() {
     const q = state.librarySearch.trim().toLowerCase();
+    const quickFilter = state.libraryQuickFilter || 'All';
+
     return plants.filter(plant => {
       const matchesCategory = state.libraryCategory === 'All' || plant.category === state.libraryCategory;
       if (!matchesCategory) return false;
+
+      if (quickFilter === 'Plants' && !plant.isPlant) return false;
+      if (quickFilter === 'Materials' && plant.isPlant) return false;
+      if (quickFilter === 'With Photos' && !safeImage(plant.image)) return false;
+      if (quickFilter === 'Missing Photos' && safeImage(plant.image)) return false;
+
       if (!q) return true;
       const haystack = [
         plant.code,
@@ -791,22 +800,82 @@
     });
   }
 
+  function libraryQuickFilterOptions() {
+    return ['All', 'Plants', 'Materials', 'With Photos', 'Missing Photos'];
+  }
+
   function renderLibrary() {
-    const duplicates = duplicateCodeGroups();
+    const totalEntries = plants.length;
+    const withPhotos = plants.filter(plant => safeImage(plant.image)).length;
+    const categoryCount = categories().length;
+    const currentResults = filteredPlants().length;
+    const photoCoverage = Math.round((withPhotos / Math.max(totalEntries, 1)) * 100);
+
     content.innerHTML = `
+      <section class="library-pulse-grid" aria-label="Plant Library summary">
+        <article class="library-pulse-card">
+          <span>Library entries</span>
+          <strong>${totalEntries}</strong>
+          <small>Published catalogue records</small>
+        </article>
+        <article class="library-pulse-card">
+          <span>With photos</span>
+          <strong>${withPhotos}</strong>
+          <small>${photoCoverage}% photo coverage</small>
+        </article>
+        <article class="library-pulse-card">
+          <span>Categories</span>
+          <strong>${categoryCount}</strong>
+          <small>Plants and materials</small>
+        </article>
+        <article class="library-pulse-card library-results-pulse">
+          <span>Current results</span>
+          <strong id="libraryResultsPulse">${currentResults}</strong>
+          <small>Matching active filters</small>
+        </article>
+      </section>
+
       <div class="toolbar library-toolbar">
-        <div class="toolbar-group">
-          <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}"></label>
-          <select id="categoryFilter" class="select-input" aria-label="Filter plants by category">
-            <option value="All">All categories</option>
-            ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
-          </select>
-        </div>
-        <div class="toolbar-group">
-          <span id="resultCount" class="result-count" role="status" aria-live="polite" aria-atomic="true"></span>
-          <button type="button" class="button primary" data-action="new-plant">Add plant</button>
+        <label class="search-wrap library-search">
+          <span aria-hidden="true">⌕</span>
+          <input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}">
+        </label>
+
+        <select id="categoryFilter" class="select-input" aria-label="Filter plants by category">
+          <option value="All">All categories</option>
+          ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
+        </select>
+
+        <span id="resultCount" class="result-count library-result-status" role="status" aria-live="polite" aria-atomic="true"></span>
+        <button type="button" class="button primary library-add-button" data-action="new-plant">Add plant</button>
+
+        <div class="library-quick-filters" aria-label="Quick filters">
+          <span class="library-quick-filter-label">Quick filters</span>
+          <div class="library-filter-chip-list">
+            ${libraryQuickFilterOptions().map(filter => `
+              <button
+                type="button"
+                class="library-filter-chip"
+                data-action="library-quick-filter"
+                data-filter="${escapeHTML(filter)}"
+                aria-pressed="${state.libraryQuickFilter === filter ? 'true' : 'false'}"
+              >${escapeHTML(filter)}</button>
+            `).join('')}
+            ${state.libraryCategory !== 'All' ? `
+              <button
+                type="button"
+                class="library-filter-chip library-category-chip"
+                data-action="clear-library-category"
+                aria-label="Remove category filter ${escapeHTML(state.libraryCategory)}"
+              >
+                <span>${escapeHTML(state.libraryCategory)}</span>
+                <span aria-hidden="true">×</span>
+              </button>
+            ` : ''}
+          </div>
         </div>
       </div>
+
       <div id="plantGrid"></div>
     `;
     updateLibraryResults();
@@ -815,42 +884,60 @@
   function updateLibraryResults() {
     const grid = document.getElementById('plantGrid');
     const count = document.getElementById('resultCount');
+    const pulse = document.getElementById('libraryResultsPulse');
     if (!grid || !count) return;
+
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
     count.textContent = `${results.length} ${results.length === 1 ? 'entry' : 'entries'}`;
+    if (pulse) pulse.textContent = String(results.length);
+
     if (!results.length) {
-      grid.innerHTML = emptyState('No matching plants', 'Try another plant name or category.', '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>');
+      grid.innerHTML = emptyState(
+        'No matching plants',
+        'Try another plant name, category, or quick filter.',
+        '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>'
+      );
       return;
     }
+
+    const remaining = results.length - shown.length;
     grid.innerHTML = `
       <div class="plant-grid">${shown.map((plant, index) => plantCard(plant, index)).join('')}</div>
-      ${shown.length < results.length ? `<div style="display:flex;justify-content:center;margin-top:22px;"><button type="button" class="button secondary" data-action="load-more">Show more (${results.length - shown.length} remaining)</button></div>` : ''}
+      <div class="library-results-footer">
+        <span>Showing <strong>${shown.length}</strong> of <strong>${results.length}</strong> entries</span>
+        ${remaining > 0
+          ? `<button type="button" class="button secondary" data-action="load-more">Show more (${remaining} remaining)</button>`
+          : '<span class="library-results-complete">All entries shown</span>'}
+      </div>
     `;
   }
 
   function plantCard(plant, index = 0) {
     const image = safeImage(plant.image);
     const sizeCount = (plant.sizes || []).length;
+    const plantName = plant.commonName || 'Unnamed plant';
+
     return `
       <article class="plant-card">
-        <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" style="width:100%;padding:0;border:0;text-align:left;">
-          ${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="480" height="407" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
+        <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
+          ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="480" height="407" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
         <div class="plant-card-body">
           ${plantCodeMarkup(plant)}
-          <h2>${escapeHTML(plant.commonName)}</h2>
+          <h2>
+            <button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button>
+          </h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
           <div class="plant-card-actions">
-            <button type="button" class="button secondary small" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
+            <button type="button" class="plant-details-link" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">Details <span aria-hidden="true">→</span></button>
             <button type="button" class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
           </div>
         </div>
       </article>`;
   }
-
 
 
   function filteredSheetPlants() {
@@ -3722,9 +3809,31 @@
     if (action === 'add-size-row') document.getElementById('sizeEditor').insertAdjacentHTML('beforeend', sizeRow({}));
     if (action === 'remove-size') target.closest('.size-row')?.remove();
     if (action === 'load-more') { state.libraryLimit += 48; updateLibraryResults(); }
-    if (action === 'clear-filter') { state.librarySearch = ''; state.libraryCategory = 'All'; state.libraryLimit = 48; renderLibrary(); }
+    if (action === 'library-quick-filter') {
+      state.libraryQuickFilter = target.dataset.filter || 'All';
+      state.libraryLimit = 48;
+      renderLibrary();
+    }
+    if (action === 'clear-library-category') {
+      state.libraryCategory = 'All';
+      state.libraryLimit = 48;
+      renderLibrary();
+    }
+    if (action === 'clear-filter') {
+      state.librarySearch = '';
+      state.libraryCategory = 'All';
+      state.libraryQuickFilter = 'All';
+      state.libraryLimit = 48;
+      renderLibrary();
+    }
     if (action === 'clear-sheet-filter') { state.sheetSearch = ''; state.sheetCategory = 'All'; renderPlantSheet(); }
-    if (action === 'filter-category') { state.libraryCategory = target.dataset.category; state.librarySearch = ''; state.libraryLimit = 48; setView('library'); }
+    if (action === 'filter-category') {
+      state.libraryCategory = target.dataset.category;
+      state.librarySearch = '';
+      state.libraryQuickFilter = 'All';
+      state.libraryLimit = 48;
+      setView('library');
+    }
     if (action === 'export-csv') exportCSV(target.dataset.projectId);
     if (action === 'print-schedule') window.print();
 
