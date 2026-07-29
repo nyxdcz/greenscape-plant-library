@@ -1,0 +1,135 @@
+name: Apply Consistent Header Titles
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-consistent-header-titles.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-header-titles:
+    name: Match Dashboard and Plant Library titles
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Apply approved header-title sizing
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          styles_path = Path("assets/css/styles.css")
+          library_css_path = Path("assets/css/plant-library-refinements.css")
+          index_path = Path("index.html")
+
+          styles = styles_path.read_text(encoding="utf-8")
+          library_css = library_css_path.read_text(encoding="utf-8")
+          index = index_path.read_text(encoding="utf-8")
+
+          start_marker = "/* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_START */"
+          end_marker = "/* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_END */"
+
+          title_block = """
+          /* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_START */
+          /* Dashboard and desktop page titles share one responsive scale. */
+          @media (min-width: 761px) {
+            .topbar h1 {
+              font-size: clamp(27px, 3vw, 38px) !important;
+              line-height: 1.1 !important;
+            }
+          }
+          /* GREENSCAPE_CONSISTENT_HEADER_TITLES_V1_END */
+          """.strip()
+
+          if start_marker in styles and end_marker in styles:
+              before, remainder = styles.split(start_marker, 1)
+              _, after = remainder.split(end_marker, 1)
+              styles = before.rstrip() + "\n\n" + title_block + after
+          else:
+              styles = styles.rstrip() + "\n\n" + title_block + "\n"
+
+          old_library_rule = (
+              "  body:has(#plantGrid) .topbar h1 {\n"
+              "    font-size: clamp(26px, 2.4vw, 34px) !important;\n"
+              "  }"
+          )
+          new_library_rule = (
+              "  body:has(#plantGrid) .topbar h1 {\n"
+              "    font-size: clamp(27px, 3vw, 38px) !important;\n"
+              "    line-height: 1.1 !important;\n"
+              "  }"
+          )
+
+          if old_library_rule in library_css:
+              library_css = library_css.replace(old_library_rule, new_library_rule, 1)
+          elif new_library_rule not in library_css:
+              raise SystemExit("Plant Library desktop title rule was not found.")
+
+          cache_replacements = [
+              (
+                  "assets/css/styles.css?v=20260729-dashboard-uniform-width1",
+                  "assets/css/styles.css?v=20260729-header-title-scale1",
+              ),
+              (
+                  "assets/css/plant-library-refinements.css?v=20260729-library-refinement3",
+                  "assets/css/plant-library-refinements.css?v=20260729-library-title-scale1",
+              ),
+          ]
+
+          for old_cache, new_cache in cache_replacements:
+              if old_cache in index:
+                  index = index.replace(old_cache, new_cache, 1)
+              elif new_cache not in index:
+                  raise SystemExit(f"Stylesheet cache key was not found: {old_cache}")
+
+          required_checks = [
+              ".topbar h1 {\n    font-size: clamp(27px, 3vw, 38px) !important;",
+              "body:has(#plantGrid) .topbar h1 {\n    font-size: clamp(27px, 3vw, 38px) !important;",
+              "body:has(#plantGrid) .topbar h1 {\n    font-size: 25px !important;",
+          ]
+
+          combined = styles + "\n" + library_css
+          for check in required_checks:
+              if check not in combined:
+                  raise SystemExit(f"Header-title verification failed:\n{check}")
+
+          styles_path.write_text(styles, encoding="utf-8")
+          library_css_path.write_text(library_css, encoding="utf-8")
+          index_path.write_text(index, encoding="utf-8")
+          PY
+
+      - name: Run website quality checks
+        run: npm run quality
+
+      - name: Check formatting
+        run: git diff --check
+
+      - name: Commit and publish header-title update
+        shell: bash
+        run: |
+          if git diff --quiet -- assets/css/styles.css assets/css/plant-library-refinements.css index.html; then
+            echo "The approved header-title sizing is already applied."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/styles.css assets/css/plant-library-refinements.css index.html
+          git commit -m "fix: match dashboard and library title sizing"
+          git push origin HEAD:main
