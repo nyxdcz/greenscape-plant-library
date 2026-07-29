@@ -12,35 +12,41 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_START -->
-### Greenie Speech Cloud and Sidebar Visibility V1
+<!-- GREENSCAPE_GREENIE_DRAG_V1_START -->
+### Draggable Greenie Assistant V1
 
-Latest sidebar updates:
+Latest sidebar behavior:
 
-- Places Greenie’s clickable speech cloud above the animated pet.
-- Uses the exact content: “Hi! I’m Greenie 🌿”, “Need help finding the perfect plant?”, and “Ask me anything”.
-- Makes both the speech cloud and animated Greenie open the existing Help panel.
-- Removes the separate rectangular Ask me anything button.
-- Keeps the small close button and hides Greenie only for the current browser session.
-- Fixes the Plant Library order so the scientific name appears above the common name in Grid and List views.
-- Makes the desktop sidebar internally scrollable on shorter screens.
-- Restores visibility of the Company Use Only notice and Visit Greenscape website link below Greenie.
-- Positions the existing Help panel near the desktop sidebar while retaining the mobile Help control.
+- Removes the Settings and Help & Support rows from the desktop sidebar.
+- Removes Greenie’s close button and hidden-state behavior.
+- Keeps one dark-green cloud with white text above the animated pet.
+- Makes the cloud the only desktop Help trigger.
+- Uses the animated pet as the drag handle only.
+- Moves the cloud and pet together when Greenie is dragged.
+- Switches to `assets/images/greenscape-pet-drag.gif` while dragging.
+- Returns to `assets/images/greenscape-pet.gif` when dragging ends.
+- Saves Greenie’s last desktop position in local storage.
+- Keeps Greenie inside the visible browser window.
+- Disables dragging and hides the desktop Greenie section below 1024px.
+- Retains the existing mobile Help control.
+- Keeps scientific names above common names in Grid and List views.
+- Keeps Company Use Only and Visit Greenscape website visible through internal sidebar scrolling.
 
 Affected files:
 
 ```text
 assets/js/sidebar-assistant.js
 assets/css/sidebar-assistant.css
+assets/images/greenscape-pet-drag.gif
 index.html
 README.md
 ```
 
-Cache keys:
+Current cache keys:
 
 ```text
-assets/css/sidebar-assistant.css?v=20260729-greenie-speech-cloud1
-assets/js/sidebar-assistant.js?v=20260729-greenie-speech-cloud1
+assets/css/sidebar-assistant.css?v=20260729-greenie-drag1
+assets/js/sidebar-assistant.js?v=20260729-greenie-drag1
 ```
 
 Verification:
@@ -50,7 +56,8 @@ node --check assets/js/sidebar-assistant.js
 npm run quality
 git diff --check
 ```
-<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_END -->
+<!-- GREENSCAPE_GREENIE_DRAG_V1_END -->
+
 
 
 
