@@ -7913,3 +7913,40 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_CATALOG_PULSE_BENTO_V3_END */
+
+/* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_START */
+/* Atheros-inspired spacing rhythm: compact gaps with generous card interiors. */
+#pageContent > .hero + .stat-grid {
+  gap: 16px !important;
+  margin: 16px 0 0 !important;
+}
+
+#pageContent > .dashboard-bento-grid {
+  gap: 16px !important;
+  margin-top: 16px !important;
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  #pageContent > .hero + .stat-grid {
+    gap: 12px !important;
+    margin-top: 16px !important;
+  }
+
+  #pageContent > .dashboard-bento-grid {
+    gap: 12px !important;
+    margin-top: 12px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #pageContent > .hero + .stat-grid {
+    gap: 9px !important;
+    margin: 14px 0 0 !important;
+  }
+
+  #pageContent > .dashboard-bento-grid {
+    gap: 12px !important;
+    margin-top: 12px !important;
+  }
+}
+/* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_END */
