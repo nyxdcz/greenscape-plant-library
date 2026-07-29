@@ -12,45 +12,127 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_START -->
-### Greenie Speech Cloud and Sidebar Visibility V1
+<!-- GREENSCAPE_REPOSITORY_QUALITY_AUDIT_V1_START -->
+### Repository Quality, Performance, and Accessibility Audit V1
 
-Latest sidebar updates:
+This focused audit preserves the existing Greenscape design and application behavior while improving automated coverage, runtime efficiency, accessibility, and repository security.
 
-- Places Greenie’s clickable speech cloud above the animated pet.
-- Uses the exact content: “Hi! I’m Greenie 🌿”, “Need help finding the perfect plant?”, and “Ask me anything”.
-- Makes both the speech cloud and animated Greenie open the existing Help panel.
-- Removes the separate rectangular Ask me anything button.
-- Keeps the small close button and hides Greenie only for the current browser session.
-- Fixes the Plant Library order so the scientific name appears above the common name in Grid and List views.
-- Makes the desktop sidebar internally scrollable on shorter screens.
-- Restores visibility of the Company Use Only notice and Visit Greenscape website link below Greenie.
-- Positions the existing Help panel near the desktop sidebar while retaining the mobile Help control.
+Latest UI and behavior changes:
+
+- Keeps the Dashboard, Plant Library, maintenance mode, Greenie interaction, glass styling, and phone dock appearance unchanged.
+- Announces Plant Library result totals and empty-search states through polite live regions.
+- Gives the phone **More** panel non-modal dialog semantics, moves keyboard focus into it when opened, closes it with Escape, and returns focus to the More button.
+- Removes Greenie’s obsolete full Plant Library scan because `app.js` already renders scientific name, plant code, and common name in the approved order.
+- Removes the phone dock’s full-document MutationObserver and throttles pointer-motion calculations with `requestAnimationFrame`.
+- Removes unused image-overlay plant-code badge CSS.
+- Expands syntax validation to every production JavaScript file and every repository JavaScript module.
+- Adds a high-confidence tracked-file secret scan.
+- Removes stale one-shot `apply-*` workflows while retaining CI, plant CSV synchronization, and the active Pages deployment workflow.
+- Preserves the internal `noindex` and `Disallow: /` policy.
 
 Affected files:
 
 ```text
+package.json
+scripts/check-js.mjs
+scripts/security-check.mjs
+scripts/validate.mjs
+assets/js/app.js
+assets/js/magnetic-dock.js
 assets/js/sidebar-assistant.js
+assets/css/plant-library-refinements.css
 assets/css/sidebar-assistant.css
 index.html
 README.md
+.github/workflows/apply-*.yml (removed)
 ```
 
-Cache keys:
+Responsive behavior:
 
 ```text
-assets/css/sidebar-assistant.css?v=20260729-greenie-speech-cloud1
-assets/js/sidebar-assistant.js?v=20260729-greenie-speech-cloud1
+Desktop 1024px+: Greenie and desktop sidebar behavior preserved
+Tablet 761–1023px: existing layout and breakpoints preserved
+Phone 760px and below: five-button dock preserved; More keyboard behavior improved
+Plant Library: existing 6/5/4/3/2 responsive catalogue retained
 ```
+
+Performance measurements:
+
+| Metric | Before | After | Change |
+|---|---:|---:|---:|
+| Total `assets/js` bytes | 644,213 | 644,277 | +64 |
+| Total `assets/css` bytes | 322,863 | 322,435 | -428 |
+| Greenie JavaScript bytes | 11,161 | 9,715 | -1,446 |
+| Phone dock JavaScript bytes | 8,201 | 9,508 | +1,307 |
+| Plant Library refinement CSS bytes | 21,840 | 21,276 | -564 |
+| One-shot `apply-*` workflows | 19 | 0 | -19 |
+| `npm run quality` runtime | 1.17s | 1.53s | runner-dependent |
+
+Removed one-shot workflows:
+
+- `apply-consistent-header-titles.yml`
+- `apply-dashboard-bento-spacing.yml`
+- `apply-dashboard-uniform-width.yml`
+- `apply-draggable-greenie-assistant.yml`
+- `apply-greenie-hover-help-and-return.yml`
+- `apply-greenie-speech-cloud.yml`
+- `apply-greenie-speech-first-drag.yml`
+- `apply-plant-library-catalog-cleanup.yml`
+- `apply-plant-library-glass-toolbar.yml`
+- `apply-plant-library-pulse-layout-v2.yml`
+- `apply-plant-library-pulse-layout-v3.yml`
+- `apply-plant-library-pulse-layout-v4.yml`
+- `apply-plant-library-pulse-layout.yml`
+- `apply-plant-library-reference-layout-v2.yml`
+- `apply-plant-library-reference-layout.yml`
+- `apply-plant-library-spacing.yml`
+- `apply-sidebar-assistant-and-library-order.yml`
+- `apply-sidebar-code-refinements-fixed.yml`
+- `apply-sidebar-code-refinements.yml`
+- `repository-quality-audit.yml`
+
+Current cache keys:
+
+```text
+assets/css/plant-library-refinements.css?v=20260729-repository-quality1
+assets/css/sidebar-assistant.css?v=20260729-repository-quality1
+assets/js/app.js?v=20260729-repository-quality1
+assets/js/magnetic-dock.js?v=20260729-repository-quality1
+assets/js/sidebar-assistant.js?v=20260729-repository-quality1
+```
+
+Deployment:
+
+1. Review and merge the repository-quality pull request.
+2. Keep the active Website Checks, plant CSV synchronization, and GitHub Pages deployment workflows.
+3. Allow the existing Pages deployment workflow to publish `main`.
+4. Hard-refresh the live website after deployment.
+5. Verify Dashboard, Plant Library Grid/List, Greenie, Help, maintenance mode, and the phone dock at the current breakpoints.
 
 Verification:
 
 ```text
-node --check assets/js/sidebar-assistant.js
 npm run quality
+npm run lint
+npm run security
+npm test
+npm run build
+npm run audit
 git diff --check
 ```
-<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_END -->
+
+Type checking is not applicable because the repository contains no TypeScript.
+
+Remaining issues:
+
+- `assets/js/app.js` remains a large single file; splitting it was intentionally deferred to avoid architectural risk.
+- The repository does not yet have browser-driven end-to-end or automated Lighthouse tests.
+- Visual screenshots are still required for desktop, tablet, and phone review before merging.
+- SEO remains intentionally limited because this is an internal company tool.
+
+Current version status: all repository checks passed in the audit workflow before the pull request was opened.
+<!-- GREENSCAPE_REPOSITORY_QUALITY_AUDIT_V1_END -->
+
 
 
 <!-- GREENSCAPE_GREENIE_SPEECH_FIRST_V1_START -->
@@ -106,11 +188,9 @@ assets/js/sidebar-assistant.js?v=20260729-greenie-speech-first1
 
 Deployment:
 
-1. Upload `.github/workflows/apply-greenie-speech-first-drag.yml`.
-2. The workflow replaces the Greenie interaction files and refreshes cache keys.
-3. It validates JavaScript, repository quality, and formatting.
-4. It commits to `main` and deploys GitHub Pages from the same validated working tree.
-5. Confirm the workflow and deployment steps are green, then hard-refresh the website.
+1. Review and merge the repository-quality pull request.
+2. The active GitHub Pages workflow deploys the merged `main` branch.
+3. Confirm the deployment is green, then hard-refresh the website.
 
 Verification:
 
@@ -122,13 +202,6 @@ git diff --check
 
 Current version status: packaged for validated same-run commit and GitHub Pages deployment.
 <!-- GREENSCAPE_GREENIE_SPEECH_FIRST_V1_END -->
-
-
-
-
-
-
-
 
 
 <!-- GREENSCAPE_LIBRARY_GLASS_TITLES_V1_START -->
