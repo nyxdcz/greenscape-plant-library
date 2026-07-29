@@ -1,0 +1,102 @@
+name: Fix Plant Library Technical Notes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/fix-plant-library-notes.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    name: Apply and verify Plant Library cleanup
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Apply the two technical fixes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          index_path = Path("index.html")
+          app_path = Path("assets/js/app.js")
+
+          index = index_path.read_text(encoding="utf-8")
+          app = app_path.read_text(encoding="utf-8")
+
+          old_css = "assets/css/plant-library-refinements.css?v=20260729-library-refinement1"
+          new_css = "assets/css/plant-library-refinements.css?v=20260729-library-refinement2"
+
+          if old_css in index:
+              index = index.replace(old_css, new_css, 1)
+          elif new_css not in index:
+              raise SystemExit("Plant Library refinement stylesheet link was not found.")
+
+          old_app_cache = "assets/js/app.js?v=20260729-catalog-pulse-bento1"
+          new_app_cache = "assets/js/app.js?v=20260729-library-toolbar-cleanup1"
+          if old_app_cache in index:
+              index = index.replace(old_app_cache, new_app_cache, 1)
+          elif new_app_cache not in index:
+              raise SystemExit("Application script link was not found.")
+
+          old_group = '<div class="toolbar-group" style="flex:1;">'
+          new_group = '<div class="toolbar-group">'
+          if old_group in app:
+              app = app.replace(old_group, new_group, 1)
+
+          old_filter = '<select id="categoryFilter" class="select-input" aria-label="Filter plants by category" style="width:auto;min-width:210px;">'
+          new_filter = '<select id="categoryFilter" class="select-input" aria-label="Filter plants by category">'
+          if old_filter in app:
+              app = app.replace(old_filter, new_filter, 1)
+
+          if 'id="categoryFilter"' not in app:
+              raise SystemExit("Plant Library category filter was not found.")
+
+          library_start = app.find("function renderLibrary()")
+          library_end = app.find("function updateLibraryResults()", library_start)
+          library_block = app[library_start:library_end]
+
+          if 'style="flex:1;"' in library_block:
+              raise SystemExit("Inline toolbar-group sizing still exists in renderLibrary().")
+          if 'style="width:auto;min-width:210px;"' in library_block:
+              raise SystemExit("Inline category-filter sizing still exists in renderLibrary().")
+
+          index_path.write_text(index, encoding="utf-8")
+          app_path.write_text(app, encoding="utf-8")
+          PY
+
+      - name: Run website quality checks
+        run: npm run quality
+
+      - name: Check formatting
+        run: git diff --check
+
+      - name: Commit and publish fixes
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html assets/js/app.js; then
+            echo "Both technical notes are already fixed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/js/app.js
+          git commit -m "fix: clean Plant Library toolbar and refresh caches"
+          git push origin HEAD:main
