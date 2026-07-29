@@ -903,7 +903,7 @@
           <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
         </button>
         <div class="plant-card-body">
-          <h2><button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button></h2>
+          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           <div class="plant-meta"><span>${escapeHTML(sizeText)}</span></div>
           <div class="plant-card-actions">
@@ -928,7 +928,7 @@
           <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
         </button>
         <div class="plant-list-copy">
-          <h2><button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button></h2>
+          <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
           <span class="plant-list-category">${escapeHTML(plant.category || 'Uncategorized')}</span>
         </div>

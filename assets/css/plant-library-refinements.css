@@ -736,3 +736,95 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
   }
 }
 /* GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_END */
+
+/* GREENSCAPE_LIBRARY_GLASS_TITLES_V1_START */
+/* Restores the Plant Library glass toolbar and keeps common names plain and non-interactive. */
+
+body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(221, 241, 202, .28), transparent 35%),
+    linear-gradient(135deg, rgba(255, 255, 255, .72), rgba(242, 249, 239, .56)) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .92),
+    inset 0 -1px 0 rgba(47, 106, 82, .05),
+    0 10px 28px rgba(16, 43, 34, .08) !important;
+}
+
+body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(110deg, rgba(255, 255, 255, .34), transparent 42%, rgba(216, 236, 207, .14));
+}
+
+body:has(#plantGrid) .library-reference-toolbar .search-input,
+body:has(#plantGrid) .library-reference-toolbar .select-input,
+body:has(#plantGrid) .library-view-toggle {
+  border-color: rgba(47, 106, 82, .13) !important;
+  background: rgba(255, 255, 255, .60) !important;
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .78),
+    0 2px 7px rgba(16, 43, 34, .035) !important;
+}
+
+#plantGrid .plant-common-name,
+#plantGrid .plant-card h2.plant-common-name,
+#plantGrid .plant-list-copy h2.plant-common-name {
+  margin: 0 0 3px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: var(--forest-900) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+#plantGrid .plant-common-name:hover,
+#plantGrid .plant-common-name:focus,
+#plantGrid .plant-common-name:focus-visible {
+  color: var(--forest-900) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+  outline: 0 !important;
+}
+
+#plantGrid .plant-card h2.plant-common-name {
+  min-height: 2.35em;
+}
+
+#plantGrid .plant-list-copy h2.plant-common-name {
+  min-height: 0;
+  font-size: 16px;
+}
+
+@media (min-width: 391px) and (max-width: 760px) {
+  #plantGrid .plant-card h2.plant-common-name {
+    font-size: 13px !important;
+    line-height: 1.16 !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #plantGrid .plant-card h2.plant-common-name {
+    font-size: 14px !important;
+    line-height: 1.18 !important;
+  }
+}
+/* GREENSCAPE_LIBRARY_GLASS_TITLES_V1_END */

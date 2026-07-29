@@ -12,26 +12,21 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_START -->
-### Plant Library Reference Toolbar and Cards V1
+<!-- GREENSCAPE_LIBRARY_GLASS_TITLES_V1_START -->
+### Plant Library Glass Toolbar and Plain Titles V1
 
-The Plant Library now uses the approved reference arrangement while retaining the original Greenscape colors, rounded glass surfaces, shadows, typography, and responsive catalogue.
+The Plant Library retains the approved Search, Category, Sunlight, Sort, Grid, and List arrangement while restoring the original Greenscape glass treatment and making common plant names plain text.
 
 Latest UI and layout changes:
 
-- Uses one compact desktop toolbar arranged as Search, Category, Sunlight, Sort, Grid, and List.
-- Generates the Sunlight filter from actual `plant.sun` values in the current library.
-- Sorts plants by common name using A–Z or Z–A.
-- Adds accessible Grid and List view controls with the original dark-green active state.
-- Removes the visible quick-filter-chip row and the separate toolbar result-count badge.
-- Keeps result totals in the existing Showing/Show More footer.
-- Places the category badge at the upper-left and the plant code at the upper-right of each photograph.
-- Shows common name, scientific name, and available-size count without a horizontal divider.
-- Uses equal View and Add to List actions with eye and plus icons.
-- Keeps plant photographs and common names clickable for Plant Details.
-- Keeps Add to List visible but disabled during maintenance mode.
-- Keeps Search, Category, Sunlight, Sort, Grid, List, and View active during maintenance mode.
-- Retains the 6/5/4/3/2 responsive grid and adds a responsive list layout.
+- Restores a translucent white-and-green glass toolbar with an 18px backdrop blur, added saturation, a soft inner highlight, and a restrained diffused shadow.
+- Keeps the Search, Category, Sunlight, Sort, Grid, and List controls in the current responsive arrangement.
+- Uses lightly translucent glass surfaces for the search field, dropdowns, and Grid/List control.
+- Converts common plant names from clickable buttons to plain `<h2>` text in both Grid and List views.
+- Removes common-name hover color changes, focus effects, backgrounds, text shadows, box shadows, transforms, and pointer behavior.
+- Keeps Plant Details accessible through the plant photograph and the View button.
+- Keeps the category badge, plant code badge, scientific name, available-size count, View action, and Add to List action.
+- Retains maintenance-mode restrictions and the responsive 6/5/4/3/2 Grid layout.
 
 Responsive catalogue grid:
 
@@ -43,19 +38,18 @@ Mobile:          391px–760px        3 columns
 Small mobile:    390px and below    2 columns
 ```
 
-Responsive toolbar:
+Detail access:
 
 ```text
-Desktop: Search | Category | Sunlight | Sort | Grid/List
-Tablet:  Search + Category / Sunlight + Sort + Grid/List
-Mobile:  Search / Category + Sunlight / Sort + Grid/List
+Plant photograph → Plant Details
+View button       → Plant Details
+Common name       → Plain text only
 ```
 
 Affected files:
 
 ```text
 assets/js/app.js
-assets/js/maintenance.js
 assets/css/plant-library-refinements.css
 index.html
 README.md
@@ -64,14 +58,13 @@ README.md
 Current cache keys:
 
 ```text
-plant-library-refinements.css?v=20260729-library-reference-layout2
-maintenance.js?v=20260729-library-reference-controls2
-app.js?v=20260729-library-reference-layout2
+plant-library-refinements.css?v=20260729-library-glass-titles1
+app.js?v=20260729-library-glass-titles1
 ```
 
 Deployment:
 
-1. Upload `.github/workflows/apply-plant-library-reference-layout.yml`.
+1. Upload `.github/workflows/apply-plant-library-glass-toolbar.yml`.
 2. The workflow validates, commits, packages, and deploys the current website in one run.
 3. Confirm the update and GitHub Pages deployment steps are green.
 4. Hard-refresh the live Plant Library after deployment.
@@ -80,13 +73,12 @@ Verification:
 
 ```text
 node --check assets/js/app.js
-node --check assets/js/maintenance.js
 npm run quality
 git diff --check
 ```
 
 Current version status: implemented and deployed from the same validated workflow working tree.
-<!-- GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_END -->
+<!-- GREENSCAPE_LIBRARY_GLASS_TITLES_V1_END -->
 
 ### Catalog Pulse Bento Dashboard V1
 
