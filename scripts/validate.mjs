@@ -15,17 +15,10 @@ const html = read('index.html');
 const styles = read('assets/css/styles.css');
 const workflow = read('.github/workflows/ci.yml');
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
-const jsPaths = [
-  'assets/js/app.js',
-  'assets/js/data.js',
-  'assets/js/quotation.js',
-  'assets/js/boq.js',
-  'assets/js/boq-enhancements.js',
-  'assets/js/project-costing.js',
-  'assets/js/maintenance-config.js',
-  'assets/js/maintenance-force.js',
-  'assets/js/maintenance.js'
-];
+const jsPaths = fs.readdirSync(path.join(root, 'assets/js'), { withFileTypes: true })
+  .filter(entry => entry.isFile() && entry.name.endsWith('.js'))
+  .map(entry => `assets/js/${entry.name}`)
+  .sort();
 const jsSources = Object.fromEntries(jsPaths.map(file => [file, read(file)]));
 
 for (const [file, source] of Object.entries(jsSources)) {
@@ -35,6 +28,10 @@ for (const [file, source] of Object.entries(jsSources)) {
     failures.push(error.message);
   }
 }
+
+// REPOSITORY_DYNAMIC_SCRIPT_VALIDATION_V1
+check(jsPaths.includes('assets/js/magnetic-dock.js'), 'The phone dock script must be included in validation.');
+check(jsPaths.includes('assets/js/sidebar-assistant.js'), 'The Greenie assistant script must be included in validation.');
 
 check(!/<style\b/i.test(html), 'index.html should not contain inline style blocks.');
 check(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(html), 'index.html should not contain inline executable scripts.');
