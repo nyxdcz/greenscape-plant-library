@@ -12,6 +12,57 @@ Open the published website here:
 
 ## What's New
 
+### Greenie Bottom Placement and Look-Around Hover V1
+
+Moves Greenie into the desktop bottom utility group and adds the supplied look-around animation for pointer hover and keyboard focus.
+
+Changes:
+
+- Keeps **Company Use Only** anchored near the bottom of the desktop sidebar.
+- Places Greenie directly below the confidentiality notice.
+- Keeps the **Visit Greenscape website** bento as the final sidebar item.
+- Adds `assets/images/greenscape-pet-look-around.gif`, using the supplied `69 × 69px` animated GIF without resizing.
+- Uses the normal Greenie GIF at rest, the new look-around GIF on hover or keyboard focus, and the existing drag GIF during dragging.
+- Restores the appropriate hover or normal animation after pointer release.
+- Preloads all three Greenie animations to avoid a visible loading delay.
+- Preserves Greenie’s speech, Help, drag, return, and desktop boundary behavior.
+- Preserves internal scrolling on short desktop screens and leaves tablet and mobile navigation unchanged.
+- Refreshes the sidebar asset cache keys.
+
+Desktop order:
+
+```text
+Greenscape logo
+Primary navigation
+Flexible space
+Company Use Only
+Greenie
+Visit Greenscape website
+```
+
+Affected files:
+
+```text
+assets/images/greenscape-pet-look-around.gif
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Sidebar Bottom Utilities Refinement V1
 
 Moves the desktop confidentiality and website controls into a dedicated bottom utility area while preserving Greenie and the existing bento styling.
