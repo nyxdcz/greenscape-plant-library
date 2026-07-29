@@ -12,6 +12,47 @@ Open the published website here:
 
 ## What's New
 
+<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_START -->
+### Greenie Speech Cloud and Sidebar Visibility V1
+
+Latest sidebar updates:
+
+- Places Greenie’s clickable speech cloud above the animated pet.
+- Uses the exact content: “Hi! I’m Greenie 🌿”, “Need help finding the perfect plant?”, and “Ask me anything”.
+- Makes both the speech cloud and animated Greenie open the existing Help panel.
+- Removes the separate rectangular Ask me anything button.
+- Keeps the small close button and hides Greenie only for the current browser session.
+- Fixes the Plant Library order so the scientific name appears above the common name in Grid and List views.
+- Makes the desktop sidebar internally scrollable on shorter screens.
+- Restores visibility of the Company Use Only notice and Visit Greenscape website link below Greenie.
+- Positions the existing Help panel near the desktop sidebar while retaining the mobile Help control.
+
+Affected files:
+
+```text
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+index.html
+README.md
+```
+
+Cache keys:
+
+```text
+assets/css/sidebar-assistant.css?v=20260729-greenie-speech-cloud1
+assets/js/sidebar-assistant.js?v=20260729-greenie-speech-cloud1
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+npm run quality
+git diff --check
+```
+<!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_END -->
+
+
 <!-- GREENSCAPE_GREENIE_SPEECH_FIRST_V1_START -->
 ### Greenie Speech-First Help and Drag Close V1
 
