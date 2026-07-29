@@ -15,6 +15,12 @@ const html = read('index.html');
 const styles = read('assets/css/styles.css');
 const workflow = read('.github/workflows/ci.yml');
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
+// REPOSITORY_WORKFLOW_HYGIENE_V1
+const workflowDirectory = path.join(root, '.github/workflows');
+const workflowFiles = fs.readdirSync(workflowDirectory)
+  .filter(file => /\.ya?ml$/i.test(file))
+  .sort();
+
 const jsPaths = fs.readdirSync(path.join(root, 'assets/js'), { withFileTypes: true })
   .filter(entry => entry.isFile() && entry.name.endsWith('.js'))
   .map(entry => `assets/js/${entry.name}`)
@@ -79,6 +85,7 @@ check(/aria-label="View details for \$\{escapeHTML\(plant\.commonName/i.test(jsS
 check(styles.includes('REPOSITORY_QUALITY_REVIEW_V2_TOUCH_TARGETS_START'), 'Touch target safeguards are required.');
 check(/permissions:\s*\n\s+contents:\s+read/.test(workflow), 'Website Checks must use read-only repository permissions.');
 check(/timeout-minutes:\s*10/.test(workflow), 'Website Checks must have a bounded timeout.');
+check(!workflowFiles.some(file => /^apply-.*\.ya?ml$/i.test(file)), 'Stale one-shot apply workflows should be removed.');
 
 const dashboardSlides = [...jsSources['assets/js/app.js'].matchAll(/'(assets\/images\/dashboard-slideshow\/[^']+\.jpg)'/g)]
   .map(match => match[1]);
