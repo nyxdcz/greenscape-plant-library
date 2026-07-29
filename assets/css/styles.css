@@ -7950,3 +7950,15 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_END */
+
+/* GREENSCAPE_DASHBOARD_UNIFORM_WIDTH_V1_START */
+/* Desktop hero aligns with the full dashboard bento width. */
+@media (min-width: 1181px) {
+  #pageContent > .hero {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+/* GREENSCAPE_DASHBOARD_UNIFORM_WIDTH_V1_END */
