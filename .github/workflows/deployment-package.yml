@@ -1,0 +1,89 @@
+name: Build Deployment Package and Deploy Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Validate and package website
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run website quality checks
+        run: npm run quality
+
+      - name: Create clean deployment directory
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf _site
+          mkdir -p _site
+
+          cp index.html _site/
+          cp favicon.ico _site/
+          cp favicon.svg _site/
+          cp site.webmanifest _site/
+          cp robots.txt _site/
+          cp .nojekyll _site/
+          cp -R assets _site/assets
+
+          if [ -f CNAME ]; then
+            cp CNAME _site/
+          fi
+
+          echo "Deployment package contents:"
+          find _site -maxdepth 3 -type f | sort
+
+      - name: Upload downloadable deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: greenscape-deployment-package-${{ github.sha }}
+          path: _site/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site/
+          include-hidden-files: true
+          retention-days: 7
+
+  deploy:
+    name: Deploy website
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
