@@ -1,14 +1,10 @@
 (function () {
-  const STORAGE_KEYS = {
-    view: 'greenscape-library-default-view',
-    sort: 'greenscape-library-default-sort'
-  };
-
-  const SESSION_KEYS = {
-    petHidden: 'greenscape-sidebar-pet-hidden'
-  };
-
-  const PANEL_ID = 'sidebarSettingsPanel';
+  const DESKTOP_BREAKPOINT = 1024;
+  const DRAG_THRESHOLD = 6;
+  const RETURN_DURATION = 220;
+  const FLOATING_Z_INDEX = 2147483000;
+  const NORMAL_GIF = 'assets/images/greenscape-pet.gif';
+  const DRAG_GIF = 'assets/images/greenscape-pet-drag.gif';
 
   function qs(selector, root = document) {
     return root.querySelector(selector);
@@ -16,48 +12,6 @@
 
   function qsa(selector, root = document) {
     return Array.from(root.querySelectorAll(selector));
-  }
-
-  function currentPageTitle() {
-    return (qs('#pageTitle')?.textContent || '').trim().toLowerCase();
-  }
-
-  function isLibraryViewActive() {
-    return currentPageTitle() === 'plant library'
-      || location.hash === '#library'
-      || Boolean(qs('#plantGrid'));
-  }
-
-  function savePreference(key, value) {
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {
-      // Local preferences are optional.
-    }
-  }
-
-  function readPreference(key, fallback) {
-    try {
-      return localStorage.getItem(key) || fallback;
-    } catch (error) {
-      return fallback;
-    }
-  }
-
-  function saveSessionValue(key, value) {
-    try {
-      sessionStorage.setItem(key, value);
-    } catch (error) {
-      // Session preferences are optional.
-    }
-  }
-
-  function readSessionValue(key, fallback) {
-    try {
-      return sessionStorage.getItem(key) || fallback;
-    } catch (error) {
-      return fallback;
-    }
   }
 
   function openHelpPanel() {
@@ -78,124 +32,50 @@
     }, 80);
   }
 
-  function ensureSettingsPanel() {
-    const existing = qs('#' + PANEL_ID);
-    if (existing) return existing;
+  function closeHelpPanel() {
+    const panel = qs('#feedbackPanel');
+    const toggle = qs('#feedbackToggle');
 
-    const panel = document.createElement('section');
-    panel.id = PANEL_ID;
-    panel.className = 'sidebar-settings-panel';
-    panel.hidden = true;
-    panel.innerHTML = `
-      <div class="sidebar-settings-backdrop" data-sidebar-close="settings"></div>
-      <div class="sidebar-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="sidebarSettingsTitle">
-        <button class="sidebar-settings-close" type="button" aria-label="Close settings" data-sidebar-close="settings">×</button>
-        <p class="sidebar-settings-kicker">Interface preferences</p>
-        <h2 id="sidebarSettingsTitle">Settings</h2>
-
-        <div class="sidebar-settings-group">
-          <label for="sidebarDefaultView">Default Plant Library view</label>
-          <select id="sidebarDefaultView">
-            <option value="grid">Grid</option>
-            <option value="list">List</option>
-          </select>
-        </div>
-
-        <div class="sidebar-settings-group">
-          <label for="sidebarDefaultSort">Default Plant Library sort</label>
-          <select id="sidebarDefaultSort">
-            <option value="az">Sort: A–Z</option>
-            <option value="za">Sort: Z–A</option>
-          </select>
-        </div>
-
-        <div class="sidebar-settings-actions">
-          <button type="button" class="button secondary" id="sidebarResetSettings">Restore defaults</button>
-          <button type="button" class="button primary" id="sidebarSaveSettings">Save settings</button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(panel);
-
-    qs('#sidebarDefaultView', panel).value = readPreference(STORAGE_KEYS.view, 'grid');
-    qs('#sidebarDefaultSort', panel).value = readPreference(STORAGE_KEYS.sort, 'az');
-
-    panel.addEventListener('click', (event) => {
-      if (event.target.closest('[data-sidebar-close="settings"]')) {
-        hideSettingsPanel();
-      }
-    });
-
-    qs('#sidebarResetSettings', panel).addEventListener('click', () => {
-      qs('#sidebarDefaultView', panel).value = 'grid';
-      qs('#sidebarDefaultSort', panel).value = 'az';
-    });
-
-    qs('#sidebarSaveSettings', panel).addEventListener('click', () => {
-      savePreference(STORAGE_KEYS.view, qs('#sidebarDefaultView', panel).value);
-      savePreference(STORAGE_KEYS.sort, qs('#sidebarDefaultSort', panel).value);
-      applyLibraryDefaults(true);
-      hideSettingsPanel();
-    });
-
-    return panel;
-  }
-
-  function showSettingsPanel() {
-    const panel = ensureSettingsPanel();
-    qs('#sidebarDefaultView', panel).value = readPreference(STORAGE_KEYS.view, 'grid');
-    qs('#sidebarDefaultSort', panel).value = readPreference(STORAGE_KEYS.sort, 'az');
-    panel.hidden = false;
-    document.body.classList.add('sidebar-settings-open');
-  }
-
-  function hideSettingsPanel() {
-    const panel = qs('#' + PANEL_ID);
-    if (!panel) return;
+    if (!panel || !toggle) return;
 
     panel.hidden = true;
-    document.body.classList.remove('sidebar-settings-open');
+    toggle.setAttribute('aria-expanded', 'false');
   }
 
-  function applyLibraryDefaults(force) {
-    if (!isLibraryViewActive()) return;
+  function setSpeechOpen(card, open) {
+    if (!card) return;
 
-    const toolbar = qs('.library-reference-toolbar, .library-toolbar, .toolbar');
-    if (!toolbar) return;
-    if (toolbar.dataset.sidebarDefaultsApplied === '1' && !force) return;
-
-    const sort = readPreference(STORAGE_KEYS.sort, 'az');
-    const view = readPreference(STORAGE_KEYS.view, 'grid');
-
-    const sortSelect = qs('#librarySort');
-    if (sortSelect && sortSelect.value !== sort) {
-      sortSelect.value = sort;
-      sortSelect.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    const viewButton = qs(
-      `[data-action="library-view"][data-library-view="${view}"]`
+    card.classList.toggle('is-speech-open', Boolean(open));
+    qs('.sidebar-pet-avatar', card)?.setAttribute(
+      'aria-expanded',
+      open ? 'true' : 'false'
     );
+  }
 
-    if (viewButton && viewButton.getAttribute('aria-pressed') !== 'true') {
-      viewButton.click();
-    }
+  function showSpeechBox(card) {
+    closeHelpPanel();
+    setSpeechOpen(card, true);
+  }
 
-    toolbar.dataset.sidebarDefaultsApplied = '1';
+  function hideSpeechBox(card) {
+    setSpeechOpen(card, false);
   }
 
   function reorderPlantNames(root = document) {
     qsa('#plantGrid .plant-card, #plantGrid .plant-list-card', root).forEach((card) => {
       const commonName = qs('.plant-common-name', card) || qs('h2', card);
       const scientificName = qs('.scientific', card);
+      const plantCode = qs('.plant-code-body', card);
 
       if (!commonName || !scientificName) return;
 
       const parent = commonName.parentElement;
       if (!parent || scientificName.parentElement !== parent) return;
 
-      if (commonName.previousElementSibling !== scientificName) {
+      if (plantCode && plantCode.parentElement === parent) {
+        parent.insertBefore(scientificName, plantCode);
+        parent.insertBefore(plantCode, commonName);
+      } else if (commonName.previousElementSibling !== scientificName) {
         parent.insertBefore(scientificName, commonName);
       }
 
@@ -204,79 +84,269 @@
     });
   }
 
-  function petIsHidden() {
-    return readSessionValue(SESSION_KEYS.petHidden, '0') === '1';
+  function preloadPetAnimations() {
+    [NORMAL_GIF, DRAG_GIF].forEach((source) => {
+      const image = new Image();
+      image.src = source;
+    });
   }
 
-  function hidePetCard() {
-    saveSessionValue(SESSION_KEYS.petHidden, '1');
-    qs('.sidebar-pet-card')?.setAttribute('hidden', 'hidden');
+  function viewportBounds(card) {
+    const margin = 10;
+
+    return {
+      minLeft: margin,
+      minTop: margin,
+      maxLeft: Math.max(margin, window.innerWidth - card.offsetWidth - margin),
+      maxTop: Math.max(margin, window.innerHeight - card.offsetHeight - margin)
+    };
   }
 
-  function ensureSidebarUtilities() {
-    const sidebar = qs('.sidebar');
-    const navigation = qs('.nav-list', sidebar || document);
+  function clamp(value, minimum, maximum) {
+    return Math.min(Math.max(value, minimum), maximum);
+  }
 
-    if (!sidebar || !navigation || qs('.sidebar-utility-section', sidebar)) {
+  function clearTemporaryPosition(card) {
+    card.classList.remove('is-floating', 'is-dragging', 'is-returning');
+    card.style.removeProperty('position');
+    card.style.removeProperty('left');
+    card.style.removeProperty('top');
+    card.style.removeProperty('width');
+    card.style.removeProperty('z-index');
+    card.style.removeProperty('transition');
+  }
+
+  function restoreCardToPlaceholder(card) {
+    const placeholder = qs('.sidebar-pet-placeholder');
+
+    if (placeholder?.isConnected) {
+      placeholder.replaceWith(card);
+    } else {
+      qs('.sidebar-utility-section')?.appendChild(card);
+    }
+
+    clearTemporaryPosition(card);
+  }
+
+  function returnToSidebar(card) {
+    const placeholder = qs('.sidebar-pet-placeholder');
+
+    if (!placeholder?.isConnected) {
+      restoreCardToPlaceholder(card);
       return;
     }
 
-    const section = document.createElement('div');
-    section.className = 'sidebar-utility-section';
+    const target = placeholder.getBoundingClientRect();
+
+    card.classList.remove('is-dragging');
+    card.classList.add('is-returning');
+    card.style.transition = `left ${RETURN_DURATION}ms ease, top ${RETURN_DURATION}ms ease`;
+    card.style.left = `${target.left}px`;
+    card.style.top = `${target.top}px`;
+
+    window.setTimeout(() => {
+      restoreCardToPlaceholder(card);
+    }, RETURN_DURATION + 30);
+  }
+
+  function createDragPlaceholder(card, rectangle) {
+    qs('.sidebar-pet-placeholder')?.remove();
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'sidebar-pet-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    placeholder.style.width = `${rectangle.width}px`;
+    placeholder.style.height = `${rectangle.height}px`;
+
+    card.insertAdjacentElement('beforebegin', placeholder);
+    return placeholder;
+  }
+
+  function beginDrag(card, image, origin, startLeft, startTop) {
+    hideSpeechBox(card);
+    closeHelpPanel();
+
+    createDragPlaceholder(card, origin);
+    document.body.appendChild(card);
+
+    card.classList.add('is-floating', 'is-dragging');
+    card.style.position = 'fixed';
+    card.style.width = `${origin.width}px`;
+    card.style.left = `${startLeft}px`;
+    card.style.top = `${startTop}px`;
+    card.style.zIndex = String(FLOATING_Z_INDEX);
+
+    image.src = DRAG_GIF;
+    document.body.classList.add('greenie-drag-active');
+  }
+
+  function enableGreenieDragging(card) {
+    const handle = qs('.sidebar-pet-avatar', card);
+    const image = qs('.sidebar-pet-gif', card);
+
+    if (!handle || !image || handle.dataset.dragReady === '1') return;
+
+    handle.dataset.dragReady = '1';
+
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+    let origin = null;
+    let dragging = false;
+
+    function finishPointer(event) {
+      if (pointerId === null) return;
+      if (event && event.pointerId !== undefined && event.pointerId !== pointerId) return;
+
+      const activePointerId = pointerId;
+      const shouldShowSpeech = !dragging && event?.type === 'pointerup';
+      pointerId = null;
+
+      try {
+        handle.releasePointerCapture(activePointerId);
+      } catch (error) {
+        // Pointer capture may already be released.
+      }
+
+      image.src = NORMAL_GIF;
+      document.body.classList.remove('greenie-drag-active');
+
+      if (dragging) {
+        hideSpeechBox(card);
+        closeHelpPanel();
+        returnToSidebar(card);
+      } else {
+        restoreCardToPlaceholder(card);
+        if (shouldShowSpeech) showSpeechBox(card);
+      }
+
+      dragging = false;
+      origin = null;
+    }
+
+    handle.addEventListener('pointerdown', (event) => {
+      if (window.innerWidth < DESKTOP_BREAKPOINT || event.button !== 0) return;
+
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+
+      const rectangle = card.getBoundingClientRect();
+      origin = {
+        left: rectangle.left,
+        top: rectangle.top,
+        width: rectangle.width,
+        height: rectangle.height
+      };
+      startLeft = rectangle.left;
+      startTop = rectangle.top;
+
+      handle.setPointerCapture(pointerId);
+      event.preventDefault();
+    });
+
+    handle.addEventListener('pointermove', (event) => {
+      if (pointerId !== event.pointerId || !origin) return;
+
+      const deltaX = event.clientX - startX;
+      const deltaY = event.clientY - startY;
+
+      if (!dragging && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) {
+        dragging = true;
+        beginDrag(card, image, origin, startLeft, startTop);
+      }
+
+      if (!dragging) return;
+
+      const bounds = viewportBounds(card);
+      const left = clamp(startLeft + deltaX, bounds.minLeft, bounds.maxLeft);
+      const top = clamp(startTop + deltaY, bounds.minTop, bounds.maxTop);
+
+      card.style.left = `${left}px`;
+      card.style.top = `${top}px`;
+      event.preventDefault();
+    });
+
+    handle.addEventListener('pointerup', finishPointer);
+    handle.addEventListener('pointercancel', finishPointer);
+    handle.addEventListener('lostpointercapture', finishPointer);
+
+    handle.addEventListener('click', (event) => {
+      if (event.detail === 0) {
+        showSpeechBox(card);
+      }
+    });
+  }
+
+  function ensureGreenieAssistant() {
+    const sidebar = qs('.sidebar');
+    const navigation = qs('.nav-list', sidebar || document);
+
+    if (!sidebar || !navigation) return null;
+
+    let section = qs('.sidebar-utility-section', sidebar);
+
+    if (!section) {
+      section = document.createElement('div');
+      section.className = 'sidebar-utility-section';
+      navigation.insertAdjacentElement('afterend', section);
+    }
+
+    const existingCard = qs('.sidebar-pet-card');
+
+    if (existingCard) {
+      enableGreenieDragging(existingCard);
+      return existingCard;
+    }
+
     section.innerHTML = `
-      <div class="sidebar-utility-divider" aria-hidden="true"></div>
-
-      <button type="button" class="sidebar-utility-button" data-sidebar-action="settings">
-        <span class="sidebar-utility-icon" aria-hidden="true">⚙</span>
-        <span>Settings</span>
-      </button>
-
-      <button type="button" class="sidebar-utility-button" data-sidebar-action="help">
-        <span class="sidebar-utility-icon" aria-hidden="true">?</span>
-        <span>Help &amp; Support</span>
-      </button>
-
-      <div class="sidebar-pet-card" ${petIsHidden() ? 'hidden' : ''}>
-        <button type="button" class="sidebar-pet-close" aria-label="Hide Greenie assistant" data-sidebar-action="hide-pet">×</button>
-
-        <button type="button" class="sidebar-pet-speech" data-sidebar-action="help" aria-label="Ask Greenie for help">
+      <div class="sidebar-pet-card">
+        <button id="greenieSpeechBox" type="button" class="sidebar-pet-speech" aria-label="Open Greenie Help">
           <strong>Hi! I’m Greenie 🌿</strong>
           <span>Need help finding the perfect plant?</span>
           <em>Ask me anything</em>
         </button>
 
-        <button type="button" class="sidebar-pet-avatar" data-sidebar-action="help" aria-label="Open Greenie help">
-          <img class="sidebar-pet-gif" src="assets/images/greenscape-pet.gif" alt="" width="68" height="68">
+        <button type="button" class="sidebar-pet-avatar" aria-label="Show Greenie message or drag Greenie" aria-controls="greenieSpeechBox" aria-expanded="false">
+          <img class="sidebar-pet-gif" src="${NORMAL_GIF}" alt="Greenie animated assistant" width="68" height="68">
         </button>
       </div>
     `;
 
-    navigation.insertAdjacentElement('afterend', section);
+    const card = qs('.sidebar-pet-card', section);
+    const speech = qs('.sidebar-pet-speech', card);
 
-    section.addEventListener('click', (event) => {
-      const control = event.target.closest('[data-sidebar-action]');
-      if (!control) return;
-
-      const action = control.dataset.sidebarAction;
-
-      if (action === 'settings') showSettingsPanel();
-      if (action === 'help') openHelpPanel();
-      if (action === 'hide-pet') hidePetCard();
+    speech.addEventListener('click', (event) => {
+      event.stopPropagation();
+      hideSpeechBox(card);
+      openHelpPanel();
     });
+
+    enableGreenieDragging(card);
+
+    return card;
+  }
+
+  function resetLegacyPosition() {
+    try {
+      localStorage.removeItem('greenscape-greenie-position-v1');
+    } catch (error) {
+      // Legacy position data is optional.
+    }
   }
 
   function onReady() {
     document.body.classList.add('sidebar-assistant-enhanced');
-
-    ensureSettingsPanel();
-    ensureSidebarUtilities();
+    resetLegacyPosition();
+    preloadPetAnimations();
+    ensureGreenieAssistant();
     reorderPlantNames();
-    applyLibraryDefaults(false);
 
     const observer = new MutationObserver(() => {
-      ensureSidebarUtilities();
+      ensureGreenieAssistant();
       reorderPlantNames();
-      applyLibraryDefaults(false);
     });
 
     const pageContent = qs('#pageContent') || document.body;
@@ -285,11 +355,29 @@
       subtree: true
     });
 
-    window.addEventListener('hashchange', () => {
-      window.setTimeout(() => {
-        reorderPlantNames();
-        applyLibraryDefaults(true);
-      }, 80);
+    document.addEventListener('click', (event) => {
+      const card = qs('.sidebar-pet-card');
+      if (!card || card.contains(event.target)) return;
+      hideSpeechBox(card);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      hideSpeechBox(qs('.sidebar-pet-card'));
+    });
+
+    window.addEventListener('resize', () => {
+      const card = qs('.sidebar-pet-card');
+
+      if (!card) return;
+
+      if (window.innerWidth < DESKTOP_BREAKPOINT) {
+        qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
+        document.body.classList.remove('greenie-drag-active');
+        hideSpeechBox(card);
+        closeHelpPanel();
+        restoreCardToPlaceholder(card);
+      }
     });
   }
 
