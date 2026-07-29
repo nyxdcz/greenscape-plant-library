@@ -12,6 +12,52 @@ Open the published website here:
 
 ## What's New
 
+### Sidebar Utility Reordering and Website Bento V1
+
+Reorganizes the desktop sidebar utilities without changing navigation or Greenie functionality.
+
+Changes:
+
+- Places **Company Use Only** immediately below the primary navigation.
+- Places the **Visit Greenscape website** card directly below the confidentiality notice.
+- Restores a compact glass-green bento treatment for the external website link, including a separate arrow tile and accessible hover and focus states.
+- Moves Greenie below both utility cards with additional spacing.
+- Preserves Greenie’s speech, temporary dragging, return position, and Help behavior.
+- Leaves the tablet and mobile navigation layouts unchanged.
+- Refreshes the sidebar assets so deployed browsers receive the new order and styling.
+
+Desktop order:
+
+```text
+Greenscape logo
+Primary navigation
+Company Use Only
+Visit Greenscape website
+Greenie
+```
+
+Affected files:
+
+```text
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Plant Library Navigation Freeze Fix V1
 
 Fixes the page freeze that occurred when opening **Plant Library** from the Dashboard or another website section.
