@@ -55,6 +55,7 @@ body.sidebar-assistant-enhanced .sidebar-pet-card.is-returning {
 body.sidebar-assistant-enhanced .sidebar-pet-card.is-dragging,
 body.sidebar-assistant-enhanced .sidebar-pet-card.is-returning {
   user-select: none;
+  will-change: left, top;
 }
 
 body.greenie-drag-active,
@@ -189,12 +190,14 @@ body.sidebar-assistant-enhanced .website-link {
   width: 100%;
 }
 
-#plantGrid .scientific.scientific-name-top {
+#plantGrid .plant-card-body > .scientific,
+#plantGrid .plant-list-copy > .scientific {
   min-height: 0 !important;
   margin: 0 0 3px !important;
 }
 
-#plantGrid .common-name-bottom {
+#plantGrid .plant-card-body > .plant-common-name,
+#plantGrid .plant-list-copy > .plant-common-name {
   margin: 0 0 7px !important;
 }
 

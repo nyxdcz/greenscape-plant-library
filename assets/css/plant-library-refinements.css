@@ -428,21 +428,6 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
   text-align: left;
 }
 
-#plantGrid .plant-code-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  max-width: calc(100% - 20px);
-  padding: 5px 8px;
-  border-radius: 999px;
-  color: #fff;
-  background: rgba(16, 43, 34, .88);
-  backdrop-filter: blur(7px);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .04em;
-  line-height: 1;
-}
 
 #plantGrid .plant-card-body {
   min-height: 0;
@@ -623,15 +608,13 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
     gap: 8px !important;
   }
 
-  #plantGrid .category-pill,
-  #plantGrid .plant-code-badge {
+  #plantGrid .category-pill {
     top: 6px !important;
     padding: 3px 5px !important;
     font-size: 9px !important;
   }
 
   #plantGrid .category-pill { left: 6px !important; }
-  #plantGrid .plant-code-badge { right: 6px !important; }
   #plantGrid .plant-card-body { padding: 12px !important; }
 
   #plantGrid .plant-card h2 {
@@ -694,15 +677,13 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
     gap: 8px !important;
   }
 
-  #plantGrid .category-pill,
-  #plantGrid .plant-code-badge {
+  #plantGrid .category-pill {
     top: 6px !important;
     padding: 3px 5px !important;
     font-size: 9px !important;
   }
 
   #plantGrid .category-pill { left: 6px !important; }
-  #plantGrid .plant-code-badge { right: 6px !important; }
   #plantGrid .plant-card-body { padding: 12px !important; }
 
   #plantGrid .plant-card h2 {
@@ -831,10 +812,6 @@ body:has(#plantGrid) .library-view-toggle {
 
 /* GREENSCAPE_PLANT_CODE_BODY_V1_START
    Plant code now sits in the text body directly above the common name. */
-#plantGrid .plant-code-badge {
-  display: none !important;
-}
-
 #plantGrid .plant-code-body {
   display: block;
   margin: 1px 0 5px;

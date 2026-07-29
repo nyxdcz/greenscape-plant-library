@@ -6,25 +6,36 @@
   const dock = document.querySelector('.sidebar .nav-list');
   const feedbackWidget = document.getElementById('feedbackWidget');
   const glowTimers = new WeakMap();
+  let dockFrame = 0;
+  let latestPointerX = 0;
 
   if (!dock || !feedbackWidget) return;
 
-  const getItems = () => Array.from(dock.querySelectorAll('.nav-item:not(.phone-dock-hidden), .dock-utility'));
+  const getItems = () => Array.from(
+    dock.querySelectorAll(
+      '.nav-item:not(.phone-dock-hidden), .dock-utility'
+    )
+  );
 
   const resetItems = () => {
-    getItems().forEach((item) => {
+    if (dockFrame) {
+      cancelAnimationFrame(dockFrame);
+      dockFrame = 0;
+    }
+
+    getItems().forEach(item => {
       item.style.setProperty('--dock-scale', '1');
       item.style.setProperty('--dock-lift', '0px');
     });
   };
 
-  const updateItems = (clientX) => {
+  const updateItems = clientX => {
     if (!phoneQuery.matches || reducedMotionQuery.matches) {
       resetItems();
       return;
     }
 
-    getItems().forEach((item) => {
+    getItems().forEach(item => {
       if (item.disabled) {
         item.style.setProperty('--dock-scale', '1');
         item.style.setProperty('--dock-lift', '0px');
@@ -32,10 +43,25 @@
       }
 
       const bounds = item.getBoundingClientRect();
-      const distance = Math.abs(clientX - (bounds.left + bounds.width / 2));
+      const distance = Math.abs(
+        clientX - (bounds.left + bounds.width / 2)
+      );
       const influence = Math.max(0, 1 - distance / 82);
       item.style.setProperty('--dock-scale', '1');
-      item.style.setProperty('--dock-lift', `${(-influence * 4).toFixed(2)}px`);
+      item.style.setProperty(
+        '--dock-lift',
+        `${(-influence * 4).toFixed(2)}px`
+      );
+    });
+  };
+
+  const scheduleItemUpdate = clientX => {
+    latestPointerX = clientX;
+    if (dockFrame) return;
+
+    dockFrame = requestAnimationFrame(() => {
+      dockFrame = 0;
+      updateItems(latestPointerX);
     });
   };
 
@@ -51,7 +77,7 @@
     element.style.removeProperty('--dock-lift');
   };
 
-  const dockIcon = (kind) => {
+  const dockIcon = kind => {
     if (kind === 'identifier') {
       return '<span class="phone-dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5h3l1.3-2h7.4l1.3 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.8 3.8c-2.4.1-4.1 1.1-4.8 2.8 1.9.2 3.6-.5 4.8-2.8Z" fill="currentColor"/></svg></span>';
     }
@@ -60,6 +86,7 @@
 
   const ensurePhoneButton = (id, className, label, kind) => {
     let button = document.getElementById(id);
+
     if (!button) {
       button = document.createElement('button');
       button.id = id;
@@ -69,6 +96,7 @@
       button.dataset.dockLabel = label;
       button.innerHTML = dockIcon(kind);
     }
+
     return button;
   };
 
@@ -93,31 +121,51 @@
   const closeMoreMenu = () => {
     const menu = document.getElementById('phoneDockMoreMenu');
     const button = document.getElementById('phoneDockMoreButton');
+
     if (menu) menu.hidden = true;
     if (button) button.setAttribute('aria-expanded', 'false');
   };
 
   const attachPhoneUtilities = () => {
     const help = document.getElementById('feedbackToggle');
-    const identifier = ensurePhoneButton('phoneDockIdentifierButton', 'dock-utility-identifier', 'Plant Identifier', 'identifier');
-    const more = ensurePhoneButton('phoneDockMoreButton', 'dock-utility-more', 'More', 'more');
+    const identifier = ensurePhoneButton(
+      'phoneDockIdentifierButton',
+      'dock-utility-identifier',
+      'Plant Identifier',
+      'identifier'
+    );
+    const more = ensurePhoneButton(
+      'phoneDockMoreButton',
+      'dock-utility-more',
+      'More',
+      'more'
+    );
     const moreMenu = ensureMoreMenu();
 
     identifier.dataset.action = 'open-google-lens-identifier';
-    more.setAttribute('aria-expanded', moreMenu.hidden ? 'false' : 'true');
+    more.setAttribute(
+      'aria-expanded',
+      moreMenu.hidden ? 'false' : 'true'
+    );
     more.setAttribute('aria-controls', moreMenu.id);
+
     if (more.dataset.dockClickBound !== 'true') {
       more.dataset.dockClickBound = 'true';
-      more.addEventListener('click', (event) => {
+      more.addEventListener('click', event => {
         event.preventDefault();
         event.stopPropagation();
         const menu = ensureMoreMenu();
         menu.hidden = !menu.hidden;
-        more.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+        more.setAttribute(
+          'aria-expanded',
+          menu.hidden ? 'false' : 'true'
+        );
       });
     }
 
-    dock.querySelectorAll('[data-view="sheet"], [data-view="moodboard"], [data-view="projects"]').forEach((item) => {
+    dock.querySelectorAll(
+      '[data-view="sheet"], [data-view="moodboard"], [data-view="projects"]'
+    ).forEach(item => {
       item.classList.add('phone-dock-hidden');
     });
 
@@ -129,17 +177,24 @@
       if (help.parentElement !== dock) dock.appendChild(help);
     }
 
-    document.body.classList.toggle('dock-utilities-attached', Boolean(help));
+    document.body.classList.toggle(
+      'dock-utilities-attached',
+      Boolean(help)
+    );
   };
 
   const restoreDesktopUtilities = () => {
     const help = document.getElementById('feedbackToggle');
     const panel = document.getElementById('feedbackPanel');
-    const identifier = document.getElementById('phoneDockIdentifierButton');
+    const identifier = document.getElementById(
+      'phoneDockIdentifierButton'
+    );
     const more = document.getElementById('phoneDockMoreButton');
     const moreMenu = document.getElementById('phoneDockMoreMenu');
 
-    dock.querySelectorAll('.phone-dock-hidden').forEach((item) => item.classList.remove('phone-dock-hidden'));
+    dock.querySelectorAll('.phone-dock-hidden').forEach(item => {
+      item.classList.remove('phone-dock-hidden');
+    });
     identifier?.remove();
     more?.remove();
     moreMenu?.remove();
@@ -160,14 +215,19 @@
     else restoreDesktopUtilities();
   };
 
-  dock.addEventListener('pointermove', (event) => {
-    if (event.pointerType !== 'touch') updateItems(event.clientX);
-  });
+  dock.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'touch') {
+      scheduleItemUpdate(event.clientX);
+    }
+  }, { passive: true });
   dock.addEventListener('pointerleave', resetItems);
   dock.addEventListener('pointercancel', resetItems);
-  dock.addEventListener('pointerdown', (event) => {
-    const item = event.target.closest('.nav-item:not(:disabled), .dock-utility:not(:disabled)');
+  dock.addEventListener('pointerdown', event => {
+    const item = event.target.closest(
+      '.nav-item:not(:disabled), .dock-utility:not(:disabled)'
+    );
     if (!phoneQuery.matches || !item) return;
+
     item.style.setProperty('--dock-scale', '1');
     item.style.setProperty('--dock-lift', '-2px');
     item.classList.remove('dock-click-glow');
@@ -180,19 +240,28 @@
   });
   dock.addEventListener('pointerup', resetItems);
 
-  dock.addEventListener('click', (event) => {
-    if (event.target.closest('#feedbackToggle') && phoneQuery.matches) {
+  dock.addEventListener('click', event => {
+    if (
+      event.target.closest('#feedbackToggle')
+      && phoneQuery.matches
+    ) {
       event.stopPropagation();
     }
   });
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', event => {
     if (!phoneQuery.matches) return;
     if (event.target.closest('#phoneDockMoreButton')) return;
-    if (event.target.closest('#phoneDockMoreMenu button, #phoneDockMoreMenu a')) {
+
+    if (
+      event.target.closest(
+        '#phoneDockMoreMenu button, #phoneDockMoreMenu a'
+      )
+    ) {
       closeMoreMenu();
       return;
     }
+
     if (event.target.closest('#phoneDockMoreMenu')) return;
     closeMoreMenu();
   });
@@ -202,12 +271,14 @@
 
   const startDock = () => {
     syncUtilities();
-    const utilityObserver = new MutationObserver(syncUtilities);
-    utilityObserver.observe(document.body, { childList: true, subtree: true });
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startDock, { once: true });
+    document.addEventListener(
+      'DOMContentLoaded',
+      startDock,
+      { once: true }
+    );
   } else {
     startDock();
   }
