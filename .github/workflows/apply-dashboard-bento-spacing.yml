@@ -1,0 +1,136 @@
+name: Apply Dashboard Bento Spacing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-dashboard-bento-spacing.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-dashboard-spacing:
+    name: Refine dashboard bento spacing
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Apply approved dashboard spacing
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          styles_path = Path("assets/css/styles.css")
+          index_path = Path("index.html")
+
+          styles = styles_path.read_text(encoding="utf-8")
+          index = index_path.read_text(encoding="utf-8")
+
+          start_marker = "/* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_START */"
+          end_marker = "/* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_END */"
+
+          spacing_block = """
+          /* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_START */
+          /* Atheros-inspired spacing rhythm: compact gaps with generous card interiors. */
+          #pageContent > .hero + .stat-grid {
+            gap: 16px !important;
+            margin: 16px 0 0 !important;
+          }
+
+          #pageContent > .dashboard-bento-grid {
+            gap: 16px !important;
+            margin-top: 16px !important;
+          }
+
+          @media (min-width: 761px) and (max-width: 1180px) {
+            #pageContent > .hero + .stat-grid {
+              gap: 12px !important;
+              margin-top: 16px !important;
+            }
+
+            #pageContent > .dashboard-bento-grid {
+              gap: 12px !important;
+              margin-top: 12px !important;
+            }
+          }
+
+          @media (max-width: 760px) {
+            #pageContent > .hero + .stat-grid {
+              gap: 9px !important;
+              margin: 14px 0 0 !important;
+            }
+
+            #pageContent > .dashboard-bento-grid {
+              gap: 12px !important;
+              margin-top: 12px !important;
+            }
+          }
+          /* GREENSCAPE_DASHBOARD_BENTO_SPACING_V1_END */
+          """.strip()
+
+          if start_marker in styles and end_marker in styles:
+              before, remainder = styles.split(start_marker, 1)
+              _, after = remainder.split(end_marker, 1)
+              styles = before.rstrip() + "\n\n" + spacing_block + after
+          else:
+              styles = styles.rstrip() + "\n\n" + spacing_block + "\n"
+
+          old_cache = "assets/css/styles.css?v=20260729-catalog-pulse-bento1"
+          new_cache = "assets/css/styles.css?v=20260729-dashboard-bento-spacing1"
+
+          if old_cache in index:
+              index = index.replace(old_cache, new_cache, 1)
+          elif new_cache not in index:
+              raise SystemExit("Main stylesheet cache key was not found in index.html.")
+
+          required = [
+              "#pageContent > .hero + .stat-grid {\n  gap: 16px !important;\n  margin: 16px 0 0 !important;",
+              "#pageContent > .dashboard-bento-grid {\n  gap: 16px !important;\n  margin-top: 16px !important;",
+              "@media (min-width: 761px) and (max-width: 1180px)",
+              "gap: 12px !important;",
+              "@media (max-width: 760px)",
+              "gap: 9px !important;",
+              "margin: 14px 0 0 !important;",
+          ]
+
+          for check in required:
+              if check not in styles:
+                  raise SystemExit(f"Dashboard spacing verification failed:\n{check}")
+
+          styles_path.write_text(styles, encoding="utf-8")
+          index_path.write_text(index, encoding="utf-8")
+          PY
+
+      - name: Run website quality checks
+        run: npm run quality
+
+      - name: Check formatting
+        run: git diff --check
+
+      - name: Commit and publish dashboard spacing
+        shell: bash
+        run: |
+          if git diff --quiet -- assets/css/styles.css index.html; then
+            echo "Approved dashboard spacing is already applied."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/styles.css index.html
+          git commit -m "fix: refine dashboard bento spacing"
+          git push origin HEAD:main
