@@ -638,7 +638,15 @@
     const maxCategory = Math.max(1, ...Object.values(categoryCounts));
     const withPhotos = plants.filter(p => p.image).length;
     const totalProjectPlants = projects.reduce((sum, p) => sum + (p.items || []).length, 0);
-    const recentProjects = [...projects].sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)).slice(0, 4);
+    const photoCoverage = Math.round((withPhotos / Math.max(plants.length, 1)) * 100);
+    const plantRecords = plants.filter(plant => plant.isPlant);
+    const plantShare = Math.round((plantRecords.length / Math.max(plants.length, 1)) * 100);
+    const recentPlants = [...plants]
+      .sort((a, b) => {
+        const dateDifference = new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+        return dateDifference || plants.indexOf(b) - plants.indexOf(a);
+      })
+      .slice(0, 3);
 
     content.innerHTML = `
       <section class="hero">
@@ -663,13 +671,13 @@
 
       <section class="stat-grid">
         ${statCard('Library entries', plants.length, `${plants.filter(p => p.isPlant).length} plants · ${plants.filter(p => !p.isPlant).length} materials`)}
-        ${statCard('With photos', withPhotos, `${Math.round((withPhotos / Math.max(plants.length, 1)) * 100)}% of the library`)}
+        ${statCard('With photos', withPhotos, `${photoCoverage}% of the library`)}
         ${statCard('Project lists', projects.length, `${totalProjectPlants} schedule lines saved`)}
         ${statCard('Categories', Object.keys(categoryCounts).length, 'Searchable plant groups')}
       </section>
 
-      <section class="two-column">
-        <div class="panel">
+      <section class="dashboard-bento-grid" aria-label="Library overview">
+        <div class="panel dashboard-category-panel">
           <div class="panel-header"><h2>Plant categories</h2><button type="button" class="button ghost small" data-view="library">View all</button></div>
           <div class="panel-body category-bars">
             ${Object.entries(categoryCounts).sort((a,b) => b[1]-a[1]).map(([category, count]) => `
@@ -681,16 +689,64 @@
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-header"><h2>Recent projects</h2><button type="button" class="button ghost small" data-view="projects">Open lists</button></div>
-          <div class="panel-body">
-            ${recentProjects.length ? recentProjects.map(project => {
-              const totals = projectTotals(project);
-              return `<button type="button" data-action="open-project" data-project-id="${escapeHTML(project.id)}" style="display:block;width:100%;padding:12px 0;border:0;border-bottom:1px solid #e8ebe6;background:transparent;text-align:left;color:inherit;">
-                <strong style="display:block;font-size:13px;">${escapeHTML(project.name)}</strong>
-                <span style="display:block;margin-top:3px;color:var(--muted);font-size:10px;">${totals.categories} categories · ${number(totals.quantity)} total quantity</span>
+        <div class="panel dashboard-health-panel">
+          <div class="panel-header">
+            <div>
+              <span class="dashboard-panel-kicker">Library health</span>
+              <h2>Photo coverage</h2>
+            </div>
+            <span class="dashboard-health-score" aria-label="${photoCoverage} percent complete">${photoCoverage}%</span>
+          </div>
+          <div class="panel-body dashboard-health-body">
+            <div class="dashboard-health-ring" style="--health-score:${photoCoverage}" aria-hidden="true">
+              <span>${withPhotos}</span>
+            </div>
+            <div class="dashboard-health-copy">
+              <strong>${withPhotos} of ${plants.length} entries</strong>
+              <span>have a library photograph</span>
+              <div class="dashboard-health-track" aria-hidden="true"><span style="width:${photoCoverage}%"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel dashboard-recent-panel">
+          <div class="panel-header"><h2>Recently added</h2><button type="button" class="button ghost small" data-view="library">Open library</button></div>
+          <div class="panel-body dashboard-recent-list">
+            ${recentPlants.length ? recentPlants.map(plant => {
+              const image = safeImage(plant.image);
+              return `<button type="button" class="dashboard-recent-item" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
+                <span class="dashboard-recent-image">${image ? `<img src="${image}" alt="" width="112" height="112" loading="lazy" decoding="async">` : `<span>${escapeHTML(plant.code || '—')}</span>`}</span>
+                <span class="dashboard-recent-copy">
+                  <strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong>
+                  <em>${escapeHTML(plant.scientificName || plant.material || plant.category || '')}</em>
+                </span>
+                <span class="dashboard-recent-arrow" aria-hidden="true">↗</span>
               </button>`;
-            }).join('') : emptyMini('No project lists yet', 'Create a project and start adding plants.')}
+            }).join('') : emptyMini('No plant entries yet', 'Add a plant to begin the library.')}
+          </div>
+        </div>
+
+        <div class="panel dashboard-pulse-panel">
+          <div class="panel-header">
+            <div>
+              <span class="dashboard-panel-kicker">Catalog Pulse</span>
+              <h2>Live completeness</h2>
+            </div>
+            <span class="dashboard-live-dot">Live</span>
+          </div>
+          <div class="panel-body dashboard-pulse-body">
+            <div class="dashboard-pulse-row">
+              <span>Photos</span><strong>${photoCoverage}%</strong>
+              <span class="dashboard-pulse-track"><span style="width:${photoCoverage}%"></span></span>
+            </div>
+            <div class="dashboard-pulse-row">
+              <span>Plant records</span><strong>${plantShare}%</strong>
+              <span class="dashboard-pulse-track"><span style="width:${plantShare}%"></span></span>
+            </div>
+            <div class="dashboard-pulse-totals">
+              <span><strong>${Object.keys(categoryCounts).length}</strong> categories</span>
+              <span><strong>${plants.length - plantRecords.length}</strong> materials</span>
+            </div>
           </div>
         </div>
       </section>

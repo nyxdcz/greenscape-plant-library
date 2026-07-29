@@ -12,6 +12,34 @@ Open the published website here:
 
 ## What's New
 
+### Catalog Pulse Bento Dashboard V1
+
+The original Greenscape workspace now uses a more complete bento dashboard while preserving its established colors, rounded glass surfaces, glow effects, and responsive structure.
+
+Changes:
+
+- Keeps the full-photo Dashboard hero, original Greenscape navigation, header, confidentiality notices, and **Visit Greenscape website** link.
+- Gives the header, brand, menu groups, metrics, and dashboard panels consistent rounded glass surfaces with restrained green glow.
+- Keeps the existing **Plant categories** name and category bars.
+- Adds **Library Health** using the real photo-coverage count from the current library.
+- Adds **Recently added** plant shortcuts using the latest available library records.
+- Adds a compact **Catalog Pulse** card for current photo coverage, plant-record share, category count, and material count without inventing historical data.
+- Keeps the original four summary metrics and project totals.
+- Simplifies the phone-only floating dock to five controls: Dashboard, Plant Library, Plant Identifier, More, and Help.
+- Moves Plant List Editor, Mood Board Creator, Project Lists, and the Greenscape website link into the phone **More** menu while retaining the complete desktop sidebar.
+- Keeps tablet and desktop navigation behavior separate from the five-button phone dock.
+- Refreshes stylesheet and script cache keys so browsers receive the updated dashboard and dock.
+
+Updated files:
+
+```text
+assets/css/styles.css
+assets/js/app.js
+assets/js/magnetic-dock.js
+index.html
+README.md
+```
+
 ### Responsive Bento Workspace and Magnetic Phone Dock V1
 
 The workspace now uses a responsive bento-style presentation on desktop, tablet, and phone, with a dedicated glass navigation dock on small screens.

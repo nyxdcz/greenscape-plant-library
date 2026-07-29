@@ -1,4 +1,6 @@
 (() => {
+  'use strict';
+
   const phoneQuery = window.matchMedia('(max-width: 760px)');
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const dock = document.querySelector('.sidebar .nav-list');
@@ -7,7 +9,7 @@
 
   if (!dock || !feedbackWidget) return;
 
-  const getItems = () => Array.from(dock.querySelectorAll('.nav-item, .dock-utility'));
+  const getItems = () => Array.from(dock.querySelectorAll('.nav-item:not(.phone-dock-hidden), .dock-utility'));
 
   const resetItems = () => {
     getItems().forEach((item) => {
@@ -49,42 +51,98 @@
     element.style.removeProperty('--dock-lift');
   };
 
-  const attachPhoneUtilities = () => {
-    const maintenance = document.getElementById('maintenanceReadonlyBanner');
-    const help = document.getElementById('feedbackToggle');
-
-    if (maintenance) {
-      markUtility(maintenance, 'dock-utility-maintenance', 'Maintenance mode');
-      if (maintenance.parentElement !== dock) dock.appendChild(maintenance);
+  const dockIcon = (kind) => {
+    if (kind === 'identifier') {
+      return '<span class="phone-dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5h3l1.3-2h7.4l1.3 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.8 3.8c-2.4.1-4.1 1.1-4.8 2.8 1.9.2 3.6-.5 4.8-2.8Z" fill="currentColor"/></svg></span>';
     }
+    return '<span class="phone-dock-more-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  };
+
+  const ensurePhoneButton = (id, className, label, kind) => {
+    let button = document.getElementById(id);
+    if (!button) {
+      button = document.createElement('button');
+      button.id = id;
+      button.type = 'button';
+      button.className = `dock-utility ${className}`;
+      button.setAttribute('aria-label', label);
+      button.dataset.dockLabel = label;
+      button.innerHTML = dockIcon(kind);
+    }
+    return button;
+  };
+
+  const ensureMoreMenu = () => {
+    let menu = document.getElementById('phoneDockMoreMenu');
+    if (menu) return menu;
+
+    menu = document.createElement('div');
+    menu.id = 'phoneDockMoreMenu';
+    menu.className = 'phone-dock-more-menu';
+    menu.setAttribute('aria-label', 'More Greenscape tools');
+    menu.hidden = true;
+    menu.innerHTML = `
+      <button type="button" data-view="sheet"><span>Plant List Editor</span><small>Soon</small></button>
+      <button type="button" data-view="moodboard"><span>Mood Board Creator</span><small>Soon</small></button>
+      <button type="button" data-view="projects"><span>Project Lists</span><small>Soon</small></button>
+      <a href="https://greenscapelandscapingph.com/" target="_blank" rel="noopener"><span>Visit Greenscape website</span><small>↗</small></a>`;
+    document.body.appendChild(menu);
+    return menu;
+  };
+
+  const closeMoreMenu = () => {
+    const menu = document.getElementById('phoneDockMoreMenu');
+    const button = document.getElementById('phoneDockMoreButton');
+    if (menu) menu.hidden = true;
+    if (button) button.setAttribute('aria-expanded', 'false');
+  };
+
+  const attachPhoneUtilities = () => {
+    const help = document.getElementById('feedbackToggle');
+    const identifier = ensurePhoneButton('phoneDockIdentifierButton', 'dock-utility-identifier', 'Plant Identifier', 'identifier');
+    const more = ensurePhoneButton('phoneDockMoreButton', 'dock-utility-more', 'More', 'more');
+    const moreMenu = ensureMoreMenu();
+
+    identifier.dataset.action = 'open-google-lens-identifier';
+    more.setAttribute('aria-expanded', moreMenu.hidden ? 'false' : 'true');
+    more.setAttribute('aria-controls', moreMenu.id);
+    if (more.dataset.dockClickBound !== 'true') {
+      more.dataset.dockClickBound = 'true';
+      more.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const menu = ensureMoreMenu();
+        menu.hidden = !menu.hidden;
+        more.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+      });
+    }
+
+    dock.querySelectorAll('[data-view="sheet"], [data-view="moodboard"], [data-view="projects"]').forEach((item) => {
+      item.classList.add('phone-dock-hidden');
+    });
+
+    if (identifier.parentElement !== dock) dock.appendChild(identifier);
+    if (more.parentElement !== dock) dock.appendChild(more);
 
     if (help) {
       markUtility(help, 'dock-utility-help', 'Help');
       if (help.parentElement !== dock) dock.appendChild(help);
     }
 
-    if (maintenance && help && maintenance.nextElementSibling !== help) {
-      dock.appendChild(maintenance);
-      dock.appendChild(help);
-    }
-
-    document.body.classList.toggle(
-      'dock-utilities-attached',
-      Boolean(maintenance && help)
-    );
+    document.body.classList.toggle('dock-utilities-attached', Boolean(help));
   };
 
   const restoreDesktopUtilities = () => {
-    const maintenance = document.getElementById('maintenanceReadonlyBanner');
     const help = document.getElementById('feedbackToggle');
     const panel = document.getElementById('feedbackPanel');
+    const identifier = document.getElementById('phoneDockIdentifierButton');
+    const more = document.getElementById('phoneDockMoreButton');
+    const moreMenu = document.getElementById('phoneDockMoreMenu');
 
-    if (maintenance) {
-      unmarkUtility(maintenance, 'dock-utility-maintenance');
-      if (maintenance.parentElement !== feedbackWidget) {
-        feedbackWidget.insertBefore(maintenance, feedbackWidget.firstElementChild);
-      }
-    }
+    dock.querySelectorAll('.phone-dock-hidden').forEach((item) => item.classList.remove('phone-dock-hidden'));
+    identifier?.remove();
+    more?.remove();
+    moreMenu?.remove();
 
     if (help) {
       unmarkUtility(help, 'dock-utility-help');
@@ -98,11 +156,8 @@
   };
 
   const syncUtilities = () => {
-    if (phoneQuery.matches) {
-      attachPhoneUtilities();
-    } else {
-      restoreDesktopUtilities();
-    }
+    if (phoneQuery.matches) attachPhoneUtilities();
+    else restoreDesktopUtilities();
   };
 
   dock.addEventListener('pointermove', (event) => {
@@ -125,12 +180,22 @@
   });
   dock.addEventListener('pointerup', resetItems);
 
-  const help = document.getElementById('feedbackToggle');
-  if (help) {
-    help.addEventListener('click', (event) => {
-      if (phoneQuery.matches) event.stopPropagation();
-    });
-  }
+  dock.addEventListener('click', (event) => {
+    if (event.target.closest('#feedbackToggle') && phoneQuery.matches) {
+      event.stopPropagation();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!phoneQuery.matches) return;
+    if (event.target.closest('#phoneDockMoreButton')) return;
+    if (event.target.closest('#phoneDockMoreMenu button, #phoneDockMoreMenu a')) {
+      closeMoreMenu();
+      return;
+    }
+    if (event.target.closest('#phoneDockMoreMenu')) return;
+    closeMoreMenu();
+  });
 
   phoneQuery.addEventListener('change', syncUtilities);
   reducedMotionQuery.addEventListener('change', resetItems);
