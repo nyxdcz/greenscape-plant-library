@@ -12,25 +12,26 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_GREENIE_DRAG_V1_START -->
-### Draggable Greenie Assistant V1
+<!-- GREENSCAPE_GREENIE_HOVER_RETURN_V1_START -->
+### Greenie Hover Help and Drag Return V1
 
-Latest sidebar behavior:
+Current desktop interaction:
 
-- Removes the Settings and Help & Support rows from the desktop sidebar.
-- Removes Greenie’s close button and hidden-state behavior.
-- Keeps one dark-green cloud with white text above the animated pet.
-- Makes the cloud the only desktop Help trigger.
-- Uses the animated pet as the drag handle only.
-- Moves the cloud and pet together when Greenie is dragged.
-- Switches to `assets/images/greenscape-pet-drag.gif` while dragging.
-- Returns to `assets/images/greenscape-pet.gif` when dragging ends.
-- Saves Greenie’s last desktop position in local storage.
-- Keeps Greenie inside the visible browser window.
-- Disables dragging and hides the desktop Greenie section below 1024px.
-- Retains the existing mobile Help control.
-- Keeps scientific names above common names in Grid and List views.
-- Keeps Company Use Only and Visit Greenscape website visible through internal sidebar scrolling.
+- Greenie appears in its original sidebar location.
+- The simple dark-green speech box is hidden by default.
+- Hovering or focusing Greenie reveals the speech box above the pet.
+- Moving the pointer from Greenie into the speech box keeps it visible.
+- Leaving both Greenie and the speech box hides it.
+- Clicking Greenie without dragging opens the existing Help panel.
+- Clicking the visible speech box opens the same Help panel.
+- Dragging beyond the 6px threshold hides the speech box and switches to `assets/images/greenscape-pet-drag.gif`.
+- Releasing after a drag animates Greenie back to its original sidebar location.
+- The normal GIF returns after release.
+- Dragging never opens Help and no position is saved.
+- Settings, Help & Support, and Greenie’s close button remain removed.
+- The mobile Help control remains unchanged.
+- Scientific names remain above common names in Grid and List views.
+- Company Use Only and Visit Greenscape website remain available through the scrollable sidebar.
 
 Affected files:
 
@@ -45,8 +46,8 @@ README.md
 Current cache keys:
 
 ```text
-assets/css/sidebar-assistant.css?v=20260729-greenie-drag1
-assets/js/sidebar-assistant.js?v=20260729-greenie-drag1
+assets/css/sidebar-assistant.css?v=20260729-greenie-hover-return1
+assets/js/sidebar-assistant.js?v=20260729-greenie-hover-return1
 ```
 
 Verification:
@@ -56,7 +57,8 @@ node --check assets/js/sidebar-assistant.js
 npm run quality
 git diff --check
 ```
-<!-- GREENSCAPE_GREENIE_DRAG_V1_END -->
+<!-- GREENSCAPE_GREENIE_HOVER_RETURN_V1_END -->
+
 
 
 

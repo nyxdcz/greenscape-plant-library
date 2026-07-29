@@ -1,7 +1,7 @@
 (function () {
-  const POSITION_KEY = 'greenscape-greenie-position-v1';
   const DESKTOP_BREAKPOINT = 1024;
   const DRAG_THRESHOLD = 6;
+  const RETURN_DURATION = 220;
   const NORMAL_GIF = 'assets/images/greenscape-pet.gif';
   const DRAG_GIF = 'assets/images/greenscape-pet-drag.gif';
 
@@ -50,26 +50,6 @@
     });
   }
 
-  function readSavedPosition() {
-    try {
-      const value = JSON.parse(localStorage.getItem(POSITION_KEY) || 'null');
-      if (!value || !Number.isFinite(value.left) || !Number.isFinite(value.top)) {
-        return null;
-      }
-      return value;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function savePosition(left, top) {
-    try {
-      localStorage.setItem(POSITION_KEY, JSON.stringify({ left, top }));
-    } catch (error) {
-      // Position memory is optional.
-    }
-  }
-
   function preloadPetAnimations() {
     [NORMAL_GIF, DRAG_GIF].forEach((source) => {
       const image = new Image();
@@ -79,14 +59,12 @@
 
   function viewportBounds(card) {
     const margin = 10;
-    const width = card.offsetWidth;
-    const height = card.offsetHeight;
 
     return {
       minLeft: margin,
       minTop: margin,
-      maxLeft: Math.max(margin, window.innerWidth - width - margin),
-      maxTop: Math.max(margin, window.innerHeight - height - margin)
+      maxLeft: Math.max(margin, window.innerWidth - card.offsetWidth - margin),
+      maxTop: Math.max(margin, window.innerHeight - card.offsetHeight - margin)
     };
   }
 
@@ -94,44 +72,25 @@
     return Math.min(Math.max(value, minimum), maximum);
   }
 
-  function applyFixedPosition(card, left, top, persist = false) {
-    if (window.innerWidth < DESKTOP_BREAKPOINT) return;
-
-    card.classList.add('is-floating');
-    card.style.position = 'fixed';
-
-    const bounds = viewportBounds(card);
-    const safeLeft = clamp(left, bounds.minLeft, bounds.maxLeft);
-    const safeTop = clamp(top, bounds.minTop, bounds.maxTop);
-
-    card.style.left = `${safeLeft}px`;
-    card.style.top = `${safeTop}px`;
-
-    if (persist) {
-      savePosition(safeLeft, safeTop);
-    }
+  function clearTemporaryPosition(card) {
+    card.classList.remove('is-floating', 'is-dragging', 'is-returning');
+    card.style.removeProperty('position');
+    card.style.removeProperty('left');
+    card.style.removeProperty('top');
+    card.style.removeProperty('width');
+    card.style.removeProperty('transition');
   }
 
-  function restorePosition(card) {
-    if (window.innerWidth < DESKTOP_BREAKPOINT) {
-      card.classList.remove('is-floating', 'is-dragging');
-      card.style.removeProperty('position');
-      card.style.removeProperty('left');
-      card.style.removeProperty('top');
-      return;
-    }
+  function returnToSidebar(card, origin) {
+    card.classList.remove('is-dragging');
+    card.classList.add('is-returning');
+    card.style.transition = `left ${RETURN_DURATION}ms ease, top ${RETURN_DURATION}ms ease`;
+    card.style.left = `${origin.left}px`;
+    card.style.top = `${origin.top}px`;
 
-    const saved = readSavedPosition();
-    if (!saved) return;
-
-    applyFixedPosition(card, saved.left, saved.top, false);
-  }
-
-  function keepPositionVisible(card) {
-    if (!card.classList.contains('is-floating')) return;
-
-    const rectangle = card.getBoundingClientRect();
-    applyFixedPosition(card, rectangle.left, rectangle.top, true);
+    window.setTimeout(() => {
+      clearTemporaryPosition(card);
+    }, RETURN_DURATION + 30);
   }
 
   function enableGreenieDragging(card) {
@@ -147,29 +106,35 @@
     let startY = 0;
     let startLeft = 0;
     let startTop = 0;
+    let origin = null;
     let dragging = false;
 
-    const finishDrag = () => {
+    function finishPointer(event) {
       if (pointerId === null) return;
+      if (event && event.pointerId !== undefined && event.pointerId !== pointerId) return;
 
-      if (dragging) {
-        const rectangle = card.getBoundingClientRect();
-        applyFixedPosition(card, rectangle.left, rectangle.top, true);
-      }
-
-      card.classList.remove('is-dragging');
-      image.src = NORMAL_GIF;
-      document.body.classList.remove('greenie-drag-active');
+      const activePointerId = pointerId;
+      pointerId = null;
 
       try {
-        handle.releasePointerCapture(pointerId);
+        handle.releasePointerCapture(activePointerId);
       } catch (error) {
         // Pointer capture may already be released.
       }
 
-      pointerId = null;
+      image.src = NORMAL_GIF;
+      document.body.classList.remove('greenie-drag-active');
+
+      if (dragging && origin) {
+        returnToSidebar(card, origin);
+      } else {
+        clearTemporaryPosition(card);
+        openHelpPanel();
+      }
+
       dragging = false;
-    };
+      origin = null;
+    }
 
     handle.addEventListener('pointerdown', (event) => {
       if (window.innerWidth < DESKTOP_BREAKPOINT || event.button !== 0) return;
@@ -179,6 +144,11 @@
       startY = event.clientY;
 
       const rectangle = card.getBoundingClientRect();
+      origin = {
+        left: rectangle.left,
+        top: rectangle.top,
+        width: rectangle.width
+      };
       startLeft = rectangle.left;
       startTop = rectangle.top;
 
@@ -187,17 +157,20 @@
     });
 
     handle.addEventListener('pointermove', (event) => {
-      if (pointerId !== event.pointerId) return;
+      if (pointerId !== event.pointerId || !origin) return;
 
       const deltaX = event.clientX - startX;
       const deltaY = event.clientY - startY;
 
       if (!dragging && Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) {
         dragging = true;
-        card.classList.add('is-dragging');
-        document.body.classList.add('greenie-drag-active');
+        card.classList.add('is-floating', 'is-dragging');
+        card.style.position = 'fixed';
+        card.style.width = `${origin.width}px`;
+        card.style.left = `${startLeft}px`;
+        card.style.top = `${startTop}px`;
         image.src = DRAG_GIF;
-        applyFixedPosition(card, startLeft, startTop, false);
+        document.body.classList.add('greenie-drag-active');
       }
 
       if (!dragging) return;
@@ -211,9 +184,15 @@
       event.preventDefault();
     });
 
-    handle.addEventListener('pointerup', finishDrag);
-    handle.addEventListener('pointercancel', finishDrag);
-    handle.addEventListener('lostpointercapture', finishDrag);
+    handle.addEventListener('pointerup', finishPointer);
+    handle.addEventListener('pointercancel', finishPointer);
+    handle.addEventListener('lostpointercapture', finishPointer);
+
+    handle.addEventListener('click', (event) => {
+      if (event.detail === 0) {
+        openHelpPanel();
+      }
+    });
   }
 
   function ensureGreenieAssistant() {
@@ -230,17 +209,22 @@
       navigation.insertAdjacentElement('afterend', section);
     }
 
+    const existingCard = qs('.sidebar-pet-card', section);
+
+    if (existingCard) {
+      enableGreenieDragging(existingCard);
+      return existingCard;
+    }
+
     section.innerHTML = `
       <div class="sidebar-pet-card">
         <button type="button" class="sidebar-pet-speech" aria-label="Ask Greenie for help">
-          <span class="sidebar-pet-cloud-copy">
-            <strong>Hi! I’m Greenie 🌿</strong>
-            <span>Need help finding the perfect plant?</span>
-            <em>Ask me anything</em>
-          </span>
+          <strong>Hi! I’m Greenie 🌿</strong>
+          <span>Need help finding the perfect plant?</span>
+          <em>Ask me anything</em>
         </button>
 
-        <button type="button" class="sidebar-pet-avatar" aria-label="Drag Greenie">
+        <button type="button" class="sidebar-pet-avatar" aria-label="Open Help or drag Greenie">
           <img class="sidebar-pet-gif" src="${NORMAL_GIF}" alt="Greenie animated assistant" width="68" height="68">
         </button>
       </div>
@@ -251,16 +235,23 @@
 
     speech.addEventListener('click', openHelpPanel);
     enableGreenieDragging(card);
-    restorePosition(card);
 
     return card;
   }
 
+  function resetLegacyPosition() {
+    try {
+      localStorage.removeItem('greenscape-greenie-position-v1');
+    } catch (error) {
+      // Legacy position data is optional.
+    }
+  }
+
   function onReady() {
     document.body.classList.add('sidebar-assistant-enhanced');
+    resetLegacyPosition();
     preloadPetAnimations();
-
-    const card = ensureGreenieAssistant();
+    ensureGreenieAssistant();
     reorderPlantNames();
 
     const observer = new MutationObserver(() => {
@@ -275,20 +266,16 @@
     });
 
     window.addEventListener('resize', () => {
-      const currentCard = qs('.sidebar-pet-card');
+      const card = qs('.sidebar-pet-card');
 
-      if (!currentCard) return;
+      if (!card) return;
 
       if (window.innerWidth < DESKTOP_BREAKPOINT) {
-        restorePosition(currentCard);
-      } else if (currentCard.classList.contains('is-floating')) {
-        keepPositionVisible(currentCard);
+        clearTemporaryPosition(card);
+        qs('.sidebar-pet-gif', card)?.setAttribute('src', NORMAL_GIF);
+        document.body.classList.remove('greenie-drag-active');
       }
     });
-
-    if (card) {
-      window.setTimeout(() => keepPositionVisible(card), 100);
-    }
   }
 
   if (document.readyState === 'loading') {
