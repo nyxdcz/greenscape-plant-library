@@ -24,7 +24,9 @@ const jsPaths = [
   'assets/js/project-costing.js',
   'assets/js/maintenance-config.js',
   'assets/js/maintenance-force.js',
-  'assets/js/maintenance.js'
+  'assets/js/maintenance.js',
+  'assets/js/magnetic-dock.js',
+  'assets/js/sidebar-assistant.js'
 ];
 const jsSources = Object.fromEntries(jsPaths.map(file => [file, read(file)]));
 
@@ -135,6 +137,8 @@ check(jsSources['assets/js/app.js'].includes('manualNotes || firstDescriptionSen
 check(!jsSources['assets/js/app.js'].includes('class="plant-badges"'), 'Plant Library cards must not render tag badges.');
 check(jsSources['assets/js/app.js'].includes('class="detail-tags"'), 'Automatic tags must remain visible in Plant Detail.');
 check(!styles.includes('.plant-badge'), 'Unused Plant Library badge styling should be removed.');
+check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
+check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
 check(jsSources['assets/js/app.js'].includes('DUPLICATE_PLANT_CONSOLIDATION_V1_START'), 'Duplicate plant consolidation migration is required.');
 check(jsSources['assets/js/app.js'].includes("'bam-012': 'bam-006'"), 'Variegated Bamboo duplicate migration is required.');

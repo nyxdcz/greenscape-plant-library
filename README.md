@@ -12,6 +12,51 @@ Open the published website here:
 
 ## What's New
 
+### Plant Library Navigation Freeze Fix V1
+
+Fixes the page freeze that occurred when opening **Plant Library** from the Dashboard or another website section.
+
+Changes:
+
+- Removes the sidebar assistant’s self-triggering Plant Library `MutationObserver`.
+- Keeps the scientific name, plant code, and common name in the order already produced by `app.js`.
+- Preserves Greenie, Help, maintenance mode, Plant Library filters, Grid/List views, and plant details.
+- Adds static regression checks that reject future sidebar code which observes or reorders Plant Library content.
+- Adds `magnetic-dock.js` and `sidebar-assistant.js` to the repository JavaScript syntax validation.
+- Refreshes the sidebar assistant cache key so deployed browsers receive the correction immediately.
+
+Root cause:
+
+```text
+Plant Library render
+→ sidebar observer runs reorderPlantNames()
+→ insertBefore() changes every plant card
+→ the same observer runs again
+→ continuous DOM mutation loop and frozen page
+```
+
+Affected files:
+
+```text
+assets/js/sidebar-assistant.js
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 <!-- GREENSCAPE_GREENIE_SPEECH_CLOUD_V1_START -->
 ### Greenie Speech Cloud and Sidebar Visibility V1
 
