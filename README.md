@@ -12,6 +12,40 @@ Open the published website here:
 
 ## What's New
 
+<!-- GREENSCAPE_SIDEBAR_PET_V1_START -->
+### Plant Library Name Order and Sidebar Assistant V1
+
+Latest enhancements:
+
+- Moves the scientific name above the common name in Plant Library cards and list rows.
+- Keeps the scientific name italic and muted, with the common name below in bold dark green.
+- Adds a desktop sidebar utility section with Settings and Help & Support.
+- Adds a Greenie assistant card using the animated GIF asset `assets/images/greenscape-pet.gif`.
+- Uses the pet card’s “Ask me anything” button and the sidebar Help row to open the existing Help panel.
+- Adds a small settings dialog for default Grid/List view and default A–Z/Z–A sorting.
+- Saves sidebar settings locally in the browser.
+- Hides only the floating Help launcher on desktop to avoid duplicate Help buttons.
+- Keeps the floating Help launcher on mobile.
+
+Affected files:
+
+```text
+index.html
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+assets/images/greenscape-pet.gif
+README.md
+```
+
+Cache keys:
+
+```text
+assets/css/sidebar-assistant.css?v=20260729-sidebar-assistant1
+assets/js/sidebar-assistant.js?v=20260729-sidebar-assistant1
+```
+<!-- GREENSCAPE_SIDEBAR_PET_V1_END -->
+
+
 <!-- GREENSCAPE_LIBRARY_GLASS_TITLES_V1_START -->
 ### Plant Library Glass Toolbar and Plain Titles V1
 
