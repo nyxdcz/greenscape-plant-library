@@ -107,6 +107,8 @@
     menu = document.createElement('div');
     menu.id = 'phoneDockMoreMenu';
     menu.className = 'phone-dock-more-menu';
+    menu.setAttribute('role', 'dialog');
+    menu.setAttribute('aria-modal', 'false');
     menu.setAttribute('aria-label', 'More Greenscape tools');
     menu.hidden = true;
     menu.innerHTML = `
@@ -118,12 +120,29 @@
     return menu;
   };
 
-  const closeMoreMenu = () => {
+  const openMoreMenu = () => {
+    const menu = ensureMoreMenu();
+    const button = document.getElementById('phoneDockMoreButton');
+
+    menu.hidden = false;
+    button?.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => {
+      menu.querySelector(
+        'button:not(:disabled), a[href]'
+      )?.focus({ preventScroll: true });
+    });
+  };
+
+  const closeMoreMenu = (restoreFocus = false) => {
     const menu = document.getElementById('phoneDockMoreMenu');
     const button = document.getElementById('phoneDockMoreButton');
 
     if (menu) menu.hidden = true;
-    if (button) button.setAttribute('aria-expanded', 'false');
+
+    if (button) {
+      button.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) button.focus({ preventScroll: true });
+    }
   };
 
   const attachPhoneUtilities = () => {
@@ -148,6 +167,7 @@
       moreMenu.hidden ? 'false' : 'true'
     );
     more.setAttribute('aria-controls', moreMenu.id);
+    more.setAttribute('aria-haspopup', 'dialog');
 
     if (more.dataset.dockClickBound !== 'true') {
       more.dataset.dockClickBound = 'true';
@@ -155,11 +175,8 @@
         event.preventDefault();
         event.stopPropagation();
         const menu = ensureMoreMenu();
-        menu.hidden = !menu.hidden;
-        more.setAttribute(
-          'aria-expanded',
-          menu.hidden ? 'false' : 'true'
-        );
+        if (menu.hidden) openMoreMenu();
+        else closeMoreMenu(true);
       });
     }
 
@@ -264,6 +281,13 @@
 
     if (event.target.closest('#phoneDockMoreMenu')) return;
     closeMoreMenu();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || !phoneQuery.matches) return;
+
+    const menu = document.getElementById('phoneDockMoreMenu');
+    if (menu && !menu.hidden) closeMoreMenu(true);
   });
 
   phoneQuery.addEventListener('change', syncUtilities);

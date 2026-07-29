@@ -863,11 +863,15 @@
     const shown = results.slice(0, state.libraryLimit);
 
     if (!results.length) {
-      grid.innerHTML = emptyState(
-        'No matching plants',
-        'Try another plant name, category, or sunlight filter.',
-        '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>'
-      );
+      grid.innerHTML = `
+        <div class="library-results-status" role="status" aria-live="polite" aria-atomic="true">
+          ${emptyState(
+            'No matching plants',
+            'Try another plant name, category, or sunlight filter.',
+            '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>'
+          )}
+        </div>
+      `;
       return;
     }
 
@@ -880,7 +884,7 @@
 
     grid.innerHTML = `
       <div class="${collectionClass}">${records}</div>
-      <div class="library-results-footer">
+      <div class="library-results-footer" role="status" aria-live="polite" aria-atomic="true">
         <span>Showing <strong>${shown.length}</strong> of <strong>${results.length}</strong> entries</span>
         ${remaining > 0
           ? `<button type="button" class="button secondary" data-action="load-more">Show more (${remaining} remaining)</button>`

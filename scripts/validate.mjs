@@ -55,6 +55,15 @@ const unsafeBlankLinks = [...renderedMarkup.matchAll(/<a\b[^>]*\btarget="_blank"
   .filter(match => !/\brel="[^"]*noopener[^"]*"/i.test(match[0]));
 check(unsafeBlankLinks.length === 0, `${unsafeBlankLinks.length} external link template(s) open a new tab without rel="noopener".`);
 
+// REPOSITORY_ACCESSIBILITY_VALIDATION_V1
+check(jsSources['assets/js/app.js'].includes('class="library-results-footer" role="status" aria-live="polite" aria-atomic="true"'), 'Plant Library result totals must be announced politely.');
+check(jsSources['assets/js/app.js'].includes('class="library-results-status" role="status" aria-live="polite" aria-atomic="true"'), 'Plant Library empty results must be announced politely.');
+check(jsSources['assets/js/magnetic-dock.js'].includes("menu.setAttribute('role', 'dialog')"), 'The phone More panel must expose dialog semantics.');
+check(jsSources['assets/js/magnetic-dock.js'].includes("more.setAttribute('aria-haspopup', 'dialog')"), 'The phone More button must expose its popup relationship.');
+check(!jsSources['assets/js/magnetic-dock.js'].includes('new MutationObserver'), 'The phone dock must not observe the full document subtree.');
+check(!jsSources['assets/js/sidebar-assistant.js'].includes('new MutationObserver'), 'Greenie must not rescan Plant Library mutations.');
+check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'Plant title order must be rendered directly by app.js.');
+
 check(/class="brand-logo-official"[^>]*\bwidth="\d+"[^>]*\bheight="\d+"/i.test(html), 'The sidebar logo must declare intrinsic dimensions.');
 check(/id="toastRoot"[^>]*\baria-live="polite"[^>]*\baria-atomic="true"/i.test(html), 'Toast announcements must be polite and atomic.');
 check(!jsSources['assets/js/app.js'].includes('.moodboard-page-toolbar > strong'), 'Mood board labels should be omitted at render time, not removed by an observer.');
