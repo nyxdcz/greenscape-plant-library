@@ -55,6 +55,8 @@
   const allowedFieldIds = new Set([
     'librarySearch',
     'categoryFilter',
+    'sunlightFilter',
+    'librarySort',
     'sheetSearch',
     'sheetCategoryFilter',
     'moodboardSearch',
@@ -74,6 +76,7 @@
     'filter-category',
     'load-more',
     'clear-filter',
+    'library-view',
     'library-quick-filter',
     'clear-library-category',
     'clear-sheet-filter',

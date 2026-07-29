@@ -107,6 +107,9 @@
     librarySearch: '',
     libraryCategory: 'All',
     libraryQuickFilter: 'All',
+    librarySunlight: 'All',
+    librarySort: 'az',
+    libraryView: 'grid',
     libraryLimit: 48,
     sheetSearch: '',
     sheetCategory: 'All',
@@ -772,80 +775,78 @@
     ])].sort((a, b) => a.localeCompare(b));
   }
 
-  function filteredPlants() {
-    const q = state.librarySearch.trim().toLowerCase();
-    const quickFilter = state.libraryQuickFilter || 'All';
-
-    return plants.filter(plant => {
-      const matchesCategory = state.libraryCategory === 'All' || plant.category === state.libraryCategory;
-      if (!matchesCategory) return false;
-
-      if (quickFilter === 'Plants' && !plant.isPlant) return false;
-      if (quickFilter === 'Materials' && plant.isPlant) return false;
-      if (quickFilter === 'With Photos' && !safeImage(plant.image)) return false;
-      if (quickFilter === 'Missing Photos' && safeImage(plant.image)) return false;
-
-      if (!q) return true;
-      const haystack = [
-        plant.code,
-        plant.commonName,
-        plant.scientificName,
-        plant.category,
-        plant.material,
-        plant.overviewDescription,
-        effectivePlantingNotes(plant),
-        ...effectivePlantTags(plant)
-      ].join(' ').toLowerCase();
-      return haystack.includes(q);
-    });
+  function librarySunlightOptions() {
+    return [...new Set(
+      plants.map(plant => String(plant.sun || '').trim()).filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }
 
-  function libraryQuickFilterOptions() {
-    return ['All', 'Plants', 'Materials', 'With Photos', 'Missing Photos'];
+  function libraryIcon(name) {
+    const icons = {
+      grid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg>',
+      list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"></path><circle cx="5" cy="6" r="1"></circle><circle cx="5" cy="12" r="1"></circle><circle cx="5" cy="18" r="1"></circle></svg>',
+      eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"></path><circle cx="12" cy="12" r="2.6"></circle></svg>',
+      plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>'
+    };
+    return icons[name] || '';
+  }
+
+  function filteredPlants() {
+    const query = state.librarySearch.trim().toLowerCase();
+    const sunlight = state.librarySunlight || 'All';
+    const direction = state.librarySort === 'za' ? -1 : 1;
+
+    return plants
+      .filter(plant => {
+        if (state.libraryCategory !== 'All' && plant.category !== state.libraryCategory) return false;
+        if (sunlight !== 'All' && String(plant.sun || '').trim() !== sunlight) return false;
+        if (!query) return true;
+
+        return [
+          plant.code,
+          plant.commonName,
+          plant.scientificName,
+          plant.category,
+          plant.material,
+          plant.sun,
+          plant.overviewDescription,
+          effectivePlantingNotes(plant),
+          ...effectivePlantTags(plant)
+        ].join(' ').toLowerCase().includes(query);
+      })
+      .sort((a, b) => {
+        const aName = String(a.commonName || a.scientificName || a.material || '').trim();
+        const bName = String(b.commonName || b.scientificName || b.material || '').trim();
+        return direction * aName.localeCompare(bName, undefined, { sensitivity: 'base' });
+      });
   }
 
   function renderLibrary() {
-
     content.innerHTML = `
-
-      <div class="toolbar library-toolbar">
+      <div class="toolbar library-toolbar library-reference-toolbar">
         <label class="search-wrap library-search">
           <span aria-hidden="true">⌕</span>
-          <input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}">
+          <input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code…" value="${escapeHTML(state.librarySearch)}">
         </label>
 
-        <select id="categoryFilter" class="select-input" aria-label="Filter plants by category">
-          <option value="All">All categories</option>
+        <select id="categoryFilter" class="select-input library-category-filter" aria-label="Filter plants by category">
+          <option value="All">All Categories</option>
           ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
         </select>
 
-        <span id="resultCount" class="result-count library-result-status" role="status" aria-live="polite" aria-atomic="true"></span>
-        <button type="button" class="button primary library-add-button" data-action="new-plant">Add plant</button>
+        <select id="sunlightFilter" class="select-input library-sunlight-filter" aria-label="Filter plants by sunlight">
+          <option value="All">All Sunlight</option>
+          ${librarySunlightOptions().map(value => `<option value="${escapeHTML(value)}"${state.librarySunlight === value ? ' selected' : ''}>${escapeHTML(value)}</option>`).join('')}
+        </select>
 
-        <div class="library-quick-filters" aria-label="Quick filters">
-          <span class="library-quick-filter-label">Quick filters</span>
-          <div class="library-filter-chip-list">
-            ${libraryQuickFilterOptions().map(filter => `
-              <button
-                type="button"
-                class="library-filter-chip"
-                data-action="library-quick-filter"
-                data-filter="${escapeHTML(filter)}"
-                aria-pressed="${state.libraryQuickFilter === filter ? 'true' : 'false'}"
-              >${escapeHTML(filter)}</button>
-            `).join('')}
-            ${state.libraryCategory !== 'All' ? `
-              <button
-                type="button"
-                class="library-filter-chip library-category-chip"
-                data-action="clear-library-category"
-                aria-label="Remove category filter ${escapeHTML(state.libraryCategory)}"
-              >
-                <span>${escapeHTML(state.libraryCategory)}</span>
-                <span aria-hidden="true">×</span>
-              </button>
-            ` : ''}
-          </div>
+        <select id="librarySort" class="select-input library-sort-filter" aria-label="Sort plants">
+          <option value="az"${state.librarySort === 'az' ? ' selected' : ''}>Sort: A–Z</option>
+          <option value="za"${state.librarySort === 'za' ? ' selected' : ''}>Sort: Z–A</option>
+        </select>
+
+        <div class="library-view-toggle" role="group" aria-label="Plant Library view">
+          <button type="button" class="library-view-button" data-action="library-view" data-library-view="grid" aria-label="Grid view" aria-pressed="${state.libraryView !== 'list' ? 'true' : 'false'}">${libraryIcon('grid')}</button>
+          <button type="button" class="library-view-button" data-action="library-view" data-library-view="list" aria-label="List view" aria-pressed="${state.libraryView === 'list' ? 'true' : 'false'}">${libraryIcon('list')}</button>
         </div>
       </div>
 
@@ -856,25 +857,29 @@
 
   function updateLibraryResults() {
     const grid = document.getElementById('plantGrid');
-    const count = document.getElementById('resultCount');
-    if (!grid || !count) return;
+    if (!grid) return;
 
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
-    count.textContent = `${results.length} ${results.length === 1 ? 'entry' : 'entries'}`;
 
     if (!results.length) {
       grid.innerHTML = emptyState(
         'No matching plants',
-        'Try another plant name, category, or quick filter.',
+        'Try another plant name, category, or sunlight filter.',
         '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>'
       );
       return;
     }
 
     const remaining = results.length - shown.length;
+    const isList = state.libraryView === 'list';
+    const collectionClass = isList ? 'plant-list-view' : 'plant-grid';
+    const records = isList
+      ? shown.map((plant, index) => plantListRow(plant, index)).join('')
+      : shown.map((plant, index) => plantCard(plant, index)).join('');
+
     grid.innerHTML = `
-      <div class="plant-grid">${shown.map((plant, index) => plantCard(plant, index)).join('')}</div>
+      <div class="${collectionClass}">${records}</div>
       <div class="library-results-footer">
         <span>Showing <strong>${shown.length}</strong> of <strong>${results.length}</strong> entries</span>
         ${remaining > 0
@@ -888,24 +893,49 @@
     const image = safeImage(plant.image);
     const sizeCount = (plant.sizes || []).length;
     const plantName = plant.commonName || 'Unnamed plant';
+    const sizeText = `${sizeCount} size${sizeCount === 1 ? '' : 's'} available`;
 
     return `
-      <article class="plant-card">
+      <article class="plant-card library-reference-card">
         <button class="plant-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
-          ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="480" height="407" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
+          ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="480" height="360" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
+          <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
         </button>
         <div class="plant-card-body">
-          ${plantCodeMarkup(plant)}
-          <h2>
-            <button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button>
-          </h2>
+          <h2><button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button></h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
-          <div class="plant-meta"><span>${sizeCount} available size${sizeCount === 1 ? '' : 's'}</span></div>
+          <div class="plant-meta"><span>${escapeHTML(sizeText)}</span></div>
           <div class="plant-card-actions">
-            <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View details</button>
-            <button type="button" class="button primary small" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}">Add to list</button>
+            <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${libraryIcon('eye')}<span>View</span></button>
+            <button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>
           </div>
+        </div>
+      </article>`;
+  }
+
+  function plantListRow(plant, index = 0) {
+    const image = safeImage(plant.image);
+    const sizeCount = (plant.sizes || []).length;
+    const plantName = plant.commonName || 'Unnamed plant';
+    const sizeText = `${sizeCount} size${sizeCount === 1 ? '' : 's'} available`;
+
+    return `
+      <article class="plant-list-card">
+        <button class="plant-list-image" type="button" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">
+          ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="240" height="180" loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async">` : `<span class="image-fallback">${escapeHTML(plant.code || '—')}</span>`}
+          <span class="category-pill">${escapeHTML(plant.category)}</span>
+          <span class="plant-code-badge">${escapeHTML(plant.code || '—')}</span>
+        </button>
+        <div class="plant-list-copy">
+          <h2><button type="button" class="plant-title-link" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${escapeHTML(plantName)}</button></h2>
+          <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
+          <span class="plant-list-category">${escapeHTML(plant.category || 'Uncategorized')}</span>
+        </div>
+        <div class="plant-list-size">${escapeHTML(sizeText)}</div>
+        <div class="plant-list-actions">
+          <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${libraryIcon('eye')}<span>View</span></button>
+          <button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>
         </div>
       </article>`;
   }
@@ -3780,20 +3810,16 @@
     if (action === 'add-size-row') document.getElementById('sizeEditor').insertAdjacentHTML('beforeend', sizeRow({}));
     if (action === 'remove-size') target.closest('.size-row')?.remove();
     if (action === 'load-more') { state.libraryLimit += 48; updateLibraryResults(); }
-    if (action === 'library-quick-filter') {
-      state.libraryQuickFilter = target.dataset.filter || 'All';
-      state.libraryLimit = 48;
-      renderLibrary();
-    }
-    if (action === 'clear-library-category') {
-      state.libraryCategory = 'All';
-      state.libraryLimit = 48;
+    if (action === 'library-view') {
+      state.libraryView = target.dataset.libraryView === 'list' ? 'list' : 'grid';
       renderLibrary();
     }
     if (action === 'clear-filter') {
       state.librarySearch = '';
       state.libraryCategory = 'All';
       state.libraryQuickFilter = 'All';
+      state.librarySunlight = 'All';
+      state.librarySort = 'az';
       state.libraryLimit = 48;
       renderLibrary();
     }
@@ -3802,6 +3828,7 @@
       state.libraryCategory = target.dataset.category;
       state.librarySearch = '';
       state.libraryQuickFilter = 'All';
+      state.librarySunlight = 'All';
       state.libraryLimit = 48;
       setView('library');
     }
@@ -3937,6 +3964,16 @@
     }
     if (event.target.id === 'categoryFilter') {
       state.libraryCategory = event.target.value;
+      state.libraryLimit = 48;
+      updateLibraryResults();
+    }
+    if (event.target.id === 'sunlightFilter') {
+      state.librarySunlight = event.target.value;
+      state.libraryLimit = 48;
+      updateLibraryResults();
+    }
+    if (event.target.id === 'librarySort') {
+      state.librarySort = event.target.value === 'za' ? 'za' : 'az';
       state.libraryLimit = 48;
       updateLibraryResults();
     }

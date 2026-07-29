@@ -335,160 +335,88 @@ body:has(#plantGrid) .library-toolbar .result-count {
 
 /* GREENSCAPE_PLANT_LIBRARY_REFINEMENTS_V2_END */
 
-/* GREENSCAPE_PLANT_LIBRARY_PULSE_V1_START */
-/* Atheros-inspired hierarchy with uniform catalogue cards. */
+/* GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_START */
+/* Reference-inspired controls and catalogue cards using the original Greenscape design language. */
 
-body:has(#plantGrid) .library-pulse-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 12px;
+body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
+  display: grid !important;
+  grid-template-columns: minmax(310px, 1fr) minmax(140px, 170px) minmax(140px, 170px) minmax(120px, 140px) auto;
+  grid-template-areas: "search category sunlight sort view";
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 12px !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(32, 83, 63, .10) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, .94) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .86), 0 7px 18px rgba(21, 45, 35, .08) !important;
 }
 
-body:has(#plantGrid) .library-pulse-card {
+body:has(#plantGrid) .library-reference-toolbar .library-search { grid-area: search; }
+body:has(#plantGrid) .library-reference-toolbar .library-category-filter { grid-area: category; }
+body:has(#plantGrid) .library-reference-toolbar .library-sunlight-filter { grid-area: sunlight; }
+body:has(#plantGrid) .library-reference-toolbar .library-sort-filter { grid-area: sort; }
+
+body:has(#plantGrid) .library-reference-toolbar .search-input,
+body:has(#plantGrid) .library-reference-toolbar .select-input {
+  width: 100%;
   min-width: 0;
-  min-height: 96px;
-  padding: 15px 16px;
+  min-height: 42px !important;
+  border-radius: 11px !important;
+}
+
+body:has(#plantGrid) .library-view-toggle {
+  grid-area: view;
+  display: grid;
+  grid-template-columns: repeat(2, 42px);
+  gap: 5px;
+  padding: 3px;
+  border: 1px solid rgba(32, 83, 63, .10);
+  border-radius: 12px;
+  background: rgba(247, 250, 244, .88);
+}
+
+body:has(#plantGrid) .library-view-button {
+  width: 42px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  color: var(--forest-700);
+  background: transparent;
+}
+
+body:has(#plantGrid) .library-view-button svg,
+#plantGrid .plant-card-actions svg,
+#plantGrid .plant-list-actions svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--forest-900);
+  box-shadow: 0 5px 12px rgba(23, 63, 49, .20);
+}
+
+#plantGrid .plant-grid { align-items: stretch; }
+
+#plantGrid .library-reference-card {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   overflow: hidden;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, .78);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 95% 5%, rgba(215, 239, 139, .18), transparent 34%),
-    linear-gradient(145deg, rgba(255, 255, 255, .94), rgba(247, 250, 244, .80));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .96),
-    0 10px 26px rgba(15, 60, 39, .08);
-}
-
-body:has(#plantGrid) .library-pulse-card > span {
-  color: var(--forest-700);
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-}
-
-body:has(#plantGrid) .library-pulse-card > strong {
-  margin-top: 5px;
-  color: var(--forest-900);
-  font-family: "Avenir Next", Avenir, sans-serif;
-  font-size: 27px;
-  line-height: 1;
-  letter-spacing: -.04em;
-}
-
-body:has(#plantGrid) .library-pulse-card > small {
-  margin-top: 6px;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 9.5px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-body:has(#plantGrid) .toolbar.library-toolbar {
-  display: grid !important;
-  grid-template-columns: minmax(0, 6fr) minmax(180px, 3fr) minmax(92px, 1fr) auto;
-  grid-template-areas:
-    "search category count action"
-    "filters filters filters filters";
-  align-items: center !important;
-  gap: 10px 12px !important;
-  margin: 0 0 12px !important;
-  padding: 12px !important;
-  border-radius: 18px !important;
-}
-
-body:has(#plantGrid) .library-toolbar .library-search { grid-area: search; }
-body:has(#plantGrid) .library-toolbar #categoryFilter { grid-area: category; }
-
-body:has(#plantGrid) .library-toolbar .library-result-status {
-  grid-area: count;
-  min-width: 92px;
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 10px !important;
-  border: 1px solid rgba(47, 106, 82, .12);
-  border-radius: 11px;
-  color: var(--forest-800);
-  background: rgba(231, 242, 226, .72);
-  font-size: 10px;
-  font-weight: 850;
-  white-space: nowrap;
-}
-
-body:has(#plantGrid) .library-toolbar .library-add-button {
-  grid-area: action;
-  min-width: 104px;
-}
-
-body:has(#plantGrid) .library-quick-filters {
-  grid-area: filters;
-  min-width: 0;
-  padding-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid rgba(47, 106, 82, .09);
-}
-
-body:has(#plantGrid) .library-quick-filter-label {
-  flex: 0 0 auto;
-  color: var(--muted);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-body:has(#plantGrid) .library-filter-chip-list {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-body:has(#plantGrid) .library-filter-chip {
-  min-height: 32px;
-  padding: 6px 11px;
-  border: 1px solid rgba(47, 106, 82, .14);
-  border-radius: 999px;
-  color: var(--forest-700);
-  background: rgba(255, 255, 255, .76);
-  font-size: 9.5px;
-  font-weight: 800;
-  white-space: nowrap;
-  transition: transform 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
-}
-
-body:has(#plantGrid) .library-filter-chip:hover { transform: translateY(-1px); }
-
-body:has(#plantGrid) .library-filter-chip[aria-pressed="true"] {
-  border-color: transparent;
-  color: #fff;
-  background: var(--forest-700);
-  box-shadow: 0 6px 14px rgba(32, 83, 63, .18);
-}
-
-body:has(#plantGrid) .library-category-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  border-color: transparent;
-  color: #fff;
-  background: var(--forest-800);
-  box-shadow: 0 6px 14px rgba(32, 83, 63, .18);
-}
-
-body:has(#plantGrid) .library-category-chip span:last-child {
-  font-size: 14px;
-  line-height: 1;
+  border: 1px solid rgba(32, 83, 63, .10) !important;
+  border-radius: 17px !important;
+  background: #fff !important;
+  box-shadow: 0 5px 16px rgba(21, 45, 35, .07) !important;
 }
 
 #plantGrid .plant-image {
@@ -498,6 +426,35 @@ body:has(#plantGrid) .library-category-chip span:last-child {
   color: inherit;
   background: transparent;
   text-align: left;
+}
+
+#plantGrid .plant-code-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  max-width: calc(100% - 20px);
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(16, 43, 34, .88);
+  backdrop-filter: blur(7px);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .04em;
+  line-height: 1;
+}
+
+#plantGrid .plant-card-body {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 13px !important;
+}
+
+#plantGrid .plant-card h2 {
+  min-height: 2.35em;
+  margin: 0 0 3px !important;
 }
 
 #plantGrid .plant-title-link {
@@ -512,57 +469,104 @@ body:has(#plantGrid) .library-category-chip span:last-child {
 }
 
 #plantGrid .plant-title-link:hover,
-#plantGrid .plant-title-link:focus-visible {
-  color: var(--forest-700);
+#plantGrid .plant-title-link:focus-visible { color: var(--forest-700); }
+
+#plantGrid .scientific {
+  min-height: 2.35em !important;
+  margin: 0;
+}
+
+#plantGrid .plant-meta {
+  margin-top: 6px !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
 }
 
 #plantGrid .plant-card-actions {
-  grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
-  align-items: center;
+  margin-top: auto !important;
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 7px !important;
 }
 
-#plantGrid .plant-details-link {
+#plantGrid .plant-card-actions .button,
+#plantGrid .plant-list-actions .button {
   min-width: 0;
-  min-height: 34px;
-  padding: 6px 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  border: 0;
-  color: var(--forest-700);
-  background: transparent;
-  font-size: 10px;
-  font-weight: 850;
+  gap: 6px;
 }
 
-#plantGrid .plant-details-link:hover,
-#plantGrid .plant-details-link:focus-visible {
-  color: var(--forest-900);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+#plantGrid .plant-list-view {
+  display: grid;
+  gap: 10px;
 }
 
-#plantGrid .library-results-footer {
-  margin-top: 12px;
-  padding: 12px 14px;
-  display: flex;
+#plantGrid .plant-list-card {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) minmax(120px, auto) minmax(230px, auto);
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
+  padding: 10px;
   border: 1px solid rgba(32, 83, 63, .10);
   border-radius: 16px;
-  color: var(--muted);
-  background: rgba(255, 255, 255, .90);
-  box-shadow: 0 7px 18px rgba(21, 45, 35, .06);
-  font-size: 10.5px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(21, 45, 35, .06);
 }
 
-#plantGrid .library-results-footer strong { color: var(--forest-900); }
+#plantGrid .plant-list-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #e8eee8;
+}
 
-#plantGrid .library-results-complete {
+#plantGrid .plant-list-image img,
+#plantGrid .plant-list-image .image-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#plantGrid .plant-list-copy { min-width: 0; }
+#plantGrid .plant-list-copy h2 { margin: 0 0 4px; font-size: 16px; }
+#plantGrid .plant-list-copy .scientific { min-height: 0 !important; }
+
+#plantGrid .plant-list-category {
+  display: block;
+  margin-top: 7px;
   color: var(--forest-700);
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+#plantGrid .plant-list-size {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#plantGrid .plant-list-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(105px, 1fr));
+  gap: 7px;
+}
+
+.maintenance-readonly #plantGrid [data-action="add-to-project"] {
+  display: inline-flex !important;
+  opacity: .48 !important;
+  filter: grayscale(.25);
+}
+
+.maintenance-readonly #plantGrid .plant-card-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 
 @media (min-width: 1440px) {
@@ -580,78 +584,125 @@ body:has(#plantGrid) .library-category-chip span:last-child {
 }
 
 @media (min-width: 761px) and (max-width: 1180px) {
-  body:has(#plantGrid) .library-pulse-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  body:has(#plantGrid) .toolbar.library-toolbar {
-    grid-template-columns: minmax(0, 1fr) minmax(190px, .42fr);
+  body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, .42fr) minmax(150px, .34fr);
     grid-template-areas:
-      "search category"
-      "count action"
-      "filters filters";
-    gap: 10px !important;
+      "search search category"
+      "sunlight sort view";
   }
-
-  body:has(#plantGrid) .library-toolbar .library-result-status { justify-self: start; }
-  body:has(#plantGrid) .library-toolbar .library-add-button { justify-self: end; }
 
   #pageContent #plantGrid .plant-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 10px !important;
   }
+
+  #plantGrid .plant-list-card {
+    grid-template-columns: 150px minmax(0, 1fr) minmax(105px, auto);
+  }
+
+  #plantGrid .plant-list-size { display: none; }
+  #plantGrid .plant-list-actions { grid-template-columns: 1fr; }
 }
 
 @media (min-width: 391px) and (max-width: 760px) {
-  body:has(#plantGrid) .library-pulse-grid {
+  body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  body:has(#plantGrid) .library-pulse-card {
-    min-height: 82px;
-    padding: 11px 12px;
-    border-radius: 14px;
-  }
-
-  body:has(#plantGrid) .library-pulse-card > strong { font-size: 22px; }
-
-  body:has(#plantGrid) .toolbar.library-toolbar {
-    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "search search"
-      "category category"
-      "count action"
-      "filters filters";
+      "category sunlight"
+      "sort view";
     gap: 8px !important;
     padding: 9px !important;
     border-radius: 14px !important;
   }
 
-  body:has(#plantGrid) .library-quick-filters {
-    display: block;
-    padding-top: 8px;
-  }
-
-  body:has(#plantGrid) .library-quick-filter-label {
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  body:has(#plantGrid) .library-filter-chip-list {
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: thin;
-  }
+  body:has(#plantGrid) .library-view-toggle { justify-self: end; }
 
   #pageContent #plantGrid .plant-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
 
-  #plantGrid .category-pill { font-size: 9px !important; }
+  #plantGrid .category-pill,
+  #plantGrid .plant-code-badge {
+    top: 6px !important;
+    padding: 3px 5px !important;
+    font-size: 9px !important;
+  }
+
+  #plantGrid .category-pill { left: 6px !important; }
+  #plantGrid .plant-code-badge { right: 6px !important; }
+  #plantGrid .plant-card-body { padding: 12px !important; }
+
+  #plantGrid .plant-card h2 {
+    font-size: 13px !important;
+    line-height: 1.16 !important;
+  }
+
+  #plantGrid .scientific {
+    font-size: 10px !important;
+    line-height: 1.18 !important;
+  }
+
+  #plantGrid .plant-meta { font-size: 9px !important; }
+  #plantGrid .plant-card-actions { gap: 4px !important; }
+
+  #plantGrid .plant-card-actions .button {
+    min-height: 40px !important;
+    padding: 4px 3px !important;
+    gap: 3px;
+    font-size: 9.5px !important;
+    line-height: 1.05;
+    white-space: normal;
+  }
+
+  #plantGrid .plant-card-actions svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+  }
+
+  #plantGrid .plant-list-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  #plantGrid .plant-list-size { display: none; }
+
+  #plantGrid .plant-list-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 390px) {
+  body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "search search"
+      "category sunlight"
+      "sort view";
+    gap: 8px !important;
+    padding: 9px !important;
+    border-radius: 14px !important;
+  }
+
+  body:has(#plantGrid) .library-view-toggle { justify-self: end; }
+
+  #pageContent #plantGrid .plant-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  #plantGrid .category-pill,
+  #plantGrid .plant-code-badge {
+    top: 6px !important;
+    padding: 3px 5px !important;
+    font-size: 9px !important;
+  }
+
+  #plantGrid .category-pill { left: 6px !important; }
+  #plantGrid .plant-code-badge { right: 6px !important; }
   #plantGrid .plant-card-body { padding: 12px !important; }
 
   #plantGrid .plant-card h2 {
@@ -666,184 +717,22 @@ body:has(#plantGrid) .library-category-chip span:last-child {
 
   #plantGrid .plant-meta { font-size: 10px !important; }
 
-  #plantGrid .plant-card-actions {
-    grid-template-columns: 1fr;
-    gap: 3px !important;
-  }
-
-  #plantGrid .plant-details-link {
-    min-height: 38px;
-    padding: 6px 2px;
-    font-size: 10px;
-  }
-
   #plantGrid .plant-card-actions .button {
-    min-height: 38px !important;
+    min-height: 40px !important;
+    padding: 5px 4px !important;
     font-size: 10px !important;
   }
 
-  #plantGrid .library-results-footer {
-    align-items: stretch;
-    flex-direction: column;
-    padding: 10px;
+  #plantGrid .plant-list-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 9px;
   }
 
-  #plantGrid .library-results-footer .button { width: 100%; }
-}
+  #plantGrid .plant-list-size { display: none; }
 
-@media (max-width: 390px) {
-  body:has(#plantGrid) .library-pulse-grid {
+  #plantGrid .plant-list-actions {
+    grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  body:has(#plantGrid) .library-pulse-card {
-    min-height: 82px;
-    padding: 11px;
-    border-radius: 14px;
-  }
-
-  body:has(#plantGrid) .library-pulse-card > strong { font-size: 22px; }
-
-  body:has(#plantGrid) .toolbar.library-toolbar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "search search"
-      "category category"
-      "count action"
-      "filters filters";
-    gap: 8px !important;
-    padding: 9px !important;
-    border-radius: 14px !important;
-  }
-
-  body:has(#plantGrid) .library-toolbar .library-add-button { width: auto !important; }
-
-  body:has(#plantGrid) .library-quick-filters {
-    display: block;
-    padding-top: 8px;
-  }
-
-  body:has(#plantGrid) .library-quick-filter-label {
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  body:has(#plantGrid) .library-filter-chip-list {
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: thin;
-  }
-
-  #pageContent #plantGrid .plant-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-  }
-
-  #plantGrid .category-pill { font-size: 9px !important; }
-  #plantGrid .plant-card-body { padding: 12px !important; }
-
-  #plantGrid .plant-card h2 {
-    font-size: 13px !important;
-    line-height: 1.16 !important;
-  }
-
-  #plantGrid .scientific {
-    font-size: 10px !important;
-    line-height: 1.18 !important;
-  }
-
-  #plantGrid .plant-meta { font-size: 9px !important; }
-
-  #plantGrid .plant-card-actions {
-    grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
-    gap: 5px !important;
-  }
-
-  #plantGrid .plant-details-link,
-  #plantGrid .plant-card-actions .button {
-    min-height: 40px !important;
-    font-size: 11px !important;
-  }
-
-  #plantGrid .library-results-footer {
-    align-items: stretch;
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  #plantGrid .library-results-footer .button { width: 100%; }
-}
-/* GREENSCAPE_PLANT_LIBRARY_PULSE_V1_END */
-
-/* GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_START */
-/* Removes the summary strip, restores the original detail button, and keeps catalogue filters usable in read-only mode. */
-
-#plantGrid .plant-card h2,
-#plantGrid .plant-title-link,
-#plantGrid .scientific {
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-#plantGrid .plant-meta {
-  margin-top: 8px !important;
-  padding-top: 0 !important;
-  border-top: 0 !important;
-  box-shadow: none !important;
-}
-
-#plantGrid .plant-card-actions {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 7px !important;
-}
-
-#plantGrid .plant-view-details {
-  width: 100%;
-  min-width: 0;
-}
-
-.maintenance-readonly body:has(#plantGrid) .library-filter-chip,
-.maintenance-readonly body:has(#plantGrid) .library-category-chip {
-  opacity: 1 !important;
-  filter: none !important;
-  pointer-events: auto !important;
-}
-
-.maintenance-readonly #plantGrid .plant-card-actions {
-  grid-template-columns: minmax(0, 1fr) !important;
-}
-
-.maintenance-readonly #plantGrid [data-action="add-to-project"] {
-  display: none !important;
-}
-
-.maintenance-readonly #plantGrid .plant-view-details {
-  width: 100% !important;
-  min-height: 38px !important;
-}
-
-@media (max-width: 760px) {
-  #plantGrid .plant-meta {
-    margin-top: 7px !important;
-  }
-
-  #plantGrid .plant-card-actions {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  #plantGrid .plant-view-details,
-  #plantGrid .plant-card-actions [data-action="add-to-project"] {
-    width: 100%;
-    min-height: 38px !important;
   }
 }
-
-@media (max-width: 390px) {
-  #plantGrid .plant-view-details,
-  #plantGrid .plant-card-actions [data-action="add-to-project"] {
-    min-height: 40px !important;
-  }
-}
-/* GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_END */
+/* GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_END */

@@ -12,21 +12,26 @@ Open the published website here:
 
 ## What's New
 
-<!-- GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_START -->
-### Plant Library Catalogue Cleanup V1
+<!-- GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_START -->
+### Plant Library Reference Toolbar and Cards V1
 
-The Plant Library keeps its responsive catalogue and bento search controls while removing the extra summary strip and simplifying each plant card for maintenance-mode browsing.
+The Plant Library now uses the approved reference arrangement while retaining the original Greenscape colors, rounded glass surfaces, shadows, typography, and responsive catalogue.
 
 Latest UI and layout changes:
 
-- Removes the four Library Pulse statistic cards so the search and filter toolbar sits directly below the Plant Library header.
-- Keeps the All, Plants, Materials, With Photos, Missing Photos, and removable category filters active during read-only maintenance mode.
-- Removes the horizontal divider and shadow below the plant-name information.
-- Restores the original full-width **View details** button during maintenance mode.
-- Keeps the plant photograph and common name clickable for Plant Details.
-- Keeps **Add plant** and **Add to list** unavailable during maintenance because they change saved data.
-- Retains the styled results footer and the responsive 6/5/4/3/2 catalogue grid.
-- Retains the approved mobile typography, 12px card padding, and 38–40px controls.
+- Uses one compact desktop toolbar arranged as Search, Category, Sunlight, Sort, Grid, and List.
+- Generates the Sunlight filter from actual `plant.sun` values in the current library.
+- Sorts plants by common name using A–Z or Z–A.
+- Adds accessible Grid and List view controls with the original dark-green active state.
+- Removes the visible quick-filter-chip row and the separate toolbar result-count badge.
+- Keeps result totals in the existing Showing/Show More footer.
+- Places the category badge at the upper-left and the plant code at the upper-right of each photograph.
+- Shows common name, scientific name, and available-size count without a horizontal divider.
+- Uses equal View and Add to List actions with eye and plus icons.
+- Keeps plant photographs and common names clickable for Plant Details.
+- Keeps Add to List visible but disabled during maintenance mode.
+- Keeps Search, Category, Sunlight, Sort, Grid, List, and View active during maintenance mode.
+- Retains the 6/5/4/3/2 responsive grid and adds a responsive list layout.
 
 Responsive catalogue grid:
 
@@ -36,6 +41,14 @@ Compact desktop: 1181px–1439px      5 columns
 Tablet:          761px–1180px       4 columns
 Mobile:          391px–760px        3 columns
 Small mobile:    390px and below    2 columns
+```
+
+Responsive toolbar:
+
+```text
+Desktop: Search | Category | Sunlight | Sort | Grid/List
+Tablet:  Search + Category / Sunlight + Sort + Grid/List
+Mobile:  Search / Category + Sunlight / Sort + Grid/List
 ```
 
 Affected files:
@@ -51,16 +64,16 @@ README.md
 Current cache keys:
 
 ```text
-plant-library-refinements.css?v=20260729-library-catalog-cleanup1
-maintenance.js?v=20260729-library-filters1
-app.js?v=20260729-library-catalog-cleanup1
+plant-library-refinements.css?v=20260729-library-reference-layout2
+maintenance.js?v=20260729-library-reference-controls2
+app.js?v=20260729-library-reference-layout2
 ```
 
 Deployment:
 
-1. Upload `.github/workflows/apply-plant-library-catalog-cleanup.yml`.
+1. Upload `.github/workflows/apply-plant-library-reference-layout.yml`.
 2. The workflow validates, commits, packages, and deploys the current website in one run.
-3. Confirm both the update and GitHub Pages deployment steps are green.
+3. Confirm the update and GitHub Pages deployment steps are green.
 4. Hard-refresh the live Plant Library after deployment.
 
 Verification:
@@ -72,8 +85,8 @@ npm run quality
 git diff --check
 ```
 
-Current version status: implemented by the catalogue-cleanup workflow and deployed from the same validated working tree.
-<!-- GREENSCAPE_LIBRARY_CATALOG_CLEANUP_V1_END -->
+Current version status: implemented and deployed from the same validated workflow working tree.
+<!-- GREENSCAPE_LIBRARY_REFERENCE_LAYOUT_V1_END -->
 
 ### Catalog Pulse Bento Dashboard V1
 
