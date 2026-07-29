@@ -795,9 +795,9 @@
     const duplicates = duplicateCodeGroups();
     content.innerHTML = `
       <div class="toolbar library-toolbar">
-        <div class="toolbar-group" style="flex:1;">
+        <div class="toolbar-group">
           <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code" value="${escapeHTML(state.librarySearch)}"></label>
-          <select id="categoryFilter" class="select-input" aria-label="Filter plants by category" style="width:auto;min-width:210px;">
+          <select id="categoryFilter" class="select-input" aria-label="Filter plants by category">
             <option value="All">All categories</option>
             ${categories().map(category => `<option value="${escapeHTML(category)}"${state.libraryCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}
           </select>
