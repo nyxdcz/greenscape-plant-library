@@ -268,7 +268,12 @@
     if (!section) {
       section = document.createElement('div');
       section.className = 'sidebar-utility-section';
-      navigation.insertAdjacentElement('afterend', section);
+      const utilityAnchor =
+        qs('.sidebar-actions', sidebar) ||
+        qs('.sidebar-confidentiality', sidebar) ||
+        navigation;
+
+      utilityAnchor.insertAdjacentElement('afterend', section);
     }
 
     const existingCard = qs('.sidebar-pet-card');
