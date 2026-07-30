@@ -201,9 +201,28 @@ html.maintenance-enabled {
 
 .maintenance-startup-actions {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 10px;
   margin-top: 24px;
+}
+
+.maintenance-startup-greenie {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+}
+
+.maintenance-startup-greenie img {
+  display: block;
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  pointer-events: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .maintenance-startup-actions button {
@@ -395,11 +414,25 @@ body.maintenance-startup-open {
   }
 
   .maintenance-startup-actions {
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
   }
 
-  .maintenance-startup-actions button {
-    width: 100%;
+  .maintenance-startup-greenie,
+  .maintenance-startup-greenie img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .maintenance-startup-greenie {
+    flex-basis: 52px;
+  }
+
+  html.maintenance-enabled .maintenance-startup .maintenance-startup-actions button[data-maintenance-continue] {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   body.maintenance-readonly .feedback-widget {

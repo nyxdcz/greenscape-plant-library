@@ -12,6 +12,47 @@ Open the published website here:
 
 ## What's New
 
+### Greenie Sidebar and Maintenance Welcome V1
+
+Moves the desktop Greenie assistant above the confidentiality notice and adds Greenie beside the maintenance startup action.
+
+Changes:
+
+- Uses the desktop sidebar order **Greenie → Company Use Only → Visit Greenscape website**.
+- Keeps the three utility controls grouped near the bottom of tall desktop sidebars.
+- Preserves internal sidebar scrolling on short desktop screens.
+- Adds the existing look-around Greenie animation beside **Open read-only website**.
+- Keeps the startup Greenie decorative so the maintenance action remains one clear, accessible button.
+- Keeps the startup action in one responsive row and scales Greenie down on narrow screens.
+- Preserves Greenie’s sidebar hover, focus, speech, Help, drag, return, and boundary behavior.
+- Leaves tablet and mobile navigation unchanged.
+- Refreshes maintenance and sidebar cache keys.
+
+Affected files:
+
+```text
+assets/js/sidebar-assistant.js
+assets/css/sidebar-assistant.css
+assets/js/maintenance.js
+assets/css/maintenance.css
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/sidebar-assistant.js
+node --check assets/js/maintenance.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Greenie Bottom Placement and Look-Around Hover V1
 
 Moves Greenie into the desktop bottom utility group and adds the supplied look-around animation for pointer hover and keyboard focus.
