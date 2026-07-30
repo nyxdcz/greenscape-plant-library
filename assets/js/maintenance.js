@@ -14,8 +14,19 @@
     estimatedReturn: String(configured.estimatedReturn || ''),
     allowReadOnlyAccess: configured.allowReadOnlyAccess !== false
   };
+  const configuredStaffAccess = configured.staffAccess || {};
+  const staffAccess = Object.freeze({
+    salt: String(configuredStaffAccess.salt || ''),
+    codeHash: String(configuredStaffAccess.codeHash || '').toLowerCase(),
+    sessionMinutes: Math.max(1, Number(configuredStaffAccess.sessionMinutes) || 30),
+    maxAttempts: Math.max(1, Number(configuredStaffAccess.maxAttempts) || 5),
+    cooldownSeconds: Math.max(1, Number(configuredStaffAccess.cooldownSeconds) || 30)
+  });
+  const ACCESS_SESSION_KEY = 'greenscape-maintenance-staff-access-v1';
+  const ACCESS_ATTEMPTS_KEY = 'greenscape-maintenance-staff-attempts-v1';
 
   const nativeStorage = {
+    getItem: Storage.prototype.getItem,
     setItem: Storage.prototype.setItem,
     removeItem: Storage.prototype.removeItem,
     clear: Storage.prototype.clear
@@ -24,8 +35,48 @@
   const html = document.documentElement;
   html.classList.add('maintenance-enabled');
 
+  function readSessionJSON(key) {
+    try {
+      return JSON.parse(nativeStorage.getItem.call(window.sessionStorage, key) || 'null');
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeSessionJSON(key, value) {
+    nativeStorage.setItem.call(window.sessionStorage, key, JSON.stringify(value));
+  }
+
+  function clearSessionKey(key) {
+    nativeStorage.removeItem.call(window.sessionStorage, key);
+  }
+
+  function accessSession() {
+    const value = readSessionJSON(ACCESS_SESSION_KEY);
+    if (!value || value.version !== 1 || !Number.isFinite(value.expiresAt) || value.expiresAt <= Date.now()) {
+      clearSessionKey(ACCESS_SESSION_KEY);
+      return null;
+    }
+    return value;
+  }
+
+  function isStaffAuthorized() {
+    return Boolean(accessSession());
+  }
+
+  function syncAuthorizationClass() {
+    html.classList.toggle('maintenance-authorized', isStaffAuthorized());
+  }
+
+  syncAuthorizationClass();
+  window.GREENSCAPE_MAINTENANCE_ACCESS = Object.freeze({
+    isAuthorized: isStaffAuthorized
+  });
+
   function storageWriteIsBlocked(storage) {
-    return storage === window.localStorage && html.classList.contains('maintenance-enabled');
+    return storage === window.localStorage
+      && html.classList.contains('maintenance-enabled')
+      && !staffWorkspaceIsActive();
   }
 
   Storage.prototype.setItem = function (key, value) {
@@ -65,6 +116,10 @@
     'feedbackMessage'
   ]);
   const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
+
+  function staffWorkspaceIsActive() {
+    return isStaffAuthorized() && maintenanceLockedViews.has(location.hash.slice(1));
+  }
 
   const allowedActionNames = new Set([
     'close-modal',
@@ -117,6 +172,7 @@
 
   let blockedNoticeTimer = 0;
   let controlRefreshFrame = 0;
+  let expiryTimer = 0;
 
   function escapeHTML(value) {
     return String(value ?? '')
@@ -128,9 +184,30 @@
   }
 
   function startupMarkup() {
+    const authorized = isStaffAuthorized();
     const estimated = config.estimatedReturn
       ? `<p class="maintenance-estimate"><span>Expected return</span><strong>${escapeHTML(config.estimatedReturn)}</strong></p>`
       : '';
+    const status = authorized
+      ? 'Staff tools are unlocked in this browser tab.'
+      : config.status;
+    const accessPanel = authorized
+      ? `<div class="maintenance-staff-authorized" role="status">
+          <strong>Staff access active</strong>
+          <span>Plant List Editor, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
+          <button type="button" class="maintenance-secondary" data-maintenance-lock>Lock staff tools</button>
+        </div>`
+      : `<div class="maintenance-staff-access">
+          <button type="button" class="maintenance-access-toggle" data-maintenance-access-toggle aria-expanded="false" aria-controls="maintenanceAccessForm">Staff access</button>
+          <form id="maintenanceAccessForm" data-maintenance-access-form hidden>
+            <label for="maintenanceAccessCode">Maintenance access code</label>
+            <div class="maintenance-access-entry">
+              <input id="maintenanceAccessCode" name="maintenanceAccessCode" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="64" required>
+              <button type="submit" class="maintenance-secondary">Unlock tools</button>
+            </div>
+            <p class="maintenance-access-status" data-maintenance-access-status role="status" aria-live="polite" aria-atomic="true"></p>
+          </form>
+        </div>`;
 
     return `<section class="maintenance-startup-card" role="dialog" aria-modal="true" aria-labelledby="maintenanceTitle" aria-describedby="maintenanceMessage" tabindex="-1">
       <div class="maintenance-logo-wrap">
@@ -140,24 +217,32 @@
       <h1 id="maintenanceTitle">${escapeHTML(config.title)}</h1>
       <p id="maintenanceMessage">${escapeHTML(config.message)}</p>
       <div class="maintenance-status">
-        <span aria-hidden="true">🔒</span>
-        <strong>${escapeHTML(config.status)}</strong>
+        <span aria-hidden="true">${authorized ? '✓' : '🔒'}</span>
+        <strong>${escapeHTML(status)}</strong>
       </div>
       ${estimated}
       <div class="maintenance-startup-actions">
         <span class="maintenance-startup-greenie" aria-hidden="true">
           <img src="assets/images/greenscape-pet-look-around.gif" alt="" width="68" height="68" loading="eager" decoding="async">
         </span>
-        ${config.allowReadOnlyAccess ? '<button type="button" class="maintenance-primary" data-maintenance-continue>Open read-only website</button>' : ''}
+        ${config.allowReadOnlyAccess ? `<button type="button" class="maintenance-primary" data-maintenance-continue>${authorized ? 'Continue with staff access' : 'Open read-only website'}</button>` : ''}
       </div>
+      ${accessPanel}
       <small>Your saved browser records remain unchanged.</small>
     </section>`;
   }
 
   function bannerMarkup() {
-    return `<button type="button" class="maintenance-readonly-banner feedback-launcher" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="Maintenance mode. Read-only access. Open maintenance details.">
+    const authorized = isStaffAuthorized();
+    const bannerClass = authorized ? ' is-authorized' : '';
+    const label = authorized ? 'Staff tools unlocked' : 'Maintenance mode';
+    const detail = authorized
+      ? 'Editor, mood board, and projects are available.'
+      : 'Read-only access — editing and saving are disabled.';
+    const compact = authorized ? 'Staff access' : 'Read-only access';
+    return `<button type="button" class="maintenance-readonly-banner feedback-launcher${bannerClass}" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="${escapeHTML(label)}. Open maintenance details.">
       <span class="maintenance-lock-icon maintenance-icon-mask" aria-hidden="true"></span>
-      <span class="maintenance-banner-copy"><strong>Maintenance mode</strong><small>Read-only access — editing and saving are disabled.</small><span class="maintenance-banner-compact-copy">Read-only access</span></span>
+      <span class="maintenance-banner-copy"><strong>${escapeHTML(label)}</strong><small>${escapeHTML(detail)}</small><span class="maintenance-banner-compact-copy">${escapeHTML(compact)}</span></span>
       <span class="maintenance-banner-details" aria-hidden="true">Details</span>
     </button>`;
   }
@@ -196,9 +281,122 @@
     document.body.classList.remove('maintenance-startup-open');
     document.querySelector('.app-shell')?.removeAttribute('inert');
     document.getElementById('feedbackWidget')?.removeAttribute('inert');
-    document.body.classList.add('maintenance-readonly');
+    syncMaintenanceModeForView();
     ensureBanner();
     scheduleControlRefresh();
+  }
+
+  function syncMaintenanceModeForView() {
+    const authorized = isStaffAuthorized();
+    const writableWorkspace = staffWorkspaceIsActive();
+    document.body.classList.toggle('maintenance-readonly', !writableWorkspace);
+    document.body.classList.toggle('maintenance-staff-authorized', authorized);
+    if (!writableWorkspace) scheduleControlRefresh();
+  }
+
+  function accessAttemptState() {
+    const value = readSessionJSON(ACCESS_ATTEMPTS_KEY);
+    return {
+      attempts: Math.max(0, Number(value?.attempts) || 0),
+      cooldownUntil: Math.max(0, Number(value?.cooldownUntil) || 0)
+    };
+  }
+
+  function setAccessStatus(form, message, isError = false) {
+    const status = form.querySelector('[data-maintenance-access-status]');
+    if (!status) return;
+    status.textContent = message;
+    status.classList.toggle('is-error', isError);
+  }
+
+  async function digestAccessCode(value) {
+    const data = new TextEncoder().encode(`${staffAccess.salt}:${value}`);
+    const digest = await window.crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  function equalHash(left, right) {
+    if (left.length !== right.length) return false;
+    let difference = 0;
+    for (let index = 0; index < left.length; index += 1) {
+      difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+    }
+    return difference === 0;
+  }
+
+  async function handleAccessSubmit(form) {
+    const input = form.querySelector('#maintenanceAccessCode');
+    const candidate = String(input?.value || '').trim();
+    const attempts = accessAttemptState();
+    const now = Date.now();
+
+    if (attempts.cooldownUntil > now) {
+      const seconds = Math.max(1, Math.ceil((attempts.cooldownUntil - now) / 1000));
+      setAccessStatus(form, `Too many attempts. Try again in ${seconds} seconds.`, true);
+      return;
+    }
+
+    if (!candidate) {
+      setAccessStatus(form, 'Enter the maintenance access code.', true);
+      input?.focus();
+      return;
+    }
+
+    if (!window.crypto?.subtle || !staffAccess.salt || !/^[a-f0-9]{64}$/.test(staffAccess.codeHash)) {
+      setAccessStatus(form, 'Staff access is not configured correctly.', true);
+      return;
+    }
+
+    form.setAttribute('aria-busy', 'true');
+    try {
+      const candidateHash = await digestAccessCode(candidate);
+      if (equalHash(candidateHash, staffAccess.codeHash)) {
+        clearSessionKey(ACCESS_ATTEMPTS_KEY);
+        writeSessionJSON(ACCESS_SESSION_KEY, {
+          version: 1,
+          expiresAt: now + staffAccess.sessionMinutes * 60 * 1000
+        });
+        setAccessStatus(form, 'Access confirmed. Loading staff tools.');
+        window.setTimeout(() => window.location.reload(), 250);
+        return;
+      }
+
+      const nextAttempts = attempts.attempts + 1;
+      if (nextAttempts >= staffAccess.maxAttempts) {
+        writeSessionJSON(ACCESS_ATTEMPTS_KEY, {
+          attempts: 0,
+          cooldownUntil: now + staffAccess.cooldownSeconds * 1000
+        });
+        setAccessStatus(form, `Too many attempts. Try again in ${staffAccess.cooldownSeconds} seconds.`, true);
+      } else {
+        writeSessionJSON(ACCESS_ATTEMPTS_KEY, { attempts: nextAttempts, cooldownUntil: 0 });
+        setAccessStatus(form, `Code not recognized. ${staffAccess.maxAttempts - nextAttempts} attempts remaining.`, true);
+      }
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+    } catch (error) {
+      setAccessStatus(form, 'The access code could not be checked. Try again.', true);
+    } finally {
+      form.removeAttribute('aria-busy');
+    }
+  }
+
+  function lockStaffAccess() {
+    clearSessionKey(ACCESS_SESSION_KEY);
+    syncAuthorizationClass();
+    if (maintenanceLockedViews.has(location.hash.slice(1))) {
+      history.replaceState(null, '', '#library');
+    }
+    window.location.reload();
+  }
+
+  function scheduleAccessExpiry() {
+    clearTimeout(expiryTimer);
+    const session = accessSession();
+    if (!session) return;
+    expiryTimer = window.setTimeout(lockStaffAccess, Math.max(0, session.expiresAt - Date.now()));
   }
 
   function ensureBanner() {
@@ -240,13 +438,14 @@
   function isAllowedButton(control) {
     if (!(control instanceof HTMLElement)) return false;
     const view = String(control.closest('[data-view]')?.dataset.view || '');
-    if (maintenanceLockedViews.has(view)) return false;
+    if (maintenanceLockedViews.has(view) && !isStaffAuthorized()) return false;
     if (control.matches(allowedButtonSelectors)) return true;
     const action = actionName(control);
     return allowedActionNames.has(action);
   }
 
   function markUnavailableNavigation() {
+    if (isStaffAuthorized()) return;
     document.querySelectorAll('.nav-item[data-view]').forEach(button => {
       const view = String(button.dataset.view || '');
       if (!maintenanceLockedViews.has(view)) return;
@@ -272,6 +471,7 @@
   }
 
   function enforceAvailableView() {
+    if (isStaffAuthorized()) return;
     const requestedView = location.hash.slice(1);
     if (!maintenanceLockedViews.has(requestedView)) return;
     history.replaceState(null, '', '#library');
@@ -370,6 +570,7 @@
 
   function mutatingTarget(target) {
     if (!(target instanceof Element)) return null;
+    if (target.closest('[data-maintenance-access-form]')) return null;
 
     const disabled = target.closest('[data-maintenance-disabled="true"]');
     if (disabled) return disabled;
@@ -381,6 +582,29 @@
   }
 
   document.addEventListener('click', event => {
+    const requestedStaffView = event.target.closest('.nav-item[data-view]')?.dataset.view;
+    if (requestedStaffView && isStaffAuthorized()) {
+      document.body.classList.toggle('maintenance-readonly', !maintenanceLockedViews.has(requestedStaffView));
+    }
+
+    const accessToggle = event.target.closest('[data-maintenance-access-toggle]');
+    if (accessToggle) {
+      event.preventDefault();
+      const form = document.getElementById(accessToggle.getAttribute('aria-controls'));
+      if (!form) return;
+      const expanded = accessToggle.getAttribute('aria-expanded') === 'true';
+      accessToggle.setAttribute('aria-expanded', String(!expanded));
+      form.hidden = expanded;
+      if (!expanded) requestAnimationFrame(() => form.querySelector('input')?.focus());
+      return;
+    }
+
+    if (event.target.closest('[data-maintenance-lock]')) {
+      event.preventDefault();
+      lockStaffAccess();
+      return;
+    }
+
     const continueButton = event.target.closest('[data-maintenance-continue]');
     if (continueButton) {
       event.preventDefault();
@@ -405,6 +629,13 @@
   }, true);
 
   document.addEventListener('submit', event => {
+    if (event.target.matches('[data-maintenance-access-form]')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      void handleAccessSubmit(event.target);
+      return;
+    }
+
     if (!document.body.classList.contains('maintenance-readonly')) return;
     if (event.target.matches('#feedbackForm')) return;
 
@@ -426,6 +657,14 @@
 
   function initialize() {
     document.body.classList.add('maintenance-mode');
+    if (isStaffAuthorized()) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      syncMaintenanceModeForView();
+      ensureBanner();
+      scheduleAccessExpiry();
+      window.addEventListener('hashchange', syncMaintenanceModeForView);
+      return;
+    }
     markUnavailableNavigation();
     enforceAvailableView();
     observer.observe(document.body, { childList: true, subtree: true });

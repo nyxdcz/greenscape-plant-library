@@ -123,6 +123,34 @@ check(jsSources['assets/js/app.js'].includes("document.documentElement.classList
 check(!jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance startup must not depend on the late body read-only class.');
 check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
 check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
+check(
+  /codeHash:\s*'[a-f0-9]{64}'/.test(jsSources['assets/js/maintenance-config.js']),
+  'Maintenance staff access must store a SHA-256 hash instead of a readable code.'
+);
+check(
+  !Object.values(jsSources).some(source => source.toLowerCase().includes('greenscapeco')),
+  'The readable maintenance access code must not be committed to JavaScript.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes("window.crypto.subtle.digest('SHA-256'"),
+  'Maintenance staff access must verify the code with Web Crypto SHA-256.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes('window.sessionStorage'),
+  'Maintenance staff authorization must be limited to browser session storage.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes("const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects'])"),
+  'Maintenance staff access must remain scoped to the three approved workspaces.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('maintenanceAccessIsAuthorized'),
+  'App navigation must respect the verified maintenance staff session.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes('!staffWorkspaceIsActive()'),
+  'Maintenance data writes must remain scoped to verified staff workspaces.'
+);
 check(jsSources['assets/js/app.js'].includes('assignBotanicalPlantCodes'), 'Automatic botanical plant-code assignment is required.');
 check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plant codes must expose their conflict state.');
 check(jsSources['assets/js/app.js'].includes('codeIncomplete'), 'Incomplete scientific names must expose a warning state.');

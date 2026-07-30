@@ -12,6 +12,56 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Staff Access V1
+
+Adds a temporary staff override for approved tools while the public website remains in read-only maintenance mode.
+
+Changes:
+
+- Adds an accessible **Staff access** form to the maintenance startup screen and Details panel.
+- Unlocks Plant List Editor, Mood Board Creator, and Project Lists after successful verification.
+- Restores the normal editing, saving, importing, exporting, quotation, BOQ, and costing behavior inside those three workspaces.
+- Keeps the Plant Library and other maintenance-restricted actions read-only.
+- Stores only a salted SHA-256 verification hash in the repository; the readable access code is not documented or committed.
+- Keeps authorization in `sessionStorage`, limited to the current browser tab, with a 30-minute expiry.
+- Reloads after authorization so the approved workspaces initialize from writable browser records.
+- Limits failed verification attempts and applies a temporary cooldown.
+- Adds an explicit **Lock staff tools** action and safely returns protected views to Plant Library when access ends.
+- Shows an updated Maintenance status pill while staff tools are available.
+- Preserves the normal read-only startup, browser-record protection, responsive layout, and keyboard accessibility.
+- Refreshes all affected maintenance and application cache keys.
+
+Security note:
+
+The website is hosted as a public static GitHub Pages application. This staff code is a convenience gate for maintenance workflows, not server-side authentication. Anyone requiring enforceable access control should place the website behind an authenticated service.
+
+Affected files:
+
+```text
+assets/js/maintenance-config.js
+assets/js/maintenance.js
+assets/js/app.js
+assets/css/maintenance.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/maintenance-config.js
+node --check assets/js/maintenance.js
+node --check assets/js/app.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Greenie Sidebar and Maintenance Welcome V1
 
 Moves the desktop Greenie assistant above the confidentiality notice and adds Greenie beside the maintenance startup action.

@@ -65,8 +65,13 @@
   };
   const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
 
+  function maintenanceAccessIsAuthorized() {
+    return Boolean(window.GREENSCAPE_MAINTENANCE_ACCESS?.isAuthorized?.());
+  }
+
   function isMaintenanceLockedView(view) {
     return document.documentElement.classList.contains('maintenance-enabled')
+      && !maintenanceAccessIsAuthorized()
       && maintenanceLockedViews.has(String(view || ''));
   }
 
@@ -86,8 +91,10 @@
   let storageAvailable = true;
   // maintenance.js marks the document before app.js runs; the body becomes
   // maintenance-readonly only after the visitor opens the read-only website.
-  const maintenanceModeAtStartup = document.documentElement.classList.contains('maintenance-enabled')
-    || Boolean(window.GREENSCAPE_MAINTENANCE?.enabled);
+  const maintenanceModeAtStartup = (
+    document.documentElement.classList.contains('maintenance-enabled')
+    || Boolean(window.GREENSCAPE_MAINTENANCE?.enabled)
+  ) && !maintenanceAccessIsAuthorized();
   const startupPlantRecords = maintenanceModeAtStartup
     ? clone(seedPlants)
     : (loadJSON(STORAGE.plants, null) || clone(seedPlants));
