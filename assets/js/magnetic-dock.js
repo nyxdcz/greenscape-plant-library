@@ -2,6 +2,7 @@
   'use strict';
 
   const phoneQuery = window.matchMedia('(max-width: 760px)');
+  const compactGlassQuery = window.matchMedia('(max-width: 430px)');
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const dock = document.querySelector('.sidebar .nav-list');
   const feedbackWidget = document.getElementById('feedbackWidget');
@@ -19,7 +20,7 @@
   };
 
   const updateItems = (clientX) => {
-    if (!phoneQuery.matches || reducedMotionQuery.matches) {
+    if (!phoneQuery.matches || compactGlassQuery.matches || reducedMotionQuery.matches) {
       resetItems();
       return;
     }
@@ -42,11 +43,21 @@
   const markUtility = (element, className, label) => {
     element.classList.add('dock-utility', className);
     element.dataset.dockLabel = label;
+    if (!Object.prototype.hasOwnProperty.call(element.dataset, 'dockPreviousAriaLabel')) {
+      element.dataset.dockPreviousAriaLabel = element.getAttribute('aria-label') || '';
+    }
+    element.setAttribute('aria-label', label);
   };
 
   const unmarkUtility = (element, className) => {
     element.classList.remove('dock-utility', className);
     delete element.dataset.dockLabel;
+    if (element.dataset.dockPreviousAriaLabel) {
+      element.setAttribute('aria-label', element.dataset.dockPreviousAriaLabel);
+    } else {
+      element.removeAttribute('aria-label');
+    }
+    delete element.dataset.dockPreviousAriaLabel;
     element.style.removeProperty('--dock-scale');
     element.style.removeProperty('--dock-lift');
   };
@@ -168,20 +179,21 @@
   dock.addEventListener('pointerdown', (event) => {
     const item = event.target.closest('.nav-item:not(:disabled), .dock-utility:not(:disabled)');
     if (!phoneQuery.matches || !item) return;
-    item.style.setProperty('--dock-scale', '1');
-    item.style.setProperty('--dock-lift', '-2px');
+    item.style.setProperty('--dock-scale', compactGlassQuery.matches ? '.94' : '1');
+    item.style.setProperty('--dock-lift', compactGlassQuery.matches ? '0px' : '-2px');
     item.classList.remove('dock-click-glow');
     requestAnimationFrame(() => item.classList.add('dock-click-glow'));
     clearTimeout(glowTimers.get(item));
     glowTimers.set(item, setTimeout(() => {
       item.classList.remove('dock-click-glow');
       glowTimers.delete(item);
-    }, 540));
+    }, compactGlassQuery.matches ? 260 : 540));
   });
   dock.addEventListener('pointerup', resetItems);
 
   dock.addEventListener('click', (event) => {
     if (event.target.closest('#feedbackToggle') && phoneQuery.matches) {
+      closeMoreMenu();
       event.stopPropagation();
     }
   });
@@ -198,6 +210,7 @@
   });
 
   phoneQuery.addEventListener('change', syncUtilities);
+  compactGlassQuery.addEventListener('change', resetItems);
   reducedMotionQuery.addEventListener('change', resetItems);
 
   const startDock = () => {

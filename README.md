@@ -12,6 +12,48 @@ Open the published website here:
 
 ## What's New
 
+### Phone Glass Tab Bar Refinement V1
+
+Refines the five-control navigation dock on small phones into one compact shared glass surface while preserving every existing action.
+
+Changes:
+
+- Keeps Dashboard, Plant Library, Plant Identifier, More, and Help as the five phone controls.
+- Uses one responsive translucent glass pill with a `360px` maximum width and an approximately `64px` height.
+- Makes inactive controls transparent so they visually belong to the shared bar.
+- Gives only the current navigation tab a raised dark-green glass highlight and restrained lime glow.
+- Standardizes controls at a 48px touch target with centered 23px icons and no visible labels while retaining accessible names.
+- Uses a short pressed-control animation without moving the entire dock or neighboring controls.
+- Positions the bar at `16px + env(safe-area-inset-bottom)` for iPhone safe-area clearance.
+- Repositions the More menu, Help panel, and maintenance/staff status above the slimmer dock.
+- Preserves the More destinations, Plant Identifier action, Help behavior, keyboard focus, and reduced-motion support.
+- Scopes the visual refinement to screens `430px` wide and below; wider phone, tablet, and desktop navigation remain unchanged.
+- Refreshes the affected stylesheet and script cache keys.
+- Adds regression checks for the breakpoint, dimensions, safe-area placement, inactive state, motion behavior, and cache versions.
+
+Affected files:
+
+```text
+assets/css/styles.css
+assets/js/magnetic-dock.js
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/magnetic-dock.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Maintenance Startup Greenie Placement V1
 
 Refines the maintenance startup card by giving Greenie a dedicated closing position beneath staff access.

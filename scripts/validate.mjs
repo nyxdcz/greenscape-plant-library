@@ -227,6 +227,44 @@ check(jsSources['assets/js/app.js'].includes("data-action=\"moodboard-reset-colo
 check(styles.includes('.moodboard-picker-color-controls'), 'Mood board color controls require responsive picker styling.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
+check(styles.includes('GREENSCAPE_PHONE_GLASS_TAB_BAR_V1_START'), 'The small-phone shared glass tab bar styles are required.');
+check(
+  styles.includes('width: min(calc(100vw - 24px), 360px) !important;'),
+  'The small-phone glass tab bar must remain responsive with a 360px maximum width.'
+);
+check(
+  styles.includes('inset: auto auto calc(16px + env(safe-area-inset-bottom)) 50% !important;'),
+  'The small-phone glass tab bar must preserve additive iPhone safe-area clearance.'
+);
+check(
+  styles.includes('height: 64px !important;') && styles.includes('background: transparent !important;'),
+  'The glass tab bar must use a compact shared shell with transparent inactive controls.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes("const compactGlassQuery = window.matchMedia('(max-width: 430px)')"),
+  'Glass tab motion must remain scoped to the established small-phone breakpoint.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes("item.style.setProperty('--dock-scale', compactGlassQuery.matches ? '.94' : '1')"),
+  'Small-phone tab feedback must animate only the pressed control.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes("element.setAttribute('aria-label', label)"),
+  'Phone dock utilities must retain visible accessible names when their text labels are hidden.'
+);
+check(
+  /if \(event\.target\.closest\('#feedbackToggle'\)[\s\S]{0,120}closeMoreMenu\(\)/.test(jsSources['assets/js/magnetic-dock.js']),
+  'Opening Help from the phone dock must close the More menu.'
+);
+check(
+  styles.includes('bottom: calc(146px + env(safe-area-inset-bottom)) !important;'),
+  'The maintenance and staff status must clear the small-phone glass tab bar.'
+);
+check(
+  /styles\.css\?v=20260730-phone-glass-tab-bar1/.test(html)
+    && /magnetic-dock\.js\?v=20260730-phone-glass-tab-bar1/.test(html),
+  'Phone Glass Tab Bar cache keys must be current.'
+);
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
 check(jsSources['assets/js/app.js'].includes('DUPLICATE_PLANT_CONSOLIDATION_V1_START'), 'Duplicate plant consolidation migration is required.');
 check(jsSources['assets/js/app.js'].includes("'bam-012': 'bam-006'"), 'Variegated Bamboo duplicate migration is required.');
