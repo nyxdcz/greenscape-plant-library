@@ -24,6 +24,25 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Compact Add Button V1
+
+- Replaces the visible **Add to List** text with a compact **+** button at `761px` and wider.
+- Applies the compact action consistently to Plant Library Grid and List views.
+- Gives the View action the remaining available width while reserving a stable `44px` Add column.
+- Keeps the Add-to-Project action, plant-specific accessible label, keyboard focus, hover state, and maintenance behavior.
+- Preserves the phone layout at `760px` and below, where Add remains hidden and View stays full-width.
+- Keeps the standardized Dashboard-matched Plant Library header, toolbar, cards, data, and responsive navigation unchanged.
+- Refreshes the Plant Library stylesheet cache key and adds regression checks.
+
+Affected files:
+
+```text
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Dashboard-Matched Plant Library Header V1.2
 
 - Uses the Dashboard header as the master style for the Plant Library on tablet and desktop.

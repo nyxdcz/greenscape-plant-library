@@ -198,7 +198,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260730-phone-library-actions2')
-    && html.includes('plant-library-refinements.css?v=20260730-shared-header1-2'),
+    && html.includes('plant-library-refinements.css?v=20260730-compact-add1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -269,7 +269,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260730-shared-header1-2/.test(html)
+  /plant-library-refinements\.css\?v=20260730-compact-add1/.test(html)
     && /app\.js\?v=20260730-plant-card-layout1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -451,8 +451,40 @@ check(
 );
 check(
   html.includes('styles.css?v=20260730-shared-header1-2')
-    && html.includes('plant-library-refinements.css?v=20260730-shared-header1-2'),
+    && html.includes('plant-library-refinements.css?v=20260730-compact-add1'),
   'Shared header styles must use the V1.2 cache key.'
+);
+
+// GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_VALIDATION
+check(
+  plantLibraryStyles.includes('GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START')
+    && plantLibraryStyles.includes('@media (min-width: 761px)')
+    && plantLibraryStyles.includes('grid-template-columns: minmax(0, 1fr) 44px !important;'),
+  'Tablet and desktop Plant Library actions must reserve a compact 44px Add column.'
+);
+check(
+  plantLibraryStyles.includes('#plantGrid .plant-card-actions .plant-add-list > span')
+    && plantLibraryStyles.includes('#plantGrid .plant-list-actions .plant-add-list > span')
+    && /GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START[\s\S]*?\.plant-add-list > span[\s\S]*?display:\s*none\s*!important/.test(plantLibraryStyles),
+  'Tablet and desktop Add to List text must be visually replaced by the plus icon.'
+);
+check(
+  /GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START[\s\S]*?\.plant-add-list,[\s\S]*?width:\s*44px\s*!important;[\s\S]*?min-width:\s*44px\s*!important;[\s\S]*?min-height:\s*44px\s*!important;/.test(plantLibraryStyles),
+  'The compact plus action must retain a 44px touch target.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?#plantGrid \.plant-card-actions \.plant-add-list,[\s\S]*?#plantGrid \.plant-list-actions \.plant-add-list\s*\{[\s\S]*?display:\s*none\s*!important/.test(plantLibraryStyles),
+  'Phone Plant Library cards must remain View-only.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('class="button primary small plant-add-list"')
+    && jsSources['assets/js/app.js'].includes('data-action="add-to-project"')
+    && jsSources['assets/js/app.js'].includes('aria-label="Add ${escapeHTML(plantName)} to list"'),
+  'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
+);
+check(
+  /plant-library-refinements\.css\?v=20260730-compact-add1/.test(html),
+  'Compact Add Button styles must use the current cache key.'
 );
 
 if (failures.length) {
