@@ -190,14 +190,15 @@ body.sidebar-assistant-enhanced .website-link {
 }
 
 @media (min-width: 1024px) {
-  body.sidebar-assistant-enhanced .sidebar-confidentiality {
+  body.sidebar-assistant-enhanced .sidebar-utility-section {
     margin-top: auto !important;
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
-  body.sidebar-assistant-enhanced .sidebar-utility-section {
+  body.sidebar-assistant-enhanced .sidebar-confidentiality {
     flex: 0 0 auto;
-    margin-top: 10px;
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
   }
 
   body.sidebar-assistant-enhanced .sidebar-actions {

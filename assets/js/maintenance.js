@@ -145,6 +145,9 @@
       </div>
       ${estimated}
       <div class="maintenance-startup-actions">
+        <span class="maintenance-startup-greenie" aria-hidden="true">
+          <img src="assets/images/greenscape-pet-look-around.gif" alt="" width="68" height="68" loading="eager" decoding="async">
+        </span>
         ${config.allowReadOnlyAccess ? '<button type="button" class="maintenance-primary" data-maintenance-continue>Open read-only website</button>' : ''}
       </div>
       <small>Your saved browser records remain unchanged.</small>
