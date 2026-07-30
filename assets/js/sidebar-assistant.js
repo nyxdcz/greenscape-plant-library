@@ -15,33 +15,34 @@
     return Array.from(root.querySelectorAll(selector));
   }
 
+  /* GREENSCAPE_GREENIE_DIRECT_HELP_V1_4_START */
   function openHelpPanel() {
-    const panel = qs('#feedbackPanel');
-    const toggle = qs('#feedbackToggle');
-
-    if (!panel || !toggle) return;
-
-    if (panel.hidden) {
-      toggle.click();
-    } else {
-      panel.hidden = false;
-      toggle.setAttribute('aria-expanded', 'true');
+    const controller = window.GREENSCAPE_FEEDBACK;
+    if (controller?.open) {
+      controller.open();
+      return;
     }
 
-    window.setTimeout(() => {
-      qs('#feedbackMessage')?.focus();
-    }, 80);
+    const panel = qs('#feedbackPanel');
+    if (!panel) return;
+    panel.hidden = false;
+    panel.setAttribute('aria-hidden', 'false');
+    window.setTimeout(() => qs('#feedbackMessage')?.focus(), 80);
   }
 
   function closeHelpPanel() {
+    const controller = window.GREENSCAPE_FEEDBACK;
+    if (controller?.close) {
+      controller.close({ restoreFocus: false });
+      return;
+    }
+
     const panel = qs('#feedbackPanel');
-    const toggle = qs('#feedbackToggle');
-
-    if (!panel || !toggle) return;
-
+    if (!panel) return;
     panel.hidden = true;
-    toggle.setAttribute('aria-expanded', 'false');
+    panel.setAttribute('aria-hidden', 'true');
   }
+  /* GREENSCAPE_GREENIE_DIRECT_HELP_V1_4_END */
 
   function setSpeechOpen(card, open) {
     if (!card) return;

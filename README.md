@@ -24,6 +24,36 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Greenie-Only Help and Maintenance Status V1.4
+
+- Removes the standalone **Help BETA** launcher from Dashboard, Plant Library, Plant List Editor, Mood Board Creator, Project Lists, tablet, desktop, and phone layouts.
+- Keeps the feedback dialog and email workflow available through Greenie’s **Ask me anything** speech bubble.
+- Refactors feedback opening and closing so it no longer depends on `feedbackToggle`.
+- Returns keyboard focus to Greenie after closing with Close, Cancel, or Escape.
+- Removes Help from the phone dock while preserving Plant Identifier and More.
+- Keeps one bottom-right maintenance status control:
+  - **Maintenance mode** for read-only access.
+  - **Staff tools unlocked** when staff authorization is active.
+- Keeps the status control linked to maintenance details and preserves the startup maintenance screen, access code, session limits, and locking behavior.
+- Preserves the existing phone rule that hides the floating maintenance pill so it does not cover the phone dock.
+- Keeps the Dashboard bento layout, Plant Library information spacing, View-only intermediate actions, plant data, and project tools unchanged.
+- Refreshes affected cache keys and adds regression checks.
+- Corrects earlier installers by removing both phone and desktop Help lookups, retaining intentional regression-test references, allowing assets without an older cache assertion, and preserving JavaScript escape sequences such as `.join('\n')`, and scoping the controller regression check to the marked controller block.
+
+Affected files:
+
+```text
+index.html
+assets/js/app.js
+assets/js/sidebar-assistant.js
+assets/js/magnetic-dock.js
+assets/js/maintenance.js
+assets/css/styles.css
+assets/css/maintenance.css
+scripts/validate.mjs
+README.md
+```
+
 ### Intermediate View-Only Actions V1
 
 - Shows one full-width **View** action at `1200px` and below.

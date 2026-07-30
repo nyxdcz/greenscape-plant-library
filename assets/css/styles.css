@@ -8206,3 +8206,17 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_END */
+
+/* GREENSCAPE_GREENIE_ONLY_HELP_STYLE_V1_4_START */
+#feedbackWidget > #feedbackToggle {
+  display: none !important;
+}
+
+#feedbackWidget > .feedback-panel[hidden] {
+  display: none !important;
+}
+
+#feedbackWidget.is-feedback-open > .feedback-panel {
+  pointer-events: auto;
+}
+/* GREENSCAPE_GREENIE_ONLY_HELP_STYLE_V1_4_END */

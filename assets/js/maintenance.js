@@ -164,7 +164,6 @@
     '[data-costing-print-report]',
     '[data-costing-export-json]',
     '[data-costing-export-csv]',
-    '#feedbackToggle',
     '#feedbackClose',
     '#feedbackCancel',
     '#feedbackForm button[type="submit"]'
@@ -239,7 +238,7 @@
       ? 'Editor, mood board, and projects are available.'
       : 'Read-only access — editing and saving are disabled.';
     const compact = authorized ? 'Staff access' : 'Read-only access';
-    return `<button type="button" class="maintenance-readonly-banner feedback-launcher${bannerClass}" id="maintenanceReadonlyBanner" data-maintenance-show-startup aria-label="${escapeHTML(label)}. Open maintenance details.">
+    return `<button type="button" class="maintenance-readonly-banner feedback-launcher${bannerClass}" id="maintenanceReadonlyBanner" data-maintenance-show-startup data-maintenance-state="${authorized ? 'staff-tools-unlocked' : 'maintenance-mode'}" aria-live="polite" aria-label="${escapeHTML(label)}. Open maintenance details.">
       <span class="maintenance-lock-icon maintenance-icon-mask" aria-hidden="true"></span>
       <span class="maintenance-banner-copy"><strong>${escapeHTML(label)}</strong><small>${escapeHTML(detail)}</small><span class="maintenance-banner-compact-copy">${escapeHTML(compact)}</span></span>
       <span class="maintenance-banner-details" aria-hidden="true">Details</span>

@@ -1,14 +1,14 @@
 (() => {
   'use strict';
+  /* GREENSCAPE_PHONE_DOCK_NO_HELP_V1_1 */
 
   const phoneQuery = window.matchMedia('(max-width: 760px)');
   const glassDockQuery = window.matchMedia('(max-width: 760px)');
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const dock = document.querySelector('.sidebar .nav-list');
-  const feedbackWidget = document.getElementById('feedbackWidget');
   const glowTimers = new WeakMap();
 
-  if (!dock || !feedbackWidget) return;
+  if (!dock) return;
 
   const getItems = () => Array.from(dock.querySelectorAll('.nav-item:not(.phone-dock-hidden), .dock-utility'));
 
@@ -109,7 +109,6 @@
   };
 
   const attachPhoneUtilities = () => {
-    const help = document.getElementById('feedbackToggle');
     const identifier = ensurePhoneButton('phoneDockIdentifierButton', 'dock-utility-identifier', 'Plant Identifier', 'identifier');
     const more = ensurePhoneButton('phoneDockMoreButton', 'dock-utility-more', 'More', 'more');
     const moreMenu = ensureMoreMenu();
@@ -135,17 +134,10 @@
     if (identifier.parentElement !== dock) dock.appendChild(identifier);
     if (more.parentElement !== dock) dock.appendChild(more);
 
-    if (help) {
-      markUtility(help, 'dock-utility-help', 'Help');
-      if (help.parentElement !== dock) dock.appendChild(help);
-    }
-
-    document.body.classList.toggle('dock-utilities-attached', Boolean(help));
+    document.body.classList.remove('dock-utilities-attached');
   };
 
   const restoreDesktopUtilities = () => {
-    const help = document.getElementById('feedbackToggle');
-    const panel = document.getElementById('feedbackPanel');
     const identifier = document.getElementById('phoneDockIdentifierButton');
     const more = document.getElementById('phoneDockMoreButton');
     const moreMenu = document.getElementById('phoneDockMoreMenu');
@@ -154,14 +146,6 @@
     identifier?.remove();
     more?.remove();
     moreMenu?.remove();
-
-    if (help) {
-      unmarkUtility(help, 'dock-utility-help');
-      if (help.parentElement !== feedbackWidget) {
-        feedbackWidget.insertBefore(help, panel || null);
-      }
-    }
-
     document.body.classList.remove('dock-utilities-attached');
     resetItems();
   };
@@ -190,14 +174,6 @@
     }, glassDockQuery.matches ? 260 : 540));
   });
   dock.addEventListener('pointerup', resetItems);
-
-  dock.addEventListener('click', (event) => {
-    if (event.target.closest('#feedbackToggle') && phoneQuery.matches) {
-      closeMoreMenu();
-      event.stopPropagation();
-    }
-  });
-
   document.addEventListener('click', (event) => {
     if (!phoneQuery.matches) return;
     if (event.target.closest('#phoneDockMoreButton')) return;

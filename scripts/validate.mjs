@@ -197,7 +197,7 @@ check(
   'The floating maintenance status must be hidden on phone screens.'
 );
 check(
-  html.includes('maintenance.css?v=20260730-phone-library-actions2')
+  html.includes('maintenance.css?v=20260731-greenie-only-help1-4')
     && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
@@ -270,7 +270,7 @@ check(
 );
 check(
   /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html)
-    && /app\.js\?v=20260731-plant-info-order1-1/.test(html),
+    && /app\.js\?v=20260731-greenie-only-help1-4/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -315,16 +315,17 @@ check(
   'Phone dock utilities must retain visible accessible names when their text labels are hidden.'
 );
 check(
-  /if \(event\.target\.closest\('#feedbackToggle'\)[\s\S]{0,120}closeMoreMenu\(\)/.test(jsSources['assets/js/magnetic-dock.js']),
-  'Opening Help from the phone dock must close the More menu.'
+  !jsSources['assets/js/magnetic-dock.js'].includes('feedbackToggle')
+    && jsSources['assets/js/magnetic-dock.js'].includes('closeMoreMenu'),
+  'The phone dock must retain More-menu behavior without a standalone Help utility.'
 );
 check(
   styles.includes('bottom: calc(146px + env(safe-area-inset-bottom)) !important;'),
   'The maintenance and staff status must clear the small-phone glass tab bar.'
 );
 check(
-  /styles\.css\?v=20260730-shared-header1-2/.test(html)
-    && /magnetic-dock\.js\?v=20260730-phone-glass-tab-bar2/.test(html),
+  /styles\.css\?v=20260731-greenie-only-help1-4/.test(html)
+    && /magnetic-dock\.js\?v=20260731-greenie-only-help1-4/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -450,7 +451,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260730-shared-header1-2')
+  html.includes('styles.css?v=20260731-greenie-only-help1-4')
     && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -514,7 +515,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1')
-    && html.includes('app.js?v=20260731-plant-info-order1-1'),
+    && html.includes('app.js?v=20260731-greenie-only-help1-4'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -585,6 +586,67 @@ check(
 check(
   html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Intermediate View-only styles must use the current cache key.'
+);
+
+// GREENSCAPE_GREENIE_ONLY_HELP_V1_4_VALIDATION
+check(
+  !html.includes('id="feedbackToggle"')
+    && !html.includes('feedback-launcher-label">Help')
+    && !html.includes('feedback-beta-badge'),
+  'The standalone Help BETA launcher must be removed from every static view.'
+);
+check(
+  html.includes('id="feedbackPanel"')
+    && html.includes('id="feedbackForm"')
+    && html.includes('id="feedbackMessage"'),
+  'The feedback dialog and form must remain available for Greenie.'
+);
+const greenieFeedbackControllerSource = jsSources['assets/js/app.js'].match(
+  /GREENSCAPE_GREENIE_ONLY_HELP_V1_4_START([\s\S]*?)GREENSCAPE_GREENIE_ONLY_HELP_V1_4_END/
+)?.[1] || '';
+
+check(
+  Boolean(greenieFeedbackControllerSource)
+    && greenieFeedbackControllerSource.includes('window.GREENSCAPE_FEEDBACK')
+    && !greenieFeedbackControllerSource.includes('feedbackToggle'),
+  'The marked feedback controller must be programmatic and independent of the removed launcher.'
+);
+check(
+  jsSources['assets/js/sidebar-assistant.js'].includes('GREENSCAPE_GREENIE_DIRECT_HELP_V1_4_START')
+    && jsSources['assets/js/sidebar-assistant.js'].includes('window.GREENSCAPE_FEEDBACK')
+    && !jsSources['assets/js/sidebar-assistant.js'].includes("qs('#feedbackToggle')"),
+  'Greenie must open the feedback dialog directly.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes('GREENSCAPE_PHONE_DOCK_NO_HELP_V1_1')
+    && !jsSources['assets/js/magnetic-dock.js'].includes('feedbackToggle')
+    && jsSources['assets/js/magnetic-dock.js'].includes('phoneDockIdentifierButton')
+    && jsSources['assets/js/magnetic-dock.js'].includes('phoneDockMoreButton'),
+  'Phone navigation must remove Help while preserving Identifier and More.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes("const label = authorized ? 'Staff tools unlocked' : 'Maintenance mode'")
+    && jsSources['assets/js/maintenance.js'].includes("data-maintenance-state=\"${authorized ? 'staff-tools-unlocked' : 'maintenance-mode'}\"")
+    && !jsSources['assets/js/maintenance.js'].includes("'#feedbackToggle'"),
+  'Maintenance must expose explicit Maintenance mode and Staff tools unlocked states without Help.'
+);
+check(
+  styles.includes('GREENSCAPE_GREENIE_ONLY_HELP_STYLE_V1_4_START')
+    && maintenanceStyles.includes('GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_START'),
+  'Greenie-only Help and single-status-pill CSS safeguards are required.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?#maintenanceReadonlyBanner\s*\{[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
+  'The existing phone maintenance-banner safeguard must remain active.'
+);
+check(
+  html.includes('maintenance.css?v=20260731-greenie-only-help1-4')
+    && html.includes('styles.css?v=20260731-greenie-only-help1-4')
+    && html.includes('app.js?v=20260731-greenie-only-help1-4')
+    && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
+    && html.includes('magnetic-dock.js?v=20260731-greenie-only-help1-4')
+    && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
+  'Greenie-only Help assets must use the current cache keys.'
 );
 
 if (failures.length) {

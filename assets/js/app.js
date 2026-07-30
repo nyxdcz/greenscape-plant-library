@@ -4110,37 +4110,50 @@
 
 
 (() => {
+  /* GREENSCAPE_GREENIE_ONLY_HELP_V1_4_START */
   const widget = document.getElementById('feedbackWidget');
-  const toggle = document.getElementById('feedbackToggle');
   const panel = document.getElementById('feedbackPanel');
   const closeButton = document.getElementById('feedbackClose');
   const cancelButton = document.getElementById('feedbackCancel');
   const form = document.getElementById('feedbackForm');
   const messageInput = document.getElementById('feedbackMessage');
 
-  if (!widget || !toggle || !panel || !form) return;
+  if (!widget || !panel || !form) return;
+
+  function greenieFocusTarget() {
+    return document.getElementById('greenieSpeechBox')
+      || document.querySelector('.sidebar-pet-avatar');
+  }
 
   function openFeedback() {
     panel.hidden = false;
-    toggle.setAttribute('aria-expanded', 'true');
+    panel.setAttribute('aria-hidden', 'false');
+    widget.classList.add('is-feedback-open');
     window.setTimeout(() => messageInput?.focus(), 40);
   }
 
-  function closeFeedback() {
+  function closeFeedback(options = {}) {
+    const restoreFocus = options.restoreFocus !== false;
     panel.hidden = true;
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.focus();
+    panel.setAttribute('aria-hidden', 'true');
+    widget.classList.remove('is-feedback-open');
+    if (restoreFocus) greenieFocusTarget()?.focus();
   }
 
-  toggle.addEventListener('click', () => {
-    if (panel.hidden) openFeedback();
-    else closeFeedback();
+  window.GREENSCAPE_FEEDBACK = Object.freeze({
+    open: openFeedback,
+    close: closeFeedback,
+    isOpen: () => !panel.hidden
   });
-  closeButton?.addEventListener('click', closeFeedback);
-  cancelButton?.addEventListener('click', closeFeedback);
+
+  closeButton?.addEventListener('click', () => closeFeedback());
+  cancelButton?.addEventListener('click', () => closeFeedback());
 
   document.addEventListener('click', event => {
-    if (!panel.hidden && !widget.contains(event.target)) closeFeedback();
+    if (panel.hidden || !(event.target instanceof Element)) return;
+    if (panel.contains(event.target)) return;
+    if (event.target.closest('.sidebar-pet-card')) return;
+    closeFeedback({ restoreFocus: false });
   });
 
   document.addEventListener('keydown', event => {
@@ -4178,6 +4191,7 @@
 
     closeFeedback();
   });
+  /* GREENSCAPE_GREENIE_ONLY_HELP_V1_4_END */
 })();
 
 /* Consolidated page enhancements. */

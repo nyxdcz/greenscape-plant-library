@@ -840,3 +840,28 @@ body.maintenance-startup-open {
   }
 }
 /* GREENSCAPE_PHONE_MAINTENANCE_BANNER_HIDE_V1_END */
+
+/* GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_START */
+body.maintenance-readonly .feedback-widget,
+body.maintenance-staff-authorized .feedback-widget {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0 !important;
+}
+
+body.maintenance-readonly .feedback-widget > .maintenance-readonly-banner,
+body.maintenance-staff-authorized .feedback-widget > .maintenance-readonly-banner {
+  order: 1 !important;
+  flex: 0 1 auto;
+}
+
+body.maintenance-readonly .feedback-widget > .feedback-panel,
+body.maintenance-staff-authorized .feedback-widget > .feedback-panel {
+  order: 2 !important;
+}
+
+#feedbackWidget > #feedbackToggle {
+  display: none !important;
+}
+/* GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_END */
