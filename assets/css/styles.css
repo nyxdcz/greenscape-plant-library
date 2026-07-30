@@ -1069,9 +1069,11 @@ th { color: #42604f; background: #edf3ef; }
 .moodboard-picker-actions { display:flex; justify-content:space-between; gap:7px; margin:9px 0; }
 .moodboard-picker-actions .button { flex:1; padding-left:8px; padding-right:8px; }
 .moodboard-plant-picker { display:grid; gap:7px; max-height:440px; overflow:auto; padding:2px 2px 8px; }
-.moodboard-picker-item { width:100%; display:grid; grid-template-columns:46px 1fr 25px; align-items:center; gap:9px; padding:7px; border:1px solid #e3e9e5; border-radius:11px; background:#fff; color:inherit; text-align:left; }
+.moodboard-picker-item { width:100%; overflow:hidden; border:1px solid #e3e9e5; border-radius:11px; background:#fff; color:inherit; text-align:left; }
 .moodboard-picker-item:hover { border-color:#87b79d; background:#f4faf6; }
 .moodboard-picker-item.selected { border-color:#b6d85d; background:#f4f9d9; }
+.moodboard-picker-select { width:100%; min-height:58px; display:grid; grid-template-columns:46px minmax(0,1fr) 25px; align-items:center; gap:9px; padding:7px; border:0; background:transparent; color:inherit; text-align:left; }
+.moodboard-picker-select:focus-visible { position:relative; z-index:1; outline:3px solid rgba(20,108,74,.34); outline-offset:-3px; }
 .moodboard-picker-image { width:46px; height:42px; overflow:hidden; display:grid; place-items:center; border-radius:8px; background:#edf2ee; color:#35614f; font-size:10px; font-weight:850; }
 .moodboard-picker-image img { width:100%; height:100%; object-fit:cover; }
 .moodboard-picker-copy { min-width:0; }
@@ -1080,6 +1082,14 @@ th { color: #42604f; background: #edf3ef; }
 .moodboard-picker-copy small { margin-top:2px; color:#718078; font-size:8px; font-style:italic; }
 .moodboard-picker-check { width:23px; height:23px; display:grid; place-items:center; border-radius:50%; background:#edf3ef; color:#176647; font-size:13px; font-weight:900; }
 .moodboard-picker-item.selected .moodboard-picker-check { background:#146c4a; color:#fff; }
+.moodboard-picker-color-controls { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 9px 9px; border-top:1px solid rgba(23,100,71,.12); }
+.moodboard-color-field { min-width:0; display:flex; align-items:center; gap:7px; color:#315447; font-size:9px; font-weight:800; }
+.moodboard-color-field input[type="color"] { width:38px; height:32px; padding:3px; border:1px solid #a9c8b7; border-radius:9px; background:#fff; cursor:pointer; }
+.moodboard-color-field input[type="color"]:focus-visible { outline:3px solid rgba(20,108,74,.28); outline-offset:2px; }
+.moodboard-color-reset { min-height:32px; padding:5px 9px; border:1px solid #bdd0c5; border-radius:999px; background:#fff; color:#176647; font-size:8px; font-weight:850; cursor:pointer; }
+.moodboard-color-reset:hover:not(:disabled) { border-color:#6fa88c; background:#edf7f1; }
+.moodboard-color-reset:disabled { opacity:.48; cursor:default; }
+.moodboard-color-reset:focus-visible { outline:3px solid rgba(20,108,74,.28); outline-offset:2px; }
 .moodboard-picker-empty { padding:25px 10px; color:var(--muted); text-align:center; font-size:11px; }
 .moodboard-stage { min-width:0; }
 .moodboard-stage-note { display:flex; justify-content:space-between; gap:12px; margin:0 4px 10px; color:#66776f; font-size:10px; }

@@ -1781,6 +1781,7 @@
       location: '',
       footer: 'GREENSCAPE LANDSCAPING SERVICES',
       selectedIds: [],
+      cardColors: {},
       orientation: 'landscape',
       columns: 8,
       rows: 6,
@@ -1794,6 +1795,11 @@
   function sanitizeMoodboard(record) {
     const base = defaultMoodboard();
     const source = record && typeof record === 'object' ? record : {};
+    const cardColors = Object.fromEntries(
+      Object.entries(source.cardColors && typeof source.cardColors === 'object' ? source.cardColors : {})
+        .filter(([plantId, color]) => plants.some(plant => plant.id === plantId) && safeMoodboardHexColor(color))
+        .map(([plantId, color]) => [plantId, safeMoodboardHexColor(color)])
+    );
     return {
       ...base,
       ...source,
@@ -1802,6 +1808,7 @@
       location: String(source.location || ''),
       footer: String(source.footer || base.footer),
       selectedIds: [...new Set(Array.isArray(source.selectedIds) ? source.selectedIds : [])].filter(id => plants.some(plant => plant.id === id)),
+      cardColors,
       orientation: String(source.orientation || base.orientation) === 'portrait' ? 'portrait' : 'landscape',
       columns: source.layoutDefaultVersion === 2 && [6,7,8,9,10].includes(Number(source.columns)) ? Number(source.columns) : base.columns,
       rows: source.layoutDefaultVersion === 2 && [6,7,8,9,10].includes(Number(source.rows)) ? Number(source.rows) : base.rows,
@@ -1825,6 +1832,24 @@
     return labels[category] || String(category || 'UNCATEGORIZED').toUpperCase();
   }
 
+  function safeMoodboardHexColor(value) {
+    const color = String(value || '').trim();
+    return /^#[0-9a-f]{6}$/i.test(color) ? color.toLowerCase() : '';
+  }
+
+  function moodboardTextColor(background) {
+    const color = safeMoodboardHexColor(background) || '#2d6b4f';
+    const channels = [1, 3, 5].map(index => Number.parseInt(color.slice(index, index + 2), 16) / 255)
+      .map(channel => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+    const backgroundLuminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+    const dark = [0x17, 0x37, 0x2a].map(channel => channel / 255)
+      .map(channel => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+    const darkLuminance = dark[0] * 0.2126 + dark[1] * 0.7152 + dark[2] * 0.0722;
+    const whiteContrast = 1.05 / (backgroundLuminance + 0.05);
+    const darkContrast = (backgroundLuminance + 0.05) / (darkLuminance + 0.05);
+    return whiteContrast >= darkContrast ? '#ffffff' : '#17372a';
+  }
+
   function moodboardPlantColor(plant) {
     const palette = [
       ['#2d6b4f', '#ffffff'], ['#efd667', '#17372a'], ['#ef7f62', '#ffffff'],
@@ -1836,7 +1861,9 @@
     const key = `${plant.id || ''}${plant.commonName || ''}`;
     let hash = 0;
     for (let index = 0; index < key.length; index++) hash = key.charCodeAt(index) + ((hash << 5) - hash);
-    return palette[Math.abs(hash) % palette.length];
+    const automatic = palette[Math.abs(hash) % palette.length];
+    const custom = safeMoodboardHexColor(moodboard.cardColors?.[plant.id]);
+    return custom ? [custom, moodboardTextColor(custom)] : automatic;
   }
 
   function selectedMoodboardPlants() {
@@ -1935,11 +1962,23 @@
     return records.map(plant => {
       const selected = moodboard.selectedIds.includes(plant.id);
       const image = safeImage(plant.image);
-      return `<button type="button" class="moodboard-picker-item${selected ? ' selected' : ''}" data-action="moodboard-toggle-plant" data-plant-id="${escapeHTML(plant.id)}" title="${selected ? 'Remove from board' : 'Add to board'}">
-        <span class="moodboard-picker-image">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="96" height="96" loading="lazy" decoding="async">` : `<span>${escapeHTML(plant.code || '—')}</span>`}</span>
-        <span class="moodboard-picker-copy"><strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong><small>${escapeHTML(plant.scientificName || plant.material || plant.category)}</small></span>
-        <span class="moodboard-picker-check">${selected ? '✓' : '+'}</span>
-      </button>`;
+      const [background] = moodboardPlantColor(plant);
+      const customColor = safeMoodboardHexColor(moodboard.cardColors?.[plant.id]);
+      const plantName = escapeHTML(plant.commonName || 'Unnamed plant');
+      return `<div class="moodboard-picker-item${selected ? ' selected' : ''}">
+        <button type="button" class="moodboard-picker-select" data-action="moodboard-toggle-plant" data-plant-id="${escapeHTML(plant.id)}" title="${selected ? `Remove ${plantName} from board` : `Add ${plantName} to board`}" aria-pressed="${selected}">
+          <span class="moodboard-picker-image">${image ? `<img src="${image}" alt="" width="96" height="96" loading="lazy" decoding="async">` : `<span>${escapeHTML(plant.code || '—')}</span>`}</span>
+          <span class="moodboard-picker-copy"><strong>${plantName}</strong><small>${escapeHTML(plant.scientificName || plant.material || plant.category)}</small></span>
+          <span class="moodboard-picker-check" aria-hidden="true">${selected ? '✓' : '+'}</span>
+        </button>
+        ${selected ? `<div class="moodboard-picker-color-controls">
+          <label class="moodboard-color-field" title="Choose the card color for ${plantName}">
+            <span>Card color</span>
+            <input type="color" value="${background}" data-moodboard-color data-plant-id="${escapeHTML(plant.id)}" aria-label="Card color for ${plantName}">
+          </label>
+          <button type="button" class="moodboard-color-reset" data-action="moodboard-reset-color" data-plant-id="${escapeHTML(plant.id)}"${customColor ? '' : ' disabled'}>Use automatic</button>
+        </div>` : ''}
+      </div>`;
     }).join('');
   }
 
@@ -2157,6 +2196,27 @@
     const shouldAdd = force === undefined ? !selected : Boolean(force);
     if (shouldAdd && !selected) moodboard.selectedIds.push(plantId);
     if (!shouldAdd && selected) moodboard.selectedIds = moodboard.selectedIds.filter(id => id !== plantId);
+    saveAll();
+    updateMoodboardPicker();
+    updateMoodboardPreview();
+  }
+
+  function setMoodboardPlantColor(plantId, value) {
+    if (!getPlant(plantId) || !moodboard.selectedIds.includes(plantId)) return;
+    const color = safeMoodboardHexColor(value);
+    if (!color) return;
+    moodboard.cardColors = { ...(moodboard.cardColors || {}), [plantId]: color };
+    saveAll();
+    updateMoodboardPreview();
+    const reset = document.querySelector(`[data-action="moodboard-reset-color"][data-plant-id="${CSS.escape(plantId)}"]`);
+    if (reset) reset.disabled = false;
+  }
+
+  function resetMoodboardPlantColor(plantId) {
+    if (!moodboard.cardColors?.[plantId]) return;
+    const nextColors = { ...moodboard.cardColors };
+    delete nextColors[plantId];
+    moodboard.cardColors = nextColors;
     saveAll();
     updateMoodboardPicker();
     updateMoodboardPreview();
@@ -3780,6 +3840,7 @@
     if (action === 'import-excel') document.getElementById('plantExcelInput')?.click();
     if (action === 'moodboard-toggle-plant') toggleMoodboardPlant(target.dataset.plantId);
     if (action === 'moodboard-remove-plant') toggleMoodboardPlant(target.dataset.plantId, false);
+    if (action === 'moodboard-reset-color') resetMoodboardPlantColor(target.dataset.plantId);
     if (action === 'moodboard-add-visible') {
       filteredMoodboardPlants().forEach(plant => {
         if (!moodboard.selectedIds.includes(plant.id)) moodboard.selectedIds.push(plant.id);
@@ -3787,7 +3848,7 @@
       saveAll(); updateMoodboardPicker(); updateMoodboardPreview(); toast('Visible plants added to the mood board.');
     }
     if (action === 'moodboard-clear' && moodboard.selectedIds.length && confirm('Remove all plants from this mood board?')) {
-      moodboard.selectedIds = []; saveAll(); updateMoodboardPicker(); updateMoodboardPreview(); toast('Mood board cleared.');
+      moodboard.selectedIds = []; moodboard.cardColors = {}; saveAll(); updateMoodboardPicker(); updateMoodboardPreview(); toast('Mood board cleared.');
     }
     if (action === 'moodboard-load-project') loadProjectIntoMoodboard();
     if (action === 'moodboard-export-png') exportMoodboardPNG();
@@ -3948,6 +4009,10 @@
   });
 
   document.addEventListener('input', event => {
+    if (event.target.matches('[data-moodboard-color]')) {
+      setMoodboardPlantColor(event.target.dataset.plantId, event.target.value);
+      return;
+    }
     if (event.target.id === 'librarySearch') {
       state.librarySearch = event.target.value;
       state.libraryLimit = 48;

@@ -12,6 +12,48 @@ Open the published website here:
 
 ## What's New
 
+### Mood Board Manual Card Colors V1
+
+Adds optional per-plant color controls to the Mood Board Creator without changing plant photographs or existing board layouts.
+
+Changes:
+
+- Shows a compact color picker after a plant is added to the mood board.
+- Updates the plant card caption color immediately in the live board preview.
+- Automatically selects readable white or dark-green caption text for the chosen background.
+- Provides a **Use automatic** action that restores the existing generated palette color.
+- Saves colors by stable plant ID so they persist through reloads, card reordering, fullscreen previews, printing, PDF output, and PNG export.
+- Preserves a chosen color when a plant is temporarily removed and re-added.
+- Clears all manual color overrides when **Clear board** is confirmed.
+- Keeps older saved mood boards compatible; cards without an override continue using the automatic palette.
+- Validates saved colors before using them in inline styles.
+- Keeps manual color editing unavailable in locked read-only maintenance mode and available to authorized staff.
+- Adds keyboard-accessible labels, focus states, and touch-friendly controls.
+- Refreshes the application and stylesheet cache keys.
+
+Affected files:
+
+```text
+assets/js/app.js
+assets/css/styles.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/app.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Maintenance and Staff Plant Catalogue Sync V1
 
 Keeps plant and landscape-material records aligned between read-only maintenance access and unlocked staff tools.

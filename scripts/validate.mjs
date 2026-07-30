@@ -198,6 +198,12 @@ check(jsSources['assets/js/app.js'].includes('manualNotes || firstDescriptionSen
 check(!jsSources['assets/js/app.js'].includes('class="plant-badges"'), 'Plant Library cards must not render tag badges.');
 check(jsSources['assets/js/app.js'].includes('class="detail-tags"'), 'Automatic tags must remain visible in Plant Detail.');
 check(!styles.includes('.plant-badge'), 'Unused Plant Library badge styling should be removed.');
+check(jsSources['assets/js/app.js'].includes('cardColors: {}'), 'Mood boards must store per-plant card color overrides.');
+check(jsSources['assets/js/app.js'].includes('function safeMoodboardHexColor(value)'), 'Mood board colors must be validated before use in inline styles.');
+check(jsSources['assets/js/app.js'].includes('function moodboardTextColor(background)'), 'Custom mood board colors must receive contrast-aware text.');
+check(jsSources['assets/js/app.js'].includes('data-moodboard-color'), 'Selected mood board plants must expose an accessible color control.');
+check(jsSources['assets/js/app.js'].includes("data-action=\"moodboard-reset-color\""), 'Mood board color overrides must provide an automatic-color reset.');
+check(styles.includes('.moodboard-picker-color-controls'), 'Mood board color controls require responsive picker styling.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
