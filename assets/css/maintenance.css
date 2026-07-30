@@ -203,22 +203,21 @@ html.maintenance-enabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   margin-top: 24px;
 }
 
-.maintenance-startup-greenie {
+.maintenance-startup-pet {
   display: grid;
   place-items: center;
-  width: 68px;
-  height: 68px;
-  flex: 0 0 68px;
+  width: 69px;
+  height: 69px;
+  margin: 15px auto 0;
 }
 
-.maintenance-startup-greenie img {
+.maintenance-startup-pet img {
   display: block;
-  width: 68px;
-  height: 68px;
+  width: 69px;
+  height: 69px;
   object-fit: contain;
   pointer-events: none;
   image-rendering: pixelated;
@@ -409,13 +408,6 @@ html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:
   background-color: #fff !important;
 }
 
-.maintenance-startup-card > small {
-  display: block;
-  margin-top: 15px;
-  color: #738179;
-  font-size: 10px;
-}
-
 .maintenance-readonly-banner {
   position: static;
   z-index: auto;
@@ -588,8 +580,6 @@ body.maintenance-startup-open {
 
   .maintenance-startup-actions {
     align-items: center;
-    flex-direction: row;
-    gap: 8px;
   }
 
   .maintenance-access-entry {
@@ -600,20 +590,19 @@ body.maintenance-startup-open {
     width: 100%;
   }
 
-  .maintenance-startup-greenie,
-  .maintenance-startup-greenie img {
+  .maintenance-startup-pet,
+  .maintenance-startup-pet img {
     width: 52px;
     height: 52px;
   }
 
-  .maintenance-startup-greenie {
-    flex-basis: 52px;
+  .maintenance-startup-pet {
+    margin-top: 12px;
   }
 
   html.maintenance-enabled .maintenance-startup .maintenance-startup-actions button[data-maintenance-continue] {
-    width: auto;
+    width: min(100%, 280px);
     min-width: 0;
-    flex: 1 1 auto;
   }
 
   body.maintenance-readonly .feedback-widget {

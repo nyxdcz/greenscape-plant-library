@@ -222,13 +222,12 @@
       </div>
       ${estimated}
       <div class="maintenance-startup-actions">
-        <span class="maintenance-startup-greenie" aria-hidden="true">
-          <img src="assets/images/greenscape-pet-look-around.gif" alt="" width="68" height="68" loading="eager" decoding="async">
-        </span>
         ${config.allowReadOnlyAccess ? `<button type="button" class="maintenance-primary" data-maintenance-continue>${authorized ? 'Continue with staff access' : 'Open read-only website'}</button>` : ''}
       </div>
       ${accessPanel}
-      <small>Your saved browser records remain unchanged.</small>
+      <div class="maintenance-startup-pet" aria-hidden="true">
+        <img src="assets/images/greenscape-pet-jumping-happy.gif" alt="" width="69" height="69" loading="eager" decoding="async">
+      </div>
     </section>`;
   }
 

@@ -184,6 +184,27 @@ check(
   jsSources['assets/js/maintenance.js'].includes('class="maintenance-staff-access-active"'),
   'The authorized startup panel must use a class distinct from the body authorization state.'
 );
+check(
+  jsSources['assets/js/maintenance.js'].includes('class="maintenance-startup-pet"'),
+  'The maintenance startup must place Greenie in a dedicated bottom container.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes('assets/images/greenscape-pet-jumping-happy.gif'),
+  'The maintenance startup must use the approved happy-jumping Greenie animation.'
+);
+check(
+  !jsSources['assets/js/maintenance.js'].includes('Your saved browser records remain unchanged.'),
+  'The removed browser-record status sentence must not return.'
+);
+check(
+  !(jsSources['assets/js/maintenance.js'].match(/<div class="maintenance-startup-actions">([\s\S]*?)<\/div>/)?.[1] || '')
+    .includes('maintenance-startup-pet'),
+  'Greenie must not share the maintenance primary-action row.'
+);
+check(
+  maintenanceStyles.includes('.maintenance-startup-pet'),
+  'The bottom maintenance Greenie requires responsive styling.'
+);
 check(jsSources['assets/js/app.js'].includes('assignBotanicalPlantCodes'), 'Automatic botanical plant-code assignment is required.');
 check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plant codes must expose their conflict state.');
 check(jsSources['assets/js/app.js'].includes('codeIncomplete'), 'Incomplete scientific names must expose a warning state.');

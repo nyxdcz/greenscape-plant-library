@@ -12,6 +12,45 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Startup Greenie Placement V1
+
+Refines the maintenance startup card by giving Greenie a dedicated closing position beneath staff access.
+
+Changes:
+
+- Removes Greenie from beside **Open read-only website** so the primary action remains centered.
+- Places the approved happy-jumping Greenie animation at the bottom-center of the maintenance card.
+- Keeps Greenie in normal document flow so expanded and authorized Staff access panels cannot be covered.
+- Preserves crisp pixel-art rendering at 69px on desktop and 52px on small screens.
+- Removes the redundant **Your saved browser records remain unchanged.** sentence.
+- Preserves maintenance protection, Staff access, read-only browsing, and responsive behavior.
+- Refreshes the maintenance stylesheet and script cache keys.
+- Adds regression validation for the asset, placement, removed sentence, and responsive style hook.
+
+Affected files:
+
+```text
+assets/images/greenscape-pet-jumping-happy.gif
+assets/js/maintenance.js
+assets/css/maintenance.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/maintenance.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Mood Board Manual Card Colors V1
 
 Adds optional per-plant color controls to the Mood Board Creator without changing plant photographs or existing board layouts.
