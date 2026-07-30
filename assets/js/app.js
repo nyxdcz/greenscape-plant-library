@@ -16,6 +16,7 @@
   // DUPLICATE_PLANT_CONSOLIDATION_V1_END
   const STORAGE = {
     plants: 'greenscape-plant-library-plants-v1',
+    plantsSourceRevision: 'greenscape-plant-library-plants-source-revision-v1',
     projects: 'greenscape-plant-library-projects-v1',
     categories: 'greenscape-plant-library-categories-v1',
     moodboard: 'greenscape-plant-library-moodboard-v1'
@@ -94,10 +95,20 @@
   const maintenanceModeAtStartup = (
     document.documentElement.classList.contains('maintenance-enabled')
     || Boolean(window.GREENSCAPE_MAINTENANCE?.enabled)
-  ) && !maintenanceAccessIsAuthorized();
+  );
+  const publishedPlantSourceRevision = String(sourceMeta.sourceRevision || '').trim();
+  const storedPlantSourceRevision = loadJSON(STORAGE.plantsSourceRevision, '');
+  const storedPlantRecords = loadJSON(STORAGE.plants, null);
+  const synchronizedMaintenancePlantRecords = (
+    publishedPlantSourceRevision
+    && storedPlantSourceRevision === publishedPlantSourceRevision
+    && Array.isArray(storedPlantRecords)
+  )
+    ? storedPlantRecords
+    : clone(seedPlants);
   const startupPlantRecords = maintenanceModeAtStartup
-    ? clone(seedPlants)
-    : (loadJSON(STORAGE.plants, null) || clone(seedPlants));
+    ? synchronizedMaintenancePlantRecords
+    : (storedPlantRecords || clone(seedPlants));
   let plants = sanitizePlants(hydratePlantImages(migrateDuplicatePlantRecords(startupPlantRecords)));
   let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
@@ -330,6 +341,9 @@
       plants = assignBotanicalPlantCodes(plants);
       syncProjectPlantCodes();
       localStorage.setItem(STORAGE.plants, JSON.stringify(compactPlantsForStorage()));
+      if (publishedPlantSourceRevision) {
+        localStorage.setItem(STORAGE.plantsSourceRevision, JSON.stringify(publishedPlantSourceRevision));
+      }
       localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
       localStorage.setItem(STORAGE.categories, JSON.stringify(customCategories));
       localStorage.setItem(STORAGE.moodboard, JSON.stringify(moodboard));

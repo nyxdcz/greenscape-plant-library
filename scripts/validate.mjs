@@ -122,6 +122,30 @@ check(exists('.github/workflows/sync-plant-csv.yml'), 'The Plant CSV Sync workfl
 check(jsSources['assets/js/app.js'].includes('maintenanceModeAtStartup'), 'Maintenance mode must identify the published-data startup path.');
 check(jsSources['assets/js/app.js'].includes("document.documentElement.classList.contains('maintenance-enabled')"), 'Maintenance mode must select published GitHub plant data before read-only access opens.');
 check(!jsSources['assets/js/app.js'].includes('maintenanceReadOnlyAtStartup'), 'Maintenance startup must not depend on the late body read-only class.');
+check(
+  jsSources['assets/js/app.js'].includes("plantsSourceRevision: 'greenscape-plant-library-plants-source-revision-v1'"),
+  'Maintenance and staff modes must share a revision-scoped plant catalogue snapshot.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('storedPlantSourceRevision === publishedPlantSourceRevision'),
+  'Maintenance must ignore browser plant snapshots from older published catalogue revisions.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('synchronizedMaintenancePlantRecords'),
+  'Maintenance and staff modes must initialize from the same synchronized plant records.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('localStorage.setItem(STORAGE.plantsSourceRevision'),
+  'Staff plant edits must be saved with the active published catalogue revision.'
+);
+check(
+  /"sourceRevision":"[a-f0-9]{12}"/.test(jsSources['assets/js/data.js']),
+  'Published plant metadata must include a stable CSV source revision.'
+);
+check(
+  syncScript.includes("const DATA_SCHEMA_VERSION = 'catalogue-sync1'"),
+  'Plant data cache versions must include the catalogue synchronization schema.'
+);
 check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
 check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
 check(

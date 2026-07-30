@@ -12,6 +12,51 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance and Staff Plant Catalogue Sync V1
+
+Keeps plant and landscape-material records aligned between read-only maintenance access and unlocked staff tools.
+
+Changes:
+
+- Uses the latest GitHub-published CSV catalogue as the authoritative baseline in both maintenance states.
+- Associates browser-saved staff plant edits with the exact published CSV revision they were created from.
+- Reuses a current-revision staff snapshot in read-only maintenance mode so the same browser displays matching plants, materials, categories, images, codes, and totals.
+- Ignores older browser plant snapshots automatically after GitHub publishes a newer CSV revision.
+- Preserves stable plant IDs so Project Lists, mood boards, quotations, BOQs, and costing references continue pointing to the correct records.
+- Keeps locked maintenance access read-only; synchronization never grants editing permission.
+- Adds a generated source revision to `GREENSCAPE_PLANT_META` and a schema-aware cache key for `data.js`.
+- Adds regression validation for the shared catalogue snapshot, revision matching, stale-data rejection, and cache refresh.
+- Refreshes the application cache key.
+
+Synchronization boundary:
+
+- Staff edits synchronize with read-only maintenance mode in the same browser once saved.
+- Publishing `data/Greenscape_Plant_Library.csv` through GitHub remains the way to synchronize the catalogue across different browsers and devices.
+
+Affected files:
+
+```text
+assets/js/app.js
+assets/js/data.js
+scripts/sync_plants_from_csv.mjs
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+npm run sync:plants
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Maintenance Staff Layout Fix V1
 
 Fixes the collapsed website layout that appeared after staff access was unlocked.

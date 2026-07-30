@@ -34,6 +34,7 @@ const args = new Set(process.argv.slice(2));
 const checkOnly = args.has('--check');
 const bootstrap = args.has('--bootstrap');
 const allowLargeDelete = args.has('--allow-large-delete');
+const DATA_SCHEMA_VERSION = 'catalogue-sync1';
 
 function fail(message) {
   console.error(`Plant CSV sync failed: ${message}`);
@@ -422,7 +423,11 @@ function recordsFromCsv(csvText, existingPlants) {
   return assignBotanicalCodes(records);
 }
 
-function metadata(records) {
+function sourceRevision(csvText) {
+  return crypto.createHash('sha256').update(csvText).digest('hex').slice(0, 12);
+}
+
+function metadata(records, revision) {
   const categories = {};
   records.forEach(record => {
     categories[record.category] = (categories[record.category] || 0) + 1;
@@ -431,6 +436,7 @@ function metadata(records) {
   return {
     name: 'Greenscape Plant Library',
     sourceFile: 'data/Greenscape_Plant_Library.csv',
+    sourceRevision: revision,
     plantCount: records.length - materialCount,
     materialCount,
     totalCount: records.length,
@@ -439,17 +445,19 @@ function metadata(records) {
   };
 }
 
-function generatedDataSource(records) {
-  return `window.GREENSCAPE_PLANT_DATA=${JSON.stringify(records)};\nwindow.GREENSCAPE_PLANT_META=${JSON.stringify(metadata(records))};\n`;
+function generatedDataSource(records, csvText) {
+  const revision = sourceRevision(csvText);
+  return `window.GREENSCAPE_PLANT_DATA=${JSON.stringify(records)};\nwindow.GREENSCAPE_PLANT_META=${JSON.stringify(metadata(records, revision))};\n`;
 }
 
 function generatedIndexSource(indexSource, csvText) {
-  const hash = crypto.createHash('sha256').update(csvText).digest('hex').slice(0, 12);
+  const hash = sourceRevision(csvText);
+  const cacheVersion = `csv-${hash}-${DATA_SCHEMA_VERSION}`;
   const next = indexSource.replace(
     /assets\/js\/data\.js\?v=[^"]+/,
-    `assets/js/data.js?v=csv-${hash}`
+    `assets/js/data.js?v=${cacheVersion}`
   );
-  if (next === indexSource && !indexSource.includes(`assets/js/data.js?v=csv-${hash}`)) {
+  if (next === indexSource && !indexSource.includes(`assets/js/data.js?v=${cacheVersion}`)) {
     fail('index.html does not contain the expected data.js script reference.');
   }
   return next;
@@ -468,7 +476,7 @@ if (!fs.existsSync(csvPath)) fail('data/Greenscape_Plant_Library.csv is missing.
 const csvText = fs.readFileSync(csvPath, 'utf8').replace(/^\uFEFF/, '');
 const records = recordsFromCsv(csvText, published.plants);
 const canonicalCsv = publishedDataToCsv(records);
-const expectedData = generatedDataSource(records);
+const expectedData = generatedDataSource(records, canonicalCsv);
 const currentIndex = fs.readFileSync(indexPath, 'utf8');
 const expectedIndex = generatedIndexSource(currentIndex, canonicalCsv);
 
