@@ -14,6 +14,7 @@ const check = (condition, message) => {
 const html = read('index.html');
 const styles = read('assets/css/styles.css');
 const maintenanceStyles = read('assets/css/maintenance.css');
+const sidebarAssistantStyles = read('assets/css/sidebar-assistant.css');
 const workflow = read('.github/workflows/ci.yml');
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
 const jsPaths = [
@@ -227,6 +228,20 @@ check(jsSources['assets/js/app.js'].includes("data-action=\"moodboard-reset-colo
 check(styles.includes('.moodboard-picker-color-controls'), 'Mood board color controls require responsive picker styling.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
+check(
+  sidebarAssistantStyles.includes('@media (min-width: 761px) and (max-width: 1023px)')
+    && sidebarAssistantStyles.includes('body.sidebar-assistant-enhanced .sidebar-utility-section'),
+  'Greenie must remain visible throughout the intermediate full-sidebar range.'
+);
+check(
+  sidebarAssistantStyles.includes('@media (max-width: 760px)')
+    && sidebarAssistantStyles.includes('body.sidebar-assistant-enhanced .sidebar-utility-section {\n    display: none !important;'),
+  'Greenie must remain hidden when the phone glass dock replaces the sidebar.'
+);
+check(
+  /sidebar-assistant\.css\?v=20260730-greenie-intermediate1/.test(html),
+  'Intermediate Greenie visibility cache key must be current.'
+);
 check(styles.includes('GREENSCAPE_PHONE_GLASS_TAB_BAR_V1_START'), 'The small-phone shared glass tab bar styles are required.');
 check(
   styles.includes('width: min(calc(100vw - 24px), 360px) !important;'),

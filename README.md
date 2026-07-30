@@ -12,6 +12,15 @@ Open the published website here:
 
 ## What's New
 
+### Greenie Intermediate Sidebar Visibility V1
+
+- Keeps Greenie visible throughout the full-sidebar range from `761px` upward instead of hiding the pet below `1024px`.
+- Adds compact Greenie, avatar, and speech-bubble sizing for the intermediate `761–1023px` layout.
+- Preserves the utility order **Greenie → Company Use Only → Visit Greenscape website**.
+- Keeps Greenie’s speech, hover, keyboard focus, Help, drag, and return behavior.
+- Keeps Greenie hidden at `760px` and below, where the phone glass tab bar and mobile Help control replace the sidebar utilities.
+- Preserves internal sidebar scrolling on shorter screens and refreshes the affected stylesheet cache key.
+
 ### Phone Glass Tab Bar Breakpoint Fix V1.1
 
 - Extends the compact shared glass tab bar through the website's full phone-navigation range of `760px` and below.

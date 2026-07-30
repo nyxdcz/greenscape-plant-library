@@ -294,7 +294,52 @@ body.sidebar-assistant-enhanced .website-link {
   }
 }
 
-@media (max-width: 1023px) {
+@media (min-width: 761px) and (max-width: 1023px) {
+  body.sidebar-assistant-enhanced .sidebar-utility-section {
+    display: block !important;
+    margin-top: auto !important;
+    margin-bottom: 0;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-placeholder,
+  body.sidebar-assistant-enhanced .sidebar-pet-card {
+    max-width: 154px;
+    min-height: 66px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-card {
+    padding: 1px 6px 5px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-avatar {
+    width: 64px;
+    height: 64px;
+    padding: 4px;
+    border-radius: 16px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-gif {
+    width: 56px;
+    height: 56px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-speech {
+    bottom: 62px;
+    width: min(176px, calc(100vw - 28px));
+    padding: 12px 11px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-speech strong {
+    font-size: 15px;
+  }
+
+  body.sidebar-assistant-enhanced .sidebar-pet-speech span,
+  body.sidebar-assistant-enhanced .sidebar-pet-speech em {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 760px) {
   body.sidebar-assistant-enhanced .sidebar-utility-section {
     display: none !important;
   }
