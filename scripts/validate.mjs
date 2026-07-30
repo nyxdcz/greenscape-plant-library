@@ -13,6 +13,7 @@ const check = (condition, message) => {
 
 const html = read('index.html');
 const styles = read('assets/css/styles.css');
+const maintenanceStyles = read('assets/css/maintenance.css');
 const workflow = read('.github/workflows/ci.yml');
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
 const jsPaths = [
@@ -150,6 +151,14 @@ check(
 check(
   jsSources['assets/js/maintenance.js'].includes('!staffWorkspaceIsActive()'),
   'Maintenance data writes must remain scoped to verified staff workspaces.'
+);
+check(
+  !/(?:^|})\s*\.maintenance-staff-authorized\s*(?:,|\{)/m.test(maintenanceStyles),
+  'The body authorization class must not receive startup-panel layout styles.'
+);
+check(
+  jsSources['assets/js/maintenance.js'].includes('class="maintenance-staff-access-active"'),
+  'The authorized startup panel must use a class distinct from the body authorization state.'
 );
 check(jsSources['assets/js/app.js'].includes('assignBotanicalPlantCodes'), 'Automatic botanical plant-code assignment is required.');
 check(jsSources['assets/js/app.js'].includes('codeConflict'), 'Same-initial plant codes must expose their conflict state.');

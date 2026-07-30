@@ -270,7 +270,7 @@ html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:
 }
 
 .maintenance-staff-access,
-.maintenance-staff-authorized {
+.maintenance-staff-access-active {
   max-width: 430px;
   margin: 16px auto 0;
   padding: 14px;
@@ -383,24 +383,24 @@ html.maintenance-enabled .maintenance-startup button[data-maintenance-continue]:
   color: #9f2f25;
 }
 
-.maintenance-staff-authorized {
+.maintenance-staff-access-active {
   display: grid;
   gap: 5px;
   text-align: center;
 }
 
-.maintenance-staff-authorized strong {
+.maintenance-staff-access-active strong {
   color: #073c2c;
   font-size: 12px;
 }
 
-.maintenance-staff-authorized span {
+.maintenance-staff-access-active span {
   color: #617269;
   font-size: 10px;
   line-height: 1.45;
 }
 
-.maintenance-staff-authorized .maintenance-secondary {
+.maintenance-staff-access-active .maintenance-secondary {
   justify-self: center;
   margin-top: 6px;
   border-color: rgba(7, 60, 44, .24) !important;

@@ -192,7 +192,7 @@
       ? 'Staff tools are unlocked in this browser tab.'
       : config.status;
     const accessPanel = authorized
-      ? `<div class="maintenance-staff-authorized" role="status">
+      ? `<div class="maintenance-staff-access-active" role="status">
           <strong>Staff access active</strong>
           <span>Plant List Editor, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
           <button type="button" class="maintenance-secondary" data-maintenance-lock>Lock staff tools</button>

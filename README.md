@@ -12,6 +12,43 @@ Open the published website here:
 
 ## What's New
 
+### Maintenance Staff Layout Fix V1
+
+Fixes the collapsed website layout that appeared after staff access was unlocked.
+
+Changes:
+
+- Separates the small authorized-status panel class from the `<body>` authorization-state class.
+- Prevents the panel's `430px` maximum width, grid, margin, padding, and background styles from affecting the full website.
+- Restores the normal desktop, tablet, and mobile page width while staff tools are unlocked.
+- Preserves the 30-minute staff session, status pill, lock action, and access to Plant List Editor, Mood Board Creator, and Project Lists.
+- Keeps Plant Library and other maintenance-restricted interactions read-only.
+- Adds a regression check that prevents authorization-state and panel-layout selectors from colliding again.
+- Refreshes the affected maintenance CSS and JavaScript cache keys.
+
+Affected files:
+
+```text
+assets/css/maintenance.css
+assets/js/maintenance.js
+scripts/validate.mjs
+index.html
+README.md
+```
+
+Verification:
+
+```text
+node --check assets/js/maintenance.js
+npm run lint
+npm test
+npm run build
+npm run check
+npm run audit
+npm run quality
+git diff --check
+```
+
 ### Maintenance Staff Access V1
 
 Adds a temporary staff override for approved tools while the public website remains in read-only maintenance mode.
