@@ -8190,3 +8190,19 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 /* GREENSCAPE_PHONE_GLASS_TAB_BAR_V1_END */
+
+/* GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_START
+   Dashboard remains the master header. Plant Library mirrors its
+   tablet geometry while inheriting the same desktop glass treatment,
+   border, radius, shadow, glow, title alignment, and notice styling. */
+@media (min-width: 761px) and (max-width: 1180px) {
+  body:has(#plantGrid) .topbar {
+    min-height: 88px !important;
+    padding: 15px 24px 14px !important;
+  }
+
+  body:has(#plantGrid) .topbar h1 {
+    font-size: clamp(28px, 3.4vw, 34px) !important;
+  }
+}
+/* GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_END */

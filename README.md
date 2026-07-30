@@ -22,6 +22,30 @@ Forced maintenance mode may limit editing and project tools while keeping the fo
 
 Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other editing tools may be unavailable while maintenance restrictions are active.
 
+## Latest Interface Update
+
+### Dashboard-Matched Plant Library Header V1.2
+
+- Uses the Dashboard header as the master style for the Plant Library on tablet and desktop.
+- Matches header height, width behavior, internal padding, radius, glass background, border, shadow, glow, title scale, and vertical alignment.
+- Matches the confidentiality card dimensions, spacing, icon, typography, and right alignment.
+- Keeps only the page title different: **Dashboard** or **Plant Library**.
+- Keeps the Plant Library toolbar correctly spaced and sticky below the standardized header.
+- Preserves the existing phone Plant Library header, phone glass navigation, and phone card actions.
+- Keeps the original Dashboard bento layout and slideshow unchanged.
+- Adds regression checks, including the corrected escaped Plant Library cache-key validation.
+- Refreshes the affected stylesheet cache keys.
+
+Affected files:
+
+```text
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ## Main Features
 
 - Searchable plant and landscape-material library

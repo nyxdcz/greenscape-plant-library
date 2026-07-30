@@ -9,33 +9,12 @@
       7px 0 18px rgba(16, 43, 34, .07) !important;
   }
 
+  /* GREENSCAPE_SHARED_HEADER_LIBRARY_OFFSET_V1_2_START
+     Standardized header: sticky top + header height + existing margin. */
   body:has(#plantGrid) {
-    --library-sticky-top: 90px;
+    --library-sticky-top: 114px;
   }
-
-  body:has(#plantGrid) .topbar {
-    min-height: 82px !important;
-    padding: 15px 28px 14px !important;
-    gap: 16px !important;
-  }
-
-  body:has(#plantGrid) .topbar h1 {
-    font-size: clamp(27px, 3vw, 38px) !important;
-    line-height: 1.1 !important;
-  }
-
-  body:has(#plantGrid) .company-use-notice {
-    padding: 8px 11px !important;
-    border-radius: 12px !important;
-  }
-
-  body:has(#plantGrid) .company-use-notice strong {
-    font-size: 10px !important;
-  }
-
-  body:has(#plantGrid) .company-use-notice span {
-    font-size: 8.5px !important;
-  }
+  /* GREENSCAPE_SHARED_HEADER_LIBRARY_OFFSET_V1_2_END */
 
   body:has(#plantGrid) .page-content {
     padding: 22px 28px 44px !important;
@@ -193,7 +172,7 @@ body:has(#plantGrid) .library-toolbar .result-count {
 @media (min-width: 761px) and (max-width: 1200px) {
   body:has(#plantGrid) .toolbar.library-toolbar {
     grid-template-columns: 1fr;
-    top: 90px !important;
+    top: var(--library-sticky-top) !important;
   }
 
   body:has(#plantGrid) .library-toolbar > .toolbar-group:last-child {

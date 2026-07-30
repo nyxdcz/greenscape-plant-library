@@ -198,7 +198,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260730-phone-library-actions2')
-    && html.includes('plant-library-refinements.css?v=20260730-phone-library-actions2'),
+    && html.includes('plant-library-refinements.css?v=20260730-shared-header1-2'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -269,7 +269,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260730-phone-library-actions2/.test(html)
+  /plant-library-refinements\.css\?v=20260730-shared-header1-2/.test(html)
     && /app\.js\?v=20260730-plant-card-layout1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -323,7 +323,7 @@ check(
   'The maintenance and staff status must clear the small-phone glass tab bar.'
 );
 check(
-  /styles\.css\?v=20260730-phone-glass-tab-bar2/.test(html)
+  /styles\.css\?v=20260730-shared-header1-2/.test(html)
     && /magnetic-dock\.js\?v=20260730-phone-glass-tab-bar2/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -425,6 +425,35 @@ try {
 } catch (error) {
   failures.push(`Automatic botanical plant-code validation failed: ${error.message}`);
 }
+
+// GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_VALIDATION
+check(
+  styles.includes('GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_START')
+    && /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*1180px\)[\s\S]*?body:has\(#plantGrid\)\s+\.topbar\s*\{[\s\S]*?min-height:\s*88px\s*!important;[\s\S]*?padding:\s*15px 24px 14px\s*!important;/.test(styles)
+    && /body:has\(#plantGrid\)\s+\.topbar h1\s*\{[\s\S]*?font-size:\s*clamp\(28px,\s*3\.4vw,\s*34px\)\s*!important;/.test(styles),
+  'Plant Library must mirror the Dashboard tablet header geometry.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_SHARED_HEADER_LIBRARY_OFFSET_V1_2_START')
+    && plantLibraryStyles.includes('--library-sticky-top: 114px;')
+    && plantLibraryStyles.includes('top: var(--library-sticky-top) !important;'),
+  'The Plant Library sticky toolbar must remain below the standardized header.'
+);
+check(
+  !/body:has\(#plantGrid\)\s+\.topbar\s*\{[\s\S]{0,180}?min-height:\s*82px\s*!important;/.test(plantLibraryStyles)
+    && !/body:has\(#plantGrid\)\s+\.company-use-notice\s*\{[\s\S]{0,140}?padding:\s*8px 11px\s*!important;/.test(plantLibraryStyles),
+  'Plant Library must not restore the previous desktop header or notice-card overrides.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?body:has\(#plantGrid\)\s+\.topbar\s*\{[\s\S]*?min-height:\s*58px\s*!important;[\s\S]*?padding:\s*10px 13px 9px\s*!important;/.test(plantLibraryStyles)
+    && /body:has\(#plantGrid\)\s+\.topbar h1\s*\{[\s\S]*?font-size:\s*25px\s*!important;/.test(plantLibraryStyles),
+  'The existing phone Plant Library header must remain unchanged.'
+);
+check(
+  html.includes('styles.css?v=20260730-shared-header1-2')
+    && html.includes('plant-library-refinements.css?v=20260730-shared-header1-2'),
+  'Shared header styles must use the V1.2 cache key.'
+);
 
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`);
