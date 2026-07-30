@@ -12,6 +12,15 @@ Open the published website here:
 
 ## What's New
 
+### Phone Glass Tab Bar Breakpoint Fix V1.1
+
+- Extends the compact shared glass tab bar through the website's full phone-navigation range of `760px` and below.
+- Fixes wider phone-sized browser windows that previously showed the older raised tiles because they exceeded the original `430px` cutoff.
+- Keeps the five controls, active dark-green highlight, transparent inactive controls, fixed safe-area placement, More menu, Help, and Plant Identifier behavior.
+- Disables magnetic pointer movement throughout the phone range so tapping a control never shifts the entire dock.
+- Preserves tablet and desktop navigation at `761px` and above.
+- Refreshes the stylesheet and dock-script cache versions so deployed browsers load the correction.
+
 ### Phone Glass Tab Bar Refinement V1
 
 Refines the five-control navigation dock on small phones into one compact shared glass surface while preserving every existing action.
@@ -27,7 +36,7 @@ Changes:
 - Positions the bar at `16px + env(safe-area-inset-bottom)` for iPhone safe-area clearance.
 - Repositions the More menu, Help panel, and maintenance/staff status above the slimmer dock.
 - Preserves the More destinations, Plant Identifier action, Help behavior, keyboard focus, and reduced-motion support.
-- Scopes the visual refinement to screens `430px` wide and below; wider phone, tablet, and desktop navigation remain unchanged.
+- Originally scoped the visual refinement to screens `430px` wide and below; V1.1 extends it through the full phone-navigation range.
 - Refreshes the affected stylesheet and script cache keys.
 - Adds regression checks for the breakpoint, dimensions, safe-area placement, inactive state, motion behavior, and cache versions.
 

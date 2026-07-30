@@ -8026,8 +8026,8 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
 /* GREENSCAPE_SIDEBAR_CHROME_CLEANUP_V1_END */
 
 /* GREENSCAPE_PHONE_GLASS_TAB_BAR_V1_START
-   Compact shared-glass navigation for small phones only. */
-@media (max-width: 430px) {
+   Compact shared-glass navigation across the phone-navigation range. */
+@media (max-width: 760px) {
   body,
   .main-area {
     padding-bottom: calc(104px + env(safe-area-inset-bottom)) !important;
@@ -8178,7 +8178,7 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 }
 
-@media (max-width: 430px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
   .sidebar .nav-list .nav-item,
   .sidebar .nav-list .dock-utility {
     transition: color 120ms ease, background 120ms ease, box-shadow 120ms ease !important;

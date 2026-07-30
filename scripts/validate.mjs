@@ -241,12 +241,12 @@ check(
   'The glass tab bar must use a compact shared shell with transparent inactive controls.'
 );
 check(
-  jsSources['assets/js/magnetic-dock.js'].includes("const compactGlassQuery = window.matchMedia('(max-width: 430px)')"),
-  'Glass tab motion must remain scoped to the established small-phone breakpoint.'
+  jsSources['assets/js/magnetic-dock.js'].includes("const glassDockQuery = window.matchMedia('(max-width: 760px)')"),
+  'Glass tab motion must use the full phone-navigation breakpoint.'
 );
 check(
-  jsSources['assets/js/magnetic-dock.js'].includes("item.style.setProperty('--dock-scale', compactGlassQuery.matches ? '.94' : '1')"),
-  'Small-phone tab feedback must animate only the pressed control.'
+  jsSources['assets/js/magnetic-dock.js'].includes("item.style.setProperty('--dock-scale', glassDockQuery.matches ? '.94' : '1')"),
+  'Phone tab feedback must animate only the pressed control.'
 );
 check(
   jsSources['assets/js/magnetic-dock.js'].includes("element.setAttribute('aria-label', label)"),
@@ -261,8 +261,8 @@ check(
   'The maintenance and staff status must clear the small-phone glass tab bar.'
 );
 check(
-  /styles\.css\?v=20260730-phone-glass-tab-bar1/.test(html)
-    && /magnetic-dock\.js\?v=20260730-phone-glass-tab-bar1/.test(html),
+  /styles\.css\?v=20260730-phone-glass-tab-bar2/.test(html)
+    && /magnetic-dock\.js\?v=20260730-phone-glass-tab-bar2/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION

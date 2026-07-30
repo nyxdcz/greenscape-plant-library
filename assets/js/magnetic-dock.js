@@ -2,7 +2,7 @@
   'use strict';
 
   const phoneQuery = window.matchMedia('(max-width: 760px)');
-  const compactGlassQuery = window.matchMedia('(max-width: 430px)');
+  const glassDockQuery = window.matchMedia('(max-width: 760px)');
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const dock = document.querySelector('.sidebar .nav-list');
   const feedbackWidget = document.getElementById('feedbackWidget');
@@ -20,7 +20,7 @@
   };
 
   const updateItems = (clientX) => {
-    if (!phoneQuery.matches || compactGlassQuery.matches || reducedMotionQuery.matches) {
+    if (!phoneQuery.matches || glassDockQuery.matches || reducedMotionQuery.matches) {
       resetItems();
       return;
     }
@@ -179,15 +179,15 @@
   dock.addEventListener('pointerdown', (event) => {
     const item = event.target.closest('.nav-item:not(:disabled), .dock-utility:not(:disabled)');
     if (!phoneQuery.matches || !item) return;
-    item.style.setProperty('--dock-scale', compactGlassQuery.matches ? '.94' : '1');
-    item.style.setProperty('--dock-lift', compactGlassQuery.matches ? '0px' : '-2px');
+    item.style.setProperty('--dock-scale', glassDockQuery.matches ? '.94' : '1');
+    item.style.setProperty('--dock-lift', glassDockQuery.matches ? '0px' : '-2px');
     item.classList.remove('dock-click-glow');
     requestAnimationFrame(() => item.classList.add('dock-click-glow'));
     clearTimeout(glowTimers.get(item));
     glowTimers.set(item, setTimeout(() => {
       item.classList.remove('dock-click-glow');
       glowTimers.delete(item);
-    }, compactGlassQuery.matches ? 260 : 540));
+    }, glassDockQuery.matches ? 260 : 540));
   });
   dock.addEventListener('pointerup', resetItems);
 
@@ -210,7 +210,7 @@
   });
 
   phoneQuery.addEventListener('change', syncUtilities);
-  compactGlassQuery.addEventListener('change', resetItems);
+  glassDockQuery.addEventListener('change', resetItems);
   reducedMotionQuery.addEventListener('change', resetItems);
 
   const startDock = () => {
