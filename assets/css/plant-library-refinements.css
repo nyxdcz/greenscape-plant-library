@@ -955,3 +955,32 @@ body:has(#plantGrid) .library-view-toggle {
   padding-top: 8px !important;
 }
 /* GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_END */
+
+/* GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_START
+   Phone, tablet, and compact laptop layouts use one full-width View action.
+   The compact Add action remains available only above 1200px. */
+@media (max-width: 1200px) {
+  #plantGrid .plant-card-actions,
+  #plantGrid .plant-list-actions,
+  .maintenance-readonly #plantGrid .plant-card-actions,
+  .maintenance-readonly #plantGrid .plant-list-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #plantGrid .plant-card-actions .plant-add-list,
+  #plantGrid .plant-list-actions .plant-add-list,
+  .maintenance-readonly #plantGrid [data-action="add-to-project"] {
+    display: none !important;
+  }
+
+  #plantGrid .plant-card-actions .plant-view-details,
+  #plantGrid .plant-list-actions .plant-view-details {
+    width: 100% !important;
+    min-width: 0;
+    min-height: 44px !important;
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
+/* GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_END */

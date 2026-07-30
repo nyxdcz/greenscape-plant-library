@@ -24,6 +24,27 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Intermediate View-Only Actions V1
+
+- Shows one full-width **View** action at `1200px` and below.
+- Hides the compact **+** action on phone, tablet, and compact laptop/browser layouts.
+- Keeps **View + compact +** available at `1201px` and wider.
+- Applies the same responsive behavior to Plant Library Grid and List views.
+- Prevents maintenance/read-only styling from forcing the hidden Add action to reappear.
+- Retains the `44px` View touch target and centred eye-icon label.
+- Preserves Plant Information Spacing V1.3, information order, mixed-case codes, category pills, and Add-to-Project functionality on large desktop.
+- Keeps plant data, images, Dashboard, header, toolbar, search, filters, Greenie, maintenance protections, and project tools unchanged.
+- Refreshes the Plant Library stylesheet cache key and adds regression checks.
+
+Affected files:
+
+```text
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Plant Information Spacing V1.3
 
 - Keeps the **common name, scientific name, and code** together as one compact information group.

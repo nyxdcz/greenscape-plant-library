@@ -198,7 +198,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260730-phone-library-actions2')
-    && html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
+    && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -269,7 +269,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-plant-info-spacing1-3/.test(html)
+  /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html)
     && /app\.js\?v=20260731-plant-info-order1-1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -451,7 +451,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260730-shared-header1-2')
-    && html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
+    && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -483,7 +483,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-plant-info-spacing1-3/.test(html),
+  /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -513,7 +513,7 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3')
+  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1')
     && html.includes('app.js?v=20260731-plant-info-order1-1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
@@ -549,8 +549,42 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
+  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Plant information spacing styles must use the V1.3 cache key.'
+);
+
+// GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_VALIDATION
+check(
+  plantLibraryStyles.includes('GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_START')
+    && plantLibraryStyles.includes('@media (max-width: 1200px)'),
+  'The intermediate View-only responsive override is required.'
+);
+check(
+  /GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_START[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)\s*!important;/.test(plantLibraryStyles),
+  'Plant card actions must use one full-width column at 1200px and below.'
+);
+check(
+  /GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_START[\s\S]*?\.plant-add-list,[\s\S]*?data-action="add-to-project"[\s\S]*?display:\s*none\s*!important;/.test(plantLibraryStyles),
+  'Add actions, including maintenance-mode actions, must remain hidden at 1200px and below.'
+);
+check(
+  /GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_START[\s\S]*?\.plant-view-details[\s\S]*?width:\s*100%\s*!important;[\s\S]*?min-height:\s*44px\s*!important;/.test(plantLibraryStyles),
+  'View must fill the action row and retain its 44px touch target.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START')
+    && plantLibraryStyles.includes('@media (min-width: 761px)')
+    && plantLibraryStyles.includes('grid-template-columns: minmax(0, 1fr) 44px !important;'),
+  'The compact Add action must remain defined for layouts above the View-only override.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_START')
+    && plantLibraryStyles.includes('GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START'),
+  'Plant information spacing and the existing phone safeguard must remain unchanged.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
+  'Intermediate View-only styles must use the current cache key.'
 );
 
 if (failures.length) {
