@@ -831,3 +831,12 @@ body.maintenance-startup-open {
   }
 }
 /* UPLOADED_MAINTENANCE_ICON_V1_END */
+
+/* GREENSCAPE_PHONE_MAINTENANCE_BANNER_HIDE_V1_START
+   The phone dock stays unobstructed while read-only enforcement remains active. */
+@media (max-width: 760px) {
+  #maintenanceReadonlyBanner {
+    display: none !important;
+  }
+}
+/* GREENSCAPE_PHONE_MAINTENANCE_BANNER_HIDE_V1_END */

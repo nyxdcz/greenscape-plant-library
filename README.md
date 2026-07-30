@@ -12,6 +12,16 @@ Open the published website here:
 
 ## What's New
 
+### Phone Plant Actions and Maintenance Status V1
+
+- Keeps **View** as the only Plant Library card action at `760px` and below.
+- Expands View to the full action row with a `44px` minimum touch target.
+- Removes Add to List from phone Grid and List views while preserving it on tablet and desktop.
+- Hides the floating maintenance/staff status pill on phones so it cannot cover plant cards or the glass tab bar.
+- Keeps maintenance read-only enforcement active even though its floating status control is hidden.
+- Preserves plant details, tablet and desktop actions, the phone glass dock, More, Help, and Plant Identifier.
+- Refreshes the affected stylesheet cache keys and adds regression checks for the phone-only behavior.
+
 ### Plant Card Name and Action Layout V1
 
 - Displays each plant as **code → common name → scientific name** in both Grid and List views.

@@ -886,3 +886,26 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_PLANT_CODE_BODY_V1_END */
+
+/* GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START
+   Phone cards keep one clear, full-width detail action. */
+@media (max-width: 760px) {
+  #plantGrid .plant-card-actions,
+  #plantGrid .plant-list-actions,
+  .maintenance-readonly #plantGrid .plant-card-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #plantGrid .plant-card-actions .plant-add-list,
+  #plantGrid .plant-list-actions .plant-add-list {
+    display: none !important;
+  }
+
+  #plantGrid .plant-card-actions .plant-view-details,
+  #plantGrid .plant-list-actions .plant-view-details {
+    width: 100%;
+    min-height: 44px !important;
+    justify-content: center;
+  }
+}
+/* GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_END */

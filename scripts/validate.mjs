@@ -179,6 +179,29 @@ check(
   'Maintenance data writes must remain scoped to verified staff workspaces.'
 );
 check(
+  plantLibraryStyles.includes('GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START')
+    && plantLibraryStyles.includes('.maintenance-readonly #plantGrid .plant-card-actions')
+    && plantLibraryStyles.includes('grid-template-columns: minmax(0, 1fr) !important;'),
+  'Phone Plant Library cards must use a single full-width action column.'
+);
+check(
+  /#plantGrid \.plant-card-actions \.plant-add-list,[\s\S]*?#plantGrid \.plant-list-actions \.plant-add-list\s*\{[\s\S]*?display:\s*none\s*!important/.test(plantLibraryStyles),
+  'Add to List must be hidden in phone Grid and List views.'
+);
+check(
+  /#plantGrid \.plant-card-actions \.plant-view-details,[\s\S]*?#plantGrid \.plant-list-actions \.plant-view-details\s*\{[\s\S]*?min-height:\s*44px\s*!important/.test(plantLibraryStyles),
+  'The phone View action must retain a 44px minimum touch target.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?#maintenanceReadonlyBanner\s*\{[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
+  'The floating maintenance status must be hidden on phone screens.'
+);
+check(
+  html.includes('maintenance.css?v=20260730-phone-library-actions2')
+    && html.includes('plant-library-refinements.css?v=20260730-phone-library-actions2'),
+  'Phone Plant Library and maintenance styles must use the current cache key.'
+);
+check(
   !/(?:^|})\s*\.maintenance-staff-authorized\s*(?:,|\{)/m.test(maintenanceStyles),
   'The body authorization class must not receive startup-panel layout styles.'
 );
@@ -246,9 +269,9 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260730-plant-card-layout1/.test(html)
+  /plant-library-refinements\.css\?v=20260730-phone-library-actions2/.test(html)
     && /app\.js\?v=20260730-plant-card-layout1/.test(html),
-  'Plant card layout cache keys must be current.'
+  'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
