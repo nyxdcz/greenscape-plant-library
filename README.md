@@ -12,6 +12,16 @@ Open the published website here:
 
 ## What's New
 
+### Plant Card Name and Action Layout V1
+
+- Displays each plant as **code → common name → scientific name** in both Grid and List views.
+- Moves the scientific name directly below the common name for every plant record.
+- Uses five Plant Library columns from `1181–1599px` and reserves six columns for screens `1600px` and wider.
+- Gives View and Add to List stable, equal action areas with a `44px` minimum height.
+- Prevents action labels from breaking letter by letter; View stays on one line and Add to List wraps only at spaces when necessary.
+- Preserves icons, maintenance-disabled styling, plant details, Add to List behavior, sorting, filtering, and responsive phone layouts.
+- Refreshes the affected CSS and JavaScript cache keys and adds regression checks for card order, column breakpoints, and action labels.
+
 ### Greenie Intermediate Sidebar Visibility V1
 
 - Keeps Greenie visible throughout the full-sidebar range from `761px` upward instead of hiding the pet below `1024px`.

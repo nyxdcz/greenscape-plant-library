@@ -15,6 +15,7 @@ const html = read('index.html');
 const styles = read('assets/css/styles.css');
 const maintenanceStyles = read('assets/css/maintenance.css');
 const sidebarAssistantStyles = read('assets/css/sidebar-assistant.css');
+const plantLibraryStyles = read('assets/css/plant-library-refinements.css');
 const workflow = read('.github/workflows/ci.yml');
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
 const jsPaths = [
@@ -226,6 +227,29 @@ check(jsSources['assets/js/app.js'].includes('function moodboardTextColor(backgr
 check(jsSources['assets/js/app.js'].includes('data-moodboard-color'), 'Selected mood board plants must expose an accessible color control.');
 check(jsSources['assets/js/app.js'].includes("data-action=\"moodboard-reset-color\""), 'Mood board color overrides must provide an automatic-color reset.');
 check(styles.includes('.moodboard-picker-color-controls'), 'Mood board color controls require responsive picker styling.');
+check(
+  /class="plant-card-body">[\s\S]{0,240}class="plant-code-body"[\s\S]{0,240}class="plant-common-name"[\s\S]{0,240}class="scientific"/.test(jsSources['assets/js/app.js']),
+  'Grid cards must render code, common name, then scientific name.'
+);
+check(
+  /class="plant-list-copy">[\s\S]{0,240}class="plant-code-body"[\s\S]{0,240}class="plant-common-name"[\s\S]{0,240}class="scientific"/.test(jsSources['assets/js/app.js']),
+  'List cards must render code, common name, then scientific name.'
+);
+check(
+  plantLibraryStyles.includes('@media (min-width: 1600px)')
+    && plantLibraryStyles.includes('@media (min-width: 1181px) and (max-width: 1599px)'),
+  'Plant card columns must preserve readable actions at medium desktop widths.'
+);
+check(
+  plantLibraryStyles.includes('#plantGrid .plant-card-actions .plant-view-details > span')
+    && plantLibraryStyles.includes('overflow-wrap: normal;'),
+  'Plant card action labels must not break letter by letter.'
+);
+check(
+  /plant-library-refinements\.css\?v=20260730-plant-card-layout1/.test(html)
+    && /app\.js\?v=20260730-plant-card-layout1/.test(html),
+  'Plant card layout cache keys must be current.'
+);
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
 check(!jsSources['assets/js/sidebar-assistant.js'].includes("qs('#pageContent')"), 'The sidebar assistant must not observe Plant Library content.');
 check(
