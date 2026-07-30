@@ -502,7 +502,7 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
 #plantGrid .plant-list-card {
   min-width: 0;
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) minmax(120px, auto) minmax(230px, auto);
+  grid-template-columns: 190px minmax(0, 1fr) minmax(230px, auto);
   align-items: center;
   gap: 16px;
   padding: 10px;
@@ -534,17 +534,10 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
 #plantGrid .plant-list-copy h2 { margin: 0 0 4px; font-size: 16px; }
 #plantGrid .plant-list-copy .scientific { min-height: 0 !important; }
 
-#plantGrid .plant-list-category {
-  display: block;
-  margin-top: 7px;
-  color: var(--forest-700);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
 #plantGrid .plant-list-size {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eceee9;
   color: var(--muted);
   font-size: 11px;
   white-space: nowrap;
@@ -597,7 +590,6 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
     grid-template-columns: 150px minmax(0, 1fr) minmax(105px, auto);
   }
 
-  #plantGrid .plant-list-size { display: none; }
   #plantGrid .plant-list-actions { grid-template-columns: 1fr; }
 }
 
@@ -664,7 +656,6 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
     gap: 10px;
   }
 
-  #plantGrid .plant-list-size { display: none; }
 
   #plantGrid .plant-list-actions {
     grid-column: 1 / -1;
@@ -725,7 +716,6 @@ body:has(#plantGrid) .library-view-button[aria-pressed="true"] {
     gap: 9px;
   }
 
-  #plantGrid .plant-list-size { display: none; }
 
   #plantGrid .plant-list-actions {
     grid-column: 1 / -1;
@@ -826,36 +816,37 @@ body:has(#plantGrid) .library-view-toggle {
 }
 /* GREENSCAPE_LIBRARY_GLASS_TITLES_V1_END */
 
-/* GREENSCAPE_PLANT_CODE_BODY_V1_START
-   Plant code now sits in the text body directly above the common name. */
+/* GREENSCAPE_PLANT_INFORMATION_ORDER_V1_1_START
+   Plant cards show common name, scientific name, mixed-case code, then sizes. */
 #plantGrid .plant-code-badge {
   display: none !important;
 }
 
 #plantGrid .plant-code-body {
   display: block;
-  margin: 1px 0 5px;
+  min-height: 1.15em;
+  margin: 5px 0 0;
   color: var(--forest-700);
   font-size: 9px;
   font-weight: 850;
   line-height: 1.15;
-  letter-spacing: .10em;
-  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-transform: none !important;
+}
+
+#plantGrid .plant-common-name + .scientific {
+  margin-top: 0 !important;
 }
 
 #plantGrid .scientific + .plant-code-body {
-  margin-top: 1px;
-}
-
-#plantGrid .plant-code-body + .plant-common-name {
-  margin-top: 0 !important;
+  margin-top: 5px;
 }
 
 @media (max-width: 760px) {
   #plantGrid .plant-code-body {
-    margin-bottom: 4px;
+    margin-top: 4px;
     font-size: 8px;
-    letter-spacing: .08em;
+    letter-spacing: .04em;
   }
 }
 
@@ -864,7 +855,7 @@ body:has(#plantGrid) .library-view-toggle {
     font-size: 7.5px;
   }
 }
-/* GREENSCAPE_PLANT_CODE_BODY_V1_END */
+/* GREENSCAPE_PLANT_INFORMATION_ORDER_V1_1_END */
 
 /* GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START
    Phone cards keep one clear, full-width detail action. */

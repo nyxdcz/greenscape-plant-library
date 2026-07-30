@@ -198,7 +198,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260730-phone-library-actions2')
-    && html.includes('plant-library-refinements.css?v=20260730-compact-add1'),
+    && html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -251,12 +251,12 @@ check(jsSources['assets/js/app.js'].includes('data-moodboard-color'), 'Selected 
 check(jsSources['assets/js/app.js'].includes("data-action=\"moodboard-reset-color\""), 'Mood board color overrides must provide an automatic-color reset.');
 check(styles.includes('.moodboard-picker-color-controls'), 'Mood board color controls require responsive picker styling.');
 check(
-  /class="plant-card-body">[\s\S]{0,240}class="plant-code-body"[\s\S]{0,240}class="plant-common-name"[\s\S]{0,240}class="scientific"/.test(jsSources['assets/js/app.js']),
-  'Grid cards must render code, common name, then scientific name.'
+  /class="plant-card-body">[\s\S]{0,260}class="plant-common-name"[\s\S]{0,260}class="scientific"[\s\S]{0,260}class="plant-code-body"[\s\S]{0,260}class="plant-meta"/.test(jsSources['assets/js/app.js']),
+  'Grid cards must render common name, scientific name, code, then sizes.'
 );
 check(
-  /class="plant-list-copy">[\s\S]{0,240}class="plant-code-body"[\s\S]{0,240}class="plant-common-name"[\s\S]{0,240}class="scientific"/.test(jsSources['assets/js/app.js']),
-  'List cards must render code, common name, then scientific name.'
+  /class="plant-list-copy">[\s\S]{0,300}class="plant-common-name"[\s\S]{0,300}class="scientific"[\s\S]{0,300}class="plant-code-body"[\s\S]{0,300}class="plant-list-size"/.test(jsSources['assets/js/app.js']),
+  'List cards must render common name, scientific name, code, then sizes.'
 );
 check(
   plantLibraryStyles.includes('@media (min-width: 1600px)')
@@ -269,8 +269,8 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260730-compact-add1/.test(html)
-    && /app\.js\?v=20260730-plant-card-layout1/.test(html),
+  /plant-library-refinements\.css\?v=20260731-plant-info-order1-1/.test(html)
+    && /app\.js\?v=20260731-plant-info-order1-1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -451,7 +451,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260730-shared-header1-2')
-    && html.includes('plant-library-refinements.css?v=20260730-compact-add1'),
+    && html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -483,8 +483,39 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260730-compact-add1/.test(html),
+  /plant-library-refinements\.css\?v=20260731-plant-info-order1-1/.test(html),
   'Compact Add Button styles must use the current cache key.'
+);
+
+// GREENSCAPE_PLANT_INFORMATION_ORDER_V1_1_VALIDATION
+check(
+  plantLibraryStyles.includes('GREENSCAPE_PLANT_INFORMATION_ORDER_V1_1_START')
+    && /#plantGrid \.plant-code-body\s*\{[\s\S]*?text-transform:\s*none\s*!important;/.test(plantLibraryStyles),
+  'Plant codes must preserve their stored mixed capitalization.'
+);
+check(
+  !jsSources['assets/js/app.js'].includes('class="plant-list-category"')
+    && !plantLibraryStyles.includes('#plantGrid .plant-list-category'),
+  'The duplicate List-view category text and unused styling must remain removed.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('class="category-pill"'),
+  'Plant category pills must remain available on Plant Library images.'
+);
+check(
+  /class="plant-list-copy">[\s\S]{0,320}class="plant-list-size"/.test(jsSources['assets/js/app.js'])
+    && !/#plantGrid \.plant-list-size\s*\{\s*display:\s*none/.test(plantLibraryStyles),
+  'Available sizes must remain visible within every List-view plant entry.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START')
+    && plantLibraryStyles.includes('GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START'),
+  'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1')
+    && html.includes('app.js?v=20260731-plant-info-order1-1'),
+  'Plant information order assets must use the current V1.1 cache keys.'
 );
 
 if (failures.length) {

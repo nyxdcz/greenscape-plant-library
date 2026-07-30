@@ -24,6 +24,28 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Plant Information Order V1.1
+
+- Standardizes every Plant Library entry as **common name → scientific name → code → available sizes**.
+- Applies the same hierarchy to Grid and List views on desktop, tablet, and phone.
+- Displays codes exactly as stored, including mixed capitalization such as `AMa`.
+- Moves List-view sizes into the information block and removes all three responsive rules that previously hid sizes.
+- Removes the duplicate List-view category text while preserving the image category pill.
+- Preserves the compact **+** action on tablet and desktop and the full-width View-only phone action.
+- Keeps plant data, images, search, filters, header, Dashboard, maintenance protections, Greenie, and project tools unchanged.
+- Corrects the V1 installer’s assumption that only one responsive size-hide rule existed.
+- Refreshes the affected CSS and JavaScript cache keys and adds regression checks.
+
+Affected files:
+
+```text
+assets/js/app.js
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Compact Add Button V1
 
 - Replaces the visible **Add to List** text with a compact **+** button at `761px` and wider.
