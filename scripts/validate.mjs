@@ -198,7 +198,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260730-phone-library-actions2')
-    && html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1'),
+    && html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -269,7 +269,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-plant-info-order1-1/.test(html)
+  /plant-library-refinements\.css\?v=20260731-plant-info-spacing1-3/.test(html)
     && /app\.js\?v=20260731-plant-info-order1-1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -451,7 +451,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260730-shared-header1-2')
-    && html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1'),
+    && html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -483,7 +483,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-plant-info-order1-1/.test(html),
+  /plant-library-refinements\.css\?v=20260731-plant-info-spacing1-3/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -513,9 +513,44 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-plant-info-order1-1')
+  html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3')
     && html.includes('app.js?v=20260731-plant-info-order1-1'),
   'Plant information order assets must use the current V1.1 cache keys.'
+);
+
+// GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_VALIDATION
+check(
+  plantLibraryStyles.includes('GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_START')
+    && plantLibraryStyles.includes('#plantGrid .plant-card h2.plant-common-name,')
+    && plantLibraryStyles.includes('margin-bottom: 2px !important;'),
+  'Plant common names must use the final compact spacing override.'
+);
+check(
+  plantLibraryStyles.includes('#plantGrid .plant-card .scientific,')
+    && plantLibraryStyles.includes('min-height: 0 !important;')
+    && plantLibraryStyles.includes('margin: 0 !important;'),
+  'Scientific names must use the final zero-height and zero-margin override.'
+);
+check(
+  plantLibraryStyles.includes('#plantGrid .plant-card .scientific + .plant-code-body,')
+    && plantLibraryStyles.includes('margin-top: 2px !important;'),
+  'Plant codes must remain closely grouped beneath scientific names.'
+);
+check(
+  plantLibraryStyles.includes('#plantGrid .plant-card .plant-meta {')
+    && plantLibraryStyles.includes('margin-top: 12px !important;')
+    && plantLibraryStyles.includes('#plantGrid .plant-list-copy .plant-list-size {'),
+  'Available sizes must retain the larger Grid and List separation.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_PLANT_INFORMATION_ORDER_V1_1_START')
+    && plantLibraryStyles.includes('GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_START')
+    && plantLibraryStyles.includes('GREENSCAPE_PHONE_VIEW_ONLY_ACTION_V1_START'),
+  'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260731-plant-info-spacing1-3'),
+  'Plant information spacing styles must use the V1.3 cache key.'
 );
 
 if (failures.length) {

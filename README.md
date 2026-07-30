@@ -24,6 +24,27 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Plant Information Spacing V1.3
+
+- Keeps the **common name, scientific name, and code** together as one compact information group.
+- Uses a final high-specificity Plant Library override instead of rewriting multiple legacy desktop, tablet, and phone rules.
+- Applies `2px` spacing around the first three information lines.
+- Applies the larger `12px` separation only before **available sizes** in Grid and List views.
+- Preserves natural wrapping for longer common and scientific names.
+- Keeps the approved information order, mixed-case codes, category pills, compact **+** action, and phone View-only behavior.
+- Leaves unrelated legacy responsive rules untouched and supersedes only the targeted Plant Library spacing.
+- Keeps plant data, images, Dashboard, header, toolbar, search, filters, maintenance protections, Greenie, and project tools unchanged.
+- Refreshes the Plant Library stylesheet cache key and adds regression checks.
+
+Affected files:
+
+```text
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Plant Information Order V1.1
 
 - Standardizes every Plant Library entry as **common name → scientific name → code → available sizes**.

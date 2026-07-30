@@ -922,3 +922,36 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_END */
+
+/* GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_START
+   Final Plant Library spacing authority across desktop, tablet, and phone.
+   Common name, scientific name, and code remain compact; sizes are separated. */
+#plantGrid .plant-card h2.plant-common-name,
+#plantGrid .plant-list-copy h2.plant-common-name {
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 2px !important;
+}
+
+#plantGrid .plant-card .scientific,
+#plantGrid .plant-list-copy .scientific {
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+#plantGrid .plant-card .scientific + .plant-code-body,
+#plantGrid .plant-list-copy .scientific + .plant-code-body {
+  margin-top: 2px !important;
+}
+
+#plantGrid .plant-card .plant-meta {
+  margin-top: 12px !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+#plantGrid .plant-list-copy .plant-list-size {
+  margin-top: 12px !important;
+  padding-top: 8px !important;
+}
+/* GREENSCAPE_PLANT_INFORMATION_SPACING_V1_3_END */
