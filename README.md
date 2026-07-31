@@ -24,6 +24,24 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Phone Dock Freeze Hotfix V1.2
+
+- Removes the body-wide child-mutation observer that repeatedly resynchronized the phone dock and could freeze the browser.
+- Makes **Maintenance Mode** and **Staff tools unlocked** phone-menu updates idempotent, changing text and attributes only when the status actually changes.
+- Synchronizes phone dock utilities only at startup and when the `760px` navigation breakpoint changes.
+- Observes only maintenance authorization class changes on `body` and `html`.
+- Preserves the compact maintenance item directly before **Visit Greenscape website** in the phone **More** menu.
+- Preserves the floating maintenance pill at `761px` and above, the raised mobile filters, Greenie, plant data, cards, and security controls.
+
+Affected files:
+
+```text
+assets/js/magnetic-dock.js
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Phone Dock Maintenance Status V1
 
 - Shows the existing floating **Maintenance Mode** or **Staff tools unlocked** pill on every normal navigation layout at **761 px and above**, including large desktop.

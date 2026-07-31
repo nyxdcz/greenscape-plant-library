@@ -2,6 +2,7 @@
   'use strict';
   /* GREENSCAPE_PHONE_DOCK_NO_HELP_V1_1 */
   /* GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1 */
+  /* GREENSCAPE_PHONE_DOCK_FREEZE_HOTFIX_V1_2 */
 
   const phoneQuery = window.matchMedia('(max-width: 760px)');
   const glassDockQuery = window.matchMedia('(max-width: 760px)');
@@ -83,13 +84,24 @@
   const syncPhoneMaintenanceItem = (menu = document.getElementById('phoneDockMoreMenu')) => {
     const item = menu?.querySelector('[data-phone-maintenance-status]');
     if (!item) return;
+
     const state = phoneMaintenanceState();
-    item.dataset.maintenanceState = state.state;
-    item.setAttribute('aria-label', `${state.label}. ${state.detail}. Open maintenance details.`);
+    const accessibleLabel = `${state.label}. ${state.detail}. Open maintenance details.`;
     const label = item.querySelector('[data-phone-maintenance-label]');
     const detail = item.querySelector('[data-phone-maintenance-detail]');
-    if (label) label.textContent = state.label;
-    if (detail) detail.textContent = state.detail;
+
+    if (item.dataset.maintenanceState !== state.state) {
+      item.dataset.maintenanceState = state.state;
+    }
+    if (item.getAttribute('aria-label') !== accessibleLabel) {
+      item.setAttribute('aria-label', accessibleLabel);
+    }
+    if (label && label.textContent !== state.label) {
+      label.textContent = state.label;
+    }
+    if (detail && detail.textContent !== state.detail) {
+      detail.textContent = state.detail;
+    }
   };
 
   const ensureMoreMenu = () => {
@@ -204,10 +216,18 @@
 
   const startDock = () => {
     syncUtilities();
-    const utilityObserver = new MutationObserver(syncUtilities);
-    utilityObserver.observe(document.body, { childList: true, subtree: true });
-    const maintenanceStateObserver = new MutationObserver(() => syncPhoneMaintenanceItem());
-    maintenanceStateObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    const maintenanceStateObserver = new MutationObserver(() => {
+      if (phoneQuery.matches) syncPhoneMaintenanceItem();
+    });
+    maintenanceStateObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    maintenanceStateObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
   };
 
   if (document.readyState === 'loading') {

@@ -329,7 +329,7 @@ check(
 );
 check(
   /styles\.css\?v=20260731-safe-cleanup1-3/.test(html)
-    && /magnetic-dock\.js\?v=20260731-phone-dock-maintenance1/.test(html),
+    && /magnetic-dock\.js\?v=20260731-phone-dock-maintenance2/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -648,7 +648,7 @@ check(
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
   'Greenie-only Help assets must use the current cache keys.'
 );
@@ -692,7 +692,7 @@ check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1'),
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2'),
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
@@ -800,7 +800,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
@@ -808,6 +808,43 @@ check(
   readme.includes('### Phone Dock Maintenance Status V1'),
   'README must record the phone dock maintenance status update.'
 );
+// GREENSCAPE_PHONE_DOCK_FREEZE_HOTFIX_V1_2_VALIDATION
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes('GREENSCAPE_PHONE_DOCK_FREEZE_HOTFIX_V1_2'),
+  'The phone-dock freeze hotfix marker is required.'
+);
+check(
+  !jsSources['assets/js/magnetic-dock.js'].includes('const utilityObserver = new MutationObserver(syncUtilities);')
+    && !jsSources['assets/js/magnetic-dock.js'].includes('utilityObserver.observe(document.body, { childList: true, subtree: true });'),
+  'The phone dock must not observe all body child mutations or recursively resynchronize utilities.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes('if (item.dataset.maintenanceState !== state.state)')
+    && jsSources['assets/js/magnetic-dock.js'].includes("if (item.getAttribute('aria-label') !== accessibleLabel)")
+    && jsSources['assets/js/magnetic-dock.js'].includes('if (label && label.textContent !== state.label)')
+    && jsSources['assets/js/magnetic-dock.js'].includes('if (detail && detail.textContent !== state.detail)'),
+  'Phone maintenance status updates must be idempotent and avoid repeated DOM mutations.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes('maintenanceStateObserver.observe(document.body')
+    && jsSources['assets/js/magnetic-dock.js'].includes('maintenanceStateObserver.observe(document.documentElement')
+    && jsSources['assets/js/magnetic-dock.js'].includes("attributeFilter: ['class']"),
+  'Phone maintenance status must observe only authorization class changes.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes("phoneQuery.addEventListener('change', syncUtilities)")
+    && !jsSources['assets/js/magnetic-dock.js'].includes('new MutationObserver(syncUtilities)'),
+  'Phone dock utilities must synchronize only at startup and breakpoint changes.'
+);
+check(
+  html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2'),
+  'The phone-dock freeze hotfix must use the current JavaScript cache key.'
+);
+check(
+  readme.includes('### Phone Dock Freeze Hotfix V1.2'),
+  'README must record the phone-dock freeze hotfix.'
+);
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`);
   failures.forEach(message => console.error(`- ${message}`));
