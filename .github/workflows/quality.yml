@@ -23,13 +23,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm install --ignore-scripts
+          package-manager-cache: false
 
       - name: Run complete website quality checks
         run: npm run quality

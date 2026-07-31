@@ -1000,6 +1000,30 @@ check(
   'README must record the interface QA fixes.'
 );
 
+// GREENSCAPE_WEBSITE_QUALITY_WORKFLOW_FIX_V1_1_VALIDATION
+const qualityWorkflowV11 = read('.github/workflows/quality.yml');
+check(
+  qualityWorkflowV11.includes('uses: actions/setup-node@v6')
+    && qualityWorkflowV11.includes('node-version: 20')
+    && qualityWorkflowV11.includes('package-manager-cache: false'),
+  'Website Quality must use setup-node v6 with automatic package-manager caching disabled.'
+);
+check(
+  !qualityWorkflowV11.includes('cache: npm')
+    && !qualityWorkflowV11.includes('npm install --ignore-scripts'),
+  'Website Quality must not require an npm lock file or an unnecessary dependency-install step.'
+);
+check(
+  qualityWorkflowV11.includes('run: npm run quality')
+    && qualityWorkflowV11.includes('pull_request:')
+    && qualityWorkflowV11.includes('- main'),
+  'Website Quality must run the complete quality suite on main pushes and pull requests.'
+);
+check(
+  readme.includes('### Website Quality Workflow Lock-File Fix V1.1'),
+  'README must record the Website Quality lock-file correction.'
+);
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`);
   failures.forEach(message => console.error(`- ${message}`));

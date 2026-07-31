@@ -24,6 +24,24 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Website Quality Workflow Lock-File Fix V1.1
+
+- Corrects the new **Website Quality** GitHub Actions workflow after `actions/setup-node` attempted to create an npm cache without a dependency lock file.
+- Updates the workflow action runtime to `actions/setup-node@v6` while continuing to test the website with Node.js 20.
+- Disables automatic package-manager caching with `package-manager-cache: false`.
+- Removes the unnecessary dependency-install step because the repository currently has no npm dependency packages.
+- Continues running the complete `npm run quality` suite on every push to `main`, every pull request, and manual workflow runs.
+- Adds regression checks that reject `cache: npm`, reject the unnecessary install step, and require the corrected action configuration.
+- Does not change the live website interface, plant data, staff access, Greenie, project tools, or browser cache keys.
+
+Affected files:
+
+```text
+.github/workflows/quality.yml
+scripts/validate.mjs
+README.md
+```
+
 ### Interface QA Fixes and Workflow Clarity V1
 
 - Fixes phone **Plant List Editor**, **Mood Board Creator**, and **Project Lists** navigation so authorized staff workspaces become writable before rendering.
