@@ -860,20 +860,55 @@ body.maintenance-staff-authorized .feedback-widget > .feedback-panel {
 
 /* GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_END */
 
-/* GREENSCAPE_RESPONSIVE_MAINTENANCE_RANGE_V1_START
-   Show Maintenance Mode and Staff tools unlocked only on compact non-mobile layouts.
-   The phone and large-desktop layouts remain unobstructed. */
-@media (min-width: 761px) and (max-width: 1439px) {
+/* GREENSCAPE_NON_PHONE_MAINTENANCE_STATUS_V2_START
+   Show Maintenance Mode and Staff tools unlocked on every normal navigation layout.
+   The large floating pill remains hidden on the phone dock layout at 760px and below. */
+@media (min-width: 761px) {
   body.maintenance-readonly #maintenanceReadonlyBanner,
   body.maintenance-staff-authorized #maintenanceReadonlyBanner {
     display: inline-flex !important;
   }
 }
+/* GREENSCAPE_NON_PHONE_MAINTENANCE_STATUS_V2_END */
 
-@media (min-width: 1440px) {
-  body.maintenance-readonly #maintenanceReadonlyBanner,
-  body.maintenance-staff-authorized #maintenanceReadonlyBanner {
-    display: none !important;
+/* GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1_START
+   The phone More menu carries the compact maintenance state without covering the dock. */
+@media (max-width: 760px) {
+  #phoneDockMoreMenu .phone-dock-maintenance-item {
+    gap: 10px;
+  }
+
+  #phoneDockMoreMenu .phone-dock-maintenance-copy {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #phoneDockMoreMenu .phone-dock-maintenance-copy b {
+    min-width: 0;
+    overflow: hidden;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #phoneDockMoreMenu .phone-dock-maintenance-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 18px;
+    background-color: currentColor;
+    -webkit-mask-image: url("../icons/navigation/icon-maintenance.png");
+    mask-image: url("../icons/navigation/icon-maintenance.png");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
   }
 }
-/* GREENSCAPE_RESPONSIVE_MAINTENANCE_RANGE_V1_END */
+/* GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1_END */

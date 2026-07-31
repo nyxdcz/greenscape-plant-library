@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   /* GREENSCAPE_PHONE_DOCK_NO_HELP_V1_1 */
+  /* GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1 */
 
   const phoneQuery = window.matchMedia('(max-width: 760px)');
   const glassDockQuery = window.matchMedia('(max-width: 760px)');
@@ -63,9 +64,40 @@
     return button;
   };
 
+  const phoneMaintenanceState = () => {
+    const authorized = document.body.classList.contains('maintenance-staff-authorized')
+      || document.documentElement.classList.contains('maintenance-authorized');
+    return authorized
+      ? {
+          label: 'Staff tools unlocked',
+          detail: 'Staff access active',
+          state: 'staff-tools-unlocked'
+        }
+      : {
+          label: 'Maintenance Mode',
+          detail: 'Read-only access',
+          state: 'maintenance-mode'
+        };
+  };
+
+  const syncPhoneMaintenanceItem = (menu = document.getElementById('phoneDockMoreMenu')) => {
+    const item = menu?.querySelector('[data-phone-maintenance-status]');
+    if (!item) return;
+    const state = phoneMaintenanceState();
+    item.dataset.maintenanceState = state.state;
+    item.setAttribute('aria-label', `${state.label}. ${state.detail}. Open maintenance details.`);
+    const label = item.querySelector('[data-phone-maintenance-label]');
+    const detail = item.querySelector('[data-phone-maintenance-detail]');
+    if (label) label.textContent = state.label;
+    if (detail) detail.textContent = state.detail;
+  };
+
   const ensureMoreMenu = () => {
     let menu = document.getElementById('phoneDockMoreMenu');
-    if (menu) return menu;
+    if (menu) {
+      syncPhoneMaintenanceItem(menu);
+      return menu;
+    }
 
     menu = document.createElement('div');
     menu.id = 'phoneDockMoreMenu';
@@ -76,8 +108,10 @@
       <button type="button" data-view="sheet"><span>Plant List Editor</span><small>Soon</small></button>
       <button type="button" data-view="moodboard"><span>Mood Board Creator</span><small>Soon</small></button>
       <button type="button" data-view="projects"><span>Project Lists</span><small>Soon</small></button>
+      <button type="button" class="phone-dock-maintenance-item" data-maintenance-show-startup data-phone-maintenance-status aria-label="Maintenance Mode. Read-only access. Open maintenance details."><span class="phone-dock-maintenance-copy"><i class="phone-dock-maintenance-icon" aria-hidden="true"></i><b data-phone-maintenance-label>Maintenance Mode</b></span><small data-phone-maintenance-detail>Read-only access</small></button>
       <a href="https://greenscapelandscapingph.com/" target="_blank" rel="noopener"><span>Visit Greenscape website</span><small>↗</small></a>`;
     document.body.appendChild(menu);
+    syncPhoneMaintenanceItem(menu);
     return menu;
   };
 
@@ -92,6 +126,7 @@
     const identifier = ensurePhoneButton('phoneDockIdentifierButton', 'dock-utility-identifier', 'Plant Identifier', 'identifier');
     const more = ensurePhoneButton('phoneDockMoreButton', 'dock-utility-more', 'More', 'more');
     const moreMenu = ensureMoreMenu();
+    syncPhoneMaintenanceItem(moreMenu);
 
     identifier.dataset.action = 'open-google-lens-identifier';
     more.setAttribute('aria-expanded', moreMenu.hidden ? 'false' : 'true');
@@ -171,6 +206,8 @@
     syncUtilities();
     const utilityObserver = new MutationObserver(syncUtilities);
     utilityObserver.observe(document.body, { childList: true, subtree: true });
+    const maintenanceStateObserver = new MutationObserver(() => syncPhoneMaintenanceItem());
+    maintenanceStateObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   };
 
   if (document.readyState === 'loading') {

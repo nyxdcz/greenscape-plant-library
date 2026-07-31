@@ -199,7 +199,7 @@ check(
   'The floating maintenance status must be hidden on phone screens.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+  html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
@@ -329,7 +329,7 @@ check(
 );
 check(
   /styles\.css\?v=20260731-safe-cleanup1-3/.test(html)
-    && /magnetic-dock\.js\?v=20260731-safe-cleanup1-3/.test(html),
+    && /magnetic-dock\.js\?v=20260731-phone-dock-maintenance1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -644,11 +644,11 @@ check(
   'The existing phone maintenance-banner safeguard must remain active.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+  html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
-    && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3')
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
   'Greenie-only Help assets must use the current cache keys.'
 );
@@ -689,10 +689,10 @@ check(
   'Feedback-panel and maintenance-status styles must remain available.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+  html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
-    && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3'),
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
@@ -756,37 +756,58 @@ check(
 );
 
 
-// GREENSCAPE_MAINTENANCE_VISIBILITY_HIGHER_FILTERS_V1_VALIDATION
+// GREENSCAPE_PHONE_DOCK_MAINTENANCE_STATUS_V1_VALIDATION
 check(
-  maintenanceStyles.includes('GREENSCAPE_RESPONSIVE_MAINTENANCE_RANGE_V1_START')
-    && /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*1439px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*inline-flex\s*!important/.test(maintenanceStyles)
-    && /@media\s*\(min-width:\s*1440px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
-  'Maintenance Mode and Staff tools unlocked must appear only from 761px through 1439px.'
+  maintenanceStyles.includes('GREENSCAPE_NON_PHONE_MAINTENANCE_STATUS_V2_START')
+    && /@media\s*\(min-width:\s*761px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*inline-flex\s*!important/.test(maintenanceStyles)
+    && !/@media\s*\(min-width:\s*1440px\)[\s\S]*?#maintenanceReadonlyBanner[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
+  'Maintenance Mode and Staff tools unlocked must be visible on every non-phone layout.'
 );
 check(
   /@media\s*\(max-width:\s*760px\)[\s\S]*?#maintenanceReadonlyBanner\s*\{[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
-  'The maintenance status must remain hidden on mobile view.'
+  'The large floating maintenance status must remain hidden on the phone dock layout.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes('GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1')
+    && jsSources['assets/js/magnetic-dock.js'].includes('data-phone-maintenance-status')
+    && jsSources['assets/js/magnetic-dock.js'].includes('data-maintenance-show-startup')
+    && jsSources['assets/js/magnetic-dock.js'].includes('Maintenance Mode')
+    && jsSources['assets/js/magnetic-dock.js'].includes('Staff tools unlocked')
+    && jsSources['assets/js/magnetic-dock.js'].includes('Read-only access')
+    && jsSources['assets/js/magnetic-dock.js'].includes('Staff access active'),
+  'The phone More menu must expose both dynamic maintenance states and open existing maintenance details.'
+);
+check(
+  /data-phone-maintenance-status[\s\S]*?Visit Greenscape website/.test(jsSources['assets/js/magnetic-dock.js']),
+  'The phone maintenance status must appear directly before Visit Greenscape website.'
+);
+check(
+  maintenanceStyles.includes('GREENSCAPE_PHONE_DOCK_MAINTENANCE_ITEM_V1_START')
+    && maintenanceStyles.includes('icon-maintenance.png')
+    && maintenanceStyles.includes('.phone-dock-maintenance-copy'),
+  'The phone More-menu maintenance item must use the approved icon and compact layout.'
+);
+check(
+  jsSources['assets/js/magnetic-dock.js'].includes("window.matchMedia('(max-width: 760px)')")
+    && jsSources['assets/js/magnetic-dock.js'].includes("attributeFilter: ['class']"),
+  'The phone maintenance item must follow the floating dock breakpoint and update with authorization state.'
 );
 check(
   plantLibraryStyles.includes('GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START')
     && /body:has\(#plantGrid\) \.page-content\s*\{[\s\S]*?padding-top:\s*0\s*!important/.test(plantLibraryStyles)
     && /library-reference-toolbar\s*\{[\s\S]*?top:\s*44px\s*!important/.test(plantLibraryStyles),
-  'The phone Plant Library toolbar must use the approved higher position.'
+  'The approved higher phone Plant Library filter position must remain unchanged.'
 );
 check(
-  /GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START[\s\S]*?#plantGrid \.category-pill\s*\{[\s\S]*?font-size:\s*7px\s*!important[\s\S]*?-webkit-line-clamp:\s*2/.test(plantLibraryStyles),
-  'Phone category labels must remain compact and limited to two lines.'
-);
-check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+  html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance1')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
-  'Maintenance visibility and higher phone-filter assets must use the current cache keys.'
+  'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Maintenance Visibility and Higher Phone Filters V1'),
-  'README must record the maintenance visibility and higher phone-filter update.'
+  readme.includes('### Phone Dock Maintenance Status V1'),
+  'README must record the phone dock maintenance status update.'
 );
-
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`);
   failures.forEach(message => console.error(`- ${message}`));

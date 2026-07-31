@@ -24,6 +24,27 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Phone Dock Maintenance Status V1
+
+- Shows the existing floating **Maintenance Mode** or **Staff tools unlocked** pill on every normal navigation layout at **761 px and above**, including large desktop.
+- Keeps the large floating pill hidden when the phone floating tab is active at **760 px and below**.
+- Adds a compact dynamic maintenance item inside the phone **More** menu directly before **Visit Greenscape website**.
+- Displays **Maintenance Mode / Read-only access** in read-only state and **Staff tools unlocked / Staff access active** after authorization.
+- Opens the existing maintenance details and staff-access panel when the phone menu item is tapped.
+- Uses the existing maintenance icon and preserves the phone dock size, Plant Identifier, More button, project shortcuts, and website link.
+- Keeps the raised phone Plant Library filter position at `top: 44px`, with page-content top padding at `0`.
+- Preserves maintenance security, session expiry, Greenie, plant cards, category labels, scroll loading, and project tools.
+
+Affected files:
+
+```text
+assets/js/magnetic-dock.js
+assets/css/maintenance.css
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Maintenance Visibility and Higher Phone Filters V1
 
 - Shows the floating **Maintenance Mode** or **Staff tools unlocked** status only from **761 px through 1439 px**.
