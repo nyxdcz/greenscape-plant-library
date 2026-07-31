@@ -24,6 +24,25 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Maintenance Visibility and Higher Phone Filters V1
+
+- Shows the floating **Maintenance Mode** or **Staff tools unlocked** status only from **761 px through 1439 px**.
+- Hides the floating maintenance status on phones at **760 px and below** and on large desktop layouts at **1440 px and above**.
+- Keeps the existing bottom-right pill design, maintenance details action, authorization state, and read-only protections unchanged.
+- Moves the mobile Plant Library filter panel slightly higher by removing the remaining page-content top padding and adjusting its sticky top position from `48px` to `44px`.
+- Keeps the compact two-line phone category labels introduced in the previous refinement.
+- Preserves the sidebar, Greenie, Greenie scroll loading, plant cards, filters, mobile navigation, staff security, and project tools.
+
+Affected files:
+
+```text
+assets/css/maintenance.css
+assets/css/plant-library-refinements.css
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Responsive Maintenance and Phone Library Refinement V1
 
 - Shows the **Maintenance Mode** status on desktop, laptop, tablet, and intermediate layouts.

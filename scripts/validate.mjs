@@ -199,8 +199,8 @@ check(
   'The floating maintenance status must be hidden on phone screens.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1'),
+  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -271,7 +271,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-phone-library-refinement1/.test(html)
+  /plant-library-refinements\.css\?v=20260731-phone-library-refinement2/.test(html)
     && /app\.js\?v=20260731-greenie-scroll-loading1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -456,7 +456,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1'),
+    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -488,7 +488,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-phone-library-refinement1/.test(html),
+  /plant-library-refinements\.css\?v=20260731-phone-library-refinement2/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -518,7 +518,7 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1')
+  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
@@ -554,7 +554,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1'),
+  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -588,7 +588,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1'),
+  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -644,7 +644,7 @@ check(
   'The existing phone maintenance-banner safeguard must remain active.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance1')
+  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
@@ -689,7 +689,7 @@ check(
   'Feedback-panel and maintenance-status styles must remain available.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance1')
+  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3'),
@@ -745,7 +745,7 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1')
+  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
     && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
@@ -756,34 +756,35 @@ check(
 );
 
 
-// GREENSCAPE_RESPONSIVE_MAINTENANCE_PHONE_LIBRARY_V1_VALIDATION
+// GREENSCAPE_MAINTENANCE_VISIBILITY_HIGHER_FILTERS_V1_VALIDATION
 check(
-  maintenanceStyles.includes('GREENSCAPE_NON_MOBILE_MAINTENANCE_STATUS_V1_START')
-    && /@media\s*\(min-width:\s*761px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*inline-flex\s*!important/.test(maintenanceStyles),
-  'Maintenance Mode and Staff tools unlocked must be visible on every non-mobile layout.'
+  maintenanceStyles.includes('GREENSCAPE_RESPONSIVE_MAINTENANCE_RANGE_V1_START')
+    && /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*1439px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*inline-flex\s*!important/.test(maintenanceStyles)
+    && /@media\s*\(min-width:\s*1440px\)[\s\S]*?body\.maintenance-readonly #maintenanceReadonlyBanner,[\s\S]*?body\.maintenance-staff-authorized #maintenanceReadonlyBanner[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
+  'Maintenance Mode and Staff tools unlocked must appear only from 761px through 1439px.'
 );
 check(
   /@media\s*\(max-width:\s*760px\)[\s\S]*?#maintenanceReadonlyBanner\s*\{[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
   'The maintenance status must remain hidden on mobile view.'
 );
 check(
-  plantLibraryStyles.includes('GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_START')
-    && /body:has\(#plantGrid\) \.page-content\s*\{[\s\S]*?padding-top:\s*5px\s*!important/.test(plantLibraryStyles)
-    && /library-reference-toolbar\s*\{[\s\S]*?top:\s*48px\s*!important/.test(plantLibraryStyles),
-  'The phone Plant Library toolbar must retain the approved reduced top gap.'
+  plantLibraryStyles.includes('GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START')
+    && /body:has\(#plantGrid\) \.page-content\s*\{[\s\S]*?padding-top:\s*0\s*!important/.test(plantLibraryStyles)
+    && /library-reference-toolbar\s*\{[\s\S]*?top:\s*44px\s*!important/.test(plantLibraryStyles),
+  'The phone Plant Library toolbar must use the approved higher position.'
 );
 check(
-  /GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_START[\s\S]*?#plantGrid \.category-pill\s*\{[\s\S]*?font-size:\s*7px\s*!important[\s\S]*?-webkit-line-clamp:\s*2/.test(plantLibraryStyles),
+  /GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START[\s\S]*?#plantGrid \.category-pill\s*\{[\s\S]*?font-size:\s*7px\s*!important[\s\S]*?-webkit-line-clamp:\s*2/.test(plantLibraryStyles),
   'Phone category labels must remain compact and limited to two lines.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-responsive-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement1'),
-  'Responsive maintenance and phone Plant Library assets must use the current cache keys.'
+  html.includes('maintenance.css?v=20260731-responsive-maintenance2')
+    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+  'Maintenance visibility and higher phone-filter assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Responsive Maintenance and Phone Library Refinement V1'),
-  'README must record the responsive maintenance and phone Plant Library refinement.'
+  readme.includes('### Maintenance Visibility and Higher Phone Filters V1'),
+  'README must record the maintenance visibility and higher phone-filter update.'
 );
 
 if (failures.length) {

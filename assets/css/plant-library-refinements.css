@@ -1028,15 +1028,15 @@ body:has(#plantGrid) .library-view-toggle {
 }
 /* GREENSCAPE_GREENIE_SCROLL_LOADING_V1_END */
 
-/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_START
-   Tighten the phone header gap and keep long category labels compact. */
+/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START
+   Move the phone filter panel slightly higher while keeping category labels compact. */
 @media (max-width: 760px) {
   body:has(#plantGrid) .page-content {
-    padding-top: 5px !important;
+    padding-top: 0 !important;
   }
 
   body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
-    top: 48px !important;
+    top: 44px !important;
     margin-top: 0 !important;
   }
 
@@ -1055,4 +1055,4 @@ body:has(#plantGrid) .library-view-toggle {
     line-clamp: 2;
   }
 }
-/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_END */
+/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_END */
