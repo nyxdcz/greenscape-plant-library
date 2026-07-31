@@ -859,3 +859,14 @@ body.maintenance-staff-authorized .feedback-widget > .feedback-panel {
 
 
 /* GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_END */
+
+/* GREENSCAPE_NON_MOBILE_MAINTENANCE_STATUS_V1_START
+   Show Maintenance Mode and Staff tools unlocked on every non-mobile layout.
+   The existing 760px-and-below rule continues to hide the status on mobile. */
+@media (min-width: 761px) {
+  body.maintenance-readonly #maintenanceReadonlyBanner,
+  body.maintenance-staff-authorized #maintenanceReadonlyBanner {
+    display: inline-flex !important;
+  }
+}
+/* GREENSCAPE_NON_MOBILE_MAINTENANCE_STATUS_V1_END */

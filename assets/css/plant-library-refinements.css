@@ -1027,3 +1027,32 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_GREENIE_SCROLL_LOADING_V1_END */
+
+/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_START
+   Tighten the phone header gap and keep long category labels compact. */
+@media (max-width: 760px) {
+  body:has(#plantGrid) .page-content {
+    padding-top: 5px !important;
+  }
+
+  body:has(#plantGrid) .toolbar.library-toolbar.library-reference-toolbar {
+    top: 48px !important;
+    margin-top: 0 !important;
+  }
+
+  #plantGrid .category-pill {
+    max-width: calc(100% - 12px);
+    padding: 2px 4px !important;
+    font-size: 7px !important;
+    line-height: 1.05 !important;
+    letter-spacing: .01em !important;
+    white-space: normal !important;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+/* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V1_END */

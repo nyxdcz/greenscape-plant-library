@@ -24,6 +24,25 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Responsive Maintenance and Phone Library Refinement V1
+
+- Shows the **Maintenance Mode** status on desktop, laptop, tablet, and intermediate layouts.
+- Keeps the status hidden at **760 px and below** so it does not obstruct the mobile navigation dock.
+- Uses the same status control and visual treatment for **Maintenance Mode** and **Staff tools unlocked**.
+- Reduces the empty space above the phone Plant Library filters and moves the sticky filter panel slightly upward.
+- Makes phone category labels smaller, tighter, and limited to two lines for long category names.
+- Preserves Greenie scroll loading, plant cards, filters, phone navigation, maintenance protections, staff access, and project tools.
+
+Affected files:
+
+```text
+assets/css/maintenance.css
+assets/css/plant-library-refinements.css
+index.html
+scripts/validate.mjs
+README.md
+```
+
 ### Greenie Scroll Loading V1
 
 - Uses the exact approved `dig to plant.gif` file without redrawing, recoloring, cropping, or recompressing it.
