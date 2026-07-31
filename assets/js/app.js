@@ -26,6 +26,8 @@
   const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   const LIBRARY_BATCH_SIZE = 48;
   const LIBRARY_SCROLL_LOAD_DELAY_MS = 220;
+  const LIBRARY_SEARCH_DELAY_MS = 140;
+  /* GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1 */
   const DASHBOARD_HERO_SLIDES = [
     'assets/images/dashboard-slideshow/01-david-genelhu.jpg',
     'assets/images/dashboard-slideshow/02-francisco-perez.jpg',
@@ -151,6 +153,7 @@
   let libraryLoadTimer = 0;
   let libraryLoadToken = 0;
   let libraryLoadInProgress = false;
+  let librarySearchTimer = 0;
 
   // Save the cleaned records once so older local data no longer keeps removed fields.
   syncProjectPlantCodes();
@@ -819,8 +822,48 @@
     return icons[name] || '';
   }
 
+  function normalizeSearchText(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  function plantSearchScore(plant, query) {
+    if (!query) return 0;
+
+    const code = normalizeSearchText(plant.code);
+    const commonName = normalizeSearchText(plant.commonName);
+    const scientificName = normalizeSearchText(plant.scientificName || plant.material);
+    const category = normalizeSearchText(plant.category);
+    const supportingText = normalizeSearchText([
+      plant.sun,
+      plant.water,
+      plant.spacing,
+      plant.landscapeUse,
+      plant.growingCondition,
+      plant.overviewDescription,
+      effectivePlantingNotes(plant),
+      ...effectivePlantTags(plant)
+    ].join(' '));
+
+    if (code === query) return 0;
+    if (commonName === query) return 1;
+    if (commonName.startsWith(query)) return 2;
+    if (scientificName === query) return 3;
+    if (scientificName.startsWith(query)) return 4;
+    if (code.includes(query)) return 5;
+    if (commonName.includes(query)) return 6;
+    if (scientificName.includes(query)) return 7;
+    if (category.includes(query)) return 8;
+    if (supportingText.includes(query)) return 9;
+    return Number.POSITIVE_INFINITY;
+  }
+
   function filteredPlants() {
-    const query = state.librarySearch.trim().toLowerCase();
+    const query = normalizeSearchText(state.librarySearch);
     const sunlight = state.librarySunlight || 'All';
     const direction = state.librarySort === 'za' ? -1 : 1;
 
@@ -828,21 +871,13 @@
       .filter(plant => {
         if (state.libraryCategory !== 'All' && plant.category !== state.libraryCategory) return false;
         if (sunlight !== 'All' && String(plant.sun || '').trim() !== sunlight) return false;
-        if (!query) return true;
-
-        return [
-          plant.code,
-          plant.commonName,
-          plant.scientificName,
-          plant.category,
-          plant.material,
-          plant.sun,
-          plant.overviewDescription,
-          effectivePlantingNotes(plant),
-          ...effectivePlantTags(plant)
-        ].join(' ').toLowerCase().includes(query);
+        return !query || Number.isFinite(plantSearchScore(plant, query));
       })
       .sort((a, b) => {
+        if (query) {
+          const scoreDifference = plantSearchScore(a, query) - plantSearchScore(b, query);
+          if (scoreDifference) return scoreDifference;
+        }
         const aName = String(a.commonName || a.scientificName || a.material || '').trim();
         const bName = String(b.commonName || b.scientificName || b.material || '').trim();
         return direction * aName.localeCompare(bName, undefined, { sensitivity: 'base' });
@@ -854,7 +889,7 @@
       <div class="toolbar library-toolbar library-reference-toolbar">
         <label class="search-wrap library-search">
           <span aria-hidden="true">⌕</span>
-          <input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search common name, scientific name, or code…" value="${escapeHTML(state.librarySearch)}">
+          <input id="librarySearch" class="search-input" type="search" aria-label="Search plants" placeholder="Search names, codes, categories, conditions, or tags…" value="${escapeHTML(state.librarySearch)}">
         </label>
 
         <select id="categoryFilter" class="select-input library-category-filter" aria-label="Filter plants by category">
@@ -871,6 +906,8 @@
           <option value="az"${state.librarySort === 'az' ? ' selected' : ''}>Sort: A–Z</option>
           <option value="za"${state.librarySort === 'za' ? ' selected' : ''}>Sort: Z–A</option>
         </select>
+
+        <span id="libraryResultCount" class="library-result-count" role="status" aria-live="polite"></span>
 
         <div class="library-view-toggle" role="group" aria-label="Plant Library view">
           <button type="button" class="library-view-button" data-action="library-view" data-library-view="grid" aria-label="Grid view" aria-pressed="${state.libraryView !== 'list' ? 'true' : 'false'}">${libraryIcon('grid')}</button>
@@ -948,6 +985,10 @@
 
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
+    const resultCount = document.getElementById('libraryResultCount');
+    if (resultCount) {
+      resultCount.textContent = `${results.length} ${results.length === 1 ? 'result' : 'results'}`;
+    }
 
     if (!results.length) {
       grid.innerHTML = emptyState(
@@ -986,6 +1027,7 @@
     const sizeCount = (plant.sizes || []).length;
     const plantName = plant.commonName || 'Unnamed plant';
     const sizeText = `${sizeCount} size${sizeCount === 1 ? '' : 's'} available`;
+    const canAddToProject = !document.body.classList.contains('maintenance-readonly');
 
     return `
       <article class="plant-card library-reference-card">
@@ -1000,7 +1042,7 @@
           <div class="plant-meta"><span>${escapeHTML(sizeText)}</span></div>
           <div class="plant-card-actions">
             <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${libraryIcon('eye')}<span>View</span></button>
-            <button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>
+            ${canAddToProject ? `<button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>` : ''}
           </div>
         </div>
       </article>`;
@@ -1011,6 +1053,7 @@
     const sizeCount = (plant.sizes || []).length;
     const plantName = plant.commonName || 'Unnamed plant';
     const sizeText = `${sizeCount} size${sizeCount === 1 ? '' : 's'} available`;
+    const canAddToProject = !document.body.classList.contains('maintenance-readonly');
 
     return `
       <article class="plant-list-card">
@@ -1026,7 +1069,7 @@
         </div>
         <div class="plant-list-actions">
           <button type="button" class="button secondary small plant-view-details" aria-label="View details for ${escapeHTML(plant.commonName || 'unnamed plant')}" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">${libraryIcon('eye')}<span>View</span></button>
-          <button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>
+          ${canAddToProject ? `<button type="button" class="button primary small plant-add-list" data-action="add-to-project" data-plant-id="${escapeHTML(plant.id)}" aria-label="Add ${escapeHTML(plantName)} to list">${libraryIcon('plus')}<span>Add to List</span></button>` : ''}
         </div>
       </article>`;
   }
@@ -1675,11 +1718,18 @@
             <button type="button" class="button secondary" data-action="import-excel">Import Excel</button>
             <button type="button" class="button secondary" data-action="export-excel">Export Excel</button>
             <button type="button" class="button secondary" data-action="new-category">Add category</button>
-            <button type="button" class="button primary" data-action="new-plant"${state.sheetCategory !== 'All' ? ` data-category="${escapeHTML(state.sheetCategory)}"` : ''}>Add plant</button>
+            <button type="button" class="button primary" data-action="new-plant"${state.sheetCategory !== 'All' ? ` data-category="${escapeHTML(state.sheetCategory)}"` : ''}>Add local plant</button>
             <input id="plantExcelInput" type="file" aria-label="Import plant list from Excel" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
           `}
         </div>
       </div>
+      <aside class="plant-workspace-notice" aria-label="Plant publishing information">
+        <div>
+          <strong>Browser workspace</strong>
+          <span>Changes made in the Plant List Editor are saved only on this device. Add or update shared website plants through the GitHub publishing folder.</span>
+        </div>
+        <a class="button secondary small" href="https://github.com/nyxdcz/greenscape-plant-library/tree/main/data/ADD_PLANTS_HERE" target="_blank" rel="noopener noreferrer">Open GitHub Add Plants Folder</a>
+      </aside>
       ${duplicateCount ? `<div class="duplicate-alert"><span>!</span><div><strong>${duplicateCount} same-initial group${duplicateCount === 1 ? '' : 's'} detected</strong>Codes with the same botanical initials are marked in red and receive stable numbered suffixes automatically.</div></div>` : ''}
       <div id="sheetCategoryGroups">
         ${Object.keys(grouped).sort((a,b) => a.localeCompare(b)).map(category => renderSheetCategory(category, grouped[category])).join('') || emptyState('No matching plants', 'Try another name or category.', '<button type="button" class="button secondary" data-action="clear-sheet-filter">Clear filters</button>')}
@@ -1719,7 +1769,7 @@
             <th scope="col" class="sheet-medium-col">Reference</th>
             <th scope="col" class="sheet-actions-col">Action</th>
           </tr></thead>
-          <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="18"><div class="sheet-empty-category">No plants in this category yet. <button type="button" class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add plant</button></div></td></tr>`}</tbody>
+          <tbody>${records.length ? records.map(sheetPlantRow).join('') : `<tr><td colspan="18"><div class="sheet-empty-category">No plants in this category yet. <button type="button" class="button secondary small" data-action="new-plant" data-category="${escapeHTML(category)}">Add local plant</button></div></td></tr>`}</tbody>
         </table>
       </div>
     </details>`;
@@ -1958,8 +2008,8 @@
           <span>Select plants from the library. Changes to plant names, codes, categories, and photos update here automatically.</span>
         </div>
         <div class="toolbar-group">
-          <button type="button" class="button secondary" data-action="moodboard-print">Print / Save PDF</button>
-          <button type="button" class="button primary" data-action="moodboard-export-png">Export PNG</button>
+          <button type="button" class="button secondary" data-action="moodboard-print"${moodboard.selectedIds.length ? '' : ' disabled'}>Print / Save PDF</button>
+          <button type="button" class="button primary" data-action="moodboard-export-png"${moodboard.selectedIds.length ? '' : ' disabled'}>Export PNG</button>
         </div>
       </div>
 
@@ -2020,7 +2070,7 @@
         </aside>
 
         <section class="moodboard-stage">
-          <div class="moodboard-stage-note"><span>A3 pages are created automatically when a board is full.</span><span>Click any board to view it full screen.</span></div>
+          <div class="moodboard-stage-note"><span>A3 pages are created automatically when a board is full.</span><span>Use arrow controls on touch devices, or drag cards on desktop.</span></div>
           <div id="moodboardPreview">${moodboardBoardHTML()}</div>
         </section>
       </div>`;
@@ -2233,8 +2283,13 @@
   function moodboardCardHTML(plant) {
     const image = safeImage(plant.image);
     const [background, foreground] = moodboardPlantColor(plant);
+    const selectedIndex = moodboard.selectedIds.indexOf(plant.id);
     return `<article class="moodboard-plant-card" draggable="true" data-moodboard-card="${escapeHTML(plant.id)}">
       <button type="button" class="moodboard-remove-card no-export" data-action="moodboard-remove-plant" data-plant-id="${escapeHTML(plant.id)}" title="Remove from board">×</button>
+      <div class="moodboard-card-order no-export" aria-label="Reorder ${escapeHTML(plant.commonName || 'plant')}">
+        <button type="button" data-action="moodboard-move-plant" data-plant-id="${escapeHTML(plant.id)}" data-direction="-1" aria-label="Move ${escapeHTML(plant.commonName || 'plant')} earlier"${selectedIndex <= 0 ? ' disabled' : ''}>‹</button>
+        <button type="button" data-action="moodboard-move-plant" data-plant-id="${escapeHTML(plant.id)}" data-direction="1" aria-label="Move ${escapeHTML(plant.commonName || 'plant')} later"${selectedIndex < 0 || selectedIndex >= moodboard.selectedIds.length - 1 ? ' disabled' : ''}>›</button>
+      </div>
       <div class="moodboard-card-photo">${image ? `<img src="${image}" alt="${escapeHTML(plant.commonName)}" width="480" height="480" loading="lazy" decoding="async">` : `<div class="moodboard-card-fallback">${escapeHTML(plant.code || '—')}</div>`}</div>
       <div class="moodboard-card-caption" style="--moodboard-card-bg:${background};--moodboard-card-text:${foreground}">
         <div class="moodboard-card-names">
@@ -2374,6 +2429,18 @@
     order.splice(to, 0, sourceId);
     moodboard.selectedIds = order;
     saveAll();
+    updateMoodboardPreview();
+  }
+
+  function moveMoodboardPlant(plantId, direction) {
+    const order = [...moodboard.selectedIds];
+    const from = order.indexOf(plantId);
+    const to = Math.max(0, Math.min(order.length - 1, from + Number(direction || 0)));
+    if (from < 0 || from === to) return;
+    [order[from], order[to]] = [order[to], order[from]];
+    moodboard.selectedIds = order;
+    saveAll();
+    updateMoodboardPicker();
     updateMoodboardPreview();
   }
 
@@ -2736,7 +2803,7 @@
         <div class="detail-actions no-print">
           <button type="button" class="button secondary" data-action="edit-project" data-project-id="${escapeHTML(project.id)}">Edit project</button>
           <button type="button" class="button secondary" data-action="project-schedule" data-project-id="${escapeHTML(project.id)}">View schedule</button>
-          <button type="button" class="button primary" data-action="add-to-project" data-project-id="${escapeHTML(project.id)}">Add plant</button>
+          <button type="button" class="button primary" data-action="add-to-project" data-project-id="${escapeHTML(project.id)}">Add local plant</button>
         </div>
       </div>
       <div class="project-info-grid">
@@ -3020,8 +3087,8 @@
       <div class="form-field"><label>Upload image</label><input class="text-input" style="padding:8px;" name="imageFile" type="file" accept="image/*"><span class="form-help">Uploaded images are resized before saving.</span></div>
       <div class="form-section"><h3>Available sizes</h3><p>Add one row for each nursery size.</p><div id="sizeEditor" class="size-editor">${(plant?.sizes?.length ? plant.sizes : [{}]).map(sizeRow).join('')}</div><button type="button" class="button ghost small" style="margin-top:9px;" data-action="add-size-row">+ Add size</button></div>
     </form>`;
-    openModal(plant ? 'Edit plant' : 'Add plant', plant ? 'Update the plant record and size options.' : 'Create a new record in your local plant library.', body,
-      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="plantForm">${plant ? 'Save changes' : 'Add plant'}</button>`, true);
+    openModal(plant ? 'Edit local plant' : 'Add local plant', plant ? 'Update the plant record saved in this browser.' : 'Create a plant record saved only in this browser. Use the GitHub Add Plants Folder to publish it to the shared website.', body,
+      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button class="button primary" type="submit" form="plantForm">${plant ? 'Save local changes' : 'Add local plant'}</button>`, true);
     const form = document.getElementById('plantForm');
     form.addEventListener('submit', savePlantForm);
     setupPlantCodeForm(form, plant);
@@ -3100,7 +3167,7 @@
     saveAll();
     closeModal();
     render();
-    toast(existing ? 'Plant record updated.' : 'Plant added to the library.');
+    toast(existing ? 'Local plant record updated.' : 'Plant added to this browser only. Use the GitHub folder to publish it.');
   }
 
   function plantWords(value) {
@@ -3910,12 +3977,26 @@
     if (action === 'import-excel') document.getElementById('plantExcelInput')?.click();
     if (action === 'moodboard-toggle-plant') toggleMoodboardPlant(target.dataset.plantId);
     if (action === 'moodboard-remove-plant') toggleMoodboardPlant(target.dataset.plantId, false);
+    if (action === 'moodboard-move-plant') moveMoodboardPlant(target.dataset.plantId, target.dataset.direction);
     if (action === 'moodboard-reset-color') resetMoodboardPlantColor(target.dataset.plantId);
     if (action === 'moodboard-add-visible') {
-      filteredMoodboardPlants().forEach(plant => {
-        if (!moodboard.selectedIds.includes(plant.id)) moodboard.selectedIds.push(plant.id);
-      });
-      saveAll(); updateMoodboardPicker(); updateMoodboardPreview(); toast('Visible plants added to the mood board.');
+      const visiblePlants = filteredMoodboardPlants().filter(plant => !moodboard.selectedIds.includes(plant.id));
+      if (!visiblePlants.length) {
+        toast('All visible plants are already on the mood board.');
+      } else {
+        const nextCount = moodboard.selectedIds.length + visiblePlants.length;
+        const estimatedPages = paginateMoodboardPages([
+          ...selectedMoodboardPlants(),
+          ...visiblePlants
+        ]).length;
+        if (visiblePlants.length <= 100 || confirm(`Add ${visiblePlants.length} plants? The mood board will contain ${nextCount} plants across about ${estimatedPages} A3 pages.`)) {
+          visiblePlants.forEach(plant => moodboard.selectedIds.push(plant.id));
+          saveAll();
+          updateMoodboardPicker();
+          updateMoodboardPreview();
+          toast(`${visiblePlants.length} visible plants added to the mood board.`);
+        }
+      }
     }
     if (action === 'moodboard-clear' && moodboard.selectedIds.length && confirm('Remove all plants from this mood board?')) {
       moodboard.selectedIds = []; moodboard.cardColors = {}; saveAll(); updateMoodboardPicker(); updateMoodboardPreview(); toast('Mood board cleared.');
@@ -4086,7 +4167,11 @@
     if (event.target.id === 'librarySearch') {
       state.librarySearch = event.target.value;
       state.libraryLimit = 48;
-      updateLibraryResults();
+      window.clearTimeout(librarySearchTimer);
+      librarySearchTimer = window.setTimeout(() => {
+        librarySearchTimer = 0;
+        updateLibraryResults();
+      }, LIBRARY_SEARCH_DELAY_MS);
     }
     if (event.target.id === 'sheetSearch') {
       state.sheetSearch = event.target.value;

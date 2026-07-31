@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  /* GREENSCAPE_PHONE_STAFF_NAVIGATION_FIX_V1 */
 
   const configured = window.GREENSCAPE_MAINTENANCE || {};
   const previewEnabled = new URLSearchParams(window.location.search).get('maintenance-preview') === '1';
@@ -580,7 +581,31 @@
   }
 
   document.addEventListener('click', event => {
-    const requestedStaffView = event.target.closest('.nav-item[data-view]')?.dataset.view;
+    const requestedViewButton = event.target.closest('[data-view]');
+    const requestedStaffView = String(requestedViewButton?.dataset.view || '');
+
+    if (maintenanceLockedViews.has(requestedStaffView) && !isStaffAuthorized()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const phoneMenu = document.getElementById('phoneDockMoreMenu');
+      const phoneMoreButton = document.getElementById('phoneDockMoreButton');
+      if (phoneMenu) phoneMenu.hidden = true;
+      if (phoneMoreButton) phoneMoreButton.setAttribute('aria-expanded', 'false');
+
+      showStartup();
+      requestAnimationFrame(() => {
+        const accessToggle = document.querySelector('[data-maintenance-access-toggle]');
+        const accessForm = document.querySelector('[data-maintenance-access-form]');
+        if (accessToggle && accessForm) {
+          accessToggle.setAttribute('aria-expanded', 'true');
+          accessForm.hidden = false;
+          accessForm.querySelector('input')?.focus({ preventScroll: true });
+        }
+      });
+      return;
+    }
+
     if (requestedStaffView && isStaffAuthorized()) {
       document.body.classList.toggle('maintenance-readonly', !maintenanceLockedViews.has(requestedStaffView));
     }

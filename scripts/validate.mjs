@@ -273,7 +273,7 @@ check(
 );
 check(
   /plant-library-refinements\.css\?v=20260731-phone-library-refinement2/.test(html)
-    && /app\.js\?v=20260731-greenie-scroll-loading1/.test(html),
+    && /app\.js\?v=20260731-interface-qa1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,8 +329,8 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260731-safe-cleanup1-3/.test(html)
-    && /magnetic-dock\.js\?v=20260731-phone-dock-maintenance2/.test(html),
+  /styles\.css\?v=20260731-interface-qa1/.test(html)
+    && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -456,7 +456,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260731-safe-cleanup1-3')
+  html.includes('styles.css?v=20260731-interface-qa1')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -520,7 +520,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
-    && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
+    && html.includes('app.js?v=20260731-interface-qa1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -646,10 +646,10 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('app.js?v=20260731-greenie-scroll-loading1')
-    && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2')
+    && html.includes('styles.css?v=20260731-interface-qa1')
+    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
   'Greenie-only Help assets must use the current cache keys.'
 );
@@ -691,9 +691,9 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('app.js?v=20260731-greenie-scroll-loading1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2'),
+    && html.includes('styles.css?v=20260731-interface-qa1')
+    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
@@ -747,7 +747,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
-    && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
+    && html.includes('app.js?v=20260731-interface-qa1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -801,7 +801,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2')
+    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
@@ -838,7 +838,7 @@ check(
   'Phone dock utilities must synchronize only at startup and breakpoint changes.'
 );
 check(
-  html.includes('magnetic-dock.js?v=20260731-phone-dock-maintenance2'),
+  html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'The phone-dock freeze hotfix must use the current JavaScript cache key.'
 );
 check(
@@ -925,6 +925,79 @@ check(
 check(
   readme.includes('### GitHub Plant Folder and Separated Staff Access V1'),
   'README must record the GitHub plant folder and separated staff access update.'
+);
+
+// GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_VALIDATION
+const qualityWorkflow = read('.github/workflows/quality.yml');
+const interfaceStyles = read('assets/css/styles.css');
+const interfaceApp = jsSources['assets/js/app.js'];
+const interfaceMaintenance = jsSources['assets/js/maintenance.js'];
+const interfaceDock = jsSources['assets/js/magnetic-dock.js'];
+
+check(
+  qualityWorkflow.includes('npm run quality')
+    && qualityWorkflow.includes('pull_request:')
+    && qualityWorkflow.includes('- main'),
+  'Website Quality workflow must run the full quality suite for main and pull requests.'
+);
+check(
+  interfaceMaintenance.includes('GREENSCAPE_PHONE_STAFF_NAVIGATION_FIX_V1')
+    && interfaceMaintenance.includes("event.target.closest('[data-view]')")
+    && interfaceMaintenance.includes('showStartup();')
+    && interfaceMaintenance.includes("accessToggle.setAttribute('aria-expanded', 'true')"),
+  'Locked phone staff tools must open the Staff access prompt before app navigation.'
+);
+check(
+  interfaceDock.includes('GREENSCAPE_PHONE_STAFF_MENU_STATE_V1')
+    && interfaceDock.includes('data-phone-staff-view')
+    && interfaceDock.includes("label: 'Open'")
+    && interfaceDock.includes("label: 'Locked'")
+    && !interfaceDock.includes('<small>Soon</small>'),
+  'Phone staff tools must display dynamic Locked and Open states.'
+);
+check(
+  !interfaceDock.includes('new MutationObserver(syncUtilities)')
+    && !interfaceDock.includes('utilityObserver.observe(document.body'),
+  'The phone dock must preserve the non-recursive freeze hotfix.'
+);
+check(
+  interfaceApp.includes('GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1')
+    && interfaceApp.includes('function normalizeSearchText(value)')
+    && interfaceApp.includes('function plantSearchScore(plant, query)')
+    && interfaceApp.includes('LIBRARY_SEARCH_DELAY_MS = 140')
+    && interfaceApp.includes('libraryResultCount'),
+  'Plant Library search must be normalized, ranked, delayed, and report result counts.'
+);
+check(
+  interfaceApp.includes('Browser workspace')
+    && interfaceApp.includes('Open GitHub Add Plants Folder')
+    && interfaceApp.includes('Plant added to this browser only'),
+  'Plant List Editor must distinguish local records from shared GitHub publishing.'
+);
+check(
+  interfaceApp.includes('function moveMoodboardPlant(plantId, direction)')
+    && interfaceApp.includes('data-action="moodboard-move-plant"')
+    && interfaceApp.includes('about ${estimatedPages} A3 pages')
+    && interfaceApp.includes("moodboard.selectedIds.length ? '' : ' disabled'"),
+  'Mood Board Creator must support touch ordering, large-selection confirmation, and empty export safeguards.'
+);
+check(
+  interfaceStyles.includes('GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_START')
+    && interfaceStyles.includes('.plant-workspace-notice')
+    && interfaceStyles.includes('.moodboard-card-order')
+    && interfaceStyles.includes('[data-phone-staff-state="locked"]'),
+  'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
+);
+check(
+  html.includes('styles.css?v=20260731-interface-qa1')
+    && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
+    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
+  'Interface QA assets must use the current cache keys.'
+);
+check(
+  readme.includes('### Interface QA Fixes and Workflow Clarity V1'),
+  'README must record the interface QA fixes.'
 );
 
 if (failures.length) {

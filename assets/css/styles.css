@@ -8119,3 +8119,108 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   pointer-events: auto;
 }
 /* GREENSCAPE_GREENIE_ONLY_HELP_STYLE_V1_4_END */
+
+
+/* GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_START */
+.library-result-count {
+  min-width: 76px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.plant-workspace-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(43, 106, 78, .22);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(235, 247, 240, .96), rgba(255, 255, 255, .92));
+  box-shadow: 0 10px 28px rgba(28, 75, 52, .06);
+}
+
+.plant-workspace-notice > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.plant-workspace-notice strong {
+  color: var(--green-800, #24563f);
+  font-size: 13px;
+}
+
+.plant-workspace-notice span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.moodboard-card-order {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 4;
+  display: inline-flex;
+  gap: 3px;
+}
+
+.moodboard-card-order button {
+  width: 26px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .78);
+  border-radius: 999px;
+  background: rgba(24, 72, 50, .88);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+  cursor: pointer;
+}
+
+.moodboard-card-order button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+#phoneDockMoreMenu [data-phone-staff-state="locked"] small {
+  color: #9b5d3d;
+  font-weight: 800;
+}
+
+#phoneDockMoreMenu [data-phone-staff-state="open"] small {
+  color: #2d7453;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .library-result-count {
+    order: 5;
+    min-width: auto;
+    padding-inline: 4px;
+  }
+
+  .plant-workspace-notice {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .plant-workspace-notice .button {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .moodboard-card-order button {
+    width: 32px;
+    height: 32px;
+  }
+}
+/* GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_END */

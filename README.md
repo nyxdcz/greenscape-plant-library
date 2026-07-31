@@ -24,6 +24,32 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Interface QA Fixes and Workflow Clarity V1
+
+- Fixes phone **Plant List Editor**, **Mood Board Creator**, and **Project Lists** navigation so authorized staff workspaces become writable before rendering.
+- Replaces phone **Soon** labels with dynamic **Locked** and **Open** states; locked items open the existing Staff access form.
+- Preserves the non-recursive phone-dock freeze hotfix.
+- Improves Plant Library search with accent and punctuation normalization, exact-match ranking, broader field matching, a short input delay, and a live result count.
+- Hides **Add to List** from read-only Plant Library cards instead of displaying a disabled action.
+- Clarifies that Plant List Editor additions are local to the current browser and links directly to the shared GitHub `ADD_PLANTS_HERE` publishing folder.
+- Renames local creation actions to **Add local plant** and gives clear local-only save messages.
+- Adds touch-friendly mood-board move controls, disables empty exports, and confirms very large bulk additions with an estimated A3 page count.
+- Adds `.github/workflows/quality.yml` so every push to `main` and every pull request runs `npm run quality`.
+- Keeps all plant data, access-code security settings, Greenie, project tools, and the separate staff-access configuration unchanged.
+
+Affected files:
+
+```text
+.github/workflows/quality.yml
+README.md
+assets/css/styles.css
+assets/js/app.js
+assets/js/maintenance.js
+assets/js/magnetic-dock.js
+index.html
+scripts/validate.mjs
+```
+
 ### GitHub Plant Folder and Separated Staff Access V1
 
 - Adds `data/ADD_PLANTS_HERE/` with a reusable JSON template for adding or updating one plant at a time through GitHub.
