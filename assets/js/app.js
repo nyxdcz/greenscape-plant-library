@@ -5160,58 +5160,6 @@
       scan();
     })();
 
-/* Migrated index script block 9. */
-/* Temporarily hide Help while scrolling, then restore it when scrolling stops. */
-    (() => {
-      const launcher = document.getElementById('feedbackToggle');
-      const panel = document.getElementById('feedbackPanel');
-      if (!launcher) return;
-
-      let revealTimer = 0;
-      const revealDelay = 260;
-
-      function helpIsOpen() {
-        return launcher.getAttribute('aria-expanded') === 'true' || (panel && !panel.hidden);
-      }
-
-      function floatingStatusControls() {
-        return [
-          launcher,
-          document.getElementById('maintenanceReadonlyBanner')
-        ].filter(Boolean);
-      }
-
-      function revealHelp() {
-        window.clearTimeout(revealTimer);
-        floatingStatusControls().forEach(control =>
-          control.classList.remove('help-hidden-while-scrolling')
-        );
-      }
-
-      function handleScrolling() {
-        window.clearTimeout(revealTimer);
-
-        if (helpIsOpen()) {
-          revealHelp();
-          return;
-        }
-
-        floatingStatusControls().forEach(control =>
-          control.classList.add('help-hidden-while-scrolling')
-        );
-        revealTimer = window.setTimeout(revealHelp, revealDelay);
-      }
-
-      // Capture scrolls from the page, modal content, and other nested scroll areas.
-      document.addEventListener('scroll', handleScrolling, { passive: true, capture: true });
-      window.addEventListener('scroll', handleScrolling, { passive: true });
-
-      // Keep the launcher visible whenever Help is opened or keyboard-focused.
-      launcher.addEventListener('click', revealHelp);
-      launcher.addEventListener('focus', revealHelp);
-      document.getElementById('feedbackClose')?.addEventListener('click', revealHelp);
-      document.getElementById('feedbackCancel')?.addEventListener('click', revealHelp);
-    })();
 
 /* Migrated index script block 11. */
 (() => {

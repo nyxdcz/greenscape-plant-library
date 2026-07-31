@@ -12,6 +12,7 @@ const check = (condition, message) => {
 };
 
 const html = read('index.html');
+const readme = read('README.md');
 const styles = read('assets/css/styles.css');
 const maintenanceStyles = read('assets/css/maintenance.css');
 const sidebarAssistantStyles = read('assets/css/sidebar-assistant.css');
@@ -197,7 +198,7 @@ check(
   'The floating maintenance status must be hidden on phone screens.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-greenie-only-help1-4')
+  html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
     && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
@@ -270,7 +271,7 @@ check(
 );
 check(
   /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html)
-    && /app\.js\?v=20260731-greenie-only-help1-4/.test(html),
+    && /app\.js\?v=20260731-safe-cleanup1-3/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -311,8 +312,9 @@ check(
   'Phone tab feedback must animate only the pressed control.'
 );
 check(
-  jsSources['assets/js/magnetic-dock.js'].includes("element.setAttribute('aria-label', label)"),
-  'Phone dock utilities must retain visible accessible names when their text labels are hidden.'
+  jsSources['assets/js/magnetic-dock.js'].includes("button.setAttribute('aria-label', label)")
+    && jsSources['assets/js/magnetic-dock.js'].includes('button.dataset.dockLabel = label'),
+  'Phone dock utilities must retain accessible names when their visual labels are hidden.'
 );
 check(
   !jsSources['assets/js/magnetic-dock.js'].includes('feedbackToggle')
@@ -320,12 +322,13 @@ check(
   'The phone dock must retain More-menu behavior without a standalone Help utility.'
 );
 check(
-  styles.includes('bottom: calc(146px + env(safe-area-inset-bottom)) !important;'),
-  'The maintenance and staff status must clear the small-phone glass tab bar.'
+  maintenanceStyles.includes('GREENSCAPE_PHONE_MAINTENANCE_BANNER_HIDE_V1_START')
+    && /@media\s*\(max-width:\s*760px\)[\s\S]*?#maintenanceReadonlyBanner\s*\{[\s\S]*?display:\s*none\s*!important/.test(maintenanceStyles),
+  'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260731-greenie-only-help1-4/.test(html)
-    && /magnetic-dock\.js\?v=20260731-greenie-only-help1-4/.test(html),
+  /styles\.css\?v=20260731-safe-cleanup1-3/.test(html)
+    && /magnetic-dock\.js\?v=20260731-safe-cleanup1-3/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -451,7 +454,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260731-greenie-only-help1-4')
+  html.includes('styles.css?v=20260731-safe-cleanup1-3')
     && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -515,7 +518,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1')
-    && html.includes('app.js?v=20260731-greenie-only-help1-4'),
+    && html.includes('app.js?v=20260731-safe-cleanup1-3'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -640,13 +643,61 @@ check(
   'The existing phone maintenance-banner safeguard must remain active.'
 );
 check(
-  html.includes('maintenance.css?v=20260731-greenie-only-help1-4')
-    && html.includes('styles.css?v=20260731-greenie-only-help1-4')
-    && html.includes('app.js?v=20260731-greenie-only-help1-4')
+  html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
+    && html.includes('styles.css?v=20260731-safe-cleanup1-3')
+    && html.includes('app.js?v=20260731-safe-cleanup1-3')
     && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
-    && html.includes('magnetic-dock.js?v=20260731-greenie-only-help1-4')
+    && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
   'Greenie-only Help assets must use the current cache keys.'
+);
+
+// GREENSCAPE_SAFE_REPOSITORY_CLEANUP_V1_VALIDATION
+const obsoleteHelpCssTokens = [
+  '#feedbackToggle',
+  '.feedback-help-icon',
+  '.feedback-launcher-label',
+  '.feedback-beta-badge',
+  '.dock-utilities-attached',
+  '.help-hidden-while-scrolling'
+];
+
+check(
+  obsoleteHelpCssTokens.every(token => !styles.includes(token))
+    && obsoleteHelpCssTokens.every(token => !maintenanceStyles.includes(token)),
+  'Obsolete standalone-Help CSS selectors must remain removed.'
+);
+check(
+  !jsSources['assets/js/app.js'].includes('feedbackToggle')
+    && !jsSources['assets/js/app.js'].includes('Temporarily hide Help while scrolling')
+    && jsSources['assets/js/app.js'].includes('window.GREENSCAPE_FEEDBACK'),
+  'The unreachable Help-scrolling controller must remain removed without damaging Greenie feedback.'
+);
+check(
+  !jsSources['assets/js/magnetic-dock.js'].includes('markUtility')
+    && !jsSources['assets/js/magnetic-dock.js'].includes('unmarkUtility')
+    && !jsSources['assets/js/magnetic-dock.js'].includes('dock-utilities-attached')
+    && jsSources['assets/js/magnetic-dock.js'].includes('phoneDockIdentifierButton')
+    && jsSources['assets/js/magnetic-dock.js'].includes('phoneDockMoreButton'),
+  'Unused Help dock helpers must remain removed while Identifier and More stay available.'
+);
+check(
+  styles.includes('#feedbackWidget > .feedback-panel[hidden]')
+    && styles.includes('#feedbackWidget.is-feedback-open > .feedback-panel')
+    && maintenanceStyles.includes('#maintenanceReadonlyBanner'),
+  'Feedback-panel and maintenance-status styles must remain available.'
+);
+check(
+  html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
+    && html.includes('styles.css?v=20260731-safe-cleanup1-3')
+    && html.includes('app.js?v=20260731-safe-cleanup1-3')
+    && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3'),
+  'Safe-cleanup assets must use the current cache keys.'
+);
+check(
+  readme.includes('### Safe Repository Cleanup V1')
+    && readme.includes('Greenie Help assistant and feedback form'),
+  'README must record the safe cleanup and current Help entry point.'
 );
 
 if (failures.length) {

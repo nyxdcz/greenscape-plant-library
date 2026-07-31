@@ -707,11 +707,7 @@ body.maintenance-startup-open {
   white-space: nowrap;
 }
 
-.maintenance-readonly-banner.help-hidden-while-scrolling {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
+
 
 @media (max-width: 760px) {
   body.maintenance-readonly .feedback-widget {
@@ -861,7 +857,5 @@ body.maintenance-staff-authorized .feedback-widget > .feedback-panel {
   order: 2 !important;
 }
 
-#feedbackWidget > #feedbackToggle {
-  display: none !important;
-}
+
 /* GREENSCAPE_GREENIE_ONLY_HELP_MAINTENANCE_V1_4_END */

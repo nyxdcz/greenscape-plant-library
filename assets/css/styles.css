@@ -1840,31 +1840,9 @@ th { color: #42604f; background: #edf3ef; }
   outline: 3px solid var(--lime, #dce98d);
   outline-offset: 3px;
 }
-.feedback-help-icon {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 40px;
-  border: 3px solid currentColor;
-  border-radius: 50%;
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 1;
-}
-.feedback-launcher-label {
-  white-space: nowrap;
-}
-.feedback-beta-badge {
-  padding: 4px 7px;
-  border-radius: 999px;
-  color: var(--forest-950, #102b22);
-  background: var(--lime, #dce98d);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-}
+
+
+
 .feedback-panel {
   position: absolute;
   right: 0;
@@ -2023,15 +2001,8 @@ th { color: #42604f; background: #edf3ef; }
     padding: 7px 13px 7px 7px;
     font-size: 13px;
   }
-  .feedback-help-icon {
-    width: 38px;
-    height: 38px;
-    flex-basis: 38px;
-    font-size: 21px;
-  }
-  .feedback-beta-badge {
-    display: none;
-  }
+
+
   .feedback-panel {
     position: fixed;
     right: 12px;
@@ -4439,29 +4410,12 @@ th { color: #42604f; background: #edf3ef; }
     /* MOODBOARD_COMPACT_BOARD_DETAILS_END */
 
 /* Migrated index style block 8. */
-/* Hide the floating Help launcher while any page or modal area is scrolling. */
-    #feedbackToggle {
-      transition:
-        opacity .18s ease,
-        visibility .18s ease,
-        transform .34s var(--glass-ease-spring),
-        box-shadow .28s var(--glass-ease-soft),
-        border-color .24s ease,
-        filter .24s ease,
-        background-color .24s ease !important;
-    }
 
-    #feedbackToggle.help-hidden-while-scrolling {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-      #feedbackToggle {
-        transition: none !important;
-      }
-    }
+
+
+
+
 
 /* Migrated index style block 9. */
 /* Compact Plant List Editor on phones only. */
@@ -6590,8 +6544,7 @@ textarea:disabled {
   text-transform: uppercase;
 }
 
-body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner,
-body.plant-detail-open.maintenance-readonly #feedbackToggle {
+body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner{
   --glass-text: #ffffff;
   color: #ffffff !important;
   background:
@@ -6608,10 +6561,7 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   color: rgba(255,255,255,.78) !important;
 }
 
-body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge {
-  color: #173f31 !important;
-  text-shadow: none !important;
-}
+
 
 @media (min-width: 761px) and (max-width: 1400px) {
   body.maintenance-readonly .feedback-widget {
@@ -6663,26 +6613,11 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
     font-size: 8px !important;
   }
 
-  #feedbackToggle {
-    min-height: 50px !important;
-    height: 50px;
-    gap: 9px !important;
-    padding: 7px 12px 7px 7px !important;
-    font-size: 13px !important;
-  }
 
-  #feedbackToggle .feedback-help-icon {
-    width: 34px;
-    height: 34px;
-    flex-basis: 34px;
-    border-width: 2px;
-    font-size: 20px;
-  }
 
-  #feedbackToggle .feedback-beta-badge {
-    padding: 3px 6px;
-    font-size: 7px;
-  }
+
+
+
 }
 
 @media (max-width: 760px) {
@@ -7182,14 +7117,11 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 
   .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-banner-copy,
-  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-banner-details,
-  .sidebar .nav-list #feedbackToggle .feedback-launcher-label,
-  .sidebar .nav-list #feedbackToggle .feedback-beta-badge {
+  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-banner-details{
     display: none !important;
   }
 
-  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-lock-icon,
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
+  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-lock-icon{
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
@@ -7206,36 +7138,15 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
     transform: translate(-50%, -50%) !important;
   }
 
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
-    display: grid !important;
-    place-items: center !important;
-    font-size: 21px !important;
-  }
 
-  .dock-utilities-attached .feedback-widget {
-    right: 12px !important;
-    bottom: calc(94px + env(safe-area-inset-bottom)) !important;
-  }
 
-  .dock-utilities-attached .feedback-widget:not(:has(.feedback-panel:not([hidden]))) {
-    width: 0 !important;
-    height: 0 !important;
-    min-width: 0 !important;
-    overflow: visible !important;
-    pointer-events: none !important;
-  }
 
-  .dock-utilities-attached .feedback-panel {
-    pointer-events: auto !important;
-  }
 
-  .sidebar .nav-list #maintenanceReadonlyBanner.help-hidden-while-scrolling,
-  .sidebar .nav-list #feedbackToggle.help-hidden-while-scrolling {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    filter: none !important;
-  }
+
+
+
+
+
 
   .sidebar .nav-list .nav-item:not(:disabled).dock-click-glow,
   .sidebar .nav-list .dock-utility.dock-click-glow {
@@ -7407,17 +7318,14 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
   }
 
   .sidebar .nav-list .nav-item .nav-icon,
-  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-lock-icon,
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
+  .sidebar .nav-list #maintenanceReadonlyBanner .maintenance-lock-icon{
     width: 22px !important;
     height: 22px !important;
     min-width: 22px !important;
     flex-basis: 22px !important;
   }
 
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
-    font-size: 19px !important;
-  }
+
 
   .maintenance-readonly .sidebar .nav-list .nav-item[data-maintenance-soon="true"] .maintenance-soon-label {
     top: -3px !important;
@@ -8129,18 +8037,14 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
 
   .sidebar .nav-list .nav-item .nav-icon,
   .sidebar .nav-list .phone-dock-icon,
-  .sidebar .nav-list .phone-dock-more-dots,
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
+  .sidebar .nav-list .phone-dock-more-dots{
     width: 23px !important;
     height: 23px !important;
     min-width: 23px !important;
     flex-basis: 23px !important;
   }
 
-  .sidebar .nav-list #feedbackToggle .feedback-help-icon {
-    color: currentColor !important;
-    font-size: 20px !important;
-  }
+
 
   .sidebar .nav-list .phone-dock-more-dots {
     grid-template-columns: repeat(3, 4px) !important;
@@ -8172,10 +8076,7 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
     width: min(calc(100vw - 24px), 344px) !important;
   }
 
-  .dock-utilities-attached .feedback-widget {
-    right: 12px !important;
-    bottom: calc(146px + env(safe-area-inset-bottom)) !important;
-  }
+
 }
 
 @media (max-width: 760px) and (prefers-reduced-motion: reduce) {
@@ -8208,9 +8109,7 @@ body.plant-detail-open.maintenance-readonly #feedbackToggle .feedback-beta-badge
 /* GREENSCAPE_SHARED_DASHBOARD_LIBRARY_HEADER_V1_2_END */
 
 /* GREENSCAPE_GREENIE_ONLY_HELP_STYLE_V1_4_START */
-#feedbackWidget > #feedbackToggle {
-  display: none !important;
-}
+
 
 #feedbackWidget > .feedback-panel[hidden] {
   display: none !important;

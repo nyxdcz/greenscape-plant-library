@@ -18,11 +18,35 @@ Forced maintenance mode may limit editing and project tools while keeping the fo
 - Plant search, filters, and details
 - Plant-image downloads
 - Maintenance information
-- Help and Greenie assistant
+- Greenie Help assistant and feedback form
 
 Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other editing tools may be unavailable while maintenance restrictions are active.
 
 ## Latest Interface Update
+
+### Safe Repository Cleanup V1.3
+
+- Removes the unreachable legacy script that hid the former standalone Help launcher while scrolling.
+- Removes unused phone-dock helper functions and stale `dock-utilities-attached` state cleanup.
+- Removes only CSS selector branches tied to the deleted Help launcher, including its icon, label, Beta badge, scrolling state, and former phone-dock placement.
+- Preserves Greenie’s feedback controller, feedback form, maintenance status pill, Plant Identifier, More menu, phone navigation, and responsive behavior.
+- Does not delete, move, or rename any repository file, image, icon, plant record, workflow, or public URL.
+- Refreshes cache keys for the four changed browser assets and adds cleanup regression checks.
+- Updates two legacy regression checks to verify current direct phone-button labels and the existing phone maintenance-banner hide safeguard.
+- Normalizes trailing whitespace created when obsolete selector branches are removed, before `git diff --check` runs.
+- Creates a protected pre-cleanup backup branch before editing and uses normal Git commits without force-pushing.
+
+Affected files:
+
+```text
+assets/js/app.js
+assets/js/magnetic-dock.js
+assets/css/styles.css
+assets/css/maintenance.css
+scripts/validate.mjs
+index.html
+README.md
+```
 
 ### Greenie-Only Help and Maintenance Status V1.4
 

@@ -40,27 +40,7 @@
     });
   };
 
-  const markUtility = (element, className, label) => {
-    element.classList.add('dock-utility', className);
-    element.dataset.dockLabel = label;
-    if (!Object.prototype.hasOwnProperty.call(element.dataset, 'dockPreviousAriaLabel')) {
-      element.dataset.dockPreviousAriaLabel = element.getAttribute('aria-label') || '';
-    }
-    element.setAttribute('aria-label', label);
-  };
 
-  const unmarkUtility = (element, className) => {
-    element.classList.remove('dock-utility', className);
-    delete element.dataset.dockLabel;
-    if (element.dataset.dockPreviousAriaLabel) {
-      element.setAttribute('aria-label', element.dataset.dockPreviousAriaLabel);
-    } else {
-      element.removeAttribute('aria-label');
-    }
-    delete element.dataset.dockPreviousAriaLabel;
-    element.style.removeProperty('--dock-scale');
-    element.style.removeProperty('--dock-lift');
-  };
 
   const dockIcon = (kind) => {
     if (kind === 'identifier') {
@@ -134,7 +114,6 @@
     if (identifier.parentElement !== dock) dock.appendChild(identifier);
     if (more.parentElement !== dock) dock.appendChild(more);
 
-    document.body.classList.remove('dock-utilities-attached');
   };
 
   const restoreDesktopUtilities = () => {
@@ -146,7 +125,6 @@
     identifier?.remove();
     more?.remove();
     moreMenu?.remove();
-    document.body.classList.remove('dock-utilities-attached');
     resetItems();
   };
 
