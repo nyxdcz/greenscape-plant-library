@@ -24,6 +24,28 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Greenie Scroll Loading V1
+
+- Uses the exact approved `dig to plant.gif` file without redrawing, recoloring, cropping, or recompressing it.
+- Loads the next 48 Plant Library entries automatically when the results footer approaches the viewport.
+- Shows Greenie centered below the plant cards while the next batch is prepared, then removes the loader after the new cards appear.
+- Keeps the existing **Show more** control as a keyboard-accessible and unsupported-browser fallback.
+- Cancels stale loading work when filters, sorting, views, or pages change so duplicate batches are not added.
+- Adds a polite screen-reader loading status and preserves reduced-motion safeguards.
+- Keeps Dashboard, phone navigation, responsive behavior, maintenance protections, Greenie Help, plant data, and project tools unchanged.
+- Refreshes only the changed Plant Library CSS and application JavaScript cache keys and adds regression validation.
+
+Affected files:
+
+```text
+assets/images/greenie/dig-to-plant.gif
+assets/js/app.js
+assets/css/plant-library-refinements.css
+scripts/validate.mjs
+index.html
+README.md
+```
+
 ### Safe Repository Cleanup V1.3
 
 - Removes the unreachable legacy script that hid the former standalone Help launcher while scrolling.

@@ -984,3 +984,46 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_INTERMEDIATE_VIEW_ONLY_V1_END */
+
+/* GREENSCAPE_GREENIE_SCROLL_LOADING_V1_START
+   Exact Greenie GIF used only while the next Plant Library batch loads. */
+#plantGrid .library-results-footer[data-library-load-trigger] {
+  min-height: 52px;
+}
+
+#plantGrid .library-scroll-loader {
+  flex: 1 1 100%;
+  width: 100%;
+  min-height: 84px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+#plantGrid .library-scroll-loader[hidden] {
+  display: none !important;
+}
+
+#plantGrid .library-scroll-loader img {
+  display: block;
+  width: 69px;
+  height: 69px;
+  object-fit: contain;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+#plantGrid .library-results-footer.is-loading > :not(.library-scroll-loader) {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #plantGrid .library-scroll-loader {
+    min-height: 44px;
+  }
+
+  #plantGrid .library-scroll-loader img {
+    display: none;
+  }
+}
+/* GREENSCAPE_GREENIE_SCROLL_LOADING_V1_END */

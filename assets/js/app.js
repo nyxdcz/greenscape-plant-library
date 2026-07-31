@@ -24,6 +24,8 @@
   const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
   const MAX_EXCEL_FILE_BYTES = 10 * 1024 * 1024;
   const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const LIBRARY_BATCH_SIZE = 48;
+  const LIBRARY_SCROLL_LOAD_DELAY_MS = 220;
   const DASHBOARD_HERO_SLIDES = [
     'assets/images/dashboard-slideshow/01-david-genelhu.jpg',
     'assets/images/dashboard-slideshow/02-francisco-perez.jpg',
@@ -145,6 +147,10 @@
   let dashboardHeroSlideshowTimer = null;
   let dashboardHeroSlideshowToken = 0;
   let projectToolsLoadPromise = null;
+  let libraryLoadObserver = null;
+  let libraryLoadTimer = 0;
+  let libraryLoadToken = 0;
+  let libraryLoadInProgress = false;
 
   // Save the cleaned records once so older local data no longer keeps removed fields.
   syncProjectPlantCodes();
@@ -489,6 +495,7 @@
 
   function render(focusHeading = false) {
     stopDashboardHeroSlideshow();
+    if (state.view !== 'library') cancelLibraryLoading();
     const currentTitle = titleByView[state.view] || 'Greenscape Plant Library';
     pageTitle.textContent = currentTitle;
     document.title = `${currentTitle} | Greenscape Plant Library`;
@@ -876,9 +883,68 @@
     updateLibraryResults();
   }
 
+  // GREENSCAPE_GREENIE_SCROLL_LOADING_V1_START
+  function cancelLibraryLoading() {
+    if (libraryLoadObserver) {
+      libraryLoadObserver.disconnect();
+      libraryLoadObserver = null;
+    }
+    if (libraryLoadTimer) window.clearTimeout(libraryLoadTimer);
+    libraryLoadTimer = 0;
+    libraryLoadToken += 1;
+    libraryLoadInProgress = false;
+    document.getElementById('plantGrid')?.setAttribute('aria-busy', 'false');
+  }
+
+  function requestLibraryBatch() {
+    if (libraryLoadInProgress || state.view !== 'library') return;
+
+    const footer = document.querySelector('[data-library-load-trigger][data-has-more="true"]');
+    if (!footer) return;
+
+    libraryLoadInProgress = true;
+    if (libraryLoadObserver) {
+      libraryLoadObserver.disconnect();
+      libraryLoadObserver = null;
+    }
+
+    footer.classList.add('is-loading');
+    footer.setAttribute('aria-busy', 'true');
+    const loadingStatus = footer.querySelector('[data-library-loading-status]');
+    if (loadingStatus) loadingStatus.hidden = false;
+    const fallbackButton = footer.querySelector('[data-action="load-more"]');
+    if (fallbackButton) fallbackButton.disabled = true;
+    document.getElementById('plantGrid')?.setAttribute('aria-busy', 'true');
+
+    const token = ++libraryLoadToken;
+    libraryLoadTimer = window.setTimeout(() => {
+      if (token !== libraryLoadToken || state.view !== 'library') return;
+      libraryLoadTimer = 0;
+      libraryLoadInProgress = false;
+      state.libraryLimit += LIBRARY_BATCH_SIZE;
+      updateLibraryResults();
+    }, LIBRARY_SCROLL_LOAD_DELAY_MS);
+  }
+
+  function setupLibraryAutoLoad() {
+    const trigger = document.querySelector('[data-library-load-trigger][data-has-more="true"]');
+    if (!trigger || typeof IntersectionObserver === 'undefined') return;
+
+    libraryLoadObserver = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) requestLibraryBatch();
+    }, {
+      root: null,
+      rootMargin: '160px 0px',
+      threshold: 0.01
+    });
+    libraryLoadObserver.observe(trigger);
+  }
+  // GREENSCAPE_GREENIE_SCROLL_LOADING_V1_END
+
   function updateLibraryResults() {
     const grid = document.getElementById('plantGrid');
     if (!grid) return;
+    cancelLibraryLoading();
 
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
@@ -901,13 +967,18 @@
 
     grid.innerHTML = `
       <div class="${collectionClass}">${records}</div>
-      <div class="library-results-footer">
+      <div class="library-results-footer" data-library-load-trigger data-has-more="${remaining > 0 ? 'true' : 'false'}">
         <span>Showing <strong>${shown.length}</strong> of <strong>${results.length}</strong> entries</span>
         ${remaining > 0
-          ? `<button type="button" class="button secondary" data-action="load-more">Show more (${remaining} remaining)</button>`
+          ? `<div class="library-scroll-loader" data-library-loading-status role="status" aria-live="polite" aria-atomic="true" hidden>
+              <img src="assets/images/greenie/dig-to-plant.gif" alt="" width="69" height="69" decoding="async">
+              <span class="sr-only">Loading more plants</span>
+            </div>
+            <button type="button" class="button secondary" data-action="load-more">Show more (${remaining} remaining)</button>`
           : '<span class="library-results-complete">All entries shown</span>'}
       </div>
     `;
+    setupLibraryAutoLoad();
   }
 
   function plantCard(plant, index = 0) {
@@ -3890,7 +3961,7 @@
     if (action === 'edit-project-item') openAddToProject({ projectId: target.dataset.projectId, itemId: target.dataset.itemId });
     if (action === 'add-size-row') document.getElementById('sizeEditor').insertAdjacentHTML('beforeend', sizeRow({}));
     if (action === 'remove-size') target.closest('.size-row')?.remove();
-    if (action === 'load-more') { state.libraryLimit += 48; updateLibraryResults(); }
+    if (action === 'load-more') requestLibraryBatch();
     if (action === 'library-view') {
       state.libraryView = target.dataset.libraryView === 'list' ? 'list' : 'grid';
       renderLibrary();

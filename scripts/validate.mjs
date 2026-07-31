@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -199,7 +200,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
-    && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
+    && html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -270,8 +271,8 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html)
-    && /app\.js\?v=20260731-safe-cleanup1-3/.test(html),
+  /plant-library-refinements\.css\?v=20260731-greenie-scroll-loading1/.test(html)
+    && /app\.js\?v=20260731-greenie-scroll-loading1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -455,7 +456,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
+    && html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -487,7 +488,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-intermediate-view-only1/.test(html),
+  /plant-library-refinements\.css\?v=20260731-greenie-scroll-loading1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -517,8 +518,8 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1')
-    && html.includes('app.js?v=20260731-safe-cleanup1-3'),
+  html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1')
+    && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -553,7 +554,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
+  html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -587,7 +588,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-intermediate-view-only1'),
+  html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -645,7 +646,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('app.js?v=20260731-safe-cleanup1-3')
+    && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('maintenance.js?v=20260731-greenie-only-help1-4')
     && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
@@ -690,7 +691,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-safe-cleanup1-3')
     && html.includes('styles.css?v=20260731-safe-cleanup1-3')
-    && html.includes('app.js?v=20260731-safe-cleanup1-3')
+    && html.includes('app.js?v=20260731-greenie-scroll-loading1')
     && html.includes('magnetic-dock.js?v=20260731-safe-cleanup1-3'),
   'Safe-cleanup assets must use the current cache keys.'
 );
@@ -698,6 +699,60 @@ check(
   readme.includes('### Safe Repository Cleanup V1')
     && readme.includes('Greenie Help assistant and feedback form'),
   'README must record the safe cleanup and current Help entry point.'
+);
+
+
+// GREENSCAPE_GREENIE_SCROLL_LOADING_V1_VALIDATION
+const greenieScrollLoaderPath = 'assets/images/greenie/dig-to-plant.gif';
+const greenieScrollLoaderBytes = exists(greenieScrollLoaderPath)
+  ? fs.readFileSync(path.join(root, greenieScrollLoaderPath))
+  : Buffer.alloc(0);
+const greenieScrollLoaderHash = createHash('sha256')
+  .update(greenieScrollLoaderBytes)
+  .digest('hex');
+
+check(
+  exists(greenieScrollLoaderPath)
+    && greenieScrollLoaderBytes.subarray(0, 6).toString('ascii') === 'GIF89a'
+    && greenieScrollLoaderHash === '80f81c2cff5a86fa18974c455a6119e528bf3e55a4ec9246fecdfdbd8044875d',
+  'The exact approved dig-to-plant Greenie GIF must remain unchanged.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('GREENSCAPE_GREENIE_SCROLL_LOADING_V1_START')
+    && jsSources['assets/js/app.js'].includes('const LIBRARY_BATCH_SIZE = 48;')
+    && jsSources['assets/js/app.js'].includes('new IntersectionObserver')
+    && jsSources['assets/js/app.js'].includes('state.libraryLimit += LIBRARY_BATCH_SIZE;'),
+  'Plant Library scrolling must load one protected 48-entry batch at a time.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('data-library-load-trigger')
+    && jsSources['assets/js/app.js'].includes('assets/images/greenie/dig-to-plant.gif')
+    && jsSources['assets/js/app.js'].includes('role="status" aria-live="polite" aria-atomic="true"')
+    && jsSources['assets/js/app.js'].includes('Loading more plants'),
+  'The exact Greenie loader and polite accessible status must remain in the Plant Library footer.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('data-action="load-more"')
+    && jsSources['assets/js/app.js'].includes("if (action === 'load-more') requestLibraryBatch();")
+    && jsSources['assets/js/app.js'].includes("typeof IntersectionObserver === 'undefined'"),
+  'Show more must remain available as the keyboard and unsupported-browser fallback.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_GREENIE_SCROLL_LOADING_V1_START')
+    && plantLibraryStyles.includes('#plantGrid .library-scroll-loader')
+    && plantLibraryStyles.includes('image-rendering: pixelated;')
+    && /prefers-reduced-motion:\s*reduce[\s\S]*?library-scroll-loader img[\s\S]*?display:\s*none/.test(plantLibraryStyles),
+  'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260731-greenie-scroll-loading1')
+    && html.includes('app.js?v=20260731-greenie-scroll-loading1'),
+  'Greenie scroll-loading assets must use the current cache keys.'
+);
+check(
+  readme.includes('### Greenie Scroll Loading V1')
+    && readme.includes('assets/images/greenie/dig-to-plant.gif'),
+  'README must record the Greenie scroll-loading release and exact GIF asset.'
 );
 
 if (failures.length) {
