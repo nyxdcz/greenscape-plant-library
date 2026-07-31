@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - data/Greenscape_Plant_Library.csv
+      - data/ADD_PLANTS_HERE/**
   workflow_dispatch:
 
 permissions:
@@ -30,7 +31,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Convert Google Sheets CSV to website data
+      - name: Import folder plant files
+        run: node scripts/import_plant_additions.mjs
+
+      - name: Convert plant CSV to website data
         run: node scripts/sync_plants_from_csv.mjs
 
       - name: Run website checks

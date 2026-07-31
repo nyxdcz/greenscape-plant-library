@@ -27,6 +27,7 @@ const jsPaths = [
   'assets/js/boq.js',
   'assets/js/boq-enhancements.js',
   'assets/js/project-costing.js',
+  'assets/js/staff-access-config.js',
   'assets/js/maintenance-config.js',
   'assets/js/maintenance-force.js',
   'assets/js/maintenance.js',
@@ -153,7 +154,7 @@ check(
 check(jsSources['assets/js/app.js'].includes("const maintenanceReadOnly = document.body.classList.contains('maintenance-readonly');"), 'Plant List editing controls must be hidden during maintenance.');
 check(!jsSources['assets/js/maintenance.js'].includes("'export-excel',"), 'Excel export must remain blocked during maintenance.');
 check(
-  /codeHash:\s*'[a-f0-9]{64}'/.test(jsSources['assets/js/maintenance-config.js']),
+  /codeHash:\s*'[a-f0-9]{64}'/.test(jsSources['assets/js/staff-access-config.js']),
   'Maintenance staff access must store a SHA-256 hash instead of a readable code.'
 );
 check(
@@ -843,6 +844,87 @@ check(
 check(
   readme.includes('### Phone Dock Freeze Hotfix V1.2'),
   'README must record the phone-dock freeze hotfix.'
+);
+
+// GREENSCAPE_GITHUB_PLANT_FOLDER_AND_STAFF_ACCESS_V1_VALIDATION
+const plantFolderWorkflow = read('.github/workflows/sync-plant-csv.yml');
+const gitignore = read('.gitignore');
+const packageJson = JSON.parse(read('package.json'));
+const plantImportScript = read('scripts/import_plant_additions.mjs');
+const staffCodeScript = read('scripts/set_staff_access_code.mjs');
+const staffAccessReadme = read('staff-access/README.md');
+const plantFolderReadme = read('data/ADD_PLANTS_HERE/README.md');
+
+check(
+  exists('data/ADD_PLANTS_HERE/_PLANT_TEMPLATE.json')
+    && exists('data/ADD_PLANTS_HERE/README.md')
+    && exists('scripts/import_plant_additions.mjs'),
+  'The GitHub plant-addition folder, template, and importer are required.'
+);
+check(
+  plantFolderWorkflow.includes('data/ADD_PLANTS_HERE/**')
+    && plantFolderWorkflow.includes('node scripts/import_plant_additions.mjs')
+    && plantFolderWorkflow.includes('node scripts/sync_plants_from_csv.mjs'),
+  'Plant CSV Sync must import folder JSON files before publishing website data.'
+);
+check(
+  plantImportScript.includes("fileName !== expectedFileName")
+    && plantImportScript.includes('validateImage')
+    && plantImportScript.includes('duplicate Record ID')
+    && plantImportScript.includes("process.argv.includes('--check')"),
+  'Folder plant imports must validate filenames, images, duplicate IDs, and check mode.'
+);
+check(
+  packageJson.scripts?.['import:plants'] === 'node scripts/import_plant_additions.mjs'
+    && packageJson.scripts?.['import:plants:check'] === 'node scripts/import_plant_additions.mjs --check'
+    && packageJson.scripts?.quality?.includes('npm run import:plants:check'),
+  'Package scripts must expose and validate the folder plant-import workflow.'
+);
+check(
+  plantFolderReadme.includes('assets/images/')
+    && plantFolderReadme.includes('filename must exactly match')
+    && plantFolderReadme.includes('stops publication safely'),
+  'The plant-addition folder must document image, filename, and safe-failure rules.'
+);
+check(
+  exists('assets/js/staff-access-config.js')
+    && exists('scripts/set_staff_access_code.mjs')
+    && exists('staff-access/access-code.example.txt')
+    && exists('tools/Update Staff Access Code.command'),
+  'Separated staff access configuration and update tools are required.'
+);
+check(
+  jsSources['assets/js/maintenance-config.js'].includes('window.GREENSCAPE_STAFF_ACCESS')
+    && !/codeHash:\s*'[a-f0-9]{64}'/.test(jsSources['assets/js/maintenance-config.js'])
+    && /codeHash:\s*'[a-f0-9]{64}'/.test(jsSources['assets/js/staff-access-config.js']),
+  'Maintenance settings must read the hash from the separate staff access configuration.'
+);
+check(
+  html.indexOf('assets/js/staff-access-config.js') < html.indexOf('assets/js/maintenance-config.js')
+    && html.includes('staff-access-config.js?v=access-d2efa9c3608d')
+    && html.includes('maintenance-config.js?v=20260731-separated-staff-access1'),
+  'The separated staff access configuration must load before maintenance settings with current cache keys.'
+);
+check(
+  gitignore.includes('staff-access/access-code.txt')
+    && !exists('staff-access/access-code.txt'),
+  'The readable staff access input must be ignored and absent from the repository.'
+);
+check(
+  staffCodeScript.includes("crypto.randomBytes(24)")
+    && staffCodeScript.includes("update(`${salt}:${code}`)")
+    && staffCodeScript.includes("fs.rmSync(inputPath")
+    && staffCodeScript.includes('staff-access-config.js?v=${cacheVersion}'),
+  'The staff code tool must generate a random salted hash, update the cache key, and delete plaintext input.'
+);
+check(
+  staffAccessReadme.includes('must never be committed')
+    && staffAccessReadme.includes('client-side access control'),
+  'Staff access documentation must explain plaintext handling and the static-site security limitation.'
+);
+check(
+  readme.includes('### GitHub Plant Folder and Separated Staff Access V1'),
+  'README must record the GitHub plant folder and separated staff access update.'
 );
 
 if (failures.length) {

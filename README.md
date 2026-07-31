@@ -24,6 +24,36 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### GitHub Plant Folder and Separated Staff Access V1
+
+- Adds `data/ADD_PLANTS_HERE/` with a reusable JSON template for adding or updating one plant at a time through GitHub.
+- Extends **Plant CSV Sync** to validate the folder records, merge them into the canonical CSV, regenerate website data, update cache keys, and publish only after all checks pass.
+- Requires each JSON filename to match its Record ID and verifies local images, HTTPS links, duplicate IDs, and supported fields.
+- Adds a separate `assets/js/staff-access-config.js` file for the public salt and SHA-256 hash while keeping maintenance messages and behavior in `maintenance-config.js`.
+- Adds a local-only `staff-access/access-code.txt` workflow and a double-click macOS tool that generates the salted hash, deletes plaintext, runs quality checks, commits, pushes, and verifies the live website.
+- Keeps the current staff access code working until it is intentionally replaced.
+- Preserves all 231 existing plant records, the current CSV workflow, maintenance security limits, phone-dock freeze hotfix, Greenie, filters, cards, and project tools.
+
+Affected files:
+
+```text
+.github/workflows/sync-plant-csv.yml
+.gitignore
+README.md
+package.json
+index.html
+scripts/validate.mjs
+scripts/import_plant_additions.mjs
+scripts/set_staff_access_code.mjs
+assets/js/maintenance-config.js
+assets/js/staff-access-config.js
+data/ADD_PLANTS_HERE/README.md
+data/ADD_PLANTS_HERE/_PLANT_TEMPLATE.json
+staff-access/README.md
+staff-access/access-code.example.txt
+tools/Update Staff Access Code.command
+```
+
 ### Phone Dock Freeze Hotfix V1.2
 
 - Removes the body-wide child-mutation observer that repeatedly resynchronized the phone dock and could freeze the browser.

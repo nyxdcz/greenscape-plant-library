@@ -4,14 +4,17 @@
   "private": true,
   "description": "Greenscape's browser-based plant library, project list, and mood board tool.",
   "scripts": {
-    "lint": "node --check assets/js/app.js && node --check assets/js/data.js && node --check assets/js/quotation.js && node --check assets/js/boq.js && node --check assets/js/boq-enhancements.js && node --check assets/js/project-costing.js && node --check assets/js/maintenance-config.js && node --check assets/js/maintenance.js && node --check assets/js/maintenance-force.js && node --check scripts/sync_plants_from_csv.mjs",
+    "lint": "node --check assets/js/app.js && node --check assets/js/data.js && node --check assets/js/quotation.js && node --check assets/js/boq.js && node --check assets/js/boq-enhancements.js && node --check assets/js/project-costing.js && node --check assets/js/maintenance-config.js && node --check assets/js/maintenance.js && node --check assets/js/maintenance-force.js && node --check scripts/sync_plants_from_csv.mjs && node --check assets/js/staff-access-config.js && node --check scripts/import_plant_additions.mjs && node --check scripts/set_staff_access_code.mjs",
     "test": "node scripts/validate.mjs",
     "build": "node scripts/validate.mjs --build",
     "check": "npm run lint && npm test",
     "audit": "node scripts/audit.mjs",
-    "quality": "npm run sync:plants:check && npm run lint && npm test && npm run build && npm run audit",
+    "quality": "npm run import:plants:check && npm run sync:plants:check && npm run lint && npm test && npm run build && npm run audit",
     "sync:plants": "node scripts/sync_plants_from_csv.mjs",
-    "sync:plants:check": "node scripts/sync_plants_from_csv.mjs --check"
+    "sync:plants:check": "node scripts/sync_plants_from_csv.mjs --check",
+    "import:plants": "node scripts/import_plant_additions.mjs",
+    "import:plants:check": "node scripts/import_plant_additions.mjs --check",
+    "staff:code": "node scripts/set_staff_access_code.mjs"
   },
   "engines": {
     "node": ">=20"

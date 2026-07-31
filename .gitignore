@@ -7,3 +7,6 @@ node_modules/
 *.log
 .vscode/
 .idea/
+
+# Local plaintext staff access input. Never commit this file.
+staff-access/access-code.txt
