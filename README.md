@@ -24,6 +24,26 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Expanding Hover Phone Menu V1
+
+- Adds a phone-only expanding state to the existing four-control floating dock at **760 px and below**.
+- Keeps the outer glass dock fixed while the current tab, open **More** control, tapped utility, or keyboard-focused control widens.
+- Uses responsive expanded widths of **72 px** from 431–760 px, **64 px** at 430 px and below, and **58 px** at 370 px and below.
+- Limits hover-triggered expansion to devices that report both genuine hover and a fine pointer, preventing sticky hover behavior on iPhone and other touch-only devices.
+- Uses the existing dark-green glass treatment with a lime glow and keeps every icon centered without adding text labels.
+- Makes the state change effectively instant when reduced motion is requested.
+- Preserves the four existing controls: **Dashboard**, **Plant Library**, **Plant Identifier**, and **More**. Greenie remains the Help entry point, and no separate Help button is restored.
+- Preserves the dashboard bento layout, responsive behavior above the phone breakpoint, maintenance protections, Greenie, plant data, project tools, accessibility hooks, and existing validation safeguards.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+index.html
+scripts/validate.mjs
+```
+
 ### Website Quality Workflow Lock-File Fix V1.1
 
 - Corrects the new **Website Quality** GitHub Actions workflow after `actions/setup-node` attempted to create an npm cache without a dependency lock file.

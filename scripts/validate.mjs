@@ -329,7 +329,7 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260731-interface-qa1/.test(html)
+  /styles\.css\?v=20260801-expanding-hover-menu-v1/.test(html)
     && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -456,7 +456,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260731-interface-qa1')
+  html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
     && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -646,7 +646,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260731-interface-qa1')
+    && html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
     && html.includes('app.js?v=20260731-interface-qa1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
@@ -691,7 +691,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260731-interface-qa1')
+    && html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
     && html.includes('app.js?v=20260731-interface-qa1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
@@ -989,7 +989,7 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260731-interface-qa1')
+  html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('app.js?v=20260731-interface-qa1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
@@ -1022,6 +1022,48 @@ check(
 check(
   readme.includes('### Website Quality Workflow Lock-File Fix V1.1'),
   'README must record the Website Quality lock-file correction.'
+);
+
+// GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_VALIDATION
+const expandingHoverDockStyles = styles.split('/* GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_START')[1]
+  ?.split('/* GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_END */')[0] || '';
+
+check(
+  expandingHoverDockStyles.includes('@media (max-width: 760px)')
+    && expandingHoverDockStyles.includes('width: 72px !important;')
+    && expandingHoverDockStyles.includes('@media (max-width: 430px)')
+    && expandingHoverDockStyles.includes('width: 64px !important;')
+    && expandingHoverDockStyles.includes('@media (max-width: 370px)')
+    && expandingHoverDockStyles.includes('width: 58px !important;'),
+  'The phone dock must use the approved 72px, 64px, and 58px responsive expanded widths.'
+);
+check(
+  expandingHoverDockStyles.includes('@media (max-width: 760px) and (hover: hover) and (pointer: fine)')
+    && expandingHoverDockStyles.includes('.nav-item:not(:disabled):hover')
+    && expandingHoverDockStyles.includes('.dock-utility:not(:disabled):hover')
+    && expandingHoverDockStyles.includes('.nav-item:not(:disabled):focus-visible')
+    && expandingHoverDockStyles.includes('.dock-utility:not(:disabled):focus-visible'),
+  'Phone dock hover expansion must be limited to genuine fine-pointer hover while keyboard focus expands on every phone input type.'
+);
+check(
+  expandingHoverDockStyles.includes('.nav-item.active')
+    && expandingHoverDockStyles.includes('.dock-utility[aria-expanded="true"]')
+    && expandingHoverDockStyles.includes('.dock-utility.dock-click-glow')
+    && expandingHoverDockStyles.includes('rgba(172, 225, 91, .46)'),
+  'Current, open, and tapped phone controls must use the approved dark-green glass and lime glow state.'
+);
+check(
+  expandingHoverDockStyles.includes('@media (max-width: 760px) and (prefers-reduced-motion: reduce)')
+    && expandingHoverDockStyles.includes('transition-duration: .01ms !important;'),
+  'The expanding phone dock must provide an effectively instant reduced-motion state.'
+);
+check(
+  html.includes('styles.css?v=20260801-expanding-hover-menu-v1'),
+  'The expanding phone dock stylesheet must use the current cache key.'
+);
+check(
+  readme.includes('### Expanding Hover Phone Menu V1'),
+  'README must record the expanding hover phone menu release.'
 );
 
 if (failures.length) {

@@ -8224,3 +8224,156 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   }
 }
 /* GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_END */
+
+/* GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_START
+   Phone-only expanding glass controls. The shell stays fixed while the current,
+   opened, pressed, focused, or genuinely hovered control widens. */
+@media (max-width: 760px) {
+  .sidebar .nav-list {
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+
+  .sidebar .nav-list .nav-item,
+  .sidebar .nav-list .dock-utility {
+    transition:
+      width 240ms cubic-bezier(.22, 1, .36, 1),
+      min-width 240ms cubic-bezier(.22, 1, .36, 1),
+      max-width 240ms cubic-bezier(.22, 1, .36, 1),
+      flex-basis 240ms cubic-bezier(.22, 1, .36, 1),
+      transform 180ms cubic-bezier(.2, 1.3, .45, 1),
+      color 170ms ease,
+      background 220ms ease,
+      border-color 170ms ease,
+      box-shadow 220ms ease !important;
+  }
+
+  .sidebar .nav-list .nav-item.active,
+  .sidebar .nav-list .dock-utility[aria-expanded="true"],
+  .sidebar .nav-list .dock-utility.dock-click-glow,
+  .sidebar .nav-list .nav-item:not(:disabled):focus-visible,
+  .sidebar .nav-list .dock-utility:not(:disabled):focus-visible {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    flex-basis: 72px !important;
+    color: #f8fff9 !important;
+    border-color: rgba(220, 244, 166, .78) !important;
+    background:
+      radial-gradient(circle at 28% 10%, rgba(255, 255, 255, .28), transparent 44%),
+      linear-gradient(145deg, rgba(12, 86, 59, .94), rgba(2, 37, 26, .97)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .36),
+      inset 0 -1px 0 rgba(0, 20, 14, .28),
+      0 0 0 1px rgba(206, 239, 136, .16),
+      0 0 22px rgba(172, 225, 91, .46),
+      0 8px 20px rgba(4, 44, 30, .28) !important;
+  }
+
+  .sidebar .nav-list .nav-item .nav-icon,
+  .sidebar .nav-list .phone-dock-icon,
+  .sidebar .nav-list .phone-dock-more-dots {
+    transition:
+      transform 240ms cubic-bezier(.22, 1, .36, 1),
+      color 170ms ease,
+      filter 170ms ease !important;
+  }
+
+  .sidebar .nav-list .nav-item.active .nav-icon,
+  .sidebar .nav-list .dock-utility[aria-expanded="true"] .phone-dock-icon,
+  .sidebar .nav-list .dock-utility[aria-expanded="true"] .phone-dock-more-dots,
+  .sidebar .nav-list .dock-utility.dock-click-glow .phone-dock-icon,
+  .sidebar .nav-list .dock-utility.dock-click-glow .phone-dock-more-dots,
+  .sidebar .nav-list .nav-item:not(:disabled):focus-visible .nav-icon,
+  .sidebar .nav-list .dock-utility:not(:disabled):focus-visible .phone-dock-icon,
+  .sidebar .nav-list .dock-utility:not(:disabled):focus-visible .phone-dock-more-dots {
+    transform: translate(-50%, -50%) scale(1.06) !important;
+    filter: drop-shadow(0 0 7px rgba(220, 247, 163, .52)) !important;
+  }
+}
+
+@media (max-width: 760px) and (hover: hover) and (pointer: fine) {
+  .sidebar .nav-list .nav-item:not(:disabled):hover,
+  .sidebar .nav-list .dock-utility:not(:disabled):hover {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    flex-basis: 72px !important;
+    color: #f8fff9 !important;
+    border-color: rgba(220, 244, 166, .78) !important;
+    background:
+      radial-gradient(circle at 28% 10%, rgba(255, 255, 255, .28), transparent 44%),
+      linear-gradient(145deg, rgba(12, 86, 59, .94), rgba(2, 37, 26, .97)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .36),
+      inset 0 -1px 0 rgba(0, 20, 14, .28),
+      0 0 0 1px rgba(206, 239, 136, .16),
+      0 0 22px rgba(172, 225, 91, .46),
+      0 8px 20px rgba(4, 44, 30, .28) !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .sidebar .nav-list {
+    gap: 5px !important;
+  }
+
+  .sidebar .nav-list .nav-item.active,
+  .sidebar .nav-list .dock-utility[aria-expanded="true"],
+  .sidebar .nav-list .dock-utility.dock-click-glow,
+  .sidebar .nav-list .nav-item:not(:disabled):focus-visible,
+  .sidebar .nav-list .dock-utility:not(:disabled):focus-visible {
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+    flex-basis: 64px !important;
+  }
+}
+
+@media (max-width: 430px) and (hover: hover) and (pointer: fine) {
+  .sidebar .nav-list .nav-item:not(:disabled):hover,
+  .sidebar .nav-list .dock-utility:not(:disabled):hover {
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+    flex-basis: 64px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .sidebar .nav-list {
+    gap: 4px !important;
+  }
+
+  .sidebar .nav-list .nav-item.active,
+  .sidebar .nav-list .dock-utility[aria-expanded="true"],
+  .sidebar .nav-list .dock-utility.dock-click-glow,
+  .sidebar .nav-list .nav-item:not(:disabled):focus-visible,
+  .sidebar .nav-list .dock-utility:not(:disabled):focus-visible {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    flex-basis: 58px !important;
+  }
+}
+
+@media (max-width: 370px) and (hover: hover) and (pointer: fine) {
+  .sidebar .nav-list .nav-item:not(:disabled):hover,
+  .sidebar .nav-list .dock-utility:not(:disabled):hover {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    flex-basis: 58px !important;
+  }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .sidebar .nav-list .nav-item,
+  .sidebar .nav-list .dock-utility,
+  .sidebar .nav-list .nav-item .nav-icon,
+  .sidebar .nav-list .phone-dock-icon,
+  .sidebar .nav-list .phone-dock-more-dots {
+    transition-duration: .01ms !important;
+  }
+}
+/* GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_END */
