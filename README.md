@@ -12,6 +12,28 @@ Open the published website here:
 
 ## What's New
 
+### Expanding Glass Phone Dock V1
+
+The five-button phone dock now uses a smooth expanding-menu interaction inspired by the reviewed Code Candy reference while retaining the established Greenscape glass-and-glow design.
+
+Changes:
+
+- Keeps the phone dock limited to Dashboard, Plant Library, Plant Identifier, More, and Help.
+- Widens the active or opened control into a dark-green glass capsule while neighboring controls reposition smoothly inside the fixed dock shell.
+- Keeps every dock control icon-only; no label appears on hover, tap, focus, or selection.
+- Applies the expanding state to the current page, the open More menu, the open Help panel, and the brief Plant Identifier tap feedback.
+- Preserves the existing phone safe-area position, More menu destinations, centered icons, and tablet/desktop navigation.
+- Adds a reduced-motion fallback that keeps the active visual state without the expanding animation.
+- Refreshes the phone-dock script cache key for deployment.
+
+Updated files:
+
+```text
+assets/css/styles.css
+index.html
+README.md
+```
+
 ### Catalog Pulse Bento Dashboard V1
 
 The original Greenscape workspace now uses a more complete bento dashboard while preserving its established colors, rounded glass surfaces, glow effects, and responsive structure.
