@@ -8467,3 +8467,163 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   }
 }
 /* GREENSCAPE_PHONE_DOCK_TOUCH_STATE_FIX_V1_1_END */
+/* GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START
+   Dashboard-only pointer spotlight and border beam inspired by Magic Bento.
+   Layout, content, phone behavior, and existing controls remain unchanged. */
+#pageContent [data-magic-bento-card] {
+  --magic-bento-x: 50%;
+  --magic-bento-y: 50%;
+  --magic-bento-glow-opacity: 0;
+  --magic-bento-lift: 0px;
+  position: relative;
+  isolation: isolate;
+  transform: translateY(var(--magic-bento-lift));
+  transition:
+    transform var(--motion-standard) var(--motion-ease-out),
+    border-color var(--motion-fast) ease,
+    box-shadow var(--motion-standard) var(--motion-ease-out);
+}
+
+#pageContent [data-magic-bento-card] > * {
+  position: relative;
+  z-index: 2;
+}
+
+#pageContent [data-magic-bento-card]::before,
+#pageContent [data-magic-bento-card]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: var(--magic-bento-glow-opacity);
+  transition: opacity 180ms ease;
+}
+
+#pageContent [data-magic-bento-card]::before {
+  z-index: 0;
+  background:
+    radial-gradient(
+      245px circle at var(--magic-bento-x) var(--magic-bento-y),
+      rgba(220, 243, 154, .25),
+      rgba(83, 178, 111, .11) 38%,
+      transparent 70%
+    );
+}
+
+#pageContent [data-magic-bento-card]::after {
+  z-index: 1;
+  width: auto;
+  height: auto;
+  right: 0;
+  bottom: 0;
+  padding: 1px;
+  border: 0;
+  background:
+    radial-gradient(
+      150px circle at var(--magic-bento-x) var(--magic-bento-y),
+      rgba(229, 249, 170, .92),
+      rgba(118, 201, 112, .36) 42%,
+      transparent 72%
+    );
+  box-shadow: none;
+  transform: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+#pageContent [data-magic-bento-card]:focus-within {
+  --magic-bento-x: 50%;
+  --magic-bento-y: 50%;
+  --magic-bento-glow-opacity: .72;
+  border-color: rgba(152, 202, 101, .44);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .96),
+    0 0 0 1px rgba(209, 239, 145, .16),
+    0 0 24px rgba(137, 201, 87, .18),
+    0 18px 44px rgba(15, 60, 39, .10);
+}
+
+#pageContent [data-magic-bento-interactive]:focus-visible {
+  outline: 3px solid rgba(211, 239, 145, .88);
+  outline-offset: 3px;
+  box-shadow: var(--interaction-glow);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #pageContent [data-magic-bento-card][data-magic-bento-active="true"] {
+    --magic-bento-glow-opacity: 1;
+    --magic-bento-lift: -2px;
+    border-color: rgba(152, 202, 101, .44);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .96),
+      0 0 0 1px rgba(209, 239, 145, .14),
+      0 0 26px rgba(137, 201, 87, .18),
+      0 20px 48px rgba(15, 60, 39, .11);
+  }
+
+  #pageContent [data-magic-bento-card].magic-bento-press {
+    animation: greenscapeMagicBentoPress 430ms ease-out both;
+  }
+}
+
+@keyframes greenscapeMagicBentoPress {
+  0% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .96),
+      0 0 0 0 rgba(217, 243, 153, .42),
+      0 0 14px rgba(137, 201, 87, .16),
+      0 18px 44px rgba(15, 60, 39, .10);
+  }
+  45% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .98),
+      0 0 0 6px rgba(217, 243, 153, .16),
+      0 0 34px rgba(137, 201, 87, .28),
+      0 20px 48px rgba(15, 60, 39, .12);
+  }
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .96),
+      0 0 0 1px rgba(209, 239, 145, .14),
+      0 0 26px rgba(137, 201, 87, .18),
+      0 20px 48px rgba(15, 60, 39, .11);
+  }
+}
+
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  #pageContent [data-magic-bento-card] {
+    --magic-bento-glow-opacity: 0;
+    --magic-bento-lift: 0px;
+    transform: none;
+  }
+
+  #pageContent [data-magic-bento-card]::before,
+  #pageContent [data-magic-bento-card]::after {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pageContent [data-magic-bento-card],
+  #pageContent [data-magic-bento-card]::before,
+  #pageContent [data-magic-bento-card]::after {
+    transition-duration: .01ms !important;
+  }
+
+  #pageContent [data-magic-bento-card] {
+    --magic-bento-lift: 0px !important;
+    transform: none !important;
+  }
+
+  #pageContent [data-magic-bento-card].magic-bento-press {
+    animation: none !important;
+  }
+}
+/* GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_END */

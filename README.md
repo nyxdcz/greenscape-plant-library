@@ -24,6 +24,29 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Magic Bento Dashboard Interaction V1
+
+- Adds a restrained Magic Bento interaction to the existing Dashboard statistic cards and bento panels without changing their layout, order, dimensions, or content.
+- Adds a card-local green-and-lime pointer spotlight and proximity border beam on genuine fine-pointer devices.
+- Adds a subtle 2 px card lift and a short click-glow pulse for existing Dashboard controls only.
+- Preserves all current Dashboard buttons, category filtering, recently added plant links, statistics, health calculations, and the hero slideshow.
+- Adds matching keyboard `:focus-visible` and `:focus-within` feedback without converting panels into new links or buttons.
+- Disables pointer-following motion on touch and coarse-pointer devices and retains a static accessible focus treatment.
+- Adds a reduced-motion safeguard that removes animated movement while preserving readable content and focus indication.
+- Uses native HTML, CSS, and JavaScript only; no Framer, React, GSAP, animation library, image, or new dependency is added.
+- Preserves the phone navigation, phone dock touch-state correction, responsive Dashboard composition, maintenance protections, Greenie, plant data, project tools, and existing accessibility safeguards.
+- Adds regression validation for Dashboard-only event scope, cleanup on navigation, non-intercepting decorative layers, fine-pointer and reduced-motion protections, unchanged bento spans, cache versions, and release documentation.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+assets/js/app.js
+index.html
+scripts/validate.mjs
+```
+
 ### Phone Dock Touch-State Stability V1.1
 
 - Fixes the temporary pale or washed-out phone dock state seen on iPhone and other touch-only devices after changing pages or opening **More**.

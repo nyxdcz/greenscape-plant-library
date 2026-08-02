@@ -273,7 +273,7 @@ check(
 );
 check(
   /plant-library-refinements\.css\?v=20260802-branded-interaction-feedback-v1/.test(html)
-    && /app\.js\?v=20260802-branded-interaction-feedback-v1/.test(html),
+    && /app\.js\?v=20260802-magic-bento-dashboard-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,7 +329,7 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260802-phone-dock-touch-state-fix-v1-1/.test(html)
+  /styles\.css\?v=20260802-magic-bento-dashboard-v1/.test(html)
     && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -456,7 +456,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
     && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -553,7 +553,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -679,8 +679,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
@@ -724,8 +724,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
@@ -780,7 +780,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -1022,9 +1022,9 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Interface QA assets must use the current cache keys.'
 );
@@ -1091,7 +1091,7 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1'),
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
@@ -1135,9 +1135,9 @@ check(
   'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
 );
 check(
-  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
     && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
-    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
 );
 check(
@@ -1180,7 +1180,7 @@ check(
   'The existing responsive expansion widths and genuine fine-pointer hover behavior must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
     && !html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone dock touch-state styles must use the V1.1 cache key.'
 );
@@ -1188,6 +1188,65 @@ check(
   readme.includes('### Phone Dock Touch-State Stability V1.1')
     && readme.includes('Does not change phone navigation JavaScript'),
   'README must document the phone dock touch-state correction and its unchanged JavaScript scope.'
+);
+
+// GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_VALIDATION
+const magicBentoDashboardStyles = styles.split('/* GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START')[1]
+  ?.split('/* GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_END */')[0] || '';
+const magicBentoDashboardJs = jsSources['assets/js/app.js'].split('// GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START')[1]
+  ?.split('// GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_END')[0] || '';
+
+check(
+  magicBentoDashboardStyles.includes('[data-magic-bento-card]::before')
+    && magicBentoDashboardStyles.includes('[data-magic-bento-card]::after')
+    && magicBentoDashboardStyles.includes('pointer-events: none;')
+    && magicBentoDashboardStyles.includes('radial-gradient(')
+    && magicBentoDashboardStyles.includes('--magic-bento-x')
+    && magicBentoDashboardStyles.includes('--magic-bento-y'),
+  'Magic Bento Dashboard cards must use non-intercepting local spotlight and border-beam layers.'
+);
+check(
+  magicBentoDashboardStyles.includes('@media (hover: hover) and (pointer: fine)')
+    && magicBentoDashboardStyles.includes('@media (max-width: 760px), (hover: none), (pointer: coarse)')
+    && magicBentoDashboardStyles.includes('@media (prefers-reduced-motion: reduce)')
+    && magicBentoDashboardStyles.includes('--magic-bento-lift: -2px;')
+    && magicBentoDashboardStyles.includes('animation: none !important;'),
+  'Magic Bento Dashboard motion must be limited to fine pointers and retain touch and reduced-motion safeguards.'
+);
+check(
+  magicBentoDashboardJs.includes("content.querySelectorAll('#pageContent > .stat-grid, .dashboard-bento-grid')")
+    && magicBentoDashboardJs.includes("content.querySelectorAll(")
+    && magicBentoDashboardJs.includes("data-magic-bento-card")
+    && magicBentoDashboardJs.includes("data-magic-bento-interactive")
+    && magicBentoDashboardJs.includes("window.requestAnimationFrame")
+    && magicBentoDashboardJs.includes("grid.addEventListener('pointermove'")
+    && magicBentoDashboardJs.includes("grid.removeEventListener('pointermove'"),
+  'Magic Bento Dashboard pointer tracking must stay scoped to Dashboard grids and remove its listeners during cleanup.'
+);
+check(
+  jsSources['assets/js/app.js'].includes("stopDashboardMagicBento();\n    if (state.view !== 'library')")
+    && jsSources['assets/js/app.js'].includes('startDashboardHeroSlideshow();\n    setupDashboardMagicBento();')
+    && magicBentoDashboardJs.includes("state.view !== 'dashboard'")
+    && magicBentoDashboardJs.includes("window.matchMedia('(prefers-reduced-motion: reduce)')"),
+  'Magic Bento Dashboard setup and teardown must follow Dashboard rendering without changing other views.'
+);
+check(
+  styles.includes('.dashboard-category-panel {\n  grid-column: span 7;\n  grid-row: span 2;')
+    && styles.includes('.dashboard-health-panel,\n.dashboard-recent-panel {\n  grid-column: span 5;')
+    && styles.includes('.dashboard-pulse-panel {\n  grid-column: 1 / -1;')
+    && styles.includes('@media (max-width: 760px) {\n  .dashboard-bento-grid {\n    grid-template-columns: 1fr;'),
+  'Magic Bento Dashboard must preserve the approved bento spans and phone single-column composition.'
+);
+check(
+  html.includes('styles.css?v=20260802-magic-bento-dashboard-v1')
+    && html.includes('app.js?v=20260802-magic-bento-dashboard-v1'),
+  'Magic Bento Dashboard assets must use the V1 cache keys.'
+);
+check(
+  readme.includes('### Magic Bento Dashboard Interaction V1')
+    && readme.includes('no Framer, React, GSAP, animation library, image, or new dependency is added')
+    && readme.includes('phone dock touch-state correction'),
+  'README must document the Magic Bento Dashboard interaction and preserved scope.'
 );
 
 if (failures.length) {

@@ -148,6 +148,8 @@
   let modalReturnFocus = null;
   let dashboardHeroSlideshowTimer = null;
   let dashboardHeroSlideshowToken = 0;
+  let dashboardMagicBentoCleanup = null;
+  let dashboardMagicBentoFrame = 0;
   let projectToolsLoadPromise = null;
   let libraryLoadObserver = null;
   let libraryLoadTimer = 0;
@@ -498,6 +500,7 @@
 
   function render(focusHeading = false) {
     stopDashboardHeroSlideshow();
+    stopDashboardMagicBento();
     if (state.view !== 'library') cancelLibraryLoading();
     const currentTitle = titleByView[state.view] || 'Greenscape Plant Library';
     pageTitle.textContent = currentTitle;
@@ -527,6 +530,151 @@
     }
     dashboardHeroSlideshowToken += 1;
   }
+
+  // GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START
+  function stopDashboardMagicBento() {
+    if (dashboardMagicBentoFrame) {
+      window.cancelAnimationFrame(dashboardMagicBentoFrame);
+      dashboardMagicBentoFrame = 0;
+    }
+    if (dashboardMagicBentoCleanup) {
+      dashboardMagicBentoCleanup();
+      dashboardMagicBentoCleanup = null;
+    }
+  }
+
+  function setupDashboardMagicBento() {
+    stopDashboardMagicBento();
+    if (state.view !== 'dashboard') return;
+
+    const grids = Array.from(content.querySelectorAll('#pageContent > .stat-grid, .dashboard-bento-grid'));
+    const cards = Array.from(content.querySelectorAll(
+      '#pageContent > .stat-grid .stat-card, .dashboard-bento-grid > .panel'
+    ));
+    if (!grids.length || !cards.length) return;
+
+    const cleanupTasks = [];
+    const pressTimers = new Set();
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let activeCard = null;
+    let pendingPointer = null;
+
+    grids.forEach(grid => grid.setAttribute('data-magic-bento-grid', ''));
+    cards.forEach((card, index) => {
+      card.setAttribute('data-magic-bento-card', String(index + 1));
+      card.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])').forEach(control => {
+        control.setAttribute('data-magic-bento-interactive', '');
+      });
+    });
+
+    const clearActiveCard = () => {
+      if (!activeCard) return;
+      activeCard.removeAttribute('data-magic-bento-active');
+      activeCard.style.removeProperty('--magic-bento-x');
+      activeCard.style.removeProperty('--magic-bento-y');
+      activeCard = null;
+    };
+
+    const paintPendingPointer = () => {
+      dashboardMagicBentoFrame = 0;
+      if (!pendingPointer || state.view !== 'dashboard') return;
+      const { card, clientX, clientY } = pendingPointer;
+      pendingPointer = null;
+      if (!card.isConnected) return;
+
+      if (activeCard !== card) {
+        clearActiveCard();
+        activeCard = card;
+        activeCard.setAttribute('data-magic-bento-active', 'true');
+      }
+
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--magic-bento-x', `${clientX - rect.left}px`);
+      card.style.setProperty('--magic-bento-y', `${clientY - rect.top}px`);
+    };
+
+    const schedulePointerPaint = (card, clientX, clientY) => {
+      pendingPointer = { card, clientX, clientY };
+      if (dashboardMagicBentoFrame) return;
+      dashboardMagicBentoFrame = window.requestAnimationFrame(paintPendingPointer);
+    };
+
+    if (finePointer && !reducedMotion) {
+      grids.forEach(grid => {
+        const handlePointerMove = event => {
+          const target = event.target instanceof Element
+            ? event.target.closest('[data-magic-bento-card]')
+            : null;
+          if (!target || !grid.contains(target)) {
+            clearActiveCard();
+            return;
+          }
+          schedulePointerPaint(target, event.clientX, event.clientY);
+        };
+
+        const handlePointerLeave = () => {
+          pendingPointer = null;
+          if (dashboardMagicBentoFrame) {
+            window.cancelAnimationFrame(dashboardMagicBentoFrame);
+            dashboardMagicBentoFrame = 0;
+          }
+          clearActiveCard();
+        };
+
+        const handleClick = event => {
+          const control = event.target instanceof Element
+            ? event.target.closest('[data-magic-bento-interactive]')
+            : null;
+          if (!control || !grid.contains(control)) return;
+          const card = control.closest('[data-magic-bento-card]');
+          if (!card) return;
+
+          card.classList.remove('magic-bento-press');
+          void card.offsetWidth;
+          card.classList.add('magic-bento-press');
+          const timer = window.setTimeout(() => {
+            card.classList.remove('magic-bento-press');
+            pressTimers.delete(timer);
+          }, 460);
+          pressTimers.add(timer);
+        };
+
+        grid.addEventListener('pointermove', handlePointerMove, { passive: true });
+        grid.addEventListener('pointerleave', handlePointerLeave);
+        grid.addEventListener('click', handleClick);
+        cleanupTasks.push(() => {
+          grid.removeEventListener('pointermove', handlePointerMove);
+          grid.removeEventListener('pointerleave', handlePointerLeave);
+          grid.removeEventListener('click', handleClick);
+        });
+      });
+    }
+
+    dashboardMagicBentoCleanup = () => {
+      pendingPointer = null;
+      if (dashboardMagicBentoFrame) {
+        window.cancelAnimationFrame(dashboardMagicBentoFrame);
+        dashboardMagicBentoFrame = 0;
+      }
+      clearActiveCard();
+      pressTimers.forEach(timer => window.clearTimeout(timer));
+      pressTimers.clear();
+      cleanupTasks.forEach(cleanup => cleanup());
+      cards.forEach(card => {
+        card.classList.remove('magic-bento-press');
+        card.removeAttribute('data-magic-bento-active');
+        card.removeAttribute('data-magic-bento-card');
+        card.style.removeProperty('--magic-bento-x');
+        card.style.removeProperty('--magic-bento-y');
+        card.querySelectorAll('[data-magic-bento-interactive]').forEach(control => {
+          control.removeAttribute('data-magic-bento-interactive');
+        });
+      });
+      grids.forEach(grid => grid.removeAttribute('data-magic-bento-grid'));
+    };
+  }
+  // GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_END
 
   function responsiveDashboardSlide(source) {
     return source.replace(/\.jpg$/i, '-900.jpg');
@@ -788,6 +936,7 @@
       ${!storageAvailable ? '<p class="inline-note" style="margin-top:18px;">Browser storage is unavailable. Changes may not remain after closing the page.</p>' : ''}
     `;
     startDashboardHeroSlideshow();
+    setupDashboardMagicBento();
   }
 
   function statCard(label, value, foot) {
