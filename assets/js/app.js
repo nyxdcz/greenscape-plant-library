@@ -502,6 +502,9 @@
     stopDashboardHeroSlideshow();
     stopDashboardMagicBento();
     if (state.view !== 'library') cancelLibraryLoading();
+    if (state.view !== 'library' && typeof plantDiscoveryClearTransitionState === 'function') {
+      plantDiscoveryClearTransitionState();
+    }
     const currentTitle = titleByView[state.view] || 'Greenscape Plant Library';
     pageTitle.textContent = currentTitle;
     document.title = `${currentTitle} | Greenscape Plant Library`;
@@ -1245,6 +1248,8 @@
   let plantDiscoverySkipNextLibraryTransition = false;
   let plantDiscoveryLibraryTransitionActive = false;
   let plantDiscoveryDecorateQueued = false;
+  let plantDiscoveryTransitionActive = false;
+  const plantDiscoveryTransitionElements = new Set();
 
   function plantDiscoveryMotionAllowed() {
     return typeof document.startViewTransition === 'function'
@@ -1519,17 +1524,53 @@
 
   function plantDiscoverySourceForTrigger(trigger) {
     const card = trigger.closest('.plant-card, .plant-list-card');
-    if (card) return card.querySelector('.plant-image, .plant-list-image') || trigger;
-    return trigger.querySelector?.('.dashboard-recent-image') || trigger;
+    if (card) {
+      const control = card.querySelector('.plant-image, .plant-list-image') || trigger;
+      return control.querySelector?.('img') || control;
+    }
+    const recent = trigger.querySelector?.('.dashboard-recent-image') || trigger;
+    return recent.querySelector?.('img') || recent;
   }
 
   function plantDiscoveryVisibleSource(plantId) {
     const controls = content.querySelectorAll('.plant-image[data-plant-id], .plant-list-image[data-plant-id], .dashboard-recent-item[data-plant-id]');
-    const source = Array.from(controls).find(control => control.getAttribute('data-plant-id') === plantId) || null;
+    const control = Array.from(controls).find(item => item.getAttribute('data-plant-id') === plantId) || null;
+    if (!(control instanceof HTMLElement)) return null;
+    const source = control.querySelector?.('img') || control;
     if (!(source instanceof HTMLElement)) return null;
     const rect = source.getBoundingClientRect();
     const visible = rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
     return visible ? source : null;
+  }
+
+  function plantDiscoveryClearTransitionState() {
+    plantDiscoveryTransitionElements.forEach(element => {
+      if (element instanceof HTMLElement) element.style.removeProperty('view-transition-name');
+    });
+    plantDiscoveryTransitionElements.clear();
+    document.documentElement.classList.remove('plant-discovery-detail-transition', 'plant-discovery-library-transition');
+    plantDiscoveryTransitionActive = false;
+    plantDiscoveryLibraryTransitionActive = false;
+  }
+
+  function plantDiscoveryAssignTransitionName(element, name) {
+    if (!(element instanceof HTMLElement)) return;
+    element.style.viewTransitionName = name;
+    plantDiscoveryTransitionElements.add(element);
+  }
+
+  function plantDiscoveryFallbackDetail(plantId) {
+    window.setTimeout(() => {
+      plantDiscoveryPrepareDetail(plantId);
+      const modal = plantDiscoveryDetailModal();
+      if (!(modal instanceof HTMLElement)) return;
+      modal.classList.remove('plant-discovery-detail-fallback');
+      void modal.offsetWidth;
+      modal.classList.add('plant-discovery-detail-fallback');
+      const cleanup = () => modal.classList.remove('plant-discovery-detail-fallback');
+      modal.addEventListener('animationend', cleanup, { once: true });
+      window.setTimeout(cleanup, 260);
+    }, 0);
   }
 
   function plantDiscoverySyntheticClick(target) {
@@ -1547,70 +1588,73 @@
   function plantDiscoveryOpenDetailWithTransition(event, trigger) {
     const plantId = trigger.getAttribute('data-plant-id') || '';
     plantDiscoveryActiveDetailId = plantId;
-    if (!plantDiscoveryMotionAllowed()) {
-      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+    if (!plantDiscoveryMotionAllowed() || plantDiscoveryTransitionActive) {
+      plantDiscoveryFallbackDetail(plantId);
       return false;
     }
 
     const source = plantDiscoverySourceForTrigger(trigger);
     if (!(source instanceof HTMLElement)) {
-      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+      plantDiscoveryFallbackDetail(plantId);
       return false;
     }
 
     event.preventDefault();
     event.stopImmediatePropagation();
+    plantDiscoveryClearTransitionState();
+    plantDiscoveryTransitionActive = true;
+    document.documentElement.classList.add('plant-discovery-detail-transition');
     const transitionName = plantDiscoveryTransitionName(plantId, 'image');
-    source.style.viewTransitionName = transitionName;
+    plantDiscoveryAssignTransitionName(source, transitionName);
     let destination = null;
 
     try {
       const transition = document.startViewTransition(() => {
         plantDiscoverySyntheticClick(trigger);
         destination = plantDiscoveryPrepareDetail(plantId);
-        source.style.viewTransitionName = 'none';
-        if (destination instanceof HTMLElement) destination.style.viewTransitionName = transitionName;
+        plantDiscoveryAssignTransitionName(source, 'none');
+        plantDiscoveryAssignTransitionName(destination, transitionName);
       });
       transition.finished.catch(() => {}).finally(() => {
-        if (source.isConnected) source.style.removeProperty('view-transition-name');
-        if (destination instanceof HTMLElement) destination.style.removeProperty('view-transition-name');
+        plantDiscoveryClearTransitionState();
         plantDiscoveryQueueDecorate();
       });
     } catch (error) {
-      source.style.removeProperty('view-transition-name');
-      plantDiscoverySyntheticClick(trigger);
-      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+      const modalAlreadyOpen = Boolean(plantDiscoveryDetailModal());
+      plantDiscoveryClearTransitionState();
+      if (!modalAlreadyOpen) plantDiscoverySyntheticClick(trigger);
+      plantDiscoveryFallbackDetail(plantId);
     }
     return true;
   }
 
   function plantDiscoveryCloseDetailWithTransition(target, useKeyboard = false) {
     const plantId = plantDiscoveryActiveDetailId;
-    if (!plantId || !plantDiscoveryMotionAllowed()) return false;
+    if (!plantId || !plantDiscoveryMotionAllowed() || plantDiscoveryTransitionActive) return false;
     const source = plantDiscoveryVisibleSource(plantId);
     const destination = plantDiscoveryDetailImage();
     if (!(source instanceof HTMLElement) || !(destination instanceof HTMLElement)) return false;
 
+    plantDiscoveryClearTransitionState();
+    plantDiscoveryTransitionActive = true;
+    document.documentElement.classList.add('plant-discovery-detail-transition');
     const transitionName = plantDiscoveryTransitionName(plantId, 'image');
-    source.style.viewTransitionName = 'none';
-    destination.style.viewTransitionName = transitionName;
+    plantDiscoveryAssignTransitionName(destination, transitionName);
 
     try {
       const transition = document.startViewTransition(() => {
         if (useKeyboard) plantDiscoverySyntheticEscape();
         else plantDiscoverySyntheticClick(target);
-        if (source.isConnected) source.style.viewTransitionName = transitionName;
+        plantDiscoveryAssignTransitionName(source, transitionName);
       });
       transition.finished.catch(() => {}).finally(() => {
-        destination.style.removeProperty('view-transition-name');
-        if (source.isConnected) source.style.removeProperty('view-transition-name');
-        plantDiscoveryActiveDetailId = plantDiscoveryDetailModal() ? plantId : '';
+        plantDiscoveryClearTransitionState();
+        if (!plantDiscoveryDetailModal()) plantDiscoveryActiveDetailId = '';
         plantDiscoveryQueueDecorate();
       });
       return true;
     } catch (error) {
-      destination.style.removeProperty('view-transition-name');
-      if (source.isConnected) source.style.removeProperty('view-transition-name');
+      plantDiscoveryClearTransitionState();
       return false;
     }
   }
@@ -1622,11 +1666,8 @@
       const imageControl = card.querySelector('.plant-image[data-plant-id], .plant-list-image[data-plant-id]');
       const plantId = imageControl?.getAttribute('data-plant-id') || '';
       if (!plantId) return;
-      const key = plantDiscoveryKey(plantId);
       card.setAttribute('data-plant-discovery-card', plantId);
-      if (plantDiscoveryMotionAllowed()) {
-        card.style.viewTransitionName = `greenscape-card-${key}`;
-      }
+      if (!plantDiscoveryTransitionActive) card.style.removeProperty('view-transition-name');
 
       if (card.matches('.plant-card.library-reference-card') && !card.querySelector('[data-plant-compare-toggle]')) {
         const compareButton = document.createElement('button');
@@ -1665,22 +1706,42 @@
 
     if (!hasExistingResults
       || skipTransition
+      || plantDiscoveryTransitionActive
       || plantDiscoveryLibraryTransitionActive
+      || plantDiscoveryDetailModal()
+      || document.body.classList.contains('plant-detail-open')
       || state.view !== 'library'
       || !plantDiscoveryMotionAllowed()) {
       return applyUpdate();
     }
 
+    const oldCards = Array.from(grid.querySelectorAll('[data-plant-discovery-card]')).slice(0, 48);
+    plantDiscoveryClearTransitionState();
+    plantDiscoveryTransitionActive = true;
     plantDiscoveryLibraryTransitionActive = true;
+    document.documentElement.classList.add('plant-discovery-library-transition');
+    oldCards.forEach(card => {
+      const plantId = card.getAttribute('data-plant-discovery-card') || '';
+      if (plantId) plantDiscoveryAssignTransitionName(card, plantDiscoveryTransitionName(plantId, 'card'));
+    });
+
     try {
-      const transition = document.startViewTransition(applyUpdate);
+      const transition = document.startViewTransition(() => {
+        const result = applyUpdate();
+        const newCards = Array.from(grid.querySelectorAll('[data-plant-discovery-card]')).slice(0, 48);
+        newCards.forEach(card => {
+          const plantId = card.getAttribute('data-plant-discovery-card') || '';
+          if (plantId) plantDiscoveryAssignTransitionName(card, plantDiscoveryTransitionName(plantId, 'card'));
+        });
+        return result;
+      });
       transition.finished.catch(() => {}).finally(() => {
-        plantDiscoveryLibraryTransitionActive = false;
+        plantDiscoveryClearTransitionState();
         plantDiscoveryQueueDecorate();
       });
       return transition;
     } catch (error) {
-      plantDiscoveryLibraryTransitionActive = false;
+      plantDiscoveryClearTransitionState();
       return applyUpdate();
     }
   };

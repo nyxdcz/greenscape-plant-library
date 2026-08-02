@@ -1164,3 +1164,12 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_LIBRARY_END */
+
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_LIBRARY_GUARD_START
+   Plant cards never keep a transition identity between actions. Temporary
+   inline names are assigned and removed by the V1.1 transition controller. */
+.plant-card.library-reference-card,
+.plant-list-card {
+  view-transition-name: none;
+}
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_LIBRARY_GUARD_END */

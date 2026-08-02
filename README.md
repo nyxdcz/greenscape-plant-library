@@ -24,6 +24,29 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Interactive Plant Discovery V1.1
+
+- Fixes the Plant Details opening and closing glitch where unrelated Plant Library cards could flash, slide, or appear over the modal during a View Transition.
+- Removes permanent `view-transition-name` values from plant cards and assigns names only to the exact elements participating in the current transition.
+- Limits Plant Details transitions to the selected source image and destination Plant Details image; the grid, toolbar, modal backdrop, modal container, comparison controls, and phone dock remain outside the shared transition.
+- Temporarily names only the current visible batch during user-triggered search, category, sunlight, sorting, and grid/list transitions, then removes every name after completion or failure.
+- Prevents Plant Details and Plant Library reflow transitions from overlapping; rapid or unsupported interactions use the normal modal behavior with a restrained fallback entrance.
+- Replaces broad unscoped View Transition timing selectors with Plant Discovery state classes and preserves reduced-motion behavior.
+- Adds cleanup for successful transitions, rejected promises, exceptions, modal closure, and navigation away from the Plant Library.
+- Preserves the session-only three-plant comparison workflow, current card dimensions, filters, search ranking, lazy loading, Greenie, Magic Bento, phone navigation, maintenance protections, and project tools.
+- Adds regression validation for temporary naming, image-only detail transitions, overlap protection, scoped CSS, fallback behavior, cache keys, and release documentation.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+index.html
+scripts/validate.mjs
+```
+
 ### Interactive Plant Discovery V1
 
 - Adds progressive, browser-native View Transition animation to Plant Library filtering, sorting, and grid/list changes without changing the established card dimensions, information order, filters, or lazy-loading behavior.

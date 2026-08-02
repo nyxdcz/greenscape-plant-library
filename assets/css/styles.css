@@ -9046,30 +9046,53 @@ body.plant-compare-open {
   }
 }
 
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_TRANSITION_FIX_START */
+.plant-discovery-detail-fallback {
+  animation: greenscapePlantDetailFallback 180ms var(--motion-ease-out) both;
+}
+
+@keyframes greenscapePlantDetailFallback {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
+  html.plant-discovery-detail-transition::view-transition-old(root),
+  html.plant-discovery-library-transition::view-transition-old(root) {
+    animation: none;
+    opacity: 0;
+  }
+
+  html.plant-discovery-detail-transition::view-transition-new(root),
+  html.plant-discovery-library-transition::view-transition-new(root) {
     animation: none;
   }
 
-  ::view-transition-group(*) {
-    animation-duration: 220ms;
-    animation-timing-function: cubic-bezier(.22, 1, .36, 1);
-  }
-
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
+  html.plant-discovery-detail-transition::view-transition-group(*),
+  html.plant-discovery-detail-transition::view-transition-old(*),
+  html.plant-discovery-detail-transition::view-transition-new(*),
+  html.plant-discovery-library-transition::view-transition-group(*),
+  html.plant-discovery-library-transition::view-transition-old(*),
+  html.plant-discovery-library-transition::view-transition-new(*) {
     animation-duration: 220ms;
     animation-timing-function: cubic-bezier(.22, 1, .36, 1);
   }
 }
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_TRANSITION_FIX_END */
 
 @media (prefers-reduced-motion: reduce) {
   .plant-compare-backdrop,
   .plant-compare-dialog,
   .plant-compare-thumbnail,
   .plant-compare-dialog-close,
-  .plant-compare-remove {
+  .plant-compare-remove,
+  .plant-discovery-detail-fallback {
     transition-duration: .01ms !important;
     animation: none !important;
     transform: none !important;
