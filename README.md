@@ -24,6 +24,31 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Guided Plant Discovery V1
+
+- Adds a local **Recently Viewed** row in Plant Library showing up to six unique plants, with phone horizontal scrolling, clear-history control, automatic cleanup of deleted records, and no server-side storage.
+- Adds a user-triggered **How this works** guide beside the page title using the native Popover API with a keyboard-accessible fallback and contextual instructions for Dashboard, Plant Library, Plant Details, Plant List Editor, Mood Board, Project Lists, Plant Schedule, and Plant Identifier.
+- Adds a thin Plant Library browsing-progress indicator using `transform: scaleX()`, one passive `requestAnimationFrame`-throttled scroll listener, recalculation after loaded batches, and complete cleanup outside Plant Library.
+- Adds a seven-second **Undo** action after a new project-plant addition, removing only the exact newly created item while keeping ordinary update confirmations unchanged.
+- Gives Greenie contextual, non-interrupting prompts that open the matching guide; Greenie’s existing avatar, GIF animations, dragging, focus behavior, and feedback workflow remain available.
+- Adds up to four deterministic **Similar Plants** suggestions in Plant Details using category, sunlight, water, landscape-use, and growing-condition fields, with clear relationship reasons and no external AI or botanical-equivalence claim.
+- Keeps Recently Viewed card opening compatible with the corrected image-only View Transition, while Similar Plants uses a restrained opacity transition and never enters the shared card-to-modal transition.
+- Preserves the current UI, plant data, Compare Plants, filters, loading, project structure, phone dock, Magic Bento, maintenance protections, staff access, and reduced-motion safeguards.
+- Uses native HTML, CSS, JavaScript, localStorage, MutationObserver, Popover API, and passive event listeners only; no dependency, framework, external API, image, GIF, or data file is added.
+- Adds regression validation for local history, contextual help, progress cleanup, exact-item undo, Greenie prompts, relationship scoring, transition isolation, cache keys, and documentation.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+assets/js/sidebar-assistant.js
+index.html
+scripts/validate.mjs
+```
+
 ### Interactive Plant Discovery V1.1
 
 - Fixes the Plant Details opening and closing glitch where unrelated Plant Library cards could flash, slide, or appear over the modal during a View Transition.

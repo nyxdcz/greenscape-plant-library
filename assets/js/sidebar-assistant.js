@@ -17,6 +17,7 @@
 
   /* GREENSCAPE_GREENIE_DIRECT_HELP_V1_4_START */
   function openHelpPanel() {
+    window.GREENSCAPE_CONTEXTUAL_HELP?.close?.();
     const controller = window.GREENSCAPE_FEEDBACK;
     if (controller?.open) {
       controller.open();
@@ -307,10 +308,10 @@
 
     section.innerHTML = `
       <div class="sidebar-pet-card">
-        <button id="greenieSpeechBox" type="button" class="sidebar-pet-speech" aria-label="Open Greenie Help">
+        <button id="greenieSpeechBox" type="button" class="sidebar-pet-speech" aria-label="Open contextual Greenscape guide">
           <strong>Hi! I’m Greenie 🌿</strong>
-          <span>Need help finding the perfect plant?</span>
-          <em>Ask me anything</em>
+          <span>Need a quick tour of your workspace?</span>
+          <em>How this works</em>
         </button>
 
         <button type="button" class="sidebar-pet-avatar" aria-label="Show Greenie message or drag Greenie" aria-controls="greenieSpeechBox" aria-expanded="false">
@@ -325,13 +326,30 @@
     speech.addEventListener('click', (event) => {
       event.stopPropagation();
       hideSpeechBox(card);
-      openHelpPanel();
+      const contextualHelp = window.GREENSCAPE_CONTEXTUAL_HELP;
+      if (contextualHelp?.open) contextualHelp.open();
+      else openHelpPanel();
     });
 
     enableGreenieDragging(card);
 
     return card;
   }
+
+  // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_GREENIE_START
+  function applyGreenieContext(detail = {}) {
+    const card = qs('.sidebar-pet-card');
+    const speech = qs('.sidebar-pet-speech', card || document);
+    if (!speech) return;
+    const prompt = String(detail.prompt || window.GREENSCAPE_CONTEXTUAL_HELP?.getPrompt?.() || 'Need a quick tour of your workspace?');
+    const context = String(detail.context || window.GREENSCAPE_CONTEXTUAL_HELP?.getContext?.() || 'dashboard');
+    const line = qs('span', speech);
+    const action = qs('em', speech);
+    if (line) line.textContent = prompt;
+    if (action) action.textContent = context === 'detail' ? 'View plant guide' : 'How this works';
+    speech.setAttribute('aria-label', `Open ${context === 'detail' ? 'Plant Details' : context} guide`);
+  }
+  // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_GREENIE_END
 
   function resetLegacyPosition() {
     try {
@@ -346,6 +364,11 @@
     resetLegacyPosition();
     preloadPetAnimations();
     ensureGreenieAssistant();
+    applyGreenieContext({
+      context: window.GREENSCAPE_CONTEXTUAL_HELP?.getContext?.(),
+      prompt: window.GREENSCAPE_CONTEXTUAL_HELP?.getPrompt?.()
+    });
+    document.addEventListener('greenscape:context-change', event => applyGreenieContext(event.detail || {}));
 
     document.addEventListener('click', (event) => {
       const card = qs('.sidebar-pet-card');

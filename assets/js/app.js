@@ -478,14 +478,39 @@
     return d.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  function toast(message, isError) {
+  function toast(message, isError, action) {
     const node = document.createElement('div');
-    node.className = `toast${isError ? ' error' : ''}`;
+    node.className = `toast${isError ? ' error' : ''}${action ? ' has-action' : ''}`;
     node.setAttribute('role', isError ? 'alert' : 'status');
     node.setAttribute('aria-atomic', 'true');
-    node.textContent = message;
+
+    const messageNode = document.createElement('span');
+    messageNode.className = 'toast-message';
+    messageNode.textContent = message;
+    node.appendChild(messageNode);
+
+    let timer = 0;
+    const remove = () => {
+      if (timer) window.clearTimeout(timer);
+      node.remove();
+    };
+
+    if (action && typeof action.onClick === 'function') {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'toast-action';
+      button.textContent = String(action.label || 'Undo');
+      button.addEventListener('click', () => {
+        const callback = action.onClick;
+        remove();
+        callback();
+      }, { once: true });
+      node.appendChild(button);
+    }
+
     toastRoot.appendChild(node);
-    setTimeout(() => node.remove(), 3200);
+    timer = window.setTimeout(remove, Math.max(1200, Number(action?.duration || 3200)));
+    return node;
   }
 
   function setView(view) {
@@ -4622,7 +4647,7 @@
     saveAll();
     closeModal();
     if (state.view === 'projects') render();
-    toast(existing ? 'Project plant updated.' : 'Plant added to project list.');
+    guidedPlantDiscoveryProjectItemSaved(existing, project, item);
   }
 
   function plantImageExtension(source, mimeType) {
@@ -5051,6 +5076,605 @@
       render(true);
     }
   });
+
+
+  // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_START
+  const GUIDED_RECENT_STORAGE_KEY = 'greenscape-recently-viewed-plants-v1';
+  const GUIDED_RECENT_LIMIT = 6;
+  const GUIDED_SIMILAR_LIMIT = 4;
+  const GUIDED_CACHE_KEY = '20260803-guided-plant-discovery-v1';
+  let guidedRecentlyViewedIds = guidedLoadRecentPlantIds();
+  let guidedLibraryProgressCleanup = null;
+  let guidedLibraryProgressFrame = 0;
+  let guidedLibraryProgressSignature = '';
+  let guidedLibraryProgressMax = 0;
+  let guidedHelpOutsideClickBound = false;
+
+  const guidedHelpContent = Object.freeze({
+    dashboard: {
+      title: 'How the Dashboard works',
+      intro: 'Use the Dashboard to see the library at a glance and jump into the tools you use most.',
+      steps: ['Review the plant and project summaries.', 'Open a category or recently added plant.', 'Use the main navigation to continue your workflow.'],
+      tip: 'Start in Plant Library when you already know the growing condition you need.'
+    },
+    library: {
+      title: 'How the Plant Library works',
+      intro: 'Search, filter, compare, and review plant information before adding plants to a project list.',
+      steps: ['Search by name, code, category, condition, or tag.', 'Refine results by category and sunlight.', 'Open Plant Details, compare choices, or add a plant to a list.'],
+      tip: 'Recently Viewed and Similar Plants help you return to promising options.'
+    },
+    detail: {
+      title: 'How Plant Details works',
+      intro: 'Review the selected plant’s key information, available sizes, and related options.',
+      steps: ['Read the planting notes and tags.', 'Expand Available Sizes when needed.', 'Review Similar Plants or add the plant to a project.'],
+      tip: 'Similar Plants are suggestions based on existing library data, not botanical equivalence.'
+    },
+    sheet: {
+      title: 'How the Plant List Editor works',
+      intro: 'Maintain shared plant records, categories, sizes, notes, and images in one structured workspace.',
+      steps: ['Search or choose a category.', 'Edit a record or create a new plant.', 'Validate required fields before saving or exporting.'],
+      tip: 'Keep scientific names and categories accurate so codes and recommendations stay useful.'
+    },
+    moodboard: {
+      title: 'How the Mood Board Creator works',
+      intro: 'Select plants, arrange them, and prepare presentation-ready A3 plant material boards.',
+      steps: ['Choose plants from the picker or load a project list.', 'Reorder cards and adjust board settings.', 'Export PNG pages or print the final board.'],
+      tip: 'Use fewer plants per page when names or images need more visual emphasis.'
+    },
+    projects: {
+      title: 'How Project Lists works',
+      intro: 'Build project-specific planting lists with sizes, quantities, zones, spacing, and notes.',
+      steps: ['Create or open a project.', 'Add plants and confirm project-specific details.', 'Review totals, schedules, BOQ references, and exports.'],
+      tip: 'Use Undo immediately after an accidental new addition.'
+    },
+    schedule: {
+      title: 'How Plant Schedule works',
+      intro: 'Review a project’s planting schedule and prepare a printable or CSV version.',
+      steps: ['Choose the project schedule.', 'Check quantities, zones, spacing, and notes.', 'Export CSV or print to PDF.'],
+      tip: 'Correct project-list entries before exporting the final schedule.'
+    },
+    identifier: {
+      title: 'How Plant Identifier works',
+      intro: 'Upload a clear plant photo to get possible matches, then verify important results.',
+      steps: ['Choose a clear plant image.', 'Run the on-device analysis.', 'Review suggestions and verify with Google Lens or a plant professional.'],
+      tip: 'Photograph a distinctive leaf, flower, fruit, bark, or full plant against a simple background.'
+    }
+  });
+
+  const guidedGreeniePrompts = Object.freeze({
+    dashboard: 'Need a quick tour of your workspace?',
+    library: 'Need help filtering or comparing plants?',
+    detail: 'Want help reading sizes and similar plants?',
+    sheet: 'Need help organizing plant records?',
+    moodboard: 'Need help selecting and arranging plants?',
+    projects: 'Need help building a project plant list?',
+    schedule: 'Need help reviewing a planting schedule?',
+    identifier: 'Need tips for a clearer plant photo?'
+  });
+
+  function guidedLoadRecentPlantIds() {
+    try {
+      const value = JSON.parse(localStorage.getItem(GUIDED_RECENT_STORAGE_KEY) || '[]');
+      return Array.isArray(value) ? value.map(String).filter(Boolean).slice(0, GUIDED_RECENT_LIMIT) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function guidedSanitizeRecentPlantIds() {
+    const seen = new Set();
+    guidedRecentlyViewedIds = guidedRecentlyViewedIds.filter(plantId => {
+      const plant = getPlant(plantId);
+      if (!plant || plant.category === 'Landscape Materials' || plant.isPlant === false || seen.has(plantId)) return false;
+      seen.add(plantId);
+      return true;
+    }).slice(0, GUIDED_RECENT_LIMIT);
+    return guidedRecentlyViewedIds;
+  }
+
+  function guidedSaveRecentPlantIds() {
+    guidedSanitizeRecentPlantIds();
+    try {
+      localStorage.setItem(GUIDED_RECENT_STORAGE_KEY, JSON.stringify(guidedRecentlyViewedIds));
+    } catch (error) {
+      // Recently viewed history is optional and must never block browsing.
+    }
+  }
+
+  function guidedRecordRecentlyViewed(plantId) {
+    const plant = getPlant(plantId);
+    if (!plant || plant.category === 'Landscape Materials' || plant.isPlant === false) return;
+    guidedRecentlyViewedIds = [plantId, ...guidedRecentlyViewedIds.filter(id => id !== plantId)].slice(0, GUIDED_RECENT_LIMIT);
+    guidedSaveRecentPlantIds();
+    window.setTimeout(guidedRenderRecentlyViewed, 0);
+  }
+
+  function guidedRecentCardHTML(plant) {
+    const image = safeImage(plant.image);
+    return `<button type="button" class="guided-recent-card" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" aria-label="View recently opened plant ${escapeHTML(plant.commonName || 'Unnamed plant')}">
+      <span class="guided-recent-image">${image
+        ? `<img src="${image}" alt="" width="152" height="114" loading="lazy" decoding="async">`
+        : `<span class="image-fallback">${escapeHTML(plant.code || '—')}</span>`}</span>
+      <span class="guided-recent-copy">
+        <strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong>
+        <em>${escapeHTML(plant.scientificName || plant.material || plant.category || '')}</em>
+      </span>
+    </button>`;
+  }
+
+  function guidedRecentlyViewedHTML() {
+    const recentPlants = guidedSanitizeRecentPlantIds().map(getPlant).filter(Boolean);
+    if (!recentPlants.length) return '';
+    return `<section class="guided-recently-viewed" aria-labelledby="guidedRecentlyViewedTitle">
+      <header class="guided-section-header">
+        <div><span>Local history</span><h2 id="guidedRecentlyViewedTitle">Recently Viewed</h2></div>
+        <button type="button" class="button ghost small guided-clear-history" data-guided-clear-history>Clear history</button>
+      </header>
+      <div class="guided-recent-row">${recentPlants.map(guidedRecentCardHTML).join('')}</div>
+    </section>`;
+  }
+
+  function guidedRenderRecentlyViewed() {
+    if (state.view !== 'library') return;
+    const toolbar = content.querySelector('.library-toolbar');
+    const grid = document.getElementById('plantGrid');
+    if (!toolbar || !grid) return;
+    content.querySelector('.guided-recently-viewed')?.remove();
+    const html = guidedRecentlyViewedHTML();
+    if (html) grid.insertAdjacentHTML('beforebegin', html);
+  }
+
+  function guidedEnsureLibraryProgress() {
+    const toolbar = content.querySelector('.library-toolbar');
+    if (!toolbar) return null;
+    let progress = toolbar.querySelector('.guided-library-progress');
+    if (!progress) {
+      progress = document.createElement('div');
+      progress.className = 'guided-library-progress';
+      progress.setAttribute('role', 'progressbar');
+      progress.setAttribute('aria-label', 'Plant Library browsing progress');
+      progress.setAttribute('aria-valuemin', '0');
+      progress.setAttribute('aria-valuemax', '100');
+      progress.setAttribute('aria-valuenow', '0');
+      progress.innerHTML = '<span></span>';
+      toolbar.appendChild(progress);
+    }
+    return progress;
+  }
+
+  function guidedCleanupLibraryProgress() {
+    if (guidedLibraryProgressFrame) {
+      window.cancelAnimationFrame(guidedLibraryProgressFrame);
+      guidedLibraryProgressFrame = 0;
+    }
+    if (guidedLibraryProgressCleanup) {
+      guidedLibraryProgressCleanup();
+      guidedLibraryProgressCleanup = null;
+    }
+  }
+
+  function guidedSetupLibraryProgress() {
+    guidedCleanupLibraryProgress();
+    if (state.view !== 'library') return;
+    const progress = guidedEnsureLibraryProgress();
+    const grid = document.getElementById('plantGrid');
+    if (!progress || !grid) return;
+
+    let lastAriaValue = -1;
+    const update = () => {
+      guidedLibraryProgressFrame = 0;
+      if (state.view !== 'library' || !progress.isConnected || !grid.isConnected) return;
+      const rect = grid.getBoundingClientRect();
+      const documentTop = window.scrollY + rect.top;
+      const viewportStart = window.scrollY + Math.min(window.innerHeight * .22, 180);
+      const end = documentTop + grid.scrollHeight - window.innerHeight * .72;
+      const range = end - documentTop;
+      const signature = [state.librarySearch, state.libraryCategory, state.librarySunlight, state.librarySort, state.libraryView].join('|');
+      if (signature !== guidedLibraryProgressSignature) {
+        guidedLibraryProgressSignature = signature;
+        guidedLibraryProgressMax = 0;
+      }
+      const rawRatio = range > 40 ? Math.min(1, Math.max(0, (viewportStart - documentTop) / range)) : 0;
+      guidedLibraryProgressMax = Math.max(guidedLibraryProgressMax, rawRatio);
+      const ratio = guidedLibraryProgressMax;
+      const hidden = range <= 40;
+      progress.classList.toggle('is-hidden', hidden);
+      progress.style.setProperty('--guided-progress', String(ratio));
+      const ariaValue = hidden ? 0 : Math.round(ratio * 20) * 5;
+      if (ariaValue !== lastAriaValue) {
+        progress.setAttribute('aria-valuenow', String(ariaValue));
+        lastAriaValue = ariaValue;
+      }
+    };
+
+    const schedule = () => {
+      if (guidedLibraryProgressFrame) return;
+      guidedLibraryProgressFrame = window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    const observer = typeof MutationObserver === 'function' ? new MutationObserver(schedule) : null;
+    observer?.observe(grid, { childList: true, subtree: true });
+
+    guidedLibraryProgressCleanup = () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      observer?.disconnect();
+    };
+    schedule();
+  }
+
+  function guidedCurrentContext() {
+    if (document.body.classList.contains('plant-detail-open')) return 'detail';
+    if (location.hash === '#identifier' || pageTitle?.textContent?.trim() === 'Plant Identifier') return 'identifier';
+    return guidedHelpContent[state.view] ? state.view : 'dashboard';
+  }
+
+  function guidedEnsureHelpUI() {
+    const titleWrap = document.querySelector('.topbar-title');
+    if (!titleWrap) return null;
+
+    let trigger = document.getElementById('guidedHowItWorksButton');
+    if (!trigger) {
+      trigger = document.createElement('button');
+      trigger.id = 'guidedHowItWorksButton';
+      trigger.type = 'button';
+      trigger.className = 'guided-help-trigger';
+      trigger.setAttribute('aria-label', 'How this works');
+      trigger.setAttribute('aria-haspopup', 'dialog');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.innerHTML = '<span aria-hidden="true">?</span><em>How this works</em>';
+      titleWrap.appendChild(trigger);
+    }
+
+    let popover = document.getElementById('guidedHowItWorksPopover');
+    if (!popover) {
+      popover = document.createElement('section');
+      popover.id = 'guidedHowItWorksPopover';
+      popover.className = 'guided-help-popover';
+      popover.setAttribute('popover', 'auto');
+      popover.setAttribute('role', 'dialog');
+      popover.setAttribute('aria-modal', 'false');
+      popover.setAttribute('aria-labelledby', 'guidedHelpTitle');
+      popover.hidden = true;
+      document.body.appendChild(popover);
+    }
+
+    if (!trigger.dataset.guidedBound) {
+      trigger.dataset.guidedBound = 'true';
+      trigger.addEventListener('click', event => {
+        event.preventDefault();
+        guidedOpenHelp();
+      });
+    }
+
+    if (!popover.dataset.guidedBound) {
+      popover.dataset.guidedBound = 'true';
+      popover.addEventListener('toggle', () => {
+        const open = popover.matches(':popover-open');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      popover.addEventListener('click', event => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (target?.closest('[data-guided-help-close]')) {
+          guidedCloseHelp();
+        }
+        if (target?.closest('[data-guided-ask-greenie]')) {
+          guidedCloseHelp();
+          window.GREENSCAPE_FEEDBACK?.open?.();
+        }
+      });
+    }
+
+    if (!guidedHelpOutsideClickBound) {
+      guidedHelpOutsideClickBound = true;
+      document.addEventListener('click', event => {
+        const currentPopover = document.getElementById('guidedHowItWorksPopover');
+        const currentTrigger = document.getElementById('guidedHowItWorksButton');
+        if (!currentPopover || currentPopover.hidden || currentPopover.contains(event.target) || currentTrigger?.contains(event.target)) return;
+        if (typeof currentPopover.hidePopover !== 'function') guidedCloseHelp();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') guidedCloseHelp();
+      });
+      document.addEventListener('fullscreenchange', guidedCloseHelp);
+    }
+    return { trigger, popover };
+  }
+
+  function guidedHelpMarkup(context) {
+    const guide = guidedHelpContent[context] || guidedHelpContent.dashboard;
+    return `<header class="guided-help-header">
+      <div><span>Greenscape guide</span><h2 id="guidedHelpTitle">${escapeHTML(guide.title)}</h2></div>
+      <button type="button" class="guided-help-close" data-guided-help-close aria-label="Close guide">×</button>
+    </header>
+    <div class="guided-help-body">
+      <p>${escapeHTML(guide.intro)}</p>
+      <ol>${guide.steps.map(step => `<li>${escapeHTML(step)}</li>`).join('')}</ol>
+      <div class="guided-help-tip"><strong>Tip</strong><span>${escapeHTML(guide.tip)}</span></div>
+    </div>
+    <footer class="guided-help-footer">
+      <button type="button" class="button secondary" data-guided-help-close>Close</button>
+      <button type="button" class="button primary" data-guided-ask-greenie>Ask Greenie</button>
+    </footer>`;
+  }
+
+  function guidedOpenHelp(context = guidedCurrentContext()) {
+    const ui = guidedEnsureHelpUI();
+    if (!ui) return;
+    guidedCloseHelp();
+    ui.popover.innerHTML = guidedHelpMarkup(context);
+    ui.popover.hidden = false;
+    ui.trigger.setAttribute('aria-expanded', 'true');
+    if (typeof ui.popover.showPopover === 'function') {
+      try {
+        ui.popover.showPopover();
+      } catch (error) {
+        ui.popover.classList.add('is-fallback-open');
+      }
+    } else {
+      ui.popover.classList.add('is-fallback-open');
+    }
+    window.setTimeout(() => ui.popover.querySelector('[data-guided-help-close]')?.focus({ preventScroll: true }), 0);
+  }
+
+  function guidedCloseHelp() {
+    const popover = document.getElementById('guidedHowItWorksPopover');
+    const trigger = document.getElementById('guidedHowItWorksButton');
+    if (!popover) return;
+    if (typeof popover.hidePopover === 'function' && popover.matches(':popover-open')) {
+      try { popover.hidePopover(); } catch (error) {}
+    }
+    popover.classList.remove('is-fallback-open');
+    popover.hidden = true;
+    trigger?.setAttribute('aria-expanded', 'false');
+  }
+
+  function guidedUpdateContext() {
+    guidedEnsureHelpUI();
+    guidedCloseHelp();
+    const context = guidedCurrentContext();
+    const prompt = guidedGreeniePrompts[context] || guidedGreeniePrompts.dashboard;
+    document.dispatchEvent(new CustomEvent('greenscape:context-change', {
+      detail: { context, prompt }
+    }));
+  }
+
+  function guidedPlantWords(value) {
+    return new Set(normalizeSearchText(value).split(/\s+/).filter(word => word.length > 2));
+  }
+
+  function guidedLandscapePhrases(value) {
+    return String(value || '').split(/[,;/|]+/).map(normalizeSearchText).filter(Boolean);
+  }
+
+  function guidedPlantSimilarity(source, candidate) {
+    let score = 0;
+    const reasons = [];
+    if (source.category && source.category === candidate.category) {
+      score += 4;
+      reasons.push('Same category');
+    }
+    if (normalizeSearchText(source.sun) && normalizeSearchText(source.sun) === normalizeSearchText(candidate.sun)) {
+      score += 3;
+      reasons.push('Same sunlight');
+    }
+    if (normalizeSearchText(source.water) && normalizeSearchText(source.water) === normalizeSearchText(candidate.water)) {
+      score += 2;
+      reasons.push('Same water need');
+    }
+
+    const sourcePhrases = guidedLandscapePhrases(source.landscapeUse);
+    const candidatePhrases = guidedLandscapePhrases(candidate.landscapeUse);
+    const exactUse = sourcePhrases.some(phrase => candidatePhrases.includes(phrase));
+    if (exactUse) {
+      score += 3;
+      reasons.push('Similar landscape use');
+    } else {
+      const sourceWords = guidedPlantWords(source.landscapeUse);
+      const candidateWords = guidedPlantWords(candidate.landscapeUse);
+      const sharedWords = [...sourceWords].filter(word => candidateWords.has(word)).length;
+      if (sharedWords >= 2) {
+        score += 2;
+        reasons.push('Related landscape use');
+      } else if (sharedWords === 1) {
+        score += 1;
+        reasons.push('Shared landscape use');
+      }
+    }
+
+    if (normalizeSearchText(source.growingCondition)
+      && normalizeSearchText(source.growingCondition) === normalizeSearchText(candidate.growingCondition)) {
+      score += 1;
+      reasons.push('Same growing condition');
+    }
+    return { score, reasons: reasons.slice(0, 2) };
+  }
+
+  function guidedSimilarPlants(plant) {
+    return plants
+      .filter(candidate => candidate.id !== plant.id
+        && candidate.category !== 'Landscape Materials'
+        && candidate.isPlant !== false)
+      .map(candidate => ({ plant: candidate, ...guidedPlantSimilarity(plant, candidate) }))
+      .filter(entry => entry.score >= 3)
+      .sort((a, b) => b.score - a.score
+        || Number(Boolean(safeImage(b.plant.image))) - Number(Boolean(safeImage(a.plant.image)))
+        || String(a.plant.commonName || '').localeCompare(String(b.plant.commonName || ''), undefined, { sensitivity: 'base' }))
+      .slice(0, GUIDED_SIMILAR_LIMIT);
+  }
+
+  function guidedSimilarPlantsHTML(plant) {
+    const similar = guidedSimilarPlants(plant);
+    if (!similar.length) return '';
+    return `<section class="guided-similar-plants" aria-labelledby="guidedSimilarPlantsTitle">
+      <header class="guided-section-header">
+        <div><span>Relationship suggestions</span><h3 id="guidedSimilarPlantsTitle">Similar Plants</h3></div>
+      </header>
+      <div class="guided-similar-grid">${similar.map(entry => {
+        const candidate = entry.plant;
+        const image = safeImage(candidate.image);
+        return `<button type="button" class="guided-similar-card" data-guided-similar-plant="${escapeHTML(candidate.id)}">
+          <span class="guided-similar-image">${image
+            ? `<img src="${image}" alt="" width="224" height="168" loading="lazy" decoding="async">`
+            : `<span class="image-fallback">${escapeHTML(candidate.code || '—')}</span>`}</span>
+          <span class="guided-similar-copy">
+            <strong>${escapeHTML(candidate.commonName || 'Unnamed plant')}</strong>
+            <em>${escapeHTML(candidate.scientificName || candidate.material || '')}</em>
+            <small>${entry.reasons.map(escapeHTML).join(' · ')}</small>
+          </span>
+        </button>`;
+      }).join('')}</div>
+      <p class="guided-similar-note">Suggestions use matching library fields and do not claim botanical equivalence.</p>
+    </section>`;
+  }
+
+  function guidedDecoratePlantDetail(plantId) {
+    const plant = getPlant(plantId);
+    const modalBody = modalRoot.querySelector('.plant-detail-modal .modal-body');
+    if (!plant || !modalBody) return;
+    modalBody.querySelector('.guided-similar-plants')?.remove();
+    const html = guidedSimilarPlantsHTML(plant);
+    if (html) modalBody.insertAdjacentHTML('beforeend', html);
+  }
+
+  function guidedOpenSimilarPlant(plantId) {
+    const plant = getPlant(plantId);
+    if (!plant) return;
+    guidedCloseHelp();
+    if (typeof plantDiscoveryClearTransitionState === 'function') plantDiscoveryClearTransitionState();
+    if (typeof plantDiscoveryActiveDetailId !== 'undefined') plantDiscoveryActiveDetailId = '';
+    const returnTarget = modalReturnFocus;
+    openPlantDetail(plantId);
+    modalReturnFocus = returnTarget;
+    if (typeof plantDiscoveryPrepareDetail === 'function') plantDiscoveryPrepareDetail(plantId);
+    if (typeof plantDiscoveryActiveDetailId !== 'undefined') plantDiscoveryActiveDetailId = '';
+    const modal = modalRoot.querySelector('.plant-detail-modal');
+    if (modal) {
+      modal.classList.remove('guided-detail-swap');
+      void modal.offsetWidth;
+      modal.classList.add('guided-detail-swap');
+      window.setTimeout(() => modal.classList.remove('guided-detail-swap'), 240);
+    }
+  }
+
+  function guidedPlantDiscoveryProjectItemSaved(existing, project, item) {
+    if (existing) {
+      toast('Project plant updated.');
+      return;
+    }
+    const projectId = project.id;
+    const itemId = item.id;
+    const plantName = item.commonName || getPlant(item.plantId)?.commonName || 'Plant';
+    toast(`${plantName} added to ${project.name}.`, false, {
+      label: 'Undo',
+      duration: 7000,
+      onClick: () => {
+        const currentProject = getProject(projectId);
+        const currentItem = currentProject?.items?.find(entry => entry.id === itemId);
+        if (!currentProject || !currentItem) {
+          toast('This addition can no longer be undone.', true);
+          return;
+        }
+        currentProject.items = currentProject.items.filter(entry => entry.id !== itemId);
+        currentProject.updatedAt = new Date().toISOString();
+        saveAll();
+        if (state.view === 'projects' || state.view === 'schedule') render();
+        toast(`${plantName} removed from ${currentProject.name}.`);
+      }
+    });
+  }
+
+  const guidedOriginalRenderLibrary = renderLibrary;
+  renderLibrary = function (...args) {
+    const result = guidedOriginalRenderLibrary(...args);
+    guidedRenderRecentlyViewed();
+    guidedSetupLibraryProgress();
+    return result;
+  };
+
+  const guidedOriginalUpdateLibraryResults = updateLibraryResults;
+  updateLibraryResults = function (...args) {
+    const result = guidedOriginalUpdateLibraryResults(...args);
+    guidedRenderRecentlyViewed();
+    guidedSetupLibraryProgress();
+    return result;
+  };
+
+  const guidedOriginalOpenModal = openModal;
+  openModal = function (...args) {
+    guidedCloseHelp();
+    return guidedOriginalOpenModal(...args);
+  };
+
+  const guidedOriginalCloseModal = closeModal;
+  closeModal = function (...args) {
+    const result = guidedOriginalCloseModal(...args);
+    queueMicrotask(guidedUpdateContext);
+    return result;
+  };
+
+  const guidedOriginalOpenPlantDetail = openPlantDetail;
+  openPlantDetail = function (plantId) {
+    guidedRecordRecentlyViewed(plantId);
+    const result = guidedOriginalOpenPlantDetail(plantId);
+    guidedDecoratePlantDetail(plantId);
+    guidedUpdateContext();
+    return result;
+  };
+
+  const guidedOriginalRender = render;
+  render = function (...args) {
+    if (state.view !== 'library') {
+      guidedCleanupLibraryProgress();
+      guidedLibraryProgressSignature = '';
+      guidedLibraryProgressMax = 0;
+    }
+    const result = guidedOriginalRender(...args);
+    guidedUpdateContext();
+    if (state.view === 'library') {
+      guidedRenderRecentlyViewed();
+      guidedSetupLibraryProgress();
+    }
+    return result;
+  };
+
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const clearHistory = target.closest('[data-guided-clear-history]');
+    if (clearHistory) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      guidedRecentlyViewedIds = [];
+      try { localStorage.removeItem(GUIDED_RECENT_STORAGE_KEY); } catch (error) {}
+      guidedRenderRecentlyViewed();
+      toast('Recently viewed history cleared.');
+      return;
+    }
+
+    const similar = target.closest('[data-guided-similar-plant]');
+    if (similar) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      guidedOpenSimilarPlant(similar.getAttribute('data-guided-similar-plant') || '');
+    }
+  }, true);
+
+  window.addEventListener('hashchange', guidedUpdateContext);
+  pageTitle && new MutationObserver(guidedUpdateContext).observe(pageTitle, { childList: true, characterData: true, subtree: true });
+
+  window.GREENSCAPE_CONTEXTUAL_HELP = Object.freeze({
+    open: guidedOpenHelp,
+    close: guidedCloseHelp,
+    update: guidedUpdateContext,
+    getContext: guidedCurrentContext,
+    getPrompt: () => guidedGreeniePrompts[guidedCurrentContext()] || guidedGreeniePrompts.dashboard,
+    cacheKey: GUIDED_CACHE_KEY
+  });
+  // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_END
 
   document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === state.view));
   render();

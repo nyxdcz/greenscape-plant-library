@@ -201,7 +201,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -272,8 +272,8 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-interactive-plant-discovery-v1-1/.test(html)
-    && /app\.js\?v=20260803-interactive-plant-discovery-v1-1/.test(html),
+  /plant-library-refinements\.css\?v=20260803-guided-plant-discovery-v1/.test(html)
+    && /app\.js\?v=20260803-guided-plant-discovery-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,7 +329,7 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260803-interactive-plant-discovery-v1-1/.test(html)
+  /styles\.css\?v=20260803-guided-plant-discovery-v1/.test(html)
     && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -456,8 +456,8 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -484,7 +484,7 @@ check(
   'The existing phone Plant Library columns and sticky-toolbar position must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Plant Library breakpoint continuity styles must use the current cache key.'
 );
 check(
@@ -522,7 +522,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-interactive-plant-discovery-v1-1/.test(html),
+  /plant-library-refinements\.css\?v=20260803-guided-plant-discovery-v1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -552,8 +552,8 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -588,7 +588,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -622,7 +622,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -679,11 +679,11 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1')
+    && html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
+    && html.includes('sidebar-assistant.js?v=20260803-guided-plant-discovery-v1'),
   'Greenie-only Help assets must use the current cache keys.'
 );
 
@@ -724,8 +724,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1')
+    && html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
@@ -779,8 +779,8 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -835,7 +835,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1'),
+    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
@@ -1022,9 +1022,9 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Interface QA assets must use the current cache keys.'
 );
@@ -1091,7 +1091,7 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
@@ -1135,9 +1135,9 @@ check(
   'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
 );
 check(
@@ -1180,7 +1180,7 @@ check(
   'The existing responsive expansion widths and genuine fine-pointer hover behavior must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
     && !html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone dock touch-state styles must use the V1.1 cache key.'
 );
@@ -1238,8 +1238,8 @@ check(
   'Magic Bento Dashboard must preserve the approved bento spans and phone single-column composition.'
 );
 check(
-  html.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && html.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Magic Bento Dashboard assets must use the V1 cache keys.'
 );
 check(
@@ -1304,9 +1304,9 @@ check(
   'Only non-critical identifier results should gain lazy loading while the hero and first visible plant cards keep priority.'
 );
 check(
-  mobileReviewHtml.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && mobileReviewHtml.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  mobileReviewHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && mobileReviewHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Mobile form, viewport, and image-loading assets must use the V1.1 cache key.'
 );
 check(
@@ -1388,9 +1388,9 @@ check(
   'Plant Discovery motion must stay restrained and include shared reduced-motion safeguards.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Interactive Plant Discovery assets must use the current V1 cache key.'
 );
 check(
@@ -1456,9 +1456,9 @@ check(
   'Plant Library cards must default to no persistent View Transition identity.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-interactive-plant-discovery-v1-1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-interactive-plant-discovery-v1-1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-interactive-plant-discovery-v1-1'),
+  plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Interactive Plant Discovery V1.1 assets must use the corrected cache key.'
 );
 check(
@@ -1466,6 +1466,91 @@ check(
     && plantDiscoveryReadme.includes('unrelated Plant Library cards could flash')
     && plantDiscoveryReadme.includes('three-plant comparison workflow'),
   'README must document the Plant Details transition-glitch correction and preserved comparison workflow.'
+);
+
+
+// GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_VALIDATION
+const guidedDiscoveryApp = jsSources['assets/js/app.js'];
+const guidedDiscoveryAssistant = jsSources['assets/js/sidebar-assistant.js'];
+const guidedDiscoveryStyles = styles.split('/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_START')[1]
+  ?.split('/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_END */')[0] || '';
+const guidedDiscoveryLibraryStyles = plantLibraryStyles.split('/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_LIBRARY_START')[1]
+  ?.split('/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_LIBRARY_END */')[0] || '';
+const guidedDiscoveryJs = guidedDiscoveryApp.split('// GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_START')[1]
+  ?.split('// GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_END')[0] || '';
+
+check(
+  guidedDiscoveryJs.includes("const GUIDED_RECENT_STORAGE_KEY = 'greenscape-recently-viewed-plants-v1';")
+    && guidedDiscoveryJs.includes('const GUIDED_RECENT_LIMIT = 6;')
+    && guidedDiscoveryJs.includes('guidedRecordRecentlyViewed')
+    && guidedDiscoveryJs.includes('data-guided-clear-history')
+    && guidedDiscoveryLibraryStyles.includes('.guided-recent-row')
+    && guidedDiscoveryLibraryStyles.includes('scroll-snap-type: x proximity;'),
+  'Guided Plant Discovery must provide six-item local Recently Viewed history with clear and phone scrolling behavior.'
+);
+check(
+  guidedDiscoveryJs.includes("popover.setAttribute('popover', 'auto')")
+    && guidedDiscoveryJs.includes("typeof ui.popover.showPopover === 'function'")
+    && guidedDiscoveryJs.includes('guidedHelpContent')
+    && guidedDiscoveryJs.includes('data-guided-ask-greenie')
+    && guidedDiscoveryStyles.includes('.guided-help-popover'),
+  'Contextual How This Works guidance must use the native Popover API with a fallback and Ask Greenie action.'
+);
+check(
+  guidedDiscoveryJs.includes("window.addEventListener('scroll', schedule, { passive: true })")
+    && guidedDiscoveryJs.includes('window.requestAnimationFrame(update)')
+    && guidedDiscoveryJs.includes('guidedCleanupLibraryProgress')
+    && guidedDiscoveryLibraryStyles.includes('transform: scaleX(var(--guided-progress));')
+    && guidedDiscoveryLibraryStyles.includes('pointer-events: none;'),
+  'Plant Library browsing progress must be transform-based, passive, animation-frame throttled, and cleaned up.'
+);
+check(
+  guidedDiscoveryApp.includes('function toast(message, isError, action)')
+    && guidedDiscoveryJs.includes('duration: 7000')
+    && guidedDiscoveryJs.includes('entry.id !== itemId')
+    && guidedDiscoveryApp.includes('guidedPlantDiscoveryProjectItemSaved(existing, project, item);'),
+  'New project-plant additions must provide an exact-item seven-second Undo action without changing edit confirmations.'
+);
+check(
+  guidedDiscoveryAssistant.includes('GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_GREENIE_START')
+    && guidedDiscoveryAssistant.includes("document.addEventListener('greenscape:context-change'")
+    && guidedDiscoveryAssistant.includes('window.GREENSCAPE_CONTEXTUAL_HELP')
+    && guidedDiscoveryJs.includes('guidedGreeniePrompts'),
+  'Greenie must expose non-interrupting contextual prompts and open the matching guide.'
+);
+check(
+  guidedDiscoveryJs.includes('const GUIDED_SIMILAR_LIMIT = 4;')
+    && guidedDiscoveryJs.includes('score += 4;')
+    && guidedDiscoveryJs.includes('score += 3;')
+    && guidedDiscoveryJs.includes('score += 2;')
+    && guidedDiscoveryJs.includes('guidedOpenSimilarPlant')
+    && guidedDiscoveryJs.includes("plantDiscoveryActiveDetailId = ''")
+    && guidedDiscoveryLibraryStyles.includes('.guided-similar-grid'),
+  'Similar Plants must use deterministic weighted relationships, show up to four results, and stay outside the shared transition.'
+);
+check(
+  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-guided-plant-discovery-v1'),
+  'Guided Plant Discovery assets must use the current cache keys.'
+);
+check(
+  readme.includes('### Guided Plant Discovery V1')
+    && readme.includes('Recently Viewed')
+    && readme.includes('How this works')
+    && readme.includes('Similar Plants')
+    && readme.includes('no dependency, framework, external API, image, GIF, or data file is added'),
+  'README must document all Guided Plant Discovery features and preserved dependency scope.'
+);
+check(
+  guidedDiscoveryApp.includes('function plantDiscoveryClearTransitionState()')
+    && guidedDiscoveryApp.includes('let plantDiscoveryTransitionActive = false;')
+    && guidedDiscoveryApp.includes('plantDiscoveryAssignTransitionName')
+    && styles.includes('GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_TRANSITION_FIX_START')
+    && plantLibraryStyles.includes('GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_LIBRARY_GUARD_START')
+    && guidedDiscoveryApp.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START'),
+  'The corrected Plant Details transition and existing Magic Bento safeguards must remain present.'
 );
 
 if (failures.length) {

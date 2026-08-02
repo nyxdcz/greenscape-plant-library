@@ -1173,3 +1173,277 @@ body:has(#plantGrid) .library-view-toggle {
   view-transition-name: none;
 }
 /* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_LIBRARY_GUARD_END */
+
+/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_LIBRARY_START */
+.library-toolbar {
+  position: sticky;
+}
+
+.guided-library-progress {
+  --guided-progress: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 140ms ease;
+}
+
+.guided-library-progress.is-hidden {
+  opacity: 0;
+}
+
+.guided-library-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--guided-progress));
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--forest-700), #a7d85b);
+  box-shadow: 0 0 12px rgba(159, 213, 83, .36);
+  will-change: transform;
+}
+
+.guided-recently-viewed {
+  display: grid;
+  gap: 11px;
+  margin: 14px 0 18px;
+  padding: 15px;
+  border: 1px solid rgba(30, 89, 64, .12);
+  border-radius: 21px;
+  background: linear-gradient(145deg, rgba(247, 250, 245, .94), rgba(237, 245, 239, .9));
+  box-shadow: 0 12px 32px rgba(17, 63, 44, .07);
+}
+
+.guided-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.guided-section-header h2,
+.guided-section-header h3 {
+  margin: 3px 0 0;
+  color: var(--forest-950);
+  font-family: Georgia, serif;
+  font-weight: 500;
+}
+
+.guided-section-header h2 {
+  font-size: 21px;
+}
+
+.guided-section-header h3 {
+  font-size: 23px;
+}
+
+.guided-recent-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.guided-recent-card,
+.guided-similar-card {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(33, 92, 67, .12);
+  border-radius: 15px;
+  color: var(--ink);
+  background: #fff;
+  text-align: left;
+  box-shadow: 0 7px 20px rgba(17, 59, 42, .07);
+}
+
+.guided-recent-image,
+.guided-similar-image {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--forest-100);
+}
+
+.guided-recent-image {
+  aspect-ratio: 4 / 3;
+}
+
+.guided-recent-image img,
+.guided-similar-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.guided-recent-copy,
+.guided-similar-copy {
+  min-width: 0;
+  display: grid;
+}
+
+.guided-recent-copy {
+  gap: 2px;
+  padding: 8px 9px 10px;
+}
+
+.guided-recent-copy strong,
+.guided-recent-copy em,
+.guided-similar-copy strong,
+.guided-similar-copy em,
+.guided-similar-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guided-recent-copy strong,
+.guided-similar-copy strong {
+  color: var(--forest-950);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.guided-recent-copy em,
+.guided-similar-copy em {
+  color: var(--muted);
+  font-family: Georgia, serif;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.guided-similar-plants {
+  display: grid;
+  gap: 13px;
+  margin-top: 20px;
+  padding: 17px;
+  border: 1px solid rgba(31, 89, 65, .13);
+  border-radius: 21px;
+  background: rgba(243, 248, 243, .86);
+}
+
+.guided-similar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.guided-similar-image {
+  aspect-ratio: 4 / 3;
+}
+
+.guided-similar-copy {
+  gap: 3px;
+  padding: 10px;
+}
+
+.guided-similar-copy small {
+  color: var(--forest-700);
+  font-size: 9px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.guided-similar-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .guided-recent-card:hover,
+  .guided-similar-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(81, 139, 90, .32);
+    box-shadow: var(--interaction-glow), 0 12px 28px rgba(17, 59, 42, .11);
+  }
+
+  .guided-recent-card:hover img,
+  .guided-similar-card:hover img {
+    transform: scale(1.025);
+  }
+}
+
+@media (max-width: 980px) {
+  .guided-recent-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .guided-similar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .guided-recently-viewed {
+    margin: 10px 0 14px;
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .guided-recent-row {
+    display: flex;
+    gap: 9px;
+    overflow-x: auto;
+    padding: 1px 1px 7px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+
+  .guided-recent-card {
+    flex: 0 0 132px;
+    scroll-snap-align: start;
+  }
+
+  .guided-clear-history {
+    min-height: 34px;
+  }
+
+  .guided-similar-plants {
+    margin-top: 16px;
+    padding: 13px;
+    border-radius: 18px;
+  }
+
+  .guided-similar-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .guided-section-header {
+    align-items: center;
+  }
+
+  .guided-similar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guided-similar-card {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .guided-similar-image {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guided-library-progress,
+  .guided-library-progress > span,
+  .guided-recent-card,
+  .guided-similar-card,
+  .guided-recent-card img,
+  .guided-similar-card img {
+    transition-duration: .01ms !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_LIBRARY_END */
