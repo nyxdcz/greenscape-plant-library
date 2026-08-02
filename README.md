@@ -568,6 +568,10 @@ The project aims to preserve:
 - Safe-area support for phone navigation
 - Responsive desktop, tablet, and phone layouts
 - Readable contrast and clear form feedback
+- Fine-pointer hover elevation and image zoom, without sticky hover motion on touch devices
+- Consistent Greenscape pressed and focus-glow feedback for interactive controls
+- Plant Library result announcements that include the active search, filters, and sort context
+- Empty-result guidance covering common names, scientific names, codes, categories, tags, and sunlight
 
 Manual browser testing is still required after visual or interaction changes.
 

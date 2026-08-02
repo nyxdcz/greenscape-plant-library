@@ -907,7 +907,8 @@
           <option value="za"${state.librarySort === 'za' ? ' selected' : ''}>Sort: Z–A</option>
         </select>
 
-        <span id="libraryResultCount" class="library-result-count" role="status" aria-live="polite"></span>
+        <span id="libraryResultCount" class="library-result-count" aria-hidden="true"></span>
+        <span id="libraryResultContext" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
 
         <div class="library-view-toggle" role="group" aria-label="Plant Library view">
           <button type="button" class="library-view-button" data-action="library-view" data-library-view="grid" aria-label="Grid view" aria-pressed="${state.libraryView !== 'list' ? 'true' : 'false'}">${libraryIcon('grid')}</button>
@@ -986,14 +987,25 @@
     const results = filteredPlants();
     const shown = results.slice(0, state.libraryLimit);
     const resultCount = document.getElementById('libraryResultCount');
+    const resultContext = document.getElementById('libraryResultContext');
+    const visibleResultLabel = `${results.length} ${results.length === 1 ? 'plant' : 'plants'}`;
     if (resultCount) {
-      resultCount.textContent = `${results.length} ${results.length === 1 ? 'result' : 'results'}`;
+      resultCount.textContent = visibleResultLabel;
+    }
+    if (resultContext) {
+      const activeContext = [];
+      const search = state.librarySearch.trim();
+      if (search) activeContext.push(`search ${search}`);
+      if (state.libraryCategory !== 'All') activeContext.push(`category ${state.libraryCategory}`);
+      if (state.librarySunlight !== 'All') activeContext.push(`sunlight ${state.librarySunlight}`);
+      activeContext.push(`sorted ${state.librarySort === 'za' ? 'Z to A' : 'A to Z'}`);
+      resultContext.textContent = `Plant Library updated: ${visibleResultLabel}; ${activeContext.join('; ')}.`;
     }
 
     if (!results.length) {
       grid.innerHTML = emptyState(
         'No matching plants',
-        'Try another plant name, category, or sunlight filter.',
+        'Search by common name, scientific name, code, category, or tags, or choose a different sunlight filter.',
         '<button type="button" class="button secondary" data-action="clear-filter">Clear filters</button>'
       );
       return;

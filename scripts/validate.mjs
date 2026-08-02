@@ -201,7 +201,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+    && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -272,8 +272,8 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260802-library-breakpoint-continuity-v1/.test(html)
-    && /app\.js\?v=20260731-interface-qa1/.test(html),
+  /plant-library-refinements\.css\?v=20260802-branded-interaction-feedback-v1/.test(html)
+    && /app\.js\?v=20260802-branded-interaction-feedback-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,7 +329,7 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260801-expanding-hover-menu-v1/.test(html)
+  /styles\.css\?v=20260802-branded-interaction-feedback-v1/.test(html)
     && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -456,8 +456,8 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
-    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -484,7 +484,7 @@ check(
   'The existing phone Plant Library columns and sticky-toolbar position must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+  html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Plant Library breakpoint continuity styles must use the current cache key.'
 );
 check(
@@ -522,7 +522,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260802-library-breakpoint-continuity-v1/.test(html),
+  /plant-library-refinements\.css\?v=20260802-branded-interaction-feedback-v1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -552,8 +552,8 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1')
-    && html.includes('app.js?v=20260731-interface-qa1'),
+  html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -588,7 +588,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+  html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -622,7 +622,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+  html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -679,8 +679,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
-    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
     && html.includes('sidebar-assistant.js?v=20260731-greenie-only-help1-4'),
@@ -724,8 +724,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
-    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
@@ -779,8 +779,8 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1')
-    && html.includes('app.js?v=20260731-interface-qa1'),
+  html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -835,7 +835,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+    && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
@@ -1022,9 +1022,9 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
+  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
-    && html.includes('app.js?v=20260731-interface-qa1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Interface QA assets must use the current cache keys.'
 );
@@ -1091,12 +1091,59 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260801-expanding-hover-menu-v1'),
+  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
   readme.includes('### Expanding Hover Phone Menu V1'),
   'README must record the expanding hover phone menu release.'
+);
+
+// GREENSCAPE_BRANDED_INTERACTION_FEEDBACK_V1_VALIDATION
+check(
+  styles.includes('--motion-fast: 160ms;')
+    && styles.includes('--motion-standard: 220ms;')
+    && styles.includes('--motion-ease-out: cubic-bezier(.22, 1, .36, 1);')
+    && styles.includes('--interaction-glow:'),
+  'Branded interaction feedback must use shared motion and glow tokens.'
+);
+check(
+  /@media\s*\(hover:\s*hover\)\s*and\s*\(pointer:\s*fine\)\s*\{[\s\S]*?\.plant-card:hover/.test(styles)
+    && /@media\s*\(hover:\s*hover\)\s*and\s*\(pointer:\s*fine\)\s*\{[\s\S]*?#plantGrid \.plant-card:hover/.test(plantLibraryStyles),
+  'Plant card elevation and image zoom must be limited to fine-pointer hover.'
+);
+check(
+  styles.includes(':not(:disabled):active')
+    && styles.includes('transform: scale(.985);')
+    && styles.includes('box-shadow: var(--interaction-glow);'),
+  'Interactive controls must retain subtle pressed and branded focus-glow feedback.'
+);
+check(
+  styles.includes('@media (prefers-reduced-motion: reduce)')
+    && styles.includes('transition-duration: .01ms !important;'),
+  'Branded interaction feedback must retain the global reduced-motion safeguard.'
+);
+check(
+  jsSources['assets/js/app.js'].includes('id="libraryResultContext"')
+    && jsSources['assets/js/app.js'].includes('Plant Library updated: ${visibleResultLabel}')
+    && jsSources['assets/js/app.js'].includes('scientific name, code, category, or tags'),
+  'Plant Library results must announce active context and provide complete empty-state guidance.'
+);
+check(
+  plantLibraryStyles.includes('@media (max-width: 760px)')
+    && plantLibraryStyles.includes('@media (min-width: 761px)'),
+  'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
+);
+check(
+  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
+  'Branded interaction feedback assets must use the V1 cache key.'
+);
+check(
+  readme.includes('Fine-pointer hover elevation and image zoom')
+    && readme.includes('Plant Library result announcements'),
+  'README must document branded interaction feedback and accessible result context.'
 );
 
 if (failures.length) {

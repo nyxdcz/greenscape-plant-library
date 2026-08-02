@@ -92,13 +92,15 @@ body:has(#plantGrid) .library-toolbar .result-count {
   border-radius: 17px !important;
   background: #fff !important;
   box-shadow: 0 5px 16px rgba(21, 45, 35, .07) !important;
-  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+  transition: transform var(--motion-fast) var(--motion-ease-out), box-shadow var(--motion-fast) var(--motion-ease-out), border-color var(--motion-fast) var(--motion-ease-out) !important;
 }
 
-#plantGrid .plant-card:hover {
-  transform: translateY(-2px) !important;
-  border-color: rgba(47, 106, 82, .18) !important;
-  box-shadow: 0 10px 24px rgba(21, 45, 35, .11) !important;
+@media (hover: hover) and (pointer: fine) {
+  #plantGrid .plant-card:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(47, 106, 82, .18) !important;
+    box-shadow: 0 10px 24px rgba(21, 45, 35, .11) !important;
+  }
 }
 
 #plantGrid .plant-image {
