@@ -1236,6 +1236,576 @@
   }
 
 
+
+  // GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_START
+  const PLANT_COMPARE_LIMIT = 3;
+  const plantCompareIds = new Set();
+  let plantCompareReturnFocus = null;
+  let plantDiscoveryActiveDetailId = '';
+  let plantDiscoverySkipNextLibraryTransition = false;
+  let plantDiscoveryLibraryTransitionActive = false;
+  let plantDiscoveryDecorateQueued = false;
+
+  function plantDiscoveryMotionAllowed() {
+    return typeof document.startViewTransition === 'function'
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function plantDiscoveryKey(value) {
+    return String(value || 'plant').replace(/[^a-zA-Z0-9_-]+/g, '-');
+  }
+
+  function plantDiscoveryTransitionName(plantId, part) {
+    return `greenscape-${part}-${plantDiscoveryKey(plantId)}`;
+  }
+
+  function plantDiscoveryPlant(plantId) {
+    return plants.find(plant => plant.id === plantId) || null;
+  }
+
+  function plantDiscoverySelectedPlants() {
+    const selected = [];
+    for (const plantId of plantCompareIds) {
+      const plant = plantDiscoveryPlant(plantId);
+      if (plant) selected.push(plant);
+      else plantCompareIds.delete(plantId);
+    }
+    return selected;
+  }
+
+  function plantDiscoveryAnnounce(message) {
+    let status = document.getElementById('plantCompareStatus');
+    if (!status) {
+      status = document.createElement('span');
+      status.id = 'plantCompareStatus';
+      status.className = 'sr-only';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      status.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(status);
+    }
+    status.textContent = '';
+    window.setTimeout(() => { status.textContent = message; }, 20);
+  }
+
+  function plantDiscoveryCompareIcon() {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h10M7 19h10M8 8l-3 4 3 4M16 8l3 4-3 4"></path></svg>';
+  }
+
+  function plantDiscoveryUpdateCompareControls() {
+    document.querySelectorAll('[data-plant-compare-toggle], [data-plant-detail-compare]').forEach(button => {
+      const plantId = button.getAttribute('data-plant-compare-toggle')
+        || button.getAttribute('data-plant-detail-compare')
+        || '';
+      const plant = plantDiscoveryPlant(plantId);
+      const selected = plantCompareIds.has(plantId);
+      const pressed = selected ? 'true' : 'false';
+      const label = `${selected ? 'Remove' : 'Add'} ${plant?.commonName || 'plant'} ${selected ? 'from' : 'to'} comparison`;
+      if (button.getAttribute('aria-pressed') !== pressed) button.setAttribute('aria-pressed', pressed);
+      button.classList.toggle('is-selected', selected);
+      if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+      if (button.hasAttribute('data-plant-detail-compare')) {
+        const copy = button.querySelector('span');
+        const copyText = selected ? 'Remove from Compare' : 'Add to Compare';
+        if (copy && copy.textContent !== copyText) copy.textContent = copyText;
+      }
+    });
+  }
+
+  function plantDiscoveryEnsureTray() {
+    let tray = document.getElementById('plantCompareTray');
+    if (tray) return tray;
+    tray = document.createElement('section');
+    tray.id = 'plantCompareTray';
+    tray.className = 'plant-compare-tray';
+    tray.setAttribute('aria-label', 'Plants selected for comparison');
+    tray.hidden = true;
+    document.body.appendChild(tray);
+    return tray;
+  }
+
+  function plantDiscoveryRenderTray() {
+    const tray = plantDiscoveryEnsureTray();
+    const selected = plantDiscoverySelectedPlants();
+    tray.hidden = selected.length === 0;
+    if (!selected.length) {
+      tray.innerHTML = '';
+      return;
+    }
+
+    const thumbnails = selected.map(plant => {
+      const image = safeImage(plant.image);
+      const name = escapeHTML(plant.commonName || 'Unnamed plant');
+      return `<button type="button" class="plant-compare-thumbnail" data-plant-compare-remove="${escapeHTML(plant.id)}" aria-label="Remove ${name} from comparison" title="Remove ${name}">
+        ${image
+          ? `<img src="${image}" alt="" width="68" height="68" loading="lazy" decoding="async">`
+          : `<span>${escapeHTML(plant.code || '—')}</span>`}
+      </button>`;
+    }).join('');
+
+    tray.innerHTML = `
+      <div class="plant-compare-tray-copy">
+        <div class="plant-compare-tray-title"><strong>Compare Plants</strong><span>${selected.length} of ${PLANT_COMPARE_LIMIT} selected</span></div>
+        <div class="plant-compare-thumbnails">${thumbnails}</div>
+      </div>
+      <div class="plant-compare-tray-actions">
+        <button type="button" class="button primary small" data-plant-compare-open${selected.length < 2 ? ' disabled' : ''}>Compare</button>
+        <button type="button" class="button ghost small" data-plant-compare-clear>Clear</button>
+      </div>`;
+  }
+
+  function plantDiscoveryToggleCompare(plantId) {
+    const plant = plantDiscoveryPlant(plantId);
+    if (!plant) return;
+
+    if (plantCompareIds.has(plantId)) {
+      plantCompareIds.delete(plantId);
+      plantDiscoveryAnnounce(`${plant.commonName || 'Plant'} removed from comparison.`);
+    } else {
+      if (plantCompareIds.size >= PLANT_COMPARE_LIMIT) {
+        const message = `You can compare up to ${PLANT_COMPARE_LIMIT} plants.`;
+        plantDiscoveryAnnounce(message);
+        if (typeof toast === 'function') toast(message, true);
+        return;
+      }
+      plantCompareIds.add(plantId);
+      plantDiscoveryAnnounce(`${plant.commonName || 'Plant'} added to comparison. ${plantCompareIds.size} of ${PLANT_COMPARE_LIMIT} selected.`);
+    }
+
+    plantDiscoveryUpdateCompareControls();
+    plantDiscoveryRenderTray();
+    plantDiscoveryRefreshCompareModal();
+  }
+
+  function plantDiscoverySizes(plant) {
+    const values = (Array.isArray(plant?.sizes) ? plant.sizes : []).map(size => {
+      const label = String(size?.label || size?.size || '').trim();
+      const unit = String(size?.unit || '').trim();
+      return [label, unit].filter(Boolean).join(' ');
+    }).filter(Boolean);
+    return values.length ? values.join(', ') : 'Not specified';
+  }
+
+  function plantDiscoveryValue(value) {
+    const text = String(value || '').trim();
+    return text || 'Not specified';
+  }
+
+  function plantDiscoveryCompareColumns(selected) {
+    const facts = [
+      ['Category', plant => plant.category],
+      ['Sunlight', plant => plant.sun],
+      ['Water', plant => plant.water],
+      ['Spacing', plant => plant.spacing],
+      ['Mature height', plant => plant.matureHeight],
+      ['Mature spread', plant => plant.matureSpread],
+      ['Growing condition', plant => plant.growingCondition],
+      ['Landscape use', plant => plant.landscapeUse],
+      ['Available sizes', plant => plantDiscoverySizes(plant)],
+    ];
+
+    return selected.map(plant => {
+      const image = safeImage(plant.image);
+      const plantName = escapeHTML(plant.commonName || 'Unnamed plant');
+      const scientific = escapeHTML(plant.scientificName || plant.material || 'Not specified');
+      const factRows = facts.map(([label, getter]) => `
+        <div class="plant-compare-fact">
+          <dt>${escapeHTML(label)}</dt>
+          <dd>${escapeHTML(plantDiscoveryValue(getter(plant)))}</dd>
+        </div>`).join('');
+
+      return `<article class="plant-compare-column">
+        <header class="plant-compare-column-head">
+          <div class="plant-compare-column-image">${image
+            ? `<img src="${image}" alt="${plantName}" width="148" height="148" loading="lazy" decoding="async">`
+            : `<span>${escapeHTML(plant.code || '—')}</span>`}</div>
+          <div class="plant-compare-column-copy"><strong>${plantName}</strong><em>${scientific}</em></div>
+          <button type="button" class="plant-compare-remove" data-plant-compare-remove="${escapeHTML(plant.id)}" aria-label="Remove ${plantName} from comparison">×</button>
+        </header>
+        <dl class="plant-compare-facts">${factRows}</dl>
+      </article>`;
+    }).join('');
+  }
+
+  function plantDiscoveryRefreshCompareModal() {
+    const backdrop = document.querySelector('.plant-compare-backdrop');
+    if (!backdrop) return;
+    const selected = plantDiscoverySelectedPlants();
+    if (selected.length < 2) {
+      plantDiscoveryCloseCompareModal();
+      return;
+    }
+    const grid = backdrop.querySelector('[data-plant-compare-content]');
+    const count = backdrop.querySelector('[data-plant-compare-count]');
+    if (count) count.textContent = `${selected.length} selected`;
+    if (grid) {
+      grid.style.setProperty('--compare-count', String(selected.length));
+      grid.innerHTML = plantDiscoveryCompareColumns(selected);
+    }
+  }
+
+  function plantDiscoveryOpenCompareModal(trigger) {
+    const selected = plantDiscoverySelectedPlants();
+    if (selected.length < 2) {
+      const message = 'Select at least two plants to compare.';
+      plantDiscoveryAnnounce(message);
+      if (typeof toast === 'function') toast(message, true);
+      return;
+    }
+
+    plantDiscoveryCloseCompareModal(false);
+    plantCompareReturnFocus = trigger instanceof HTMLElement ? trigger : document.activeElement;
+    const backdrop = document.createElement('div');
+    backdrop.className = 'plant-compare-backdrop';
+    backdrop.innerHTML = `
+      <section class="plant-compare-dialog" role="dialog" aria-modal="true" aria-labelledby="plantCompareTitle" aria-describedby="plantCompareDescription">
+        <header class="plant-compare-dialog-header">
+          <div>
+            <span data-plant-compare-count>${selected.length} selected</span>
+            <h2 id="plantCompareTitle">Compare Plants</h2>
+            <p id="plantCompareDescription" class="sr-only">Compare key growing conditions, sizes, and landscape uses for the selected plants.</p>
+          </div>
+          <button type="button" class="plant-compare-dialog-close" data-plant-compare-close aria-label="Close plant comparison">×</button>
+        </header>
+        <div class="plant-compare-dialog-body">
+          <div class="plant-compare-grid" data-plant-compare-content style="--compare-count:${selected.length}">${plantDiscoveryCompareColumns(selected)}</div>
+        </div>
+      </section>`;
+    document.body.appendChild(backdrop);
+    document.body.classList.add('plant-compare-open');
+    window.requestAnimationFrame(() => {
+      backdrop.classList.add('is-open');
+      backdrop.querySelector('[data-plant-compare-close]')?.focus();
+    });
+  }
+
+  function plantDiscoveryCloseCompareModal(returnFocus = true) {
+    const backdrop = document.querySelector('.plant-compare-backdrop');
+    if (!backdrop) return;
+    backdrop.remove();
+    document.body.classList.remove('plant-compare-open');
+    if (returnFocus && plantCompareReturnFocus instanceof HTMLElement && plantCompareReturnFocus.isConnected) {
+      plantCompareReturnFocus.focus({ preventScroll: true });
+    }
+    plantCompareReturnFocus = null;
+  }
+
+  function plantDiscoveryDetailModal() {
+    return modalRoot.querySelector('.plant-detail-modal, .plant-detail, .modal');
+  }
+
+  function plantDiscoveryDetailImage() {
+    return modalRoot.querySelector('.plant-detail-photo img, .plant-detail-image img, .plant-detail img, .modal img');
+  }
+
+  function plantDiscoveryPrepareDetail(plantId) {
+    const modal = plantDiscoveryDetailModal();
+    if (!modal || !plantId) return null;
+    const image = plantDiscoveryDetailImage();
+    const host = modal.querySelector('.modal-body') || modal;
+    let wrap = modal.querySelector('.plant-detail-compare-wrap');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.className = 'plant-detail-compare-wrap';
+      host.appendChild(wrap);
+    }
+    const existingButton = wrap.querySelector('[data-plant-detail-compare]');
+    if (!existingButton || existingButton.getAttribute('data-plant-detail-compare') !== plantId) {
+      wrap.innerHTML = `<button type="button" class="button secondary plant-detail-compare-action" data-plant-detail-compare="${escapeHTML(plantId)}" aria-pressed="false">${plantDiscoveryCompareIcon()}<span>Add to Compare</span></button>`;
+    }
+    plantDiscoveryUpdateCompareControls();
+    return image;
+  }
+
+  function plantDiscoverySourceForTrigger(trigger) {
+    const card = trigger.closest('.plant-card, .plant-list-card');
+    if (card) return card.querySelector('.plant-image, .plant-list-image') || trigger;
+    return trigger.querySelector?.('.dashboard-recent-image') || trigger;
+  }
+
+  function plantDiscoveryVisibleSource(plantId) {
+    const controls = content.querySelectorAll('.plant-image[data-plant-id], .plant-list-image[data-plant-id], .dashboard-recent-item[data-plant-id]');
+    const source = Array.from(controls).find(control => control.getAttribute('data-plant-id') === plantId) || null;
+    if (!(source instanceof HTMLElement)) return null;
+    const rect = source.getBoundingClientRect();
+    const visible = rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+    return visible ? source : null;
+  }
+
+  function plantDiscoverySyntheticClick(target) {
+    const synthetic = new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window });
+    Object.defineProperty(synthetic, 'greenscapePlantDiscoveryBypass', { value: true });
+    target.dispatchEvent(synthetic);
+  }
+
+  function plantDiscoverySyntheticEscape() {
+    const synthetic = new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true, cancelable: true, composed: true });
+    Object.defineProperty(synthetic, 'greenscapePlantDiscoveryBypass', { value: true });
+    document.dispatchEvent(synthetic);
+  }
+
+  function plantDiscoveryOpenDetailWithTransition(event, trigger) {
+    const plantId = trigger.getAttribute('data-plant-id') || '';
+    plantDiscoveryActiveDetailId = plantId;
+    if (!plantDiscoveryMotionAllowed()) {
+      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+      return false;
+    }
+
+    const source = plantDiscoverySourceForTrigger(trigger);
+    if (!(source instanceof HTMLElement)) {
+      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+      return false;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const transitionName = plantDiscoveryTransitionName(plantId, 'image');
+    source.style.viewTransitionName = transitionName;
+    let destination = null;
+
+    try {
+      const transition = document.startViewTransition(() => {
+        plantDiscoverySyntheticClick(trigger);
+        destination = plantDiscoveryPrepareDetail(plantId);
+        source.style.viewTransitionName = 'none';
+        if (destination instanceof HTMLElement) destination.style.viewTransitionName = transitionName;
+      });
+      transition.finished.catch(() => {}).finally(() => {
+        if (source.isConnected) source.style.removeProperty('view-transition-name');
+        if (destination instanceof HTMLElement) destination.style.removeProperty('view-transition-name');
+        plantDiscoveryQueueDecorate();
+      });
+    } catch (error) {
+      source.style.removeProperty('view-transition-name');
+      plantDiscoverySyntheticClick(trigger);
+      window.setTimeout(() => plantDiscoveryPrepareDetail(plantId), 0);
+    }
+    return true;
+  }
+
+  function plantDiscoveryCloseDetailWithTransition(target, useKeyboard = false) {
+    const plantId = plantDiscoveryActiveDetailId;
+    if (!plantId || !plantDiscoveryMotionAllowed()) return false;
+    const source = plantDiscoveryVisibleSource(plantId);
+    const destination = plantDiscoveryDetailImage();
+    if (!(source instanceof HTMLElement) || !(destination instanceof HTMLElement)) return false;
+
+    const transitionName = plantDiscoveryTransitionName(plantId, 'image');
+    source.style.viewTransitionName = 'none';
+    destination.style.viewTransitionName = transitionName;
+
+    try {
+      const transition = document.startViewTransition(() => {
+        if (useKeyboard) plantDiscoverySyntheticEscape();
+        else plantDiscoverySyntheticClick(target);
+        if (source.isConnected) source.style.viewTransitionName = transitionName;
+      });
+      transition.finished.catch(() => {}).finally(() => {
+        destination.style.removeProperty('view-transition-name');
+        if (source.isConnected) source.style.removeProperty('view-transition-name');
+        plantDiscoveryActiveDetailId = plantDiscoveryDetailModal() ? plantId : '';
+        plantDiscoveryQueueDecorate();
+      });
+      return true;
+    } catch (error) {
+      destination.style.removeProperty('view-transition-name');
+      if (source.isConnected) source.style.removeProperty('view-transition-name');
+      return false;
+    }
+  }
+
+  function plantDiscoveryDecorate() {
+    plantDiscoveryDecorateQueued = false;
+    const cards = content.querySelectorAll('.plant-card.library-reference-card, .plant-list-card');
+    cards.forEach(card => {
+      const imageControl = card.querySelector('.plant-image[data-plant-id], .plant-list-image[data-plant-id]');
+      const plantId = imageControl?.getAttribute('data-plant-id') || '';
+      if (!plantId) return;
+      const key = plantDiscoveryKey(plantId);
+      card.setAttribute('data-plant-discovery-card', plantId);
+      if (plantDiscoveryMotionAllowed()) {
+        card.style.viewTransitionName = `greenscape-card-${key}`;
+      }
+
+      if (card.matches('.plant-card.library-reference-card') && !card.querySelector('[data-plant-compare-toggle]')) {
+        const compareButton = document.createElement('button');
+        compareButton.type = 'button';
+        compareButton.className = 'plant-compare-toggle';
+        compareButton.setAttribute('data-plant-compare-toggle', plantId);
+        compareButton.innerHTML = plantDiscoveryCompareIcon();
+        card.insertBefore(compareButton, imageControl.nextSibling);
+      }
+    });
+
+    if (!plantDiscoveryDetailModal()) plantDiscoveryActiveDetailId = '';
+    else if (plantDiscoveryActiveDetailId) plantDiscoveryPrepareDetail(plantDiscoveryActiveDetailId);
+    plantDiscoveryUpdateCompareControls();
+    plantDiscoveryRenderTray();
+  }
+
+  function plantDiscoveryQueueDecorate() {
+    if (plantDiscoveryDecorateQueued) return;
+    plantDiscoveryDecorateQueued = true;
+    queueMicrotask(plantDiscoveryDecorate);
+  }
+
+  const plantDiscoveryOriginalUpdateLibraryResults = updateLibraryResults;
+  updateLibraryResults = function (...args) {
+    const grid = document.getElementById('plantGrid');
+    const hasExistingResults = Boolean(grid?.querySelector('.plant-grid, .plant-list-view, .empty-state'));
+    const skipTransition = plantDiscoverySkipNextLibraryTransition;
+    plantDiscoverySkipNextLibraryTransition = false;
+
+    const applyUpdate = () => {
+      const result = plantDiscoveryOriginalUpdateLibraryResults(...args);
+      plantDiscoveryDecorate();
+      return result;
+    };
+
+    if (!hasExistingResults
+      || skipTransition
+      || plantDiscoveryLibraryTransitionActive
+      || state.view !== 'library'
+      || !plantDiscoveryMotionAllowed()) {
+      return applyUpdate();
+    }
+
+    plantDiscoveryLibraryTransitionActive = true;
+    try {
+      const transition = document.startViewTransition(applyUpdate);
+      transition.finished.catch(() => {}).finally(() => {
+        plantDiscoveryLibraryTransitionActive = false;
+        plantDiscoveryQueueDecorate();
+      });
+      return transition;
+    } catch (error) {
+      plantDiscoveryLibraryTransitionActive = false;
+      return applyUpdate();
+    }
+  };
+
+  const plantDiscoveryOriginalRequestLibraryBatch = requestLibraryBatch;
+  requestLibraryBatch = function (...args) {
+    if (state.view === 'library' && document.querySelector('[data-library-load-trigger][data-has-more="true"]')) {
+      plantDiscoverySkipNextLibraryTransition = true;
+    }
+    return plantDiscoveryOriginalRequestLibraryBatch(...args);
+  };
+
+  function plantDiscoveryHandleClick(event) {
+    if (event.greenscapePlantDiscoveryBypass) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const compareToggle = target.closest('[data-plant-compare-toggle], [data-plant-detail-compare]');
+    if (compareToggle) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const plantId = compareToggle.getAttribute('data-plant-compare-toggle')
+        || compareToggle.getAttribute('data-plant-detail-compare')
+        || '';
+      plantDiscoveryToggleCompare(plantId);
+      return;
+    }
+
+    const remove = target.closest('[data-plant-compare-remove]');
+    if (remove) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      plantDiscoveryToggleCompare(remove.getAttribute('data-plant-compare-remove') || '');
+      return;
+    }
+
+    const open = target.closest('[data-plant-compare-open]');
+    if (open) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      plantDiscoveryOpenCompareModal(open);
+      return;
+    }
+
+    const clear = target.closest('[data-plant-compare-clear]');
+    if (clear) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      plantCompareIds.clear();
+      plantDiscoveryUpdateCompareControls();
+      plantDiscoveryRenderTray();
+      plantDiscoveryCloseCompareModal();
+      plantDiscoveryAnnounce('Plant comparison cleared.');
+      return;
+    }
+
+    const compareClose = target.closest('[data-plant-compare-close]');
+    const compareBackdrop = target.classList.contains('plant-compare-backdrop');
+    if (compareClose || compareBackdrop) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      plantDiscoveryCloseCompareModal();
+      return;
+    }
+
+    const loadMore = target.closest('[data-action="load-more"]');
+    if (loadMore) plantDiscoverySkipNextLibraryTransition = true;
+
+    const detailTrigger = target.closest('[data-action="plant-detail"][data-plant-id]');
+    if (detailTrigger && plantDiscoveryOpenDetailWithTransition(event, detailTrigger)) return;
+
+    if (plantDiscoveryActiveDetailId && document.body.classList.contains('plant-detail-open')) {
+      const closeControl = target.closest('[data-action="close-modal"], [data-action="modal-close"], [data-modal-close], .modal-close, .modal-close-button, [aria-label="Close"]');
+      const modalBackdrop = target.classList.contains('modal-backdrop');
+      if ((closeControl || modalBackdrop) && plantDiscoveryCloseDetailWithTransition(target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    }
+  }
+
+  function plantDiscoveryHandleKeydown(event) {
+    if (event.greenscapePlantDiscoveryBypass) return;
+    const compareBackdrop = document.querySelector('.plant-compare-backdrop');
+    if (compareBackdrop) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        plantDiscoveryCloseCompareModal();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const focusable = Array.from(compareBackdrop.querySelectorAll('button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+      return;
+    }
+
+    if (event.key === 'Escape'
+      && plantDiscoveryActiveDetailId
+      && document.body.classList.contains('plant-detail-open')
+      && plantDiscoveryCloseDetailWithTransition(document, true)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }
+
+  document.addEventListener('click', plantDiscoveryHandleClick, true);
+  document.addEventListener('keydown', plantDiscoveryHandleKeydown, true);
+
+  const plantDiscoveryObserver = new MutationObserver(plantDiscoveryQueueDecorate);
+  plantDiscoveryObserver.observe(content, { childList: true, subtree: true });
+  plantDiscoveryObserver.observe(modalRoot, { childList: true, subtree: true });
+  plantDiscoveryQueueDecorate();
+  // GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_END
+
   function filteredSheetPlants() {
     const q = String(state.sheetSearch || '').trim().toLowerCase();
     return plants.filter(plant => {

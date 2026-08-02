@@ -1095,3 +1095,72 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_PLANT_LIBRARY_MOBILE_FORM_SCALE_V1_1_END */
+
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_LIBRARY_START
+   Desktop/tablet comparison control only. Phone cards and their current actions
+   remain unchanged; phone comparison is available inside Plant Details. */
+.plant-card.library-reference-card {
+  position: relative;
+}
+
+.plant-compare-toggle {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  z-index: 7;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .76);
+  border-radius: 999px;
+  color: var(--forest-900);
+  background: rgba(255, 253, 248, .9);
+  -webkit-backdrop-filter: blur(10px) saturate(145%);
+  backdrop-filter: blur(10px) saturate(145%);
+  box-shadow: 0 6px 18px rgba(13, 56, 39, .14);
+  transition: transform var(--motion-fast) var(--motion-ease-out), background var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+
+.plant-compare-toggle svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.plant-compare-toggle[aria-pressed="true"] {
+  color: #fff;
+  background: var(--forest-800);
+  box-shadow: 0 0 0 3px rgba(220, 234, 107, .25), 0 8px 22px rgba(13, 56, 39, .2);
+}
+
+.plant-compare-toggle:focus-visible {
+  outline: 3px solid rgba(211, 239, 145, .92);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plant-compare-toggle:hover {
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: var(--interaction-glow), 0 8px 22px rgba(13, 56, 39, .18);
+  }
+}
+
+@media (max-width: 760px) {
+  .plant-compare-toggle {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plant-compare-toggle {
+    transition-duration: .01ms !important;
+    transform: none !important;
+  }
+}
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_LIBRARY_END */

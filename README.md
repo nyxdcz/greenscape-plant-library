@@ -24,6 +24,29 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Interactive Plant Discovery V1
+
+- Adds progressive, browser-native View Transition animation to Plant Library filtering, sorting, and grid/list changes without changing the established card dimensions, information order, filters, or lazy-loading behavior.
+- Smoothly connects a selected Plant Library image to the Plant Details image when supported, with an immediate fallback for unsupported browsers and a reduced-motion fallback for visitors who request less motion.
+- Adds a session-only **Compare Plants** workflow for up to three plants, including compact desktop/tablet card controls, a floating selection tray, a phone action inside Plant Details, and an accessible comparison dialog.
+- Compares common and scientific names, category, sunlight, water, spacing, mature height, mature spread, growing condition, landscape use, and available sizes without editing or permanently storing plant data.
+- Keeps automatic scroll loading outside view transitions so Greenie loading feedback, batch limits, and the existing Show More fallback remain responsive.
+- Uses `transform` and `opacity` focused motion, keeps animation durations restrained, and adds keyboard, focus-return, Escape-key, live-status, touch, safe-area, and reduced-motion safeguards.
+- Uses native HTML, CSS, JavaScript, MutationObserver, and the View Transition API only; no React, Framer, GSAP, animation package, image, or new dependency is added.
+- Preserves the Dashboard bento layout, Magic Bento interaction, hero slideshow, phone dock touch-state correction, current UI design, Greenie, Plant Identifier, Mood Board, project tools, maintenance protections, and staff access.
+- Adds regression validation for progressive enhancement, three-plant limits, session-only state, modal accessibility, phone behavior, lazy-load exclusions, cache versions, and release documentation.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+index.html
+scripts/validate.mjs
+```
+
 ### Mobile Form, Viewport and Image Loading V1.1
 
 - Prevents iPhone Safari from zooming the page when phone users focus text-entry controls by keeping their computed font size at **16 px**.

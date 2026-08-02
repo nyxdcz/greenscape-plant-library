@@ -8688,3 +8688,391 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   max-height: calc(100dvh - 78px);
 }
 /* GREENSCAPE_MOBILE_FORM_VIEWPORT_IMAGE_LOADING_V1_1_END */
+
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_START
+   Progressive plant comparison, accessible modal/tray behavior, and restrained
+   View Transition styling. Existing layouts, phone dock, and data remain intact. */
+.plant-compare-tray[hidden],
+.plant-compare-backdrop[hidden] {
+  display: none !important;
+}
+
+.plant-compare-tray {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 76;
+  width: min(420px, calc(100vw - 36px));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(32, 83, 63, .16);
+  border-radius: 20px;
+  color: var(--ink);
+  background: rgba(255, 253, 248, .94);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 18px 52px rgba(16, 54, 39, .18);
+  view-transition-name: none;
+}
+
+.plant-compare-tray-copy {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.plant-compare-tray-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.plant-compare-tray-title strong {
+  color: var(--forest-900);
+}
+
+.plant-compare-thumbnails {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+}
+
+.plant-compare-thumbnail {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  color: var(--forest-900);
+  background: var(--forest-100);
+  box-shadow: 0 3px 10px rgba(18, 73, 49, .13);
+}
+
+.plant-compare-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plant-compare-thumbnail span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.plant-compare-tray-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 7px;
+}
+
+.plant-compare-tray-actions .button {
+  min-height: 36px;
+  padding-inline: 11px;
+}
+
+.plant-compare-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  background: rgba(8, 28, 21, .48);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  view-transition-name: none;
+}
+
+.plant-compare-backdrop.is-open {
+  opacity: 1;
+}
+
+.plant-compare-dialog {
+  width: min(1120px, 100%);
+  max-height: min(820px, calc(100vh - 36px));
+  max-height: min(820px, calc(100dvh - 36px));
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid rgba(255, 255, 255, .72);
+  border-radius: 28px;
+  color: var(--ink);
+  background: rgba(255, 253, 248, .98);
+  box-shadow: 0 30px 90px rgba(5, 28, 19, .32);
+  transform: translateY(10px) scale(.985);
+  transition: transform 210ms var(--motion-ease-out);
+}
+
+.plant-compare-backdrop.is-open .plant-compare-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.plant-compare-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 21px 22px 17px;
+  border-bottom: 1px solid var(--line);
+}
+
+.plant-compare-dialog-header span {
+  display: block;
+  color: var(--forest-700);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.plant-compare-dialog-header h2 {
+  margin: 4px 0 0;
+  font-family: Georgia, serif;
+  font-size: clamp(23px, 3vw, 34px);
+  font-weight: 500;
+}
+
+.plant-compare-dialog-close {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--forest-900);
+  background: #fff;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.plant-compare-dialog-body {
+  overflow: auto;
+  padding: 20px 22px 24px;
+  overscroll-behavior: contain;
+}
+
+.plant-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--compare-count, 2), minmax(0, 1fr));
+  gap: 14px;
+}
+
+.plant-compare-column {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e1e8e2;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.plant-compare-column-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 13px 46px 13px 13px;
+  background: linear-gradient(145deg, rgba(232, 243, 237, .88), rgba(248, 249, 242, .9));
+}
+
+.plant-compare-column-image {
+  width: 74px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: var(--forest-900);
+  background: var(--forest-100);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.plant-compare-column-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plant-compare-column-copy {
+  min-width: 0;
+}
+
+.plant-compare-column-copy strong,
+.plant-compare-column-copy em {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.plant-compare-column-copy strong {
+  color: var(--forest-950);
+  font-size: 15px;
+}
+
+.plant-compare-column-copy em {
+  margin-top: 3px;
+  color: var(--muted);
+  font-family: Georgia, serif;
+  font-size: 12px;
+}
+
+.plant-compare-remove {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(32, 83, 63, .12);
+  border-radius: 10px;
+  color: var(--forest-800);
+  background: rgba(255, 255, 255, .86);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.plant-compare-facts {
+  margin: 0;
+}
+
+.plant-compare-fact {
+  display: grid;
+  grid-template-columns: minmax(92px, .7fr) minmax(0, 1.3fr);
+  gap: 10px;
+  padding: 11px 13px;
+  border-top: 1px solid #edf0ec;
+}
+
+.plant-compare-fact dt,
+.plant-compare-fact dd {
+  margin: 0;
+}
+
+.plant-compare-fact dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.plant-compare-fact dd {
+  color: var(--ink);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.plant-detail-compare-wrap {
+  display: none;
+}
+
+body.plant-compare-open {
+  overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plant-compare-thumbnail:hover,
+  .plant-compare-dialog-close:hover,
+  .plant-compare-remove:hover {
+    transform: translateY(-1px);
+    border-color: rgba(72, 139, 91, .34);
+    box-shadow: var(--interaction-glow);
+  }
+}
+
+@media (max-width: 760px) {
+  .plant-compare-tray {
+    right: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
+    width: calc(100vw - 24px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    padding: 11px;
+    border-radius: 18px;
+  }
+
+  .plant-compare-tray-actions {
+    grid-template-columns: 1fr auto;
+  }
+
+  .plant-compare-tray-actions .button {
+    width: 100%;
+  }
+
+  .plant-compare-dialog {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    border-radius: 22px;
+  }
+
+  .plant-compare-dialog-header {
+    padding: 17px 17px 14px;
+  }
+
+  .plant-compare-dialog-body {
+    padding: 14px 14px 18px;
+  }
+
+  .plant-compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-compare-fact {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .plant-detail-compare-wrap {
+    display: block;
+    padding: 0 18px 18px;
+  }
+
+  .plant-detail-compare-action {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  ::view-transition-group(*) {
+    animation-duration: 220ms;
+    animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 220ms;
+    animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plant-compare-backdrop,
+  .plant-compare-dialog,
+  .plant-compare-thumbnail,
+  .plant-compare-dialog-close,
+  .plant-compare-remove {
+    transition-duration: .01ms !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_END */
