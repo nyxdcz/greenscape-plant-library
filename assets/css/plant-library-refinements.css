@@ -1079,3 +1079,19 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_END */
+
+/* GREENSCAPE_PLANT_LIBRARY_MOBILE_FORM_SCALE_V1_1_START
+   Keeps phone search and select controls at the iOS-safe 16px size without
+   changing the established grid/list breakpoints or card dimensions. */
+@media (max-width: 760px) {
+  body:has(#plantGrid) .library-reference-toolbar .search-input,
+  body:has(#plantGrid) .library-reference-toolbar .select-input {
+    height: auto !important;
+    min-height: 44px !important;
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+  }
+}
+/* GREENSCAPE_PLANT_LIBRARY_MOBILE_FORM_SCALE_V1_1_END */

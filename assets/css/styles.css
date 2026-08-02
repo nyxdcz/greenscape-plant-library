@@ -8627,3 +8627,64 @@ body.plant-detail-open.maintenance-readonly #maintenanceReadonlyBanner .maintena
   }
 }
 /* GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_END */
+
+/* GREENSCAPE_MOBILE_FORM_VIEWPORT_IMAGE_LOADING_V1_1_START
+   Prevents iPhone form zoom, uses the visible mobile viewport safely,
+   and preserves the established desktop, phone dock, and Magic Bento behavior. */
+@media (max-width: 760px) {
+  html,
+  body,
+  .app-shell {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="image"]):not([type="hidden"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+    line-height: 1.25;
+  }
+
+  .sheet-toolbar .search-input,
+  .sheet-toolbar .select-input,
+  .moodboard-controls .search-input,
+  .moodboard-controls .select-input,
+  .feedback-panel input,
+  .feedback-panel select,
+  .feedback-panel textarea {
+    height: auto !important;
+    min-height: 44px !important;
+  }
+
+  .feedback-panel {
+    max-height: calc(100vh - 92px);
+    max-height: calc(100dvh - 92px);
+  }
+
+  .modal.plant-form-modal {
+    max-height: calc(100vh - 18px) !important;
+    max-height: calc(100dvh - 18px) !important;
+  }
+
+  .moodboard-action-dialog {
+    max-height: min(680px, calc(100vh - 36px));
+    max-height: min(680px, calc(100dvh - 36px));
+  }
+
+  .moodboard-action-body {
+    max-height: min(470px, calc(100vh - 190px));
+    max-height: min(470px, calc(100dvh - 190px));
+  }
+}
+
+.moodboard-page-preview:fullscreen {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.moodboard-page-preview:fullscreen .moodboard-board-viewport {
+  max-height: calc(100vh - 78px);
+  max-height: calc(100dvh - 78px);
+}
+/* GREENSCAPE_MOBILE_FORM_VIEWPORT_IMAGE_LOADING_V1_1_END */

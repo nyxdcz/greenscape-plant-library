@@ -24,6 +24,27 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Mobile Form, Viewport and Image Loading V1.1
+
+- Prevents iPhone Safari from zooming the page when phone users focus text-entry controls by keeping their computed font size at **16 px**.
+- Corrects the V1 installer so stylesheet updates end with exactly one newline and pass `git diff --check` without trailing blank-line errors.
+- Keeps Plant Library and Plant List Editor controls touch-friendly while preserving the current compact toolbar composition and responsive breakpoints.
+- Adds `100dvh` sizing with `100vh` fallbacks to mobile-sensitive shells, dialogs, feedback panels, and fullscreen Mood Board previews so controls remain visible above changing browser bars.
+- Adds targeted lazy loading and asynchronous decoding to non-critical Plant Identifier result images without delaying the logo, first Dashboard hero image, first visible plant cards, selected previews, or loading indicators.
+- Preserves the Magic Bento Dashboard interaction, hero slideshow, phone dock touch-state correction, plant data, Greenie, maintenance protections, staff access, project tools, and existing accessibility safeguards.
+- Adds regression validation for iPhone form sizing, dynamic viewport fallbacks, critical-image loading priority, targeted lazy loading, cache versions, and release documentation.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+index.html
+scripts/validate.mjs
+```
+
 ### Magic Bento Dashboard Interaction V1
 
 - Adds a restrained Magic Bento interaction to the existing Dashboard statistic cards and bento panels without changing their layout, order, dimensions, or content.

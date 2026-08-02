@@ -5909,7 +5909,7 @@
           const image = safeIdentifierImage(result.image);
           return `<article class="lens-identifier-result">
             <div class="lens-identifier-result-image" data-identifier-result-photo="${index}">
-              ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(commonName)} plant">` : cameraLeafIcon()}
+              ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(commonName)} plant" loading="lazy" decoding="async">` : cameraLeafIcon()}
               <span class="lens-identifier-result-rank">${result.rank}</span>
             </div>
             <div class="lens-identifier-result-copy">
