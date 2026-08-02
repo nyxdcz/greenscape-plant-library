@@ -24,6 +24,27 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Phone Dock Touch-State Stability V1.1
+
+- Fixes the temporary pale or washed-out phone dock state seen on iPhone and other touch-only devices after changing pages or opening **More**.
+- Corrects the V1 installer so plain and regex-escaped stylesheet cache checks are updated together before final validation.
+- Keeps the current page control consistently dark green while it is active, tapped, focused, or still carrying a touch-generated hover state.
+- Restricts hover-only appearance changes to devices with a genuine hover-capable fine pointer, while preserving keyboard `:focus-visible` feedback.
+- Removes the whole-control brightness animation from click feedback and keeps the existing lime border and shadow glow.
+- Preserves the approved responsive expanded widths of **72 px**, **64 px**, and **58 px**.
+- Preserves the four phone controls, More menu behavior, safe-area placement, dashboard bento layout, maintenance protections, Greenie, plant data, project tools, and desktop/tablet layouts.
+- Adds regression validation for touch-hover isolation, stable active and open states, click feedback, responsive widths, cache version, and release documentation.
+- Does not change phone navigation JavaScript or page navigation logic.
+
+Affected files:
+
+```text
+README.md
+assets/css/styles.css
+index.html
+scripts/validate.mjs
+```
+
 ### Plant Library Breakpoint Continuity V1
 
 - Keeps the Plant Library readable when the desktop sidebar first appears above the **760 px** phone breakpoint.

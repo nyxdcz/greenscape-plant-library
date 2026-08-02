@@ -329,7 +329,7 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260802-branded-interaction-feedback-v1/.test(html)
+  /styles\.css\?v=20260802-phone-dock-touch-state-fix-v1-1/.test(html)
     && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
@@ -456,7 +456,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
     && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -679,7 +679,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
     && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
@@ -724,7 +724,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+    && html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
     && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
   'Safe-cleanup assets must use the current cache keys.'
@@ -1022,7 +1022,7 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
     && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
     && html.includes('app.js?v=20260802-branded-interaction-feedback-v1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
@@ -1091,7 +1091,7 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
+  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
@@ -1135,7 +1135,7 @@ check(
   'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
 );
 check(
-  html.includes('styles.css?v=20260802-branded-interaction-feedback-v1')
+  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
     && html.includes('plant-library-refinements.css?v=20260802-branded-interaction-feedback-v1')
     && html.includes('app.js?v=20260802-branded-interaction-feedback-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
@@ -1144,6 +1144,50 @@ check(
   readme.includes('Fine-pointer hover elevation and image zoom')
     && readme.includes('Plant Library result announcements'),
   'README must document branded interaction feedback and accessible result context.'
+);
+
+// GREENSCAPE_PHONE_DOCK_TOUCH_STATE_FIX_V1_1_VALIDATION
+const phoneDockTouchStateFixStyles = styles.split('/* GREENSCAPE_PHONE_DOCK_TOUCH_STATE_FIX_V1_1_START')[1]
+  ?.split('/* GREENSCAPE_PHONE_DOCK_TOUCH_STATE_FIX_V1_1_END */')[0] || '';
+
+check(
+  phoneDockTouchStateFixStyles.includes('@media (max-width: 760px) and (hover: none)')
+    && phoneDockTouchStateFixStyles.includes('(max-width: 760px) and (pointer: coarse)')
+    && phoneDockTouchStateFixStyles.includes(':not(.active):not(:disabled):not(:focus-visible):hover')
+    && phoneDockTouchStateFixStyles.includes(':not([aria-expanded="true"]):not(.dock-click-glow):not(:disabled):not(:focus-visible):hover'),
+  'Touch-only phone controls must neutralize sticky hover without overriding active, open, tapped, or keyboard-focused states.'
+);
+check(
+  phoneDockTouchStateFixStyles.includes('.nav-item.active:hover')
+    && phoneDockTouchStateFixStyles.includes('.nav-item.active:focus-visible')
+    && phoneDockTouchStateFixStyles.includes('.dock-utility[aria-expanded="true"]:hover')
+    && phoneDockTouchStateFixStyles.includes('linear-gradient(145deg, rgba(12, 86, 59, .94), rgba(2, 37, 26, .97))'),
+  'Current and open phone controls must retain the approved dark-green glass state across touch, hover, and keyboard focus.'
+);
+check(
+  phoneDockTouchStateFixStyles.includes('.nav-item.dock-click-glow')
+    && phoneDockTouchStateFixStyles.includes('.dock-utility.dock-click-glow')
+    && phoneDockTouchStateFixStyles.includes('animation: none !important;')
+    && phoneDockTouchStateFixStyles.includes('filter: none !important;')
+    && phoneDockTouchStateFixStyles.includes('rgba(172, 225, 91, .46)'),
+  'Phone click feedback must keep the lime border and shadow glow without a whole-control brightness animation.'
+);
+check(
+  expandingHoverDockStyles.includes('width: 72px !important;')
+    && expandingHoverDockStyles.includes('width: 64px !important;')
+    && expandingHoverDockStyles.includes('width: 58px !important;')
+    && expandingHoverDockStyles.includes('@media (max-width: 760px) and (hover: hover) and (pointer: fine)'),
+  'The existing responsive expansion widths and genuine fine-pointer hover behavior must remain unchanged.'
+);
+check(
+  html.includes('styles.css?v=20260802-phone-dock-touch-state-fix-v1-1')
+    && !html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
+  'Phone dock touch-state styles must use the V1.1 cache key.'
+);
+check(
+  readme.includes('### Phone Dock Touch-State Stability V1.1')
+    && readme.includes('Does not change phone navigation JavaScript'),
+  'README must document the phone dock touch-state correction and its unchanged JavaScript scope.'
 );
 
 if (failures.length) {
