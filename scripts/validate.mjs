@@ -201,7 +201,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -272,7 +272,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-guided-plant-discovery-v1/.test(html)
+  /plant-library-refinements\.css\?v=20260803-compact-recently-viewed-plants-v1/.test(html)
     && /app\.js\?v=20260803-guided-plant-discovery-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -457,7 +457,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -484,7 +484,7 @@ check(
   'The existing phone Plant Library columns and sticky-toolbar position must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Plant Library breakpoint continuity styles must use the current cache key.'
 );
 check(
@@ -522,7 +522,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-guided-plant-discovery-v1/.test(html),
+  /plant-library-refinements\.css\?v=20260803-compact-recently-viewed-plants-v1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -552,7 +552,7 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
@@ -588,7 +588,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -622,7 +622,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -779,7 +779,7 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
@@ -835,7 +835,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
@@ -1136,7 +1136,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
 );
@@ -1305,7 +1305,7 @@ check(
 );
 check(
   mobileReviewHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && mobileReviewHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Mobile form, viewport, and image-loading assets must use the V1.1 cache key.'
 );
@@ -1389,7 +1389,7 @@ check(
 );
 check(
   plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Interactive Plant Discovery assets must use the current V1 cache key.'
 );
@@ -1457,7 +1457,7 @@ check(
 );
 check(
   plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
   'Interactive Plant Discovery V1.1 assets must use the corrected cache key.'
 );
@@ -1530,7 +1530,7 @@ check(
 );
 check(
   html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-guided-plant-discovery-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
     && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
     && html.includes('sidebar-assistant.js?v=20260803-guided-plant-discovery-v1'),
   'Guided Plant Discovery assets must use the current cache keys.'
@@ -1551,6 +1551,54 @@ check(
     && plantLibraryStyles.includes('GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_LIBRARY_GUARD_START')
     && guidedDiscoveryApp.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START'),
   'The corrected Plant Details transition and existing Magic Bento safeguards must remain present.'
+);
+
+
+// GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_VALIDATION
+const compactRecentlyViewedBlock = plantLibraryStyles.match(
+  /\/\* GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_START[\s\S]*?\*\/([\s\S]*?)\/\* GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_END \*\//
+)?.[1] || '';
+check(Boolean(compactRecentlyViewedBlock), 'Compact Recently Viewed Plants CSS marker block is required.');
+check(
+  /\.guided-recent-card\s*\{[\s\S]*?grid-template-columns:\s*48px minmax\(0,\s*1fr\)[\s\S]*?min-height:\s*56px/.test(compactRecentlyViewedBlock),
+  'Recently Viewed desktop cards must use the compact 48px horizontal layout.'
+);
+check(
+  /\.guided-recent-image\s*\{[\s\S]*?width:\s*48px[\s\S]*?height:\s*48px/.test(compactRecentlyViewedBlock),
+  'Recently Viewed desktop thumbnails must remain 48 by 48 pixels.'
+);
+check(
+  /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*980px\)[\s\S]*?\.guided-recent-image\s*\{[\s\S]*?width:\s*44px[\s\S]*?height:\s*44px/.test(compactRecentlyViewedBlock),
+  'Recently Viewed tablet thumbnails must remain 44 by 44 pixels.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?\.guided-recent-card\s*\{[\s\S]*?flex:\s*0\s+0\s+150px[\s\S]*?grid-template-columns:\s*46px minmax\(0,\s*1fr\)/.test(compactRecentlyViewedBlock),
+  'Recently Viewed phone cards must retain the compact 150px horizontal layout.'
+);
+check(
+  /\.guided-recently-viewed \.guided-section-header > div > span\s*\{[\s\S]*?clip-path:\s*inset\(50%\)/.test(compactRecentlyViewedBlock),
+  'The Local history kicker must be visually hidden without being removed.'
+);
+check(
+  /@media\s*\(max-width:\s*760px\)[\s\S]*?\.guided-recently-viewed \.guided-clear-history\s*\{[\s\S]*?min-height:\s*44px/.test(compactRecentlyViewedBlock),
+  'Clear History must retain a 44px phone touch target.'
+);
+check(
+  !/\.guided-similar-(?:card|grid|image|copy|plants)/.test(compactRecentlyViewedBlock),
+  'Compact Recently Viewed overrides must not alter Similar Plants.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
+  'Compact Recently Viewed Plant Library styles must use the current cache key.'
+);
+const previousGuidedPlantLibraryCache = ['20260803', 'guided', 'plant', 'discovery', 'v1'].join('-');
+check(
+  !html.includes(`plant-library-refinements.css?v=${previousGuidedPlantLibraryCache}`),
+  'The previous Guided Plant Discovery Plant Library cache key must be removed from index.html.'
+);
+check(
+  readme.includes('### Compact Recently Viewed Plants V1'),
+  'README must document Compact Recently Viewed Plants V1.'
 );
 
 if (failures.length) {

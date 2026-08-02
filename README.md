@@ -24,6 +24,25 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Compact Recently Viewed Plants V1
+
+- Condenses the Plant Library **Recently Viewed** section into low-profile horizontal mini-cards while preserving the six-plant history limit, most-recent-first order, local browser storage, and Clear History behavior.
+- Uses 48 × 48 px thumbnails on desktop, 44 × 44 px thumbnails on tablet, and 46 × 46 px thumbnails on phone with one-line common and scientific names.
+- Reduces section padding, margins, heading size, corner radius, card shadow, and internal gaps so the history row uses substantially less vertical space.
+- Keeps six columns on wide screens, three columns on tablet, and a compact 150 px horizontal scroll card on phone.
+- Visually hides the “Local history” kicker without removing its semantic text and retains a 44 px Clear History touch target on phone.
+- Scopes every override to Recently Viewed so Similar Plants, Plant Details transitions, Compare Plants, filters, browsing progress, Greenie, the phone dock, and other website features remain unchanged.
+- Updates the Plant Library stylesheet cache key and adds regression validation for compact dimensions, responsive behavior, Similar Plants isolation, documentation, and cache consistency.
+
+Affected files:
+
+```text
+README.md
+assets/css/plant-library-refinements.css
+index.html
+scripts/validate.mjs
+```
+
 ### Guided Plant Discovery V1
 
 - Adds a local **Recently Viewed** row in Plant Library showing up to six unique plants, with phone horizontal scrolling, clear-history control, automatic cleanup of deleted records, and no server-side storage.
