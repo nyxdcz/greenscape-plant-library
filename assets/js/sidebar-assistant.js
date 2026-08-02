@@ -337,6 +337,7 @@
   }
 
   // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_GREENIE_START
+  // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_GREENIE_START
   function applyGreenieContext(detail = {}) {
     const card = qs('.sidebar-pet-card');
     const speech = qs('.sidebar-pet-speech', card || document);
@@ -347,8 +348,10 @@
     const action = qs('em', speech);
     if (line) line.textContent = prompt;
     if (action) action.textContent = context === 'detail' ? 'View plant guide' : 'How this works';
-    speech.setAttribute('aria-label', `Open ${context === 'detail' ? 'Plant Details' : context} guide`);
+    const contextLabel = context === 'detail' ? 'Plant Details' : (context === 'quality' ? 'Data Quality' : context);
+    speech.setAttribute('aria-label', `Open ${contextLabel} guide`);
   }
+  // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_GREENIE_END
   // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_GREENIE_END
 
   function resetLegacyPosition() {

@@ -170,8 +170,8 @@ check(
   'Maintenance staff authorization must be limited to browser session storage.'
 );
 check(
-  jsSources['assets/js/maintenance.js'].includes("const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects'])"),
-  'Maintenance staff access must remain scoped to the three approved workspaces.'
+  jsSources['assets/js/maintenance.js'].includes("const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects'])"),
+  'Maintenance staff access must remain scoped to the four approved workspaces.'
 );
 check(
   jsSources['assets/js/app.js'].includes('maintenanceAccessIsAuthorized'),
@@ -273,7 +273,7 @@ check(
 );
 check(
   /plant-library-refinements\.css\?v=20260803-compact-recently-viewed-plants-v1/.test(html)
-    && /app\.js\?v=20260803-guided-plant-discovery-v1/.test(html),
+    && /app\.js\?v=20260803-plant-data-quality-center-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,8 +329,8 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260803-guided-plant-discovery-v1/.test(html)
-    && /magnetic-dock\.js\?v=20260731-phone-staff-nav1/.test(html),
+  /styles\.css\?v=20260803-plant-data-quality-center-v1/.test(html)
+    && /magnetic-dock\.js\?v=20260803-plant-data-quality-center-v1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -456,7 +456,7 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
@@ -553,7 +553,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -679,11 +679,11 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
-    && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('sidebar-assistant.js?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
   'Greenie-only Help assets must use the current cache keys.'
 );
 
@@ -724,9 +724,9 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
+    && html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
@@ -780,7 +780,7 @@ check(
 );
 check(
   html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -834,7 +834,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
+    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
     && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
@@ -871,7 +871,7 @@ check(
   'Phone dock utilities must synchronize only at startup and breakpoint changes.'
 );
 check(
-  html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
+  html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
   'The phone-dock freeze hotfix must use the current JavaScript cache key.'
 );
 check(
@@ -1022,10 +1022,10 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('maintenance.js?v=20260731-phone-staff-nav1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
-    && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1'),
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
+    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
   'Interface QA assets must use the current cache keys.'
 );
 check(
@@ -1091,7 +1091,7 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1'),
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
@@ -1135,9 +1135,9 @@ check(
   'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
 );
 check(
@@ -1180,7 +1180,7 @@ check(
   'The existing responsive expansion widths and genuine fine-pointer hover behavior must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && !html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone dock touch-state styles must use the V1.1 cache key.'
 );
@@ -1238,8 +1238,8 @@ check(
   'Magic Bento Dashboard must preserve the approved bento spans and phone single-column composition.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Magic Bento Dashboard assets must use the V1 cache keys.'
 );
 check(
@@ -1304,9 +1304,9 @@ check(
   'Only non-critical identifier results should gain lazy loading while the hero and first visible plant cards keep priority.'
 );
 check(
-  mobileReviewHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  mobileReviewHtml.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && mobileReviewHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && mobileReviewHtml.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Mobile form, viewport, and image-loading assets must use the V1.1 cache key.'
 );
 check(
@@ -1388,9 +1388,9 @@ check(
   'Plant Discovery motion must stay restrained and include shared reduced-motion safeguards.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  plantDiscoveryHtml.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && plantDiscoveryHtml.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Interactive Plant Discovery assets must use the current V1 cache key.'
 );
 check(
@@ -1456,9 +1456,9 @@ check(
   'Plant Library cards must default to no persistent View Transition identity.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  plantDiscoveryHtml.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-guided-plant-discovery-v1'),
+    && plantDiscoveryHtml.includes('app.js?v=20260803-plant-data-quality-center-v1'),
   'Interactive Plant Discovery V1.1 assets must use the corrected cache key.'
 );
 check(
@@ -1529,10 +1529,10 @@ check(
   'Similar Plants must use deterministic weighted relationships, show up to four results, and stay outside the shared transition.'
 );
 check(
-  html.includes('styles.css?v=20260803-guided-plant-discovery-v1')
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
     && html.includes('plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1')
-    && html.includes('app.js?v=20260803-guided-plant-discovery-v1')
-    && html.includes('sidebar-assistant.js?v=20260803-guided-plant-discovery-v1'),
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
   'Guided Plant Discovery assets must use the current cache keys.'
 );
 check(
@@ -1599,6 +1599,103 @@ check(
 check(
   readme.includes('### Compact Recently Viewed Plants V1'),
   'README must document Compact Recently Viewed Plants V1.'
+);
+
+
+// GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_VALIDATION
+const qualityCenterApp = jsSources['assets/js/app.js'];
+const qualityCenterMaintenance = jsSources['assets/js/maintenance.js'];
+const qualityCenterDock = jsSources['assets/js/magnetic-dock.js'];
+const qualityCenterAssistant = jsSources['assets/js/sidebar-assistant.js'];
+const qualityCenterStyles = styles.split('/* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_START')[1]
+  ?.split('/* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_END */')[0] || '';
+const qualityCenterJs = qualityCenterApp.split('// GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_START')[1]
+  ?.split('// GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_END')[0] || '';
+
+check(
+  html.includes('data-view="quality"')
+    && qualityCenterApp.includes("quality: 'Data Quality'")
+    && qualityCenterApp.includes("state.view === 'quality'")
+    && qualityCenterApp.includes("['dashboard', 'library', 'sheet', 'quality', 'moodboard', 'projects', 'schedule']"),
+  'Data Quality must be available through navigation, routing, page titles, and rendering.'
+);
+check(
+  qualityCenterJs.includes('function qualityAuditPlant')
+    && qualityCenterJs.includes('function qualityAuditCatalogue')
+    && qualityCenterJs.includes("['Missing common name', 'high', 'botanical']")
+    && qualityCenterJs.includes("['Possible duplicate scientific name', 'high', 'botanical']")
+    && qualityCenterJs.includes("['Missing photo', 'medium', 'photo']")
+    && qualityCenterJs.includes("['Missing overview description', 'low', 'descriptions']"),
+  'Data Quality must provide deterministic high, medium, and low priority audit rules.'
+);
+check(
+  qualityCenterJs.includes("String(plant?.category || '') !== 'Landscape Materials'")
+    && qualityCenterJs.includes('if (isPlantRecord) {')
+    && qualityCenterJs.includes("add('missingSun')")
+    && qualityCenterJs.includes("add('missingMatureSpread')"),
+  'Landscape Materials must be excluded from plant-only botanical, sunlight, water, growing-condition, and mature-dimension checks.'
+);
+check(
+  qualityCenterJs.includes('qualitySearch')
+    && qualityCenterJs.includes('qualityCategory')
+    && qualityCenterJs.includes('qualityPriority')
+    && qualityCenterJs.includes('qualityIssue')
+    && qualityCenterJs.includes('qualityQuickFilter')
+    && qualityCenterJs.includes('qualitySort')
+    && qualityCenterJs.includes('role="status" aria-live="polite"'),
+  'Data Quality must provide the approved search, filters, sorting, and accessible result announcements.'
+);
+check(
+  qualityCenterJs.includes('data-quality-edit')
+    && qualityCenterJs.includes('openPlantForm(plantId)')
+    && qualityCenterApp.includes('name="landscapeUse"')
+    && qualityCenterApp.includes("landscapeUse: String(fd.get('landscapeUse') || '').trim()")
+    && qualityCenterApp.includes("createdAt: existing?.createdAt || new Date().toISOString()")
+    && qualityCenterApp.includes('updatedAt: new Date().toISOString()'),
+  'Data Quality editing must reuse the Plant Editor, expose Landscape Use, and record reliable save timestamps.'
+);
+check(
+  qualityCenterDock.includes('data-view="quality" data-phone-staff-view')
+    && qualityCenterDock.includes('[data-view="quality"]')
+    && qualityCenterMaintenance.includes("new Set(['sheet', 'quality', 'moodboard', 'projects'])")
+    && qualityCenterMaintenance.includes('Plant List Editor, Data Quality, Mood Board Creator, and Project Lists'),
+  'Data Quality must follow the existing phone More-menu and maintenance staff-authorization model.'
+);
+check(
+  qualityCenterApp.includes("quality: 'Need help reviewing incomplete plant records?'")
+    && qualityCenterApp.includes("title: 'How the Data Quality Center works'")
+    && qualityCenterAssistant.includes("context === 'quality' ? 'Data Quality'")
+    && qualityCenterJs.includes('qualityDecorateDashboard'),
+  'Data Quality must include contextual help, Greenie guidance, and the Dashboard review shortcut.'
+);
+check(
+  qualityCenterStyles.includes('.quality-summary-grid')
+    && qualityCenterStyles.includes('.quality-record-card')
+    && qualityCenterStyles.includes('@media (max-width: 760px)')
+    && qualityCenterStyles.includes('min-height: 44px;')
+    && qualityCenterStyles.includes('@media (prefers-reduced-motion: reduce)'),
+  'Data Quality must retain responsive phone controls, touch targets, and reduced-motion safeguards.'
+);
+check(
+  html.includes('styles.css?v=20260803-plant-data-quality-center-v1')
+    && html.includes('app.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
+  'Plant Data Quality Center assets must use the current cache keys.'
+);
+check(
+  readme.includes('### Plant Data Quality Center V1')
+    && readme.includes('No automatic corrections')
+    && readme.includes('Landscape Materials')
+    && readme.includes('no package, framework, external API, image, GIF, server, or data file is added'),
+  'README must document Plant Data Quality Center V1, its safeguards, and preserved dependency scope.'
+);
+check(
+  plantLibraryStyles.includes('GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_START')
+    && styles.includes('GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_TRANSITION_FIX_START')
+    && qualityCenterApp.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START'),
+  'Compact Recently Viewed, corrected Plant Details transitions, and Magic Bento must remain present.'
 );
 
 if (failures.length) {

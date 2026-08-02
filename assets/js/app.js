@@ -64,11 +64,12 @@
     dashboard: 'Dashboard',
     library: 'Plant Library',
     sheet: 'Plant List Editor',
+    quality: 'Data Quality',
     moodboard: 'Mood Board Creator',
     projects: 'Project Lists',
     schedule: 'Plant Schedule'
   };
-  const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
+  const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects']);
 
   function maintenanceAccessIsAuthorized() {
     return Boolean(window.GREENSCAPE_MAINTENANCE_ACCESS?.isAuthorized?.());
@@ -118,7 +119,7 @@
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
   let moodboard = sanitizeMoodboard(migrateDuplicateMoodboardRecord(loadJSON(STORAGE.moodboard, null)));
   const requestedInitialView = location.hash.slice(1);
-  const initialView = ['dashboard', 'library', 'sheet', 'moodboard', 'projects', 'schedule'].includes(requestedInitialView)
+  const initialView = ['dashboard', 'library', 'sheet', 'quality', 'moodboard', 'projects', 'schedule'].includes(requestedInitialView)
     ? (isMaintenanceLockedView(requestedInitialView) ? 'library' : requestedInitialView)
     : 'dashboard';
   if (initialView !== requestedInitialView && isMaintenanceLockedView(requestedInitialView)) {
@@ -135,6 +136,12 @@
     libraryLimit: 48,
     sheetSearch: '',
     sheetCategory: 'All',
+    qualitySearch: '',
+    qualityCategory: 'All',
+    qualityPriority: 'All',
+    qualityIssue: 'All',
+    qualityQuickFilter: 'all',
+    qualitySort: 'issues',
     moodboardSearch: '',
     moodboardCategory: 'All',
     selectedProjectId: null,
@@ -539,9 +546,13 @@
       if (isCurrent) button.setAttribute('aria-current', 'page');
       else button.removeAttribute('aria-current');
     });
-    if (state.view === 'dashboard') renderDashboard();
+    if (state.view === 'dashboard') {
+      renderDashboard();
+      qualityDecorateDashboard();
+    }
     if (state.view === 'library') renderLibrary();
     if (state.view === 'sheet') renderPlantSheet();
+    if (state.view === 'quality') renderQualityCenter();
     if (state.view === 'moodboard') renderMoodboard();
     if (state.view === 'projects') {
       void ensureProjectToolsLoaded();
@@ -3897,6 +3908,7 @@
       <div class="form-field"><label>Mature height</label><input class="text-input" name="matureHeight" value="${escapeHTML(plant?.matureHeight || '')}"></div>
       <div class="form-field"><label>Mature spread</label><input class="text-input" name="matureSpread" value="${escapeHTML(plant?.matureSpread || '')}"></div>
       <div class="form-field full"><label>Growing condition</label><input class="text-input" name="growingCondition" placeholder="Coastal, well-drained soil, sheltered shade" value="${escapeHTML(plant?.growingCondition || '')}"></div>
+      <div class="form-field full"><label>Landscape use</label><input class="text-input" name="landscapeUse" placeholder="Screening, accent, shade, groundcover, erosion control" value="${escapeHTML(plant?.landscapeUse || '')}"></div>
       <div class="form-field full"><label>Overview description</label><textarea name="overviewDescription" placeholder="Add a verified plant overview description.">${escapeHTML(plant?.overviewDescription || '')}</textarea><span class="form-help">When manual planting notes are empty, the first sentence becomes the automatic planting note.</span></div>
       <div class="form-field full"><label>Planting notes</label><textarea name="plantingNotes">${escapeHTML(plant?.plantingNotes || '')}</textarea><span class="form-help">Manual planting notes take priority over the automatic overview sentence.</span></div>
       <div class="form-field full"><label>Tags</label><input class="text-input" name="tags" placeholder="Add manual tags separated by commas" value="${escapeHTML((plant?.tags || []).join(', '))}"><span class="form-help">Common name, scientific name, category, and available overview fields are added automatically. You can also add manual tags.</span></div>
@@ -3967,7 +3979,7 @@
       spacing: String(fd.get('spacing') || '').trim(),
       matureHeight: String(fd.get('matureHeight') || '').trim(),
       matureSpread: String(fd.get('matureSpread') || '').trim(),
-      landscapeUse: existing?.landscapeUse || '',
+      landscapeUse: String(fd.get('landscapeUse') || '').trim(),
       growingCondition: String(fd.get('growingCondition') || '').trim(),
       overviewDescription: String(fd.get('overviewDescription') || '').trim(),
       plantingNotes: String(fd.get('plantingNotes') || '').trim(),
@@ -3975,7 +3987,9 @@
       link,
       sourceSheet: existing?.sourceSheet || 'Custom',
       sourceNumber: existing?.sourceNumber || '',
-      custom: existing?.custom ?? true
+      custom: existing?.custom ?? true,
+      createdAt: existing?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     if (existing) plants = plants.map(p => p.id === existing.id ? record : p);
     else plants.push(record);
@@ -5109,6 +5123,12 @@
       steps: ['Read the planting notes and tags.', 'Expand Available Sizes when needed.', 'Review Similar Plants or add the plant to a project.'],
       tip: 'Similar Plants are suggestions based on existing library data, not botanical equivalence.'
     },
+    quality: {
+      title: 'How the Data Quality Center works',
+      intro: 'Review catalogue completeness and possible conflicts without automatically changing plant records.',
+      steps: ['Start with High Priority or Botanical Review.', 'Use issue and category filters to narrow the queue.', 'Open Plant Details or Edit Plant, then save verified corrections.'],
+      tip: 'Issue badges are review prompts. Confirm botanical information before changing a shared plant record.'
+    },
     sheet: {
       title: 'How the Plant List Editor works',
       intro: 'Maintain shared plant records, categories, sizes, notes, and images in one structured workspace.',
@@ -5146,6 +5166,7 @@
     library: 'Need help filtering or comparing plants?',
     detail: 'Want help reading sizes and similar plants?',
     sheet: 'Need help organizing plant records?',
+    quality: 'Need help reviewing incomplete plant records?',
     moodboard: 'Need help selecting and arranging plants?',
     projects: 'Need help building a project plant list?',
     schedule: 'Need help reviewing a planting schedule?',
@@ -7469,5 +7490,371 @@
       first.focus();
     }
   });
+
+
+  // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_START
+  function qualityNormalize(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  function qualityIsPlant(plant) {
+    return plant?.isPlant !== false && String(plant?.category || '') !== 'Landscape Materials';
+  }
+
+  function qualityIssueDefinitions() {
+    return Object.freeze({
+      missingCommonName: ['Missing common name', 'high', 'botanical'],
+      missingScientificName: ['Missing scientific name', 'high', 'botanical'],
+      missingCategory: ['Missing category', 'high', 'identity'],
+      missingCode: ['Missing plant code', 'high', 'code'],
+      duplicateCode: ['Duplicate plant code', 'high', 'code'],
+      codeConflict: ['Generated-code conflict', 'high', 'code'],
+      codeIncomplete: ['Incomplete generated code', 'high', 'botanical'],
+      duplicateScientificName: ['Possible duplicate scientific name', 'high', 'botanical'],
+      missingPhoto: ['Missing photo', 'medium', 'photo'],
+      missingSizes: ['No available sizes', 'medium', 'sizes'],
+      missingSun: ['Missing sunlight', 'medium', 'growing'],
+      missingWater: ['Missing water requirement', 'medium', 'growing'],
+      missingSpacing: ['Missing spacing', 'medium', 'growing'],
+      missingLandscapeUse: ['Missing landscape use', 'medium', 'growing'],
+      missingGrowingCondition: ['Missing growing condition', 'medium', 'growing'],
+      missingPlantingNotes: ['Missing planting notes', 'medium', 'descriptions'],
+      missingMatureHeight: ['Missing mature height', 'low', 'growing'],
+      missingMatureSpread: ['Missing mature spread', 'low', 'growing'],
+      missingOverview: ['Missing overview description', 'low', 'descriptions'],
+      missingTags: ['Missing manual tags', 'low', 'descriptions'],
+      missingReference: ['Missing reference link', 'low', 'reference']
+    });
+  }
+
+  function qualityCatalogueIndexes() {
+    const codeGroups = new Map();
+    const scientificGroups = new Map();
+    plants.forEach(plant => {
+      const code = String(plant?.code || '').trim().toUpperCase();
+      if (code) codeGroups.set(code, [...(codeGroups.get(code) || []), plant.id]);
+      if (!qualityIsPlant(plant)) return;
+      const scientific = qualityNormalize(plant?.scientificName);
+      if (scientific) scientificGroups.set(scientific, [...(scientificGroups.get(scientific) || []), plant.id]);
+    });
+    return { codeGroups, scientificGroups };
+  }
+
+  function qualityFieldChecks(plant) {
+    const isPlantRecord = qualityIsPlant(plant);
+    const checks = [
+      ['code', Boolean(String(plant?.code || '').trim())],
+      ['commonName', Boolean(String(plant?.commonName || '').trim())],
+      ['category', Boolean(String(plant?.category || '').trim())],
+      ['image', Boolean(String(plant?.image || '').trim())],
+      ['sizes', Array.isArray(plant?.sizes) && plant.sizes.some(size => String(size?.label || size?.size || size?.unit || '').trim())],
+      ['spacing', Boolean(String(plant?.spacing || '').trim())],
+      ['landscapeUse', Boolean(String(plant?.landscapeUse || '').trim())],
+      ['plantingNotes', Boolean(String(effectivePlantingNotes(plant) || '').trim())],
+      ['overviewDescription', Boolean(String(plant?.overviewDescription || '').trim())],
+      ['tags', Array.isArray(plant?.tags) && plant.tags.some(value => String(value || '').trim())],
+      ['link', Boolean(String(plant?.link || '').trim())]
+    ];
+    if (isPlantRecord) {
+      checks.push(
+        ['scientificName', Boolean(String(plant?.scientificName || '').trim())],
+        ['sun', Boolean(String(plant?.sun || '').trim())],
+        ['water', Boolean(String(plant?.water || '').trim())],
+        ['growingCondition', Boolean(String(plant?.growingCondition || '').trim())],
+        ['matureHeight', Boolean(String(plant?.matureHeight || '').trim())],
+        ['matureSpread', Boolean(String(plant?.matureSpread || '').trim())]
+      );
+    }
+    return checks;
+  }
+
+  function qualityAuditPlant(plant, indexes = qualityCatalogueIndexes()) {
+    const definitions = qualityIssueDefinitions();
+    const issues = [];
+    const add = key => {
+      const definition = definitions[key];
+      if (!definition || issues.some(issue => issue.key === key)) return;
+      issues.push({ key, label: definition[0], priority: definition[1], group: definition[2] });
+    };
+    const isPlantRecord = qualityIsPlant(plant);
+    const code = String(plant?.code || '').trim().toUpperCase();
+    const scientific = qualityNormalize(plant?.scientificName);
+
+    if (!String(plant?.commonName || '').trim()) add('missingCommonName');
+    if (isPlantRecord && !String(plant?.scientificName || '').trim()) add('missingScientificName');
+    if (!String(plant?.category || '').trim()) add('missingCategory');
+    if (!code) add('missingCode');
+    if (code && (indexes.codeGroups.get(code) || []).length > 1) add('duplicateCode');
+    if (plant?.codeConflict) add('codeConflict');
+    if (isPlantRecord && plant?.codeIncomplete) add('codeIncomplete');
+    if (isPlantRecord && scientific && (indexes.scientificGroups.get(scientific) || []).length > 1) add('duplicateScientificName');
+
+    if (!String(plant?.image || '').trim()) add('missingPhoto');
+    if (!Array.isArray(plant?.sizes) || !plant.sizes.some(size => String(size?.label || size?.size || size?.unit || '').trim())) add('missingSizes');
+    if (!String(plant?.spacing || '').trim()) add('missingSpacing');
+    if (!String(plant?.landscapeUse || '').trim()) add('missingLandscapeUse');
+    if (!String(effectivePlantingNotes(plant) || '').trim()) add('missingPlantingNotes');
+    if (!String(plant?.overviewDescription || '').trim()) add('missingOverview');
+    if (!Array.isArray(plant?.tags) || !plant.tags.some(value => String(value || '').trim())) add('missingTags');
+    if (!String(plant?.link || '').trim()) add('missingReference');
+
+    if (isPlantRecord) {
+      if (!String(plant?.sun || '').trim()) add('missingSun');
+      if (!String(plant?.water || '').trim()) add('missingWater');
+      if (!String(plant?.growingCondition || '').trim()) add('missingGrowingCondition');
+      if (!String(plant?.matureHeight || '').trim()) add('missingMatureHeight');
+      if (!String(plant?.matureSpread || '').trim()) add('missingMatureSpread');
+    }
+
+    const priorityOrder = { high: 0, medium: 1, low: 2 };
+    issues.sort((left, right) => priorityOrder[left.priority] - priorityOrder[right.priority] || left.label.localeCompare(right.label));
+    const fields = qualityFieldChecks(plant);
+    const complete = fields.filter(([, value]) => value).length;
+    const completeness = Math.round((complete / Math.max(fields.length, 1)) * 100);
+    return { plant, issues, completeness };
+  }
+
+  function qualityAuditCatalogue() {
+    const indexes = qualityCatalogueIndexes();
+    return plants.map(plant => qualityAuditPlant(plant, indexes));
+  }
+
+  function qualityTimestamp(plant) {
+    const value = plant?.updatedAt || plant?.createdAt || '';
+    const timestamp = Date.parse(value);
+    return Number.isFinite(timestamp) ? timestamp : 0;
+  }
+
+  function qualityFormatTimestamp(plant) {
+    const timestamp = qualityTimestamp(plant);
+    if (!timestamp) return '';
+    return new Date(timestamp).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function qualityMatchesQuickFilter(audit) {
+    const filter = state.qualityQuickFilter || 'all';
+    if (filter === 'all') return audit.issues.length > 0;
+    const groups = {
+      botanical: ['botanical'],
+      photos: ['photo'],
+      sizes: ['sizes'],
+      growing: ['growing'],
+      descriptions: ['descriptions', 'reference'],
+      codes: ['code']
+    };
+    return audit.issues.some(issue => (groups[filter] || []).includes(issue.group));
+  }
+
+  function qualityVisibleAudits(audits = qualityAuditCatalogue()) {
+    const search = qualityNormalize(state.qualitySearch);
+    const visible = audits.filter(audit => {
+      if (!audit.issues.length || !qualityMatchesQuickFilter(audit)) return false;
+      if (state.qualityCategory !== 'All' && audit.plant.category !== state.qualityCategory) return false;
+      if (state.qualityPriority !== 'All' && !audit.issues.some(issue => issue.priority === state.qualityPriority.toLowerCase())) return false;
+      if (state.qualityIssue !== 'All' && !audit.issues.some(issue => issue.key === state.qualityIssue)) return false;
+      if (!search) return true;
+      return qualityNormalize([audit.plant.code, audit.plant.commonName, audit.plant.scientificName, audit.plant.material, audit.plant.category].join(' ')).includes(search);
+    });
+
+    return visible.sort((left, right) => {
+      if (state.qualitySort === 'az') {
+        return String(left.plant.commonName || left.plant.scientificName || '').localeCompare(String(right.plant.commonName || right.plant.scientificName || ''), undefined, { sensitivity: 'base' });
+      }
+      if (state.qualitySort === 'recent') {
+        return qualityTimestamp(right.plant) - qualityTimestamp(left.plant)
+          || String(left.plant.commonName || '').localeCompare(String(right.plant.commonName || ''));
+      }
+      const priorityWeight = audit => audit.issues.reduce((sum, issue) => sum + ({ high: 9, medium: 3, low: 1 }[issue.priority] || 0), 0);
+      return priorityWeight(right) - priorityWeight(left)
+        || right.issues.length - left.issues.length
+        || String(left.plant.commonName || '').localeCompare(String(right.plant.commonName || ''));
+    });
+  }
+
+  function qualitySummary(audits) {
+    const issueRecords = audits.filter(audit => audit.issues.length > 0);
+    return {
+      total: audits.length,
+      ready: audits.length - issueRecords.length,
+      review: issueRecords.length,
+      high: audits.reduce((sum, audit) => sum + audit.issues.filter(issue => issue.priority === 'high').length, 0),
+      photos: audits.filter(audit => audit.issues.some(issue => issue.key === 'missingPhoto')).length,
+      sizes: audits.filter(audit => audit.issues.some(issue => issue.key === 'missingSizes')).length,
+      readiness: Math.round(audits.reduce((sum, audit) => sum + audit.completeness, 0) / Math.max(audits.length, 1))
+    };
+  }
+
+  function qualitySummaryCard(label, value, detail, tone = '') {
+    return `<article class="quality-summary-card${tone ? ` is-${tone}` : ''}"><span>${escapeHTML(label)}</span><strong>${escapeHTML(value)}</strong><small>${escapeHTML(detail)}</small></article>`;
+  }
+
+  function qualityIssueOptions() {
+    return Object.entries(qualityIssueDefinitions())
+      .sort((left, right) => left[1][0].localeCompare(right[1][0]))
+      .map(([key, definition]) => `<option value="${escapeHTML(key)}"${state.qualityIssue === key ? ' selected' : ''}>${escapeHTML(definition[0])}</option>`)
+      .join('');
+  }
+
+  function qualityRecentHTML(audits) {
+    const recent = audits
+      .filter(audit => qualityTimestamp(audit.plant) > 0)
+      .sort((left, right) => qualityTimestamp(right.plant) - qualityTimestamp(left.plant))
+      .slice(0, 6);
+    if (!recent.length) return '';
+    return `<section class="quality-recent" aria-labelledby="qualityRecentTitle">
+      <div class="quality-section-heading"><div><span>Saved record history</span><h2 id="qualityRecentTitle">Recently Edited</h2></div><small>Only records with reliable saved dates are shown.</small></div>
+      <div class="quality-recent-grid">${recent.map(audit => {
+        const plant = audit.plant;
+        const image = safeImage(plant.image);
+        return `<button type="button" class="quality-recent-card" data-quality-edit="${escapeHTML(plant.id)}" aria-label="Edit recently updated plant ${escapeHTML(plant.commonName || 'Unnamed plant')}">
+          <span class="quality-recent-image">${image ? `<img src="${image}" alt="" width="52" height="52" loading="lazy" decoding="async">` : escapeHTML(plant.code || '—')}</span>
+          <span><strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong><em>${escapeHTML(qualityFormatTimestamp(plant))}</em></span>
+        </button>`;
+      }).join('')}</div>
+    </section>`;
+  }
+
+  function qualityAuditCardHTML(audit) {
+    const plant = audit.plant;
+    const image = safeImage(plant.image);
+    const updated = qualityFormatTimestamp(plant);
+    return `<article class="quality-record-card" data-quality-record="${escapeHTML(plant.id)}">
+      <div class="quality-record-image">${image ? `<img src="${image}" alt="" width="96" height="96" loading="lazy" decoding="async">` : `<span>${escapeHTML(plant.code || '—')}</span>`}</div>
+      <div class="quality-record-copy">
+        <div class="quality-record-heading"><div><span>${escapeHTML(plant.category || 'Uncategorized')}</span><h3>${escapeHTML(plant.commonName || 'Unnamed plant')}</h3><em>${escapeHTML(plant.scientificName || plant.material || 'Scientific name not specified')}</em></div><strong class="quality-completeness" aria-label="${audit.completeness} percent field completeness">${audit.completeness}%</strong></div>
+        <div class="quality-record-meta"><span>${escapeHTML(plant.code || 'No code')}</span>${updated ? `<span>Edited ${escapeHTML(updated)}</span>` : '<span>No saved edit date</span>'}<span>${audit.issues.length} ${audit.issues.length === 1 ? 'issue' : 'issues'}</span></div>
+        <div class="quality-issue-list" aria-label="Detected quality issues">${audit.issues.map(issue => `<span class="quality-issue is-${issue.priority}">${escapeHTML(issue.label)}</span>`).join('')}</div>
+      </div>
+      <div class="quality-record-actions">
+        <button type="button" class="button secondary small" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View Details</button>
+        <button type="button" class="button primary small" data-quality-edit="${escapeHTML(plant.id)}">Edit Plant</button>
+      </div>
+    </article>`;
+  }
+
+  function qualityRenderResults() {
+    const summaryRoot = document.getElementById('qualitySummary');
+    const recentRoot = document.getElementById('qualityRecentRoot');
+    const resultsRoot = document.getElementById('qualityResults');
+    const status = document.getElementById('qualityResultStatus');
+    if (!summaryRoot || !recentRoot || !resultsRoot) return;
+
+    const audits = qualityAuditCatalogue();
+    const summary = qualitySummary(audits);
+    const visible = qualityVisibleAudits(audits);
+    summaryRoot.innerHTML = [
+      qualitySummaryCard('Total records', summary.total, `${summary.readiness}% field readiness`),
+      qualitySummaryCard('Records ready', summary.ready, 'No current completeness issues', 'ready'),
+      qualitySummaryCard('Needs review', summary.review, 'Records with one or more prompts', summary.review ? 'review' : 'ready'),
+      qualitySummaryCard('High priority', summary.high, 'Identity, botanical, or code issues', summary.high ? 'high' : 'ready'),
+      qualitySummaryCard('Missing photos', summary.photos, 'Records without an image'),
+      qualitySummaryCard('No sizes', summary.sizes, 'Records without available sizes')
+    ].join('');
+    recentRoot.innerHTML = qualityRecentHTML(audits);
+
+    if (!summary.review) {
+      resultsRoot.innerHTML = emptyState('All records pass the current completeness checks', 'This confirms the current field checks only. Botanical information has not been independently verified.');
+    } else if (!visible.length) {
+      resultsRoot.innerHTML = emptyState('No records match this quality check', 'Choose another filter or clear the current search to continue reviewing the catalogue.');
+    } else {
+      resultsRoot.innerHTML = `<div class="quality-result-heading"><strong>${visible.length} ${visible.length === 1 ? 'record' : 'records'} shown</strong><span>Review prompts never change a record automatically.</span></div><div class="quality-record-list">${visible.map(qualityAuditCardHTML).join('')}</div>`;
+    }
+    if (status) status.textContent = `Data Quality updated: ${visible.length} records shown; ${summary.review} records need review; ${summary.high} high-priority issues.`;
+  }
+
+  function renderQualityCenter() {
+    content.innerHTML = `<section class="quality-center" aria-labelledby="qualityCenterHeading">
+      <div class="quality-intro"><div><span class="quality-kicker">Catalogue review workspace</span><h2 id="qualityCenterHeading">Plant Data Quality Center</h2><p>Find incomplete records and possible conflicts. Review every suggestion before editing botanical information.</p></div><div class="quality-readiness-note"><strong>No automatic corrections</strong><span>Nothing is merged, deleted, or botanically verified by this screen.</span></div></div>
+      <div id="qualitySummary" class="quality-summary-grid" aria-label="Data quality summary"></div>
+      <div id="qualityRecentRoot"></div>
+      <div class="quality-toolbar">
+        <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="qualitySearch" class="search-input" type="search" placeholder="Search name, code, or scientific name…" aria-label="Search Data Quality records" value="${escapeHTML(state.qualitySearch)}"></label>
+        <select id="qualityCategory" class="select-input" aria-label="Filter quality records by category"><option value="All">All Categories</option>${categories().map(category => `<option value="${escapeHTML(category)}"${state.qualityCategory === category ? ' selected' : ''}>${escapeHTML(category)}</option>`).join('')}</select>
+        <select id="qualityPriority" class="select-input" aria-label="Filter quality records by priority"><option value="All">All Priorities</option>${['High', 'Medium', 'Low'].map(priority => `<option value="${priority}"${state.qualityPriority === priority ? ' selected' : ''}>${priority} Priority</option>`).join('')}</select>
+        <select id="qualityIssue" class="select-input" aria-label="Filter quality records by issue"><option value="All">All Issue Types</option>${qualityIssueOptions()}</select>
+        <select id="qualitySort" class="select-input" aria-label="Sort quality records"><option value="issues"${state.qualitySort === 'issues' ? ' selected' : ''}>Most Issues</option><option value="az"${state.qualitySort === 'az' ? ' selected' : ''}>Name A–Z</option><option value="recent"${state.qualitySort === 'recent' ? ' selected' : ''}>Recently Edited</option></select>
+      </div>
+      <div class="quality-quick-filters" role="group" aria-label="Data Quality quick filters">${[
+        ['all', 'All Issues'], ['botanical', 'Botanical Review'], ['photos', 'Missing Photos'], ['sizes', 'No Sizes'], ['growing', 'Growing Information'], ['descriptions', 'Descriptions'], ['codes', 'Code Issues']
+      ].map(([value, label]) => `<button type="button" class="quality-filter-chip${state.qualityQuickFilter === value ? ' is-active' : ''}" data-quality-filter="${value}" aria-pressed="${state.qualityQuickFilter === value ? 'true' : 'false'}">${label}</button>`).join('')}</div>
+      <span id="qualityResultStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
+      <div id="qualityResults"></div>
+    </section>`;
+    qualityRenderResults();
+  }
+
+  function qualityDecorateDashboard() {
+    const healthCopy = content.querySelector('.dashboard-health-panel .dashboard-health-copy');
+    if (!healthCopy || healthCopy.querySelector('[data-quality-open]')) return;
+    const audits = qualityAuditCatalogue();
+    const summary = qualitySummary(audits);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'button ghost small dashboard-quality-link';
+    button.dataset.qualityOpen = 'true';
+    button.innerHTML = `<span>Review data quality</span><strong>${summary.review}</strong>`;
+    button.setAttribute('aria-label', `Review data quality. ${summary.review} records need review.`);
+    healthCopy.appendChild(button);
+  }
+
+  function qualitySyncControls(target) {
+    if (target.id === 'qualitySearch') state.qualitySearch = target.value;
+    if (target.id === 'qualityCategory') state.qualityCategory = target.value;
+    if (target.id === 'qualityPriority') state.qualityPriority = target.value;
+    if (target.id === 'qualityIssue') state.qualityIssue = target.value;
+    if (target.id === 'qualitySort') state.qualitySort = target.value;
+    qualityRenderResults();
+  }
+
+  document.addEventListener('input', event => {
+    if (event.target?.id === 'qualitySearch' && state.view === 'quality') qualitySyncControls(event.target);
+  });
+
+  document.addEventListener('change', event => {
+    if (state.view !== 'quality') return;
+    if (['qualityCategory', 'qualityPriority', 'qualityIssue', 'qualitySort'].includes(event.target?.id)) qualitySyncControls(event.target);
+  });
+
+  document.addEventListener('click', event => {
+    const openButton = event.target.closest('[data-quality-open]');
+    if (openButton) {
+      event.preventDefault();
+      setView('quality');
+      return;
+    }
+    const filterButton = event.target.closest('[data-quality-filter]');
+    if (filterButton && state.view === 'quality') {
+      event.preventDefault();
+      state.qualityQuickFilter = filterButton.dataset.qualityFilter || 'all';
+      document.querySelectorAll('[data-quality-filter]').forEach(button => {
+        const active = button === filterButton;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      qualityRenderResults();
+      return;
+    }
+    const editButton = event.target.closest('[data-quality-edit]');
+    if (editButton && state.view === 'quality') {
+      event.preventDefault();
+      const plantId = editButton.dataset.qualityEdit || '';
+      if (getPlant(plantId)) openPlantForm(plantId);
+    }
+  });
+
+  window.GREENSCAPE_DATA_QUALITY = Object.freeze({
+    auditPlant: plantId => {
+      const plant = getPlant(plantId);
+      return plant ? qualityAuditPlant(plant) : null;
+    },
+    auditCatalogue: qualityAuditCatalogue
+  });
+  // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_END
+
 })();
 /* GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_END */

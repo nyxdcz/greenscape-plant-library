@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   /* GREENSCAPE_PHONE_STAFF_NAVIGATION_FIX_V1 */
+  /* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_MAINTENANCE_START */
 
   const configured = window.GREENSCAPE_MAINTENANCE || {};
   const previewEnabled = new URLSearchParams(window.location.search).get('maintenance-preview') === '1';
@@ -116,7 +117,7 @@
     'scheduleProjectSelect',
     'feedbackMessage'
   ]);
-  const maintenanceLockedViews = new Set(['sheet', 'moodboard', 'projects']);
+  const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects']);
 
   function staffWorkspaceIsActive() {
     return isStaffAuthorized() && maintenanceLockedViews.has(location.hash.slice(1));
@@ -194,7 +195,7 @@
     const accessPanel = authorized
       ? `<div class="maintenance-staff-access-active" role="status">
           <strong>Staff access active</strong>
-          <span>Plant List Editor, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
+          <span>Plant List Editor, Data Quality, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
           <button type="button" class="maintenance-secondary" data-maintenance-lock>Lock staff tools</button>
         </div>`
       : `<div class="maintenance-staff-access">
@@ -236,7 +237,7 @@
     const bannerClass = authorized ? ' is-authorized' : '';
     const label = authorized ? 'Staff tools unlocked' : 'Maintenance mode';
     const detail = authorized
-      ? 'Editor, mood board, and projects are available.'
+      ? 'Editor, data quality, mood board, and projects are available.'
       : 'Read-only access — editing and saving are disabled.';
     const compact = authorized ? 'Staff access' : 'Read-only access';
     return `<button type="button" class="maintenance-readonly-banner feedback-launcher${bannerClass}" id="maintenanceReadonlyBanner" data-maintenance-show-startup data-maintenance-state="${authorized ? 'staff-tools-unlocked' : 'maintenance-mode'}" aria-live="polite" aria-label="${escapeHTML(label)}. Open maintenance details.">
@@ -699,4 +700,5 @@
   } else {
     initialize();
   }
+  /* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_MAINTENANCE_END */
 })();

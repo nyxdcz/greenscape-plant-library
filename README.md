@@ -24,6 +24,34 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Plant Data Quality Center V1
+
+- **No automatic corrections:** adds a dedicated **Data Quality** workspace that audits the current in-browser plant catalogue without automatically changing, merging, deleting, or botanically verifying any record.
+- Summarizes total records, ready records, records needing review, high-priority issues, missing photos, records without sizes, and a field-completeness readiness percentage.
+- Detects missing identity fields, botanical-name gaps, duplicate or incomplete codes, possible duplicate scientific names, missing photos and sizes, incomplete growing information, descriptions, tags, and references.
+- Applies category-aware exceptions so Landscape Materials are not incorrectly judged by plant-only sunlight, water, growing-condition, botanical-name, or mature-dimension requirements.
+- Adds search, category, priority, issue-type, quick-filter, issue-count, alphabetical, and recently-edited controls with accessible result announcements.
+- Reuses the existing Plant Details and Plant Editor workflows, adds an editable Landscape Use field, and records reliable created/updated timestamps only when a plant is saved.
+- Adds a Dashboard data-quality shortcut, recently edited records, Data Quality contextual guidance, and a non-interrupting Greenie prompt.
+- Adds Data Quality to the desktop sidebar and phone More menu while preserving maintenance staff authorization, session expiry, route protection, and browser-storage protections.
+- Preserves Plant Library, compact Recently Viewed, Similar Plants, Compare Plants, Mood Board, projects, schedules, Magic Bento, phone dock layout, plant data, and all existing transition safeguards.
+- Uses only native HTML, CSS, and JavaScript; no package, framework, external API, image, GIF, server, or data file is added.
+- Adds regression validation for audit priorities, Landscape Materials exceptions, navigation, maintenance authorization, editor return behavior, responsive layout, documentation, and cache consistency.
+- Installer V1.1 updates the legacy maintenance validator from three staff workspaces to the approved four-workspace contract that includes Data Quality.
+
+Affected files:
+
+```text
+README.md
+index.html
+assets/css/styles.css
+assets/js/app.js
+assets/js/magnetic-dock.js
+assets/js/maintenance.js
+assets/js/sidebar-assistant.js
+scripts/validate.mjs
+```
+
 ### Compact Recently Viewed Plants V1
 
 - Condenses the Plant Library **Recently Viewed** section into low-profile horizontal mini-cards while preserving the six-plant history limit, most-recent-first order, local browser storage, and Clear History behavior.
