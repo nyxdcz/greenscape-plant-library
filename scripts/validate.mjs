@@ -201,7 +201,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -272,7 +272,7 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-phone-library-refinement2/.test(html)
+  /plant-library-refinements\.css\?v=20260802-library-breakpoint-continuity-v1/.test(html)
     && /app\.js\?v=20260731-interface-qa1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
@@ -457,8 +457,41 @@ check(
 );
 check(
   html.includes('styles.css?v=20260801-expanding-hover-menu-v1')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
   'Shared header styles must use the V1.2 cache key.'
+);
+
+// GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_VALIDATION
+const plantLibraryBreakpointContinuity = plantLibraryStyles.match(
+  /GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_START([\s\S]*?)GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_END/
+)?.[1] || '';
+check(
+  /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*1023px\)[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)\s*!important;/.test(plantLibraryBreakpointContinuity),
+  'The Plant Library must use three columns from 761px through 1023px.'
+);
+check(
+  /@media\s*\(min-width:\s*761px\)\s*and\s*\(max-width:\s*820px\)[\s\S]*?--library-sticky-top:\s*125px;/.test(plantLibraryBreakpointContinuity),
+  'The narrow tablet Plant Library toolbar must clear the taller header.'
+);
+check(
+  /@media\s*\(min-width:\s*1024px\)\s*and\s*\(max-width:\s*1180px\)[\s\S]*?grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)\s*!important;/.test(plantLibraryBreakpointContinuity),
+  'The Plant Library must return to four columns at 1024px.'
+);
+check(
+  /@media\s*\(min-width:\s*391px\)\s*and\s*\(max-width:\s*760px\)[\s\S]*?#pageContent #plantGrid \.plant-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)\s*!important;/.test(plantLibraryStyles)
+    && /@media\s*\(max-width:\s*390px\)[\s\S]*?#pageContent #plantGrid \.plant-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*!important;/.test(plantLibraryStyles)
+    && /GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_START[\s\S]*?top:\s*44px\s*!important;/.test(plantLibraryStyles),
+  'The existing phone Plant Library columns and sticky-toolbar position must remain unchanged.'
+);
+check(
+  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
+  'Plant Library breakpoint continuity styles must use the current cache key.'
+);
+check(
+  readme.includes('### Plant Library Breakpoint Continuity V1')
+    && readme.includes('three catalogue columns from **761–1023 px**')
+    && readme.includes('four-column catalogue beginning at **1024 px**'),
+  'README must document the Plant Library breakpoint-continuity release.'
 );
 
 // GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_VALIDATION
@@ -489,7 +522,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260731-phone-library-refinement2/.test(html),
+  /plant-library-refinements\.css\?v=20260802-library-breakpoint-continuity-v1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -519,7 +552,7 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
+  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1')
     && html.includes('app.js?v=20260731-interface-qa1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
@@ -555,7 +588,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -589,7 +622,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -746,7 +779,7 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2')
+  html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1')
     && html.includes('app.js?v=20260731-interface-qa1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
@@ -802,7 +835,7 @@ check(
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
     && html.includes('magnetic-dock.js?v=20260731-phone-staff-nav1')
-    && html.includes('plant-library-refinements.css?v=20260731-phone-library-refinement2'),
+    && html.includes('plant-library-refinements.css?v=20260802-library-breakpoint-continuity-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(

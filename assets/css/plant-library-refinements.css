@@ -1056,3 +1056,24 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_PHONE_LIBRARY_POSITION_AND_CATEGORY_V2_END */
+
+/* GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_START
+   Keep the tablet library readable when the desktop sidebar first appears. */
+@media (min-width: 761px) and (max-width: 1023px) {
+  #pageContent #plantGrid .plant-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 820px) {
+  body:has(#plantGrid) {
+    --library-sticky-top: 125px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1180px) {
+  #pageContent #plantGrid .plant-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+/* GREENSCAPE_PLANT_LIBRARY_BREAKPOINT_CONTINUITY_V1_END */

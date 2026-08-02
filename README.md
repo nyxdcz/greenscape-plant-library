@@ -24,6 +24,25 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Plant Library Breakpoint Continuity V1
+
+- Keeps the Plant Library readable when the desktop sidebar first appears above the **760 px** phone breakpoint.
+- Uses three catalogue columns from **761–1023 px**, avoiding the previous four-column compression at the narrowest tablet width.
+- Retains the existing four-column catalogue beginning at **1024 px** and the existing five- and six-column desktop layouts.
+- Adds a narrow **761–820 px** sticky-toolbar offset so the filter panel clears the taller wrapped header.
+- Preserves every phone rule at **760 px and below**, including the floating dock, safe-area positioning, compact filters, and View-only cards.
+- Adds regression validation for the new column boundaries, sticky offset, unchanged phone layout, cache version, and release documentation.
+- Preserves plant data, cards, filters, sorting, list mode, dialogs, Greenie, Help, maintenance protections, project tools, slideshow behavior, and the dashboard bento layout.
+
+Affected files:
+
+```text
+README.md
+assets/css/plant-library-refinements.css
+index.html
+scripts/validate.mjs
+```
+
 ### Expanding Hover Phone Menu V1
 
 - Adds a phone-only expanding state to the existing four-control floating dock at **760 px and below**.
