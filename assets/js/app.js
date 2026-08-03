@@ -95,6 +95,7 @@
   };
 
   let storageAvailable = true;
+  let loadingExperienceLastSuccessfulState = null;
   // maintenance.js marks the document before app.js runs; the body becomes
   // maintenance-readonly only after the visitor opens the read-only website.
   const maintenanceModeAtStartup = (
@@ -366,9 +367,28 @@
       localStorage.setItem(STORAGE.categories, JSON.stringify(customCategories));
       localStorage.setItem(STORAGE.moodboard, JSON.stringify(moodboard));
       storageAvailable = true;
+      loadingExperienceLastSuccessfulState = {
+        plants: clone(plants),
+        projects: clone(projects),
+        customCategories: clone(customCategories),
+        moodboard: clone(moodboard)
+      };
+      return true;
     } catch (error) {
       storageAvailable = false;
-      toast('Browser storage is full or unavailable. Export a backup.', true);
+      if (loadingExperienceLastSuccessfulState) {
+        plants = clone(loadingExperienceLastSuccessfulState.plants);
+        projects = clone(loadingExperienceLastSuccessfulState.projects);
+        customCategories = clone(loadingExperienceLastSuccessfulState.customCategories);
+        moodboard = clone(loadingExperienceLastSuccessfulState.moodboard);
+        queueMicrotask(() => {
+          try { render(); } catch (renderError) { console.error('Loading experience rollback render failed.', renderError); }
+        });
+        toast('The change could not be saved. Your previous data was restored.', true);
+      } else {
+        toast('Browser storage is full or unavailable. Export a backup.', true);
+      }
+      return false;
     }
   }
 
@@ -7856,5 +7876,183 @@
   });
   // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_END
 
+
+
+  // GREENSCAPE_LOADING_EXPERIENCE_V1_START
+  const LOADING_EXPERIENCE_IMAGE_FRAME_SELECTORS = [
+    '.plant-image',
+    '.plant-list-image',
+    '.plant-modal-image',
+    '.plant-detail-image',
+    '.plant-detail-photo',
+    '.quality-recent-image',
+    '.moodboard-card-photo',
+    '.plant-compare-column-image',
+    '.guided-similar-image'
+  ];
+  const LOADING_EXPERIENCE_IMAGE_FRAMES = LOADING_EXPERIENCE_IMAGE_FRAME_SELECTORS.join(',');
+  const LOADING_EXPERIENCE_IMAGES = LOADING_EXPERIENCE_IMAGE_FRAME_SELECTORS.map(selector => `${selector} img`).join(',');
+  let loadingExperienceConnectionTimer = 0;
+  let loadingExperienceProjectToolTimers = [];
+  let loadingExperienceProjectToolStatus = null;
+
+  function loadingExperienceClearTimers() {
+    loadingExperienceProjectToolTimers.forEach(timer => clearTimeout(timer));
+    loadingExperienceProjectToolTimers = [];
+  }
+
+  function loadingExperienceImageFallback(image) {
+    const owner = image.closest('[data-plant-id], [data-guided-similar-plant], [data-quality-edit]');
+    const plantId = owner?.dataset.plantId || owner?.dataset.guidedSimilarPlant || owner?.dataset.qualityEdit || '';
+    const plant = plantId ? getPlant(plantId) : null;
+    return plant?.code || 'Image unavailable';
+  }
+
+  function loadingExperienceFinishImage(image, failed = false) {
+    const frame = image.closest(LOADING_EXPERIENCE_IMAGE_FRAMES);
+    if (!frame) return;
+    frame.classList.remove('is-image-loading');
+    frame.classList.toggle('is-image-failed', failed);
+    frame.classList.toggle('is-image-loaded', !failed);
+    if (failed) {
+      frame.dataset.loadingFallback = loadingExperienceImageFallback(image);
+      image.hidden = true;
+    }
+  }
+
+  function loadingExperiencePrepareImage(image) {
+    if (!(image instanceof HTMLImageElement) || image.dataset.loadingExperienceBound === 'true') return;
+    const frame = image.closest(LOADING_EXPERIENCE_IMAGE_FRAMES);
+    if (!frame || image.closest('.guided-recent-card')) return;
+    image.dataset.loadingExperienceBound = 'true';
+    frame.classList.add('loading-image-frame');
+    if (image.complete) {
+      loadingExperienceFinishImage(image, image.naturalWidth < 1);
+      return;
+    }
+    frame.classList.add('is-image-loading');
+    image.addEventListener('load', () => loadingExperienceFinishImage(image, false), { once: true });
+    image.addEventListener('error', () => loadingExperienceFinishImage(image, true), { once: true });
+  }
+
+  function loadingExperienceScanImages(root = document) {
+    if (root instanceof HTMLImageElement) loadingExperiencePrepareImage(root);
+    root.querySelectorAll?.(LOADING_EXPERIENCE_IMAGES).forEach(loadingExperiencePrepareImage);
+  }
+
+  function loadingExperienceConnectionMessage(online, announceRestore = false) {
+    const banner = document.getElementById('connectionStatus');
+    if (!banner) return;
+    clearTimeout(loadingExperienceConnectionTimer);
+    const title = banner.querySelector('[data-connection-title]');
+    const message = banner.querySelector('[data-connection-message]');
+    if (!online) {
+      if (title) title.textContent = 'You appear to be offline';
+      if (message) message.textContent = 'Saved local records remain available, but uncached images and deferred tools may not load.';
+      banner.classList.add('is-offline');
+      banner.hidden = false;
+      return;
+    }
+    banner.classList.remove('is-offline');
+    if (!announceRestore) {
+      banner.hidden = true;
+      return;
+    }
+    if (title) title.textContent = 'Connection restored';
+    if (message) message.textContent = 'Online resources can load again.';
+    banner.hidden = false;
+    loadingExperienceConnectionTimer = setTimeout(() => { banner.hidden = true; }, 2800);
+  }
+
+  function loadingExperienceProjectStatus() {
+    if (loadingExperienceProjectToolStatus?.isConnected) return loadingExperienceProjectToolStatus;
+    const status = document.createElement('section');
+    status.className = 'operation-loading-panel';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    status.setAttribute('aria-atomic', 'true');
+    status.hidden = true;
+    status.innerHTML = `
+      <span class="operation-loading-indicator" aria-hidden="true"></span>
+      <div><strong data-operation-loading-title>Preparing project tools</strong><span data-operation-loading-message>Loading the selected tool…</span></div>
+      <button type="button" class="button secondary small" data-loading-retry-project-tools hidden>Retry</button>`;
+    document.body.appendChild(status);
+    status.querySelector('[data-loading-retry-project-tools]')?.addEventListener('click', () => {
+      document.querySelectorAll('script[data-project-tool-src]:not([data-loaded="true"]), link[data-project-tool-href]').forEach(node => node.remove());
+      projectToolsLoadPromise = null;
+      ensureProjectToolsLoaded();
+    });
+    loadingExperienceProjectToolStatus = status;
+    return status;
+  }
+
+  function loadingExperienceSetProjectMessage(title, message, retry = false) {
+    const status = loadingExperienceProjectStatus();
+    status.hidden = false;
+    const titleNode = status.querySelector('[data-operation-loading-title]');
+    const messageNode = status.querySelector('[data-operation-loading-message]');
+    const retryButton = status.querySelector('[data-loading-retry-project-tools]');
+    if (titleNode) titleNode.textContent = title;
+    if (messageNode) messageNode.textContent = message;
+    if (retryButton) retryButton.hidden = !retry;
+  }
+
+  function loadingExperienceBeginProjectTools() {
+    loadingExperienceClearTimers();
+    const status = loadingExperienceProjectStatus();
+    status.hidden = true;
+    content?.setAttribute('aria-busy', 'true');
+    loadingExperienceProjectToolTimers.push(setTimeout(() => {
+      loadingExperienceSetProjectMessage('Preparing project tools', 'Loading the selected tool…');
+    }, 900));
+    loadingExperienceProjectToolTimers.push(setTimeout(() => {
+      loadingExperienceSetProjectMessage('Still loading project tools', 'The connection or device may need a little more time.');
+    }, 4000));
+    loadingExperienceProjectToolTimers.push(setTimeout(() => {
+      loadingExperienceSetProjectMessage('Project tools are taking longer than expected', 'Retry the deferred tool files without clearing your local records.', true);
+    }, 12000));
+  }
+
+  function loadingExperienceEndProjectTools(success) {
+    loadingExperienceClearTimers();
+    content?.setAttribute('aria-busy', 'false');
+    const status = loadingExperienceProjectStatus();
+    if (success) {
+      status.hidden = true;
+      return;
+    }
+    loadingExperienceSetProjectMessage('Project tools could not be loaded', 'Check the connection, then retry.', true);
+  }
+
+  const loadingExperienceOriginalEnsureProjectToolsLoaded = ensureProjectToolsLoaded;
+  ensureProjectToolsLoaded = function loadingExperienceEnsureProjectToolsLoaded() {
+    const beginsNewLoad = !projectToolsLoadPromise;
+    if (beginsNewLoad) loadingExperienceBeginProjectTools();
+    const result = loadingExperienceOriginalEnsureProjectToolsLoaded();
+    return Promise.resolve(result).then(value => {
+      if (beginsNewLoad) loadingExperienceEndProjectTools(Boolean(projectToolsLoadPromise));
+      return value;
+    }, error => {
+      if (beginsNewLoad) loadingExperienceEndProjectTools(false);
+      throw error;
+    });
+  };
+
+  content?.setAttribute('aria-busy', 'false');
+  loadingExperienceScanImages(document);
+  const loadingExperienceImageObserver = new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) loadingExperienceScanImages(node);
+    }));
+  });
+  [content, modalRoot].filter(Boolean).forEach(root => loadingExperienceImageObserver.observe(root, { childList: true, subtree: true }));
+
+  window.addEventListener('offline', () => loadingExperienceConnectionMessage(false));
+  window.addEventListener('online', () => loadingExperienceConnectionMessage(true, true));
+  loadingExperienceConnectionMessage(navigator.onLine !== false);
+  document.addEventListener('visibilitychange', () => {
+    document.documentElement.classList.toggle('loading-experience-page-hidden', document.hidden);
+  });
+  // GREENSCAPE_LOADING_EXPERIENCE_V1_END
 })();
 /* GREENSCAPE_DIALOG_KEYBOARD_SUPPORT_END */

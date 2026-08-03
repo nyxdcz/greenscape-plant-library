@@ -24,6 +24,31 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Greenscape Loading Experience V1
+
+- Adds a delayed, layout-matched Dashboard skeleton directly in the initial HTML so fast loads do not flash a placeholder while slower starts never appear blank.
+- Escalates loading feedback honestly: subtle skeleton after 180 ms, a “still loading” explanation after four seconds, and a retry link after twelve seconds.
+- Adds image skeleton and failure states to Plant Library grid/list cards, Plant Details, Data Quality recent records, Mood Board cards, Compare Plants, and Similar Plants while leaving compact Recently Viewed dimensions unchanged.
+- Wraps deferred Project Tools with staged status messages and a retry control without inventing download percentages.
+- Preserves the Plant Identifier's existing real model-download percentage and the Plant Library's existing Greenie batch loader.
+- Adds a non-blocking offline notice explaining that local records remain available while uncached images and deferred tools may not load, plus a brief connection-restored confirmation.
+- Makes browser-local saves return a reliable success result and restores the last successful in-memory state when storage fails, with a clear rollback message.
+- Adds accessible busy states, concise live announcements, visible retry controls, static reduced-motion skeletons, and paused shimmer while the page is hidden.
+- Preserves Plant Data Quality, Magic Bento, compact Recently Viewed, Similar Plants, Compare Plants, Plant Details transition safeguards, phone navigation, Greenie, projects, and Mood Board behavior.
+- Uses only native HTML, CSS, and JavaScript; no dependency, framework, external API, service worker, image, GIF, server, or database is added.
+- Updates cache-version keys and adds regression validation for startup skeletons, image fallbacks, truthful progress, rollback behavior, connection feedback, responsive layout, and preserved features.
+
+Affected files:
+
+```text
+README.md
+index.html
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+scripts/validate.mjs
+```
+
 ### Plant Data Quality Center V1
 
 - **No automatic corrections:** adds a dedicated **Data Quality** workspace that audits the current in-browser plant catalogue without automatically changing, merging, deleting, or botanically verifying any record.

@@ -32,9 +32,9 @@
   <meta name="twitter:image" content="https://nyxdcz.github.io/greenscape-plant-library/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Greenscape Plant Library icon">
   <link rel="stylesheet" href="assets/css/maintenance.css?v=20260731-phone-dock-maintenance1">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260803-plant-data-quality-center-v1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260803-loading-experience-v1">
   <link rel="stylesheet" href="assets/css/feature-glow.css?v=20260727-naviconscontrast1">
-  <link rel="stylesheet" href="assets/css/plant-library-refinements.css?v=20260803-compact-recently-viewed-plants-v1">
+  <link rel="stylesheet" href="assets/css/plant-library-refinements.css?v=20260803-loading-experience-v1">
   <link rel="stylesheet" href="assets/css/sidebar-assistant.css?v=20260730-greenie-intermediate1">
 </head>
 <body>
@@ -95,8 +95,31 @@
         </div>
       </header>
 
-      <section id="pageContent" class="page-content"></section>
+      <section id="pageContent" class="page-content" aria-busy="true">
+        <div class="app-loading-skeleton" data-app-loading-skeleton role="status" aria-live="polite" aria-label="Loading Greenscape dashboard">
+          <div class="app-loading-hero" aria-hidden="true">
+            <span class="loading-skeleton-line is-kicker"></span>
+            <span class="loading-skeleton-line is-title"></span>
+            <span class="loading-skeleton-line is-copy"></span>
+            <span class="loading-skeleton-line is-copy short"></span>
+          </div>
+          <div class="app-loading-stats" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="app-loading-panels" aria-hidden="true">
+            <span></span><span></span>
+          </div>
+          <p class="app-loading-message">Preparing your Greenscape workspace…</p>
+          <p class="app-loading-slow">Still loading. Slower connections or older devices may need a little more time.</p>
+          <a class="button secondary small app-loading-retry" href="./">Retry loading</a>
+        </div>
+      </section>
     </main>
+  </div>
+
+  <div class="connection-status" id="connectionStatus" role="status" aria-live="polite" aria-atomic="true" hidden>
+    <strong data-connection-title>Connection notice</strong>
+    <span data-connection-message></span>
   </div>
 
   <div class="feedback-widget" id="feedbackWidget">
@@ -135,7 +158,7 @@
   <script src="assets/js/maintenance-force.js?v=20260730-maintenance-staff-access1" defer></script>
   <script src="assets/js/maintenance.js?v=20260803-plant-data-quality-center-v1" defer></script>
   <script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
-  <script src="assets/js/app.js?v=20260803-plant-data-quality-center-v1" defer></script>
+  <script src="assets/js/app.js?v=20260803-loading-experience-v1" defer></script>
   <script src="assets/js/magnetic-dock.js?v=20260803-plant-data-quality-center-v1" defer></script>
   <script src="assets/js/sidebar-assistant.js?v=20260803-plant-data-quality-center-v1" defer></script>
 </body>

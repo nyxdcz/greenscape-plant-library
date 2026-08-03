@@ -1581,3 +1581,13 @@ body:has(#plantGrid) .library-view-toggle {
   }
 }
 /* GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_END */
+
+/* GREENSCAPE_LOADING_EXPERIENCE_V1_LIBRARY_START */
+.plant-card .loading-image-frame .category-pill,
+.plant-list-card .loading-image-frame .category-pill { position: relative; z-index: 3; }
+.plant-card .plant-image.loading-image-frame.is-image-loading::after,
+.plant-list-card .plant-list-image.loading-image-frame.is-image-loading::after { z-index: 2; }
+.plant-card .plant-image.loading-image-frame.is-image-failed::before,
+.plant-list-card .plant-list-image.loading-image-frame.is-image-failed::before { z-index: 1; }
+.guided-recent-card { /* Compact Recently Viewed intentionally keeps its existing image behavior and dimensions. */ }
+/* GREENSCAPE_LOADING_EXPERIENCE_V1_LIBRARY_END */
