@@ -150,6 +150,7 @@
     menu.innerHTML = `
       <button type="button" data-view="sheet" data-phone-staff-view><span>Plant List Editor</span><small>Locked</small></button>
       <button type="button" data-view="quality" data-phone-staff-view><span>Data Quality</span><small>Locked</small></button>
+      <button type="button" data-view="collections" data-phone-staff-view><span>Plant Collections</span><small>Locked</small></button>
       <button type="button" data-view="moodboard" data-phone-staff-view><span>Mood Board Creator</span><small>Locked</small></button>
       <button type="button" data-view="projects" data-phone-staff-view><span>Project Lists</span><small>Locked</small></button>
       <button type="button" class="phone-dock-maintenance-item" data-maintenance-show-startup data-phone-maintenance-status aria-label="Maintenance Mode. Read-only access. Open maintenance details."><span class="phone-dock-maintenance-copy"><i class="phone-dock-maintenance-icon" aria-hidden="true"></i><b data-phone-maintenance-label>Maintenance Mode</b></span><small data-phone-maintenance-detail>Read-only access</small></button>
@@ -188,7 +189,7 @@
       });
     }
 
-    dock.querySelectorAll('[data-view="sheet"], [data-view="quality"], [data-view="moodboard"], [data-view="projects"]').forEach((item) => {
+    dock.querySelectorAll('[data-view="sheet"], [data-view="quality"], [data-view="collections"], [data-view="moodboard"], [data-view="projects"]').forEach((item) => {
       item.classList.add('phone-dock-hidden');
     });
 
@@ -273,3 +274,5 @@
   }
   /* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_PHONE_END */
 })();
+
+/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_PHONE */

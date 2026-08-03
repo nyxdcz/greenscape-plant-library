@@ -170,8 +170,8 @@ check(
   'Maintenance staff authorization must be limited to browser session storage.'
 );
 check(
-  jsSources['assets/js/maintenance.js'].includes("const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects'])"),
-  'Maintenance staff access must remain scoped to the four approved workspaces.'
+  jsSources['assets/js/maintenance.js'].includes("const maintenanceLockedViews = new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects'])"),
+  'Maintenance staff access must remain scoped to the five approved workspaces.'
 );
 check(
   jsSources['assets/js/app.js'].includes('maintenanceAccessIsAuthorized'),
@@ -201,7 +201,7 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Phone Plant Library and maintenance styles must use the current cache key.'
 );
 check(
@@ -272,8 +272,8 @@ check(
   'Plant card action labels must not break letter by letter.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-loading-experience-v1/.test(html)
-    && /app\.js\?v=20260803-loading-experience-v1/.test(html),
+  /plant-library-refinements\.css\?v=20260803-saved-plant-collections-v1/.test(html)
+    && /app\.js\?v=20260803-saved-plant-collections-v1/.test(html),
   'Plant card layout and phone-action cache keys must be current.'
 );
 check(!jsSources['assets/js/sidebar-assistant.js'].includes('reorderPlantNames'), 'The sidebar assistant must not reorder Plant Library DOM nodes.');
@@ -329,8 +329,8 @@ check(
   'The maintenance and staff status must remain hidden when the phone glass tab bar is active.'
 );
 check(
-  /styles\.css\?v=20260803-loading-experience-v1/.test(html)
-    && /magnetic-dock\.js\?v=20260803-plant-data-quality-center-v1/.test(html),
+  /styles\.css\?v=20260803-saved-plant-collections-v1/.test(html)
+    && /magnetic-dock\.js\?v=20260803-saved-plant-collections-v1/.test(html),
   'Phone Glass Tab Bar cache keys must be current.'
 );
 // DUPLICATE_PLANT_CONSOLIDATION_V1_VALIDATION
@@ -456,8 +456,8 @@ check(
   'The existing phone Plant Library header must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Shared header styles must use the V1.2 cache key.'
 );
 
@@ -484,7 +484,7 @@ check(
   'The existing phone Plant Library columns and sticky-toolbar position must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Plant Library breakpoint continuity styles must use the current cache key.'
 );
 check(
@@ -522,7 +522,7 @@ check(
   'The compact plus button must preserve its Add-to-Project action and accessible plant label.'
 );
 check(
-  /plant-library-refinements\.css\?v=20260803-loading-experience-v1/.test(html),
+  /plant-library-refinements\.css\?v=20260803-saved-plant-collections-v1/.test(html),
   'Compact Add Button styles must use the current cache key.'
 );
 
@@ -552,8 +552,8 @@ check(
   'Compact tablet/desktop Add actions and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Plant information order assets must use the current V1.1 cache keys.'
 );
 
@@ -588,7 +588,7 @@ check(
   'Information order, compact Add actions, and phone View-only behavior must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Plant information spacing styles must use the V1.3 cache key.'
 );
 
@@ -622,7 +622,7 @@ check(
   'Plant information spacing and the existing phone safeguard must remain unchanged.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Intermediate View-only styles must use the current cache key.'
 );
 
@@ -679,11 +679,11 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1')
-    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
+    && html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('maintenance.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-saved-plant-collections-v1'),
   'Greenie-only Help assets must use the current cache keys.'
 );
 
@@ -724,9 +724,9 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1')
-    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
+    && html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1'),
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
@@ -779,8 +779,8 @@ check(
   'Greenie scroll-loading styles must remain scoped, pixel-crisp, and reduced-motion aware.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
@@ -834,8 +834,8 @@ check(
 );
 check(
   html.includes('maintenance.css?v=20260731-phone-dock-maintenance1')
-    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
@@ -871,7 +871,7 @@ check(
   'Phone dock utilities must synchronize only at startup and breakpoint changes.'
 );
 check(
-  html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
+  html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1'),
   'The phone-dock freeze hotfix must use the current JavaScript cache key.'
 );
 check(
@@ -1022,10 +1022,10 @@ check(
   'Interface QA styles must cover publishing guidance, touch ordering, and phone staff states.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1')
-    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('maintenance.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1'),
   'Interface QA assets must use the current cache keys.'
 );
 check(
@@ -1091,7 +1091,7 @@ check(
   'The expanding phone dock must provide an effectively instant reduced-motion state.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1'),
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
@@ -1135,9 +1135,9 @@ check(
   'Plant Library interaction changes must preserve the established 760px/761px breakpoint boundary.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Branded interaction feedback assets must use the V1 cache key.'
 );
 check(
@@ -1180,7 +1180,7 @@ check(
   'The existing responsive expansion widths and genuine fine-pointer hover behavior must remain unchanged.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
     && !html.includes('styles.css?v=20260802-branded-interaction-feedback-v1'),
   'Phone dock touch-state styles must use the V1.1 cache key.'
 );
@@ -1238,8 +1238,8 @@ check(
   'Magic Bento Dashboard must preserve the approved bento spans and phone single-column composition.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Magic Bento Dashboard assets must use the V1 cache keys.'
 );
 check(
@@ -1304,9 +1304,9 @@ check(
   'Only non-critical identifier results should gain lazy loading while the hero and first visible plant cards keep priority.'
 );
 check(
-  mobileReviewHtml.includes('styles.css?v=20260803-loading-experience-v1')
-    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && mobileReviewHtml.includes('app.js?v=20260803-loading-experience-v1'),
+  mobileReviewHtml.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && mobileReviewHtml.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && mobileReviewHtml.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Mobile form, viewport, and image-loading assets must use the V1.1 cache key.'
 );
 check(
@@ -1388,9 +1388,9 @@ check(
   'Plant Discovery motion must stay restrained and include shared reduced-motion safeguards.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-loading-experience-v1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-loading-experience-v1'),
+  plantDiscoveryHtml.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && plantDiscoveryHtml.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Interactive Plant Discovery assets must use the current V1 cache key.'
 );
 check(
@@ -1456,9 +1456,9 @@ check(
   'Plant Library cards must default to no persistent View Transition identity.'
 );
 check(
-  plantDiscoveryHtml.includes('styles.css?v=20260803-loading-experience-v1')
-    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && plantDiscoveryHtml.includes('app.js?v=20260803-loading-experience-v1'),
+  plantDiscoveryHtml.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && plantDiscoveryHtml.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && plantDiscoveryHtml.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Interactive Plant Discovery V1.1 assets must use the corrected cache key.'
 );
 check(
@@ -1529,10 +1529,10 @@ check(
   'Similar Plants must use deterministic weighted relationships, show up to four results, and stay outside the shared transition.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1')
-    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-saved-plant-collections-v1'),
   'Guided Plant Discovery assets must use the current cache keys.'
 );
 check(
@@ -1588,7 +1588,7 @@ check(
   'Compact Recently Viewed overrides must not alter Similar Plants.'
 );
 check(
-  html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1'),
+  html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1'),
   'Compact Recently Viewed Plant Library styles must use the current cache key.'
 );
 const previousGuidedPlantLibraryCache = ['20260803', 'guided', 'plant', 'discovery', 'v1'].join('-');
@@ -1616,7 +1616,7 @@ check(
   html.includes('data-view="quality"')
     && qualityCenterApp.includes("quality: 'Data Quality'")
     && qualityCenterApp.includes("state.view === 'quality'")
-    && qualityCenterApp.includes("['dashboard', 'library', 'sheet', 'quality', 'moodboard', 'projects', 'schedule']"),
+    && qualityCenterApp.includes("['dashboard', 'library', 'collections', 'sheet', 'quality', 'moodboard', 'projects', 'schedule']"),
   'Data Quality must be available through navigation, routing, page titles, and rendering.'
 );
 check(
@@ -1657,8 +1657,8 @@ check(
 check(
   qualityCenterDock.includes('data-view="quality" data-phone-staff-view')
     && qualityCenterDock.includes('[data-view="quality"]')
-    && qualityCenterMaintenance.includes("new Set(['sheet', 'quality', 'moodboard', 'projects'])")
-    && qualityCenterMaintenance.includes('Plant List Editor, Data Quality, Mood Board Creator, and Project Lists'),
+    && qualityCenterMaintenance.includes("new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects'])")
+    && qualityCenterMaintenance.includes('Plant List Editor, Data Quality, Plant Collections, Mood Board Creator, and Project Lists'),
   'Data Quality must follow the existing phone More-menu and maintenance staff-authorization model.'
 );
 check(
@@ -1677,11 +1677,11 @@ check(
   'Data Quality must retain responsive phone controls, touch targets, and reduced-motion safeguards.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1')
-    && html.includes('maintenance.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('magnetic-dock.js?v=20260803-plant-data-quality-center-v1')
-    && html.includes('sidebar-assistant.js?v=20260803-plant-data-quality-center-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('maintenance.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-saved-plant-collections-v1'),
   'Plant Data Quality Center assets must use the current cache keys.'
 );
 check(
@@ -1756,9 +1756,9 @@ check(
   'Browser-local saves must report success and restore the last successful in-memory state after storage failure.'
 );
 check(
-  html.includes('styles.css?v=20260803-loading-experience-v1')
-    && html.includes('plant-library-refinements.css?v=20260803-loading-experience-v1')
-    && html.includes('app.js?v=20260803-loading-experience-v1'),
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1'),
   'Loading Experience assets must use the current cache key.'
 );
 check(
@@ -1772,6 +1772,115 @@ check(
     && loadingExperienceApp.includes('GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_START')
     && loadingExperienceApp.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START'),
   'Compact Recently Viewed, stabilized Plant Details transitions, Data Quality, and Magic Bento must remain present.'
+);
+
+// GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_VALIDATION
+const collectionsApp = jsSources['assets/js/app.js'];
+const collectionsDock = jsSources['assets/js/magnetic-dock.js'];
+const collectionsMaintenance = jsSources['assets/js/maintenance.js'];
+const collectionsAssistant = jsSources['assets/js/sidebar-assistant.js'];
+const collectionsStyles = styles.split('/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_START')[1]
+  ?.split('/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_END */')[0] || '';
+const collectionsLibraryStyles = plantLibraryStyles.split('/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_LIBRARY_START')[1]
+  ?.split('/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_LIBRARY_END */')[0] || '';
+const collectionsJs = collectionsApp.split('// GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_START')[1]
+  ?.split('// GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_END')[0] || '';
+
+check(
+  collectionsApp.includes("collections: 'greenscape-plant-library-collections-v1'")
+    && collectionsApp.includes("collections = sanitizeCollections(migrateDuplicateCollectionRecords(loadJSON(STORAGE.collections, [])))")
+    && collectionsApp.includes("localStorage.setItem(STORAGE.collections, JSON.stringify(collections))")
+    && collectionsApp.includes('collections: clone(collections)')
+    && collectionsApp.includes('collections = clone(loadingExperienceLastSuccessfulState.collections || [])')
+    && collectionsApp.includes('version: 4')
+    && collectionsApp.includes('collections = sanitizeCollections(migrateDuplicateCollectionRecords(parsed.collections || []))'),
+  'Saved Collections must use the approved local-storage key and participate in save rollback and backup restore.'
+);
+check(
+  collectionsJs.includes('function sanitizeCollections(records)')
+    && collectionsJs.includes('duplicatePlantTargetId(value)')
+    && collectionsJs.includes('validPlantIds.has(plantId)')
+    && collectionsJs.includes('seenPlantIds.has(plantId)'),
+  'Collections must migrate consolidated plant IDs, remove stale IDs, and prevent duplicate membership.'
+);
+check(
+  collectionsJs.includes('function openCollectionPicker(plantId, sourceButton = null)')
+    && collectionsJs.includes('name="collectionIds"')
+    && collectionsJs.includes('function saveCollectionPicker(event)')
+    && collectionsJs.includes('collectionMembershipCount(plantId)')
+    && collectionsJs.includes('collection-picker-backdrop')
+    && collectionsJs.includes('closeCollectionPicker')
+    && collectionsJs.includes("event.key !== 'Tab'"),
+  'Plant cards and Plant Details must support multi-collection membership, counts, and a nested accessible picker that preserves Plant Details.'
+);
+check(
+  collectionsJs.includes('function exportCollectionCsv(collectionId)')
+    && collectionsJs.includes("'Scientific Name / Material'")
+    && collectionsJs.includes("'Landscape Use'")
+    && collectionsJs.includes("'Planting Notes'")
+    && collectionsJs.includes("'Reference'")
+    && collectionsJs.includes("const safeText = /^[\\s]*[=+\\-@\\t\\r]/.test(text)"),
+  'Collection CSV export must include the approved plant information fields and guard spreadsheet formulas.'
+);
+check(
+  collectionsJs.includes('function transferCollectionToMoodboard(event)')
+    && collectionsJs.includes("mode === 'replace'")
+    && collectionsJs.includes('window.confirm')
+    && collectionsJs.includes('moodboard.cardColors'),
+  'Mood Board transfer must merge by default and require confirmation before replacement.'
+);
+check(
+  collectionsJs.includes('function transferCollectionToProject(event)')
+    && collectionsJs.includes("quantity: 1")
+    && collectionsJs.includes("sizeLabel: ''")
+    && collectionsJs.includes("zone: ''")
+    && collectionsJs.includes("spacing: ''")
+    && collectionsJs.includes("notes: ''"),
+  'Project transfer must start at quantity 1 without inventing size, zone, spacing, or project notes.'
+);
+check(
+  html.includes('data-view="collections"')
+    && collectionsDock.includes('data-view="collections" data-phone-staff-view')
+    && collectionsMaintenance.includes("new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects'])")
+    && collectionsMaintenance.includes("key === COLLECTIONS_STORAGE_KEY")
+    && collectionsApp.includes("new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects'])"),
+  'Collections must be available in desktop/phone navigation and protected as the fifth maintenance workspace.'
+);
+check(
+  collectionsApp.includes("collections: 'Plant Collections'")
+    && collectionsApp.includes("if (state.view === 'collections') renderCollections();")
+    && collectionsApp.includes("if (state.view === 'collections') return 'collections';")
+    && collectionsAssistant.includes("context === 'collections' ? 'Plant Collections'"),
+  'Collections must have a dedicated route, renderer, contextual guide, and Greenie label.'
+);
+check(
+  collectionsStyles.includes('.collection-grid')
+    && collectionsStyles.includes('@media (max-width: 760px)')
+    && collectionsLibraryStyles.includes('.collection-bookmark')
+    && collectionsLibraryStyles.includes('.collection-bookmark-list'),
+  'Collections and bookmark controls must retain responsive desktop, list, and phone layouts.'
+);
+check(
+  html.includes('styles.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('plant-library-refinements.css?v=20260803-saved-plant-collections-v1')
+    && html.includes('app.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('maintenance.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('magnetic-dock.js?v=20260803-saved-plant-collections-v1')
+    && html.includes('sidebar-assistant.js?v=20260803-saved-plant-collections-v1'),
+  'Saved Collections affected assets must use the current cache key.'
+);
+check(
+  readme.includes('### Saved Plant Collections V1')
+    && readme.includes('one plant to belong to several collections')
+    && readme.includes('no dependency, framework, external API, image, GIF, server, database, or multi-device synchronization is added'),
+  'README must document Saved Plant Collections V1 and its preserved dependency scope.'
+);
+check(
+  collectionsApp.includes('GREENSCAPE_LOADING_EXPERIENCE_V1_START')
+    && collectionsApp.includes('GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_START')
+    && plantLibraryStyles.includes('GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_START')
+    && styles.includes('GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_1_TRANSITION_FIX_START'),
+  'Loading Experience, Data Quality, Compact Recently Viewed, and stabilized transitions must remain present.'
 );
 
 if (failures.length) {

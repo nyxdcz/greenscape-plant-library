@@ -1591,3 +1591,57 @@ body:has(#plantGrid) .library-view-toggle {
 .plant-list-card .plant-list-image.loading-image-frame.is-image-failed::before { z-index: 1; }
 .guided-recent-card { /* Compact Recently Viewed intentionally keeps its existing image behavior and dimensions. */ }
 /* GREENSCAPE_LOADING_EXPERIENCE_V1_LIBRARY_END */
+
+/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_LIBRARY_START */
+.plant-card.library-reference-card,
+.plant-list-card { position: relative; }
+.collection-bookmark {
+  position: absolute;
+  z-index: 5;
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 999px;
+  color: var(--forest-900);
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 5px 16px rgba(16,48,35,.16);
+  backdrop-filter: blur(10px);
+}
+.collection-bookmark-grid { top: 10px; right: 10px; }
+.collection-bookmark-list { top: 10px; left: 146px; }
+.collection-bookmark svg { width: 17px; height: 17px; }
+.collection-bookmark span {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  min-width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--forest-800);
+  font-size: 8px;
+  font-weight: 900;
+}
+.collection-bookmark.is-saved { color: #fff; background: var(--forest-800); }
+@media (min-width: 761px) and (max-width: 1200px) {
+  .collection-bookmark-list { left: 106px; }
+}
+@media (max-width: 760px) {
+  .collection-bookmark { min-width: 34px; min-height: 34px; }
+  .collection-bookmark-grid { top: 8px; right: 8px; }
+  .collection-bookmark-list { top: 8px; left: 70px; }
+}
+@media (max-width: 390px) {
+  .collection-bookmark-list { left: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collection-bookmark { transition: none !important; }
+}
+/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_LIBRARY_END */

@@ -24,6 +24,34 @@ Plant List Editor, Mood Board Creator, Project Lists, Plant Identifier, or other
 
 ## Latest Interface Update
 
+### Saved Plant Collections V1
+
+- Adds browser-local named plant collections that remain separate from Project Lists and Mood Boards.
+- Adds bookmark controls to Plant Library grid/list cards and Plant Details, including a collection membership count.
+- Allows one plant to belong to several collections through a shared multi-collection picker.
+- Adds a dedicated **Plant Collections** workspace for creating, opening, renaming, searching, and safely deleting lightweight shortlists.
+- Automatically prunes deleted plant IDs and migrates consolidated duplicate plant IDs without deleting empty collection names.
+- Exports each collection as Excel-friendly UTF-8 CSV with plant identity, growing information, landscape use, planting notes, tags, and reference fields.
+- Transfers a collection into the current Mood Board using merge or explicitly confirmed replace behavior.
+- Transfers a collection into a new or existing Project List with quantity 1 while leaving size, zone, spacing, and project notes blank.
+- Extends maintenance authorization, phone More-menu access, contextual help, Greenie prompts, cache validation, and local-storage rollback to Collections.
+- Uses only native HTML, CSS, and JavaScript; no dependency, framework, external API, image, GIF, server, database, or multi-device synchronization is added.
+- Installer V1.1 updates the legacy Data Quality route validator to recognize Plant Collections in the approved application route list.
+
+Affected files:
+
+```text
+README.md
+index.html
+assets/css/styles.css
+assets/css/plant-library-refinements.css
+assets/js/app.js
+assets/js/magnetic-dock.js
+assets/js/maintenance.js
+assets/js/sidebar-assistant.js
+scripts/validate.mjs
+```
+
 ### Greenscape Loading Experience V1
 
 - Adds a delayed, layout-matched Dashboard skeleton directly in the initial HTML so fast loads do not flash a placeholder while slower starts never appear blank.

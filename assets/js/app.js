@@ -19,7 +19,8 @@
     plantsSourceRevision: 'greenscape-plant-library-plants-source-revision-v1',
     projects: 'greenscape-plant-library-projects-v1',
     categories: 'greenscape-plant-library-categories-v1',
-    moodboard: 'greenscape-plant-library-moodboard-v1'
+    moodboard: 'greenscape-plant-library-moodboard-v1',
+    collections: 'greenscape-plant-library-collections-v1'
   };
   const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
   const MAX_EXCEL_FILE_BYTES = 10 * 1024 * 1024;
@@ -63,13 +64,14 @@
   const titleByView = {
     dashboard: 'Dashboard',
     library: 'Plant Library',
+    collections: 'Plant Collections',
     sheet: 'Plant List Editor',
     quality: 'Data Quality',
     moodboard: 'Mood Board Creator',
     projects: 'Project Lists',
     schedule: 'Plant Schedule'
   };
-  const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects']);
+  const maintenanceLockedViews = new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects']);
 
   function maintenanceAccessIsAuthorized() {
     return Boolean(window.GREENSCAPE_MAINTENANCE_ACCESS?.isAuthorized?.());
@@ -119,8 +121,9 @@
   let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
   let moodboard = sanitizeMoodboard(migrateDuplicateMoodboardRecord(loadJSON(STORAGE.moodboard, null)));
+  let collections = sanitizeCollections(migrateDuplicateCollectionRecords(loadJSON(STORAGE.collections, [])));
   const requestedInitialView = location.hash.slice(1);
-  const initialView = ['dashboard', 'library', 'sheet', 'quality', 'moodboard', 'projects', 'schedule'].includes(requestedInitialView)
+  const initialView = ['dashboard', 'library', 'collections', 'sheet', 'quality', 'moodboard', 'projects', 'schedule'].includes(requestedInitialView)
     ? (isMaintenanceLockedView(requestedInitialView) ? 'library' : requestedInitialView)
     : 'dashboard';
   if (initialView !== requestedInitialView && isMaintenanceLockedView(requestedInitialView)) {
@@ -135,6 +138,8 @@
     librarySort: 'az',
     libraryView: 'grid',
     libraryLimit: 48,
+    collectionSearch: '',
+    selectedCollectionId: null,
     sheetSearch: '',
     sheetCategory: 'All',
     qualitySearch: '',
@@ -359,6 +364,7 @@
     try {
       plants = assignBotanicalPlantCodes(plants);
       syncProjectPlantCodes();
+      collections = sanitizeCollections(collections);
       localStorage.setItem(STORAGE.plants, JSON.stringify(compactPlantsForStorage()));
       if (publishedPlantSourceRevision) {
         localStorage.setItem(STORAGE.plantsSourceRevision, JSON.stringify(publishedPlantSourceRevision));
@@ -366,12 +372,14 @@
       localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
       localStorage.setItem(STORAGE.categories, JSON.stringify(customCategories));
       localStorage.setItem(STORAGE.moodboard, JSON.stringify(moodboard));
+      localStorage.setItem(STORAGE.collections, JSON.stringify(collections));
       storageAvailable = true;
       loadingExperienceLastSuccessfulState = {
         plants: clone(plants),
         projects: clone(projects),
         customCategories: clone(customCategories),
-        moodboard: clone(moodboard)
+        moodboard: clone(moodboard),
+        collections: clone(collections)
       };
       return true;
     } catch (error) {
@@ -381,6 +389,7 @@
         projects = clone(loadingExperienceLastSuccessfulState.projects);
         customCategories = clone(loadingExperienceLastSuccessfulState.customCategories);
         moodboard = clone(loadingExperienceLastSuccessfulState.moodboard);
+        collections = clone(loadingExperienceLastSuccessfulState.collections || []);
         queueMicrotask(() => {
           try { render(); } catch (renderError) { console.error('Loading experience rollback render failed.', renderError); }
         });
@@ -1255,6 +1264,7 @@
           ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="480" height="360" loading="${index < 3 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">` : `<div class="image-fallback">${escapeHTML(plant.code || '—')}</div>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
+        ${collectionBookmarkButtonHTML(plant, 'grid')}
         <div class="plant-card-body">
           <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
@@ -1281,6 +1291,7 @@
           ${image ? `<img src="${image}" alt="${escapeHTML(plantName)}" width="240" height="180" loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async">` : `<span class="image-fallback">${escapeHTML(plant.code || '—')}</span>`}
           <span class="category-pill">${escapeHTML(plant.category)}</span>
         </button>
+        ${collectionBookmarkButtonHTML(plant, 'list')}
         <div class="plant-list-copy">
           <h2 class="plant-common-name">${escapeHTML(plantName)}</h2>
           <p class="scientific">${escapeHTML(plant.scientificName || plant.material || ' ')}</p>
@@ -4773,7 +4784,7 @@
   }
 
   function exportBackup() {
-    const backup = { version: 3, app: 'Greenscape Plant Library', exportedAt: new Date().toISOString(), plants, projects, categories: customCategories, moodboard };
+    const backup = { version: 4, app: 'Greenscape Plant Library', exportedAt: new Date().toISOString(), plants, projects, categories: customCategories, moodboard, collections };
     downloadBlob(JSON.stringify(backup, null, 2), `greenscape-plant-library-backup-${new Date().toISOString().slice(0,10)}.json`, 'application/json');
     toast('Backup exported.');
   }
@@ -4786,6 +4797,7 @@
       projects = sanitizeProjects(parsed.projects);
       customCategories = sanitizeCategories(parsed.categories || []);
       moodboard = sanitizeMoodboard(parsed.moodboard || null);
+      collections = sanitizeCollections(migrateDuplicateCollectionRecords(parsed.collections || []));
       syncProjectPlantCodes();
       state.selectedProjectId = null;
       state.scheduleProjectId = projects[0]?.id || null;
@@ -5137,6 +5149,12 @@
       steps: ['Search by name, code, category, condition, or tag.', 'Refine results by category and sunlight.', 'Open Plant Details, compare choices, or add a plant to a list.'],
       tip: 'Recently Viewed and Similar Plants help you return to promising options.'
     },
+    collections: {
+      title: 'How Plant Collections works',
+      intro: 'Save reusable plant shortlists separately from projects and mood boards.',
+      steps: ['Create or open a collection.', 'Bookmark plants from the library or Plant Details.', 'Export the collection or transfer it into a destination tool.'],
+      tip: 'Transferred plants become normal destination records and do not stay automatically synchronized.'
+    },
     detail: {
       title: 'How Plant Details works',
       intro: 'Review the selected plant’s key information, available sizes, and related options.',
@@ -5184,6 +5202,7 @@
   const guidedGreeniePrompts = Object.freeze({
     dashboard: 'Need a quick tour of your workspace?',
     library: 'Need help filtering or comparing plants?',
+    collections: 'Need help organizing or transferring a plant collection?',
     detail: 'Want help reading sizes and similar plants?',
     sheet: 'Need help organizing plant records?',
     quality: 'Need help reviewing incomplete plant records?',
@@ -5347,6 +5366,7 @@
   }
 
   function guidedCurrentContext() {
+    if (state.view === 'collections') return 'collections';
     if (document.body.classList.contains('plant-detail-open')) return 'detail';
     if (location.hash === '#identifier' || pageTitle?.textContent?.trim() === 'Plant Identifier') return 'identifier';
     return guidedHelpContent[state.view] ? state.view : 'dashboard';
@@ -5716,6 +5736,781 @@
     cacheKey: GUIDED_CACHE_KEY
   });
   // GREENSCAPE_GUIDED_PLANT_DISCOVERY_V1_END
+
+// GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_START
+  const COLLECTION_NAME_LIMIT = 80;
+  let collectionPickerReturnFocus = null;
+  let collectionPickerPlantId = '';
+
+  function collectionsWriteAllowed() {
+    return !document.body.classList.contains('maintenance-readonly') || maintenanceAccessIsAuthorized();
+  }
+
+  function saveCollectionsOnly(previousCollections) {
+    try {
+      collections = sanitizeCollections(collections);
+      localStorage.setItem(STORAGE.collections, JSON.stringify(collections));
+      storageAvailable = true;
+      if (loadingExperienceLastSuccessfulState) {
+        loadingExperienceLastSuccessfulState.collections = clone(collections);
+      }
+      return true;
+    } catch (error) {
+      storageAvailable = false;
+      collections = clone(previousCollections || []);
+      toast('The collection change could not be saved. Your previous collections were restored.', true);
+      return false;
+    }
+  }
+
+  function collectionTimestamp(value, fallback) {
+    const date = new Date(value || '');
+    return Number.isNaN(date.getTime()) ? fallback : date.toISOString();
+  }
+
+  function migrateDuplicateCollectionRecords(records) {
+    return (Array.isArray(records) ? records : []).map(record => ({
+      ...record,
+      plantIds: [...new Set(
+        (Array.isArray(record?.plantIds) ? record.plantIds : [])
+          .map(duplicatePlantTargetId)
+          .filter(Boolean)
+      )]
+    }));
+  }
+
+  function sanitizeCollections(records) {
+    const source = Array.isArray(records) ? records : [];
+    const validPlantIds = new Set(plants.map(plant => plant.id));
+    const seenIds = new Set();
+    const seenNames = new Set();
+    const now = new Date().toISOString();
+
+    return source.filter(record => record && typeof record === 'object').map((record, index) => {
+      let id = String(record.id || '').trim();
+      if (!id || seenIds.has(id)) id = uid('collection');
+      seenIds.add(id);
+
+      const rawName = String(record.name || `Untitled Collection ${index + 1}`).trim() || `Untitled Collection ${index + 1}`;
+      const baseName = rawName.slice(0, COLLECTION_NAME_LIMIT);
+      let name = baseName;
+      let suffix = 2;
+      while (seenNames.has(name.toLowerCase())) {
+        const suffixText = ` ${suffix++}`;
+        name = `${baseName.slice(0, Math.max(1, COLLECTION_NAME_LIMIT - suffixText.length))}${suffixText}`;
+      }
+      seenNames.add(name.toLowerCase());
+
+      const plantIds = [];
+      const seenPlantIds = new Set();
+      (Array.isArray(record.plantIds) ? record.plantIds : []).forEach(value => {
+        const plantId = duplicatePlantTargetId(value);
+        if (!plantId || !validPlantIds.has(plantId) || seenPlantIds.has(plantId)) return;
+        seenPlantIds.add(plantId);
+        plantIds.push(plantId);
+      });
+
+      const createdAt = collectionTimestamp(record.createdAt, now);
+      const updatedAt = collectionTimestamp(record.updatedAt, createdAt);
+      return { id, name, plantIds, createdAt, updatedAt };
+    });
+  }
+
+  function getCollection(collectionId) {
+    return collections.find(collection => collection.id === collectionId) || null;
+  }
+
+  function collectionMembershipCount(plantId) {
+    return collections.reduce((count, collection) => count + (collection.plantIds.includes(plantId) ? 1 : 0), 0);
+  }
+
+  function collectionMembershipNames(plantId) {
+    return collections.filter(collection => collection.plantIds.includes(plantId)).map(collection => collection.name);
+  }
+
+  function collectionNameExists(name, excludingId = '') {
+    const key = String(name || '').trim().toLowerCase();
+    return collections.some(collection => collection.id !== excludingId && collection.name.toLowerCase() === key);
+  }
+
+  function collectionBookmarkIcon(filled) {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.4-5.5 3.4z"${filled ? ' fill="currentColor"' : ' fill="none"'} stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>`;
+  }
+
+  function collectionBookmarkButtonHTML(plant, variant = 'grid') {
+    if (!plant || !collectionsWriteAllowed()) return '';
+    const count = collectionMembershipCount(plant.id);
+    const name = plant.commonName || 'plant';
+    const stateText = count ? `Currently in ${count} collection${count === 1 ? '' : 's'}.` : 'Not yet saved.';
+    return `<button type="button" class="collection-bookmark collection-bookmark-${variant}${count ? ' is-saved' : ''}" data-collection-bookmark="${escapeHTML(plant.id)}" aria-label="Save ${escapeHTML(name)} to collections. ${stateText}" title="${count ? `Saved in ${count} collection${count === 1 ? '' : 's'}` : 'Save to collections'}">${collectionBookmarkIcon(count > 0)}${count ? `<span>${count}</span>` : ''}</button>`;
+  }
+
+  function collectionPreviewHTML(collection) {
+    const previewPlants = collection.plantIds.map(getPlant).filter(Boolean).slice(0, 4);
+    const cells = previewPlants.map(plant => {
+      const image = safeImage(plant.image);
+      return `<span>${image ? `<img src="${image}" alt="" width="120" height="90" loading="lazy" decoding="async">` : `<b>${escapeHTML(plant.code || '—')}</b>`}</span>`;
+    });
+    while (cells.length < 4) cells.push('<span class="is-empty" aria-hidden="true"></span>');
+    return `<div class="collection-preview" aria-hidden="true">${cells.join('')}</div>`;
+  }
+
+  function collectionCardHTML(collection) {
+    const count = collection.plantIds.length;
+    return `<article class="collection-card">
+      <button type="button" class="collection-card-open" data-collection-open="${escapeHTML(collection.id)}" aria-label="Open ${escapeHTML(collection.name)}">
+        ${collectionPreviewHTML(collection)}
+        <span class="collection-card-copy">
+          <strong>${escapeHTML(collection.name)}</strong>
+          <small>${count} plant${count === 1 ? '' : 's'} · Updated ${escapeHTML(formatDate(collection.updatedAt))}</small>
+        </span>
+      </button>
+      <div class="collection-card-actions">
+        <button type="button" class="button ghost small" data-collection-rename="${escapeHTML(collection.id)}">Rename</button>
+        <button type="button" class="button ghost small" data-collection-delete="${escapeHTML(collection.id)}">Delete</button>
+      </div>
+    </article>`;
+  }
+
+  function renderCollectionsOverview() {
+    state.selectedCollectionId = null;
+    const uniquePlantCount = new Set(collections.flatMap(collection => collection.plantIds)).size;
+    const ordered = [...collections].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt) || a.name.localeCompare(b.name));
+    content.innerHTML = `
+      <section class="collections-workspace" aria-labelledby="collectionsHeading">
+        <header class="collections-hero">
+          <div>
+            <span class="collections-kicker">Saved plant shortlists</span>
+            <h2 id="collectionsHeading">Plant Collections</h2>
+            <p>Organize reusable plant options separately from Project Lists and Mood Boards.</p>
+          </div>
+          <button type="button" class="button primary" data-collection-create>New Collection</button>
+        </header>
+        <div class="collections-summary" aria-label="Collection summary">
+          <div><span>Collections</span><strong>${collections.length}</strong></div>
+          <div><span>Unique saved plants</span><strong>${uniquePlantCount}</strong></div>
+          <div><span>Storage</span><strong>Browser-local</strong></div>
+        </div>
+        ${ordered.length
+          ? `<div class="collection-grid">${ordered.map(collectionCardHTML).join('')}</div>`
+          : emptyState('No saved collections', 'Create a collection, then bookmark plants from the Plant Library or Plant Details.', '<button type="button" class="button primary" data-collection-create>Create first collection</button>')}
+      </section>`;
+  }
+
+  function collectionPlantRowHTML(plant, collection) {
+    const image = safeImage(plant.image);
+    return `<article class="collection-plant-row">
+      <button type="button" class="collection-plant-main" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}" aria-label="View details for ${escapeHTML(plant.commonName || 'plant')}">
+        <span class="collection-plant-image">${image ? `<img src="${image}" alt="" width="96" height="96" loading="lazy" decoding="async">` : `<b>${escapeHTML(plant.code || '—')}</b>`}</span>
+        <span class="collection-plant-copy">
+          <small>${escapeHTML(plant.category || 'Uncategorized')} · ${escapeHTML(plant.code || '—')}</small>
+          <strong>${escapeHTML(plant.commonName || 'Unnamed plant')}</strong>
+          <em>${escapeHTML(plant.scientificName || plant.material || '')}</em>
+        </span>
+      </button>
+      <div class="collection-plant-actions">
+        <button type="button" class="button secondary small" data-action="plant-detail" data-plant-id="${escapeHTML(plant.id)}">View Details</button>
+        <button type="button" class="button ghost small" data-collection-remove-plant="${escapeHTML(plant.id)}" data-collection-id="${escapeHTML(collection.id)}">Remove</button>
+      </div>
+    </article>`;
+  }
+
+  function renderCollectionDetail(collection) {
+    const query = String(state.collectionSearch || '').trim().toLowerCase();
+    const records = collection.plantIds.map(getPlant).filter(Boolean).filter(plant => {
+      if (!query) return true;
+      return [plant.code, plant.commonName, plant.scientificName, plant.material, plant.category]
+        .join(' ').toLowerCase().includes(query);
+    });
+    content.innerHTML = `
+      <section class="collections-workspace collection-detail" aria-labelledby="collectionDetailHeading">
+        <header class="collection-detail-header">
+          <div>
+            <button type="button" class="text-button" data-collections-back>← All collections</button>
+            <span class="collections-kicker">Saved plant collection</span>
+            <h2 id="collectionDetailHeading">${escapeHTML(collection.name)}</h2>
+            <p>${collection.plantIds.length} plant${collection.plantIds.length === 1 ? '' : 's'} · Updated ${escapeHTML(formatDate(collection.updatedAt))}</p>
+          </div>
+          <div class="collection-detail-actions">
+            <button type="button" class="button secondary" data-collection-rename="${escapeHTML(collection.id)}">Rename</button>
+            <button type="button" class="button secondary"${collection.plantIds.length ? '' : ' disabled'} data-collection-export="${escapeHTML(collection.id)}">Export CSV</button>
+            <button type="button" class="button secondary"${collection.plantIds.length ? '' : ' disabled'} data-collection-moodboard="${escapeHTML(collection.id)}">Add to Mood Board</button>
+            <button type="button" class="button primary"${collection.plantIds.length ? '' : ' disabled'} data-collection-project="${escapeHTML(collection.id)}">Add to Project List</button>
+          </div>
+        </header>
+        <div class="collection-detail-toolbar">
+          <label class="search-wrap">
+            <span class="sr-only">Search this collection</span>
+            <input id="collectionSearch" class="search-input" type="search" placeholder="Search this collection…" value="${escapeHTML(state.collectionSearch)}">
+          </label>
+          <button type="button" class="button ghost small" data-collection-delete="${escapeHTML(collection.id)}">Delete Collection</button>
+        </div>
+        <div class="collection-results-heading"><strong>${records.length}</strong><span> matching plant${records.length === 1 ? '' : 's'}</span></div>
+        ${records.length
+          ? `<div class="collection-plant-list">${records.map(plant => collectionPlantRowHTML(plant, collection)).join('')}</div>`
+          : emptyState(query ? 'No matching plants' : 'This collection is empty', query ? 'Try a different plant name, code, or category.' : 'Bookmark plants from the Plant Library or Plant Details.', '')}
+      </section>`;
+  }
+
+  function renderCollections() {
+    collections = sanitizeCollections(collections);
+    const selected = getCollection(state.selectedCollectionId);
+    if (selected) renderCollectionDetail(selected);
+    else renderCollectionsOverview();
+  }
+
+  function openCollectionNameForm(collectionId = '') {
+    const collection = getCollection(collectionId);
+    const body = `<form id="collectionNameForm" class="form-grid">
+      <input type="hidden" name="collectionId" value="${escapeHTML(collection?.id || '')}">
+      <div class="form-field full">
+        <label for="collectionNameInput">Collection name *</label>
+        <input id="collectionNameInput" class="text-input" required maxlength="${COLLECTION_NAME_LIMIT}" name="collectionName" value="${escapeHTML(collection?.name || '')}" placeholder="e.g. Coastal Plants">
+        <span class="form-help">Collection names must be unique.</span>
+      </div>
+    </form>`;
+    openModal(collection ? 'Rename collection' : 'New plant collection', 'Create a lightweight shortlist that stays separate from projects and mood boards.', body,
+      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button type="submit" class="button primary" form="collectionNameForm">${collection ? 'Save name' : 'Create collection'}</button>`);
+    document.getElementById('collectionNameForm')?.addEventListener('submit', saveCollectionNameForm);
+    window.setTimeout(() => document.getElementById('collectionNameInput')?.focus(), 0);
+  }
+
+  function saveCollectionNameForm(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const collectionId = String(data.get('collectionId') || '');
+    const name = String(data.get('collectionName') || '').trim().slice(0, COLLECTION_NAME_LIMIT);
+    if (!name) return;
+    if (collectionNameExists(name, collectionId)) {
+      toast(`A collection named “${name}” already exists.`, true);
+      document.getElementById('collectionNameInput')?.focus();
+      return;
+    }
+    const now = new Date().toISOString();
+    const existing = getCollection(collectionId);
+    if (existing) {
+      existing.name = name;
+      existing.updatedAt = now;
+    } else {
+      const created = { id: uid('collection'), name, plantIds: [], createdAt: now, updatedAt: now };
+      collections.unshift(created);
+      state.selectedCollectionId = created.id;
+    }
+    if (!saveAll()) return;
+    closeModal();
+    renderCollections();
+    toast(existing ? 'Collection renamed.' : 'Collection created.');
+  }
+
+  function openCollectionDeleteDialog(collectionId) {
+    const collection = getCollection(collectionId);
+    if (!collection) return;
+    const body = `<form id="collectionDeleteForm" class="form-grid">
+      <input type="hidden" name="collectionId" value="${escapeHTML(collection.id)}">
+      <div class="delete-category-warning full">
+        <strong>This deletes only the collection.</strong>
+        <p>The ${collection.plantIds.length} saved plant reference${collection.plantIds.length === 1 ? '' : 's'} will remain in the Plant Library, Mood Board, and Project Lists.</p>
+      </div>
+      <div class="form-field full">
+        <label for="collectionDeleteConfirm">Type the collection name to confirm</label>
+        <input id="collectionDeleteConfirm" class="text-input" name="confirmName" autocomplete="off" placeholder="${escapeHTML(collection.name)}">
+      </div>
+    </form>`;
+    openModal('Delete collection?', collection.name, body,
+      `<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button type="submit" class="button danger" form="collectionDeleteForm">Delete Collection</button>`);
+    document.getElementById('collectionDeleteForm')?.addEventListener('submit', deleteCollectionForm);
+  }
+
+  function deleteCollectionForm(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const collection = getCollection(String(data.get('collectionId') || ''));
+    if (!collection) return;
+    if (String(data.get('confirmName') || '').trim() !== collection.name) {
+      toast('Collection name does not match. Nothing was deleted.', true);
+      document.getElementById('collectionDeleteConfirm')?.focus();
+      return;
+    }
+    collections = collections.filter(record => record.id !== collection.id);
+    if (state.selectedCollectionId === collection.id) state.selectedCollectionId = null;
+    if (!saveAll()) return;
+    closeModal();
+    renderCollections();
+    toast(`Collection “${collection.name}” deleted.`);
+  }
+
+  function closeCollectionPicker(options = {}) {
+    const restoreFocus = options.restoreFocus !== false;
+    document.getElementById('collectionPickerBackdrop')?.remove();
+    document.body.classList.remove('collection-picker-open');
+    document.querySelector('.app-shell')?.removeAttribute('inert');
+    modalRoot.querySelector('.modal')?.removeAttribute('inert');
+    const target = collectionPickerReturnFocus;
+    collectionPickerReturnFocus = null;
+    collectionPickerPlantId = '';
+    if (restoreFocus && target?.isConnected) {
+      requestAnimationFrame(() => target.focus({ preventScroll: true }));
+    }
+  }
+
+  function openCollectionPicker(plantId, sourceButton = null) {
+    const plant = getPlant(plantId);
+    if (!plant || !collectionsWriteAllowed()) return;
+    closeCollectionPicker({ restoreFocus: false });
+    collectionPickerReturnFocus = sourceButton || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    collectionPickerPlantId = plant.id;
+
+    const backdrop = document.createElement('div');
+    backdrop.id = 'collectionPickerBackdrop';
+    backdrop.className = 'collection-picker-backdrop';
+    backdrop.innerHTML = `<section class="collection-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="collectionPickerTitle" tabindex="-1">
+      <header class="collection-picker-header">
+        <div>
+          <span class="collections-kicker">Plant shortlist</span>
+          <h2 id="collectionPickerTitle">Save to Collection</h2>
+          <p>${escapeHTML(plant.commonName || 'Selected plant')} can be saved in more than one collection.</p>
+        </div>
+        <button type="button" class="modal-close" data-collection-picker-close aria-label="Close collection picker">X</button>
+      </header>
+      <form id="collectionPickerForm" class="collection-picker-form">
+        <input type="hidden" name="plantId" value="${escapeHTML(plant.id)}">
+        <fieldset>
+          <legend>Choose collections</legend>
+          <div class="collection-picker-list">
+            ${collections.length ? collections.map(collection => `<label><input type="checkbox" name="collectionIds" value="${escapeHTML(collection.id)}"${collection.plantIds.includes(plant.id) ? ' checked' : ''}><span><strong>${escapeHTML(collection.name)}</strong><small>${collection.plantIds.length} plant${collection.plantIds.length === 1 ? '' : 's'}</small></span></label>`).join('') : '<p class="muted">No collections yet. Create one below.</p>'}
+          </div>
+        </fieldset>
+        <div class="form-field">
+          <label for="collectionPickerNewName">Create new collection</label>
+          <input id="collectionPickerNewName" class="text-input" maxlength="${COLLECTION_NAME_LIMIT}" name="newCollectionName" placeholder="Optional collection name">
+        </div>
+        <footer class="collection-picker-actions">
+          <button type="button" class="button secondary" data-collection-picker-close>Cancel</button>
+          <button type="submit" class="button primary">Save Changes</button>
+        </footer>
+      </form>
+    </section>`;
+
+    document.body.appendChild(backdrop);
+    document.body.classList.add('collection-picker-open');
+    document.querySelector('.app-shell')?.setAttribute('inert', '');
+    modalRoot.querySelector('.modal')?.setAttribute('inert', '');
+    document.getElementById('collectionPickerForm')?.addEventListener('submit', saveCollectionPicker);
+    requestAnimationFrame(() => backdrop.querySelector('.collection-picker-dialog')?.focus({ preventScroll: true }));
+  }
+
+  function saveCollectionPicker(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const plantId = String(data.get('plantId') || '');
+    const plant = getPlant(plantId);
+    if (!plant) return;
+    const previousCollections = clone(collections);
+    const selectedIds = new Set(data.getAll('collectionIds').map(String));
+    const newName = String(data.get('newCollectionName') || '').trim().slice(0, COLLECTION_NAME_LIMIT);
+    const now = new Date().toISOString();
+
+    if (newName) {
+      if (collectionNameExists(newName)) {
+        toast(`A collection named “${newName}” already exists.`, true);
+        document.getElementById('collectionPickerNewName')?.focus();
+        return;
+      }
+      const created = { id: uid('collection'), name: newName, plantIds: [], createdAt: now, updatedAt: now };
+      collections.unshift(created);
+      selectedIds.add(created.id);
+    }
+
+    collections.forEach(collection => {
+      const hadPlant = collection.plantIds.includes(plantId);
+      const shouldHavePlant = selectedIds.has(collection.id);
+      if (shouldHavePlant && !hadPlant) {
+        collection.plantIds.push(plantId);
+        collection.updatedAt = now;
+      }
+      if (!shouldHavePlant && hadPlant) {
+        collection.plantIds = collection.plantIds.filter(id => id !== plantId);
+        collection.updatedAt = now;
+      }
+    });
+
+    if (!saveCollectionsOnly(previousCollections)) return;
+    const detailOpen = document.body.classList.contains('plant-detail-open');
+    closeCollectionPicker({ restoreFocus: detailOpen || state.view !== 'library' });
+    if (state.view === 'library') updateLibraryResults();
+    if (state.view === 'collections') renderCollections();
+    collectionsDecoratePlantDetail(plantId);
+    if (state.view === 'library' && !detailOpen) {
+      requestAnimationFrame(() => document.querySelector(`[data-collection-bookmark="${CSS.escape(plantId)}"]`)?.focus({ preventScroll: true }));
+    }
+    const count = collectionMembershipCount(plantId);
+    toast(count ? `${plant.commonName || 'Plant'} saved in ${count} collection${count === 1 ? '' : 's'}.` : `${plant.commonName || 'Plant'} removed from all collections.`);
+  }
+
+  function removePlantFromCollection(collectionId, plantId) {
+    const collection = getCollection(collectionId);
+    if (!collection || !collection.plantIds.includes(plantId)) return;
+    const previousCollections = clone(collections);
+    collection.plantIds = collection.plantIds.filter(id => id !== plantId);
+    collection.updatedAt = new Date().toISOString();
+    if (!saveCollectionsOnly(previousCollections)) return;
+    renderCollections();
+    toast('Plant removed from collection.');
+  }
+
+  function collectionCsvCell(value) {
+    const text = String(value ?? '');
+    const safeText = /^[\s]*[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+    return `"${safeText.replace(/"/g, '""')}"`;
+  }
+
+  function exportCollectionCsv(collectionId) {
+    const collection = getCollection(collectionId);
+    if (!collection || !collection.plantIds.length) {
+      toast('Add at least one plant before exporting.', true);
+      return;
+    }
+    const headers = ['Collection', 'Plant Code', 'Common Name', 'Scientific Name / Material', 'Category', 'Sunlight', 'Water Requirement', 'Spacing', 'Mature Height', 'Mature Spread', 'Landscape Use', 'Growing Condition', 'Planting Notes', 'Tags', 'Reference'];
+    const rows = collection.plantIds.map(getPlant).filter(Boolean).map(plant => [
+      collection.name,
+      plant.code || '',
+      plant.commonName || '',
+      plant.scientificName || plant.material || '',
+      plant.category || '',
+      plant.sun || '',
+      plant.water || '',
+      plant.spacing || '',
+      plant.matureHeight || '',
+      plant.matureSpread || '',
+      plant.landscapeUse || '',
+      plant.growingCondition || '',
+      effectivePlantingNotes(plant) || '',
+      effectivePlantTags(plant).join(', '),
+      plant.link || ''
+    ]);
+    const csv = '\uFEFF' + [headers, ...rows].map(row => row.map(collectionCsvCell).join(',')).join('\r\n');
+    const date = new Date().toISOString().slice(0, 10);
+    downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `${slug(collection.name)}-${date}.csv`);
+    toast(`${rows.length} plant${rows.length === 1 ? '' : 's'} exported.`);
+  }
+
+  function openCollectionMoodboardTransfer(collectionId) {
+    const collection = getCollection(collectionId);
+    if (!collection) return;
+    const body = `<form id="collectionMoodboardForm" class="form-grid">
+      <input type="hidden" name="collectionId" value="${escapeHTML(collection.id)}">
+      <fieldset class="form-field full">
+        <legend>Transfer mode</legend>
+        <label class="collection-radio"><input type="radio" name="mode" value="merge" checked><span><strong>Add to current Mood Board</strong><small>Keep existing board plants and add only new ones.</small></span></label>
+        <label class="collection-radio"><input type="radio" name="mode" value="replace"><span><strong>Replace current Mood Board</strong><small>Replace selected plant IDs after confirmation while preserving board settings.</small></span></label>
+      </fieldset>
+    </form>`;
+    openModal('Load collection into Mood Board', collection.name, body,
+      '<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button type="submit" class="button primary" form="collectionMoodboardForm">Continue</button>');
+    document.getElementById('collectionMoodboardForm')?.addEventListener('submit', transferCollectionToMoodboard);
+  }
+
+  function transferCollectionToMoodboard(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const collection = getCollection(String(data.get('collectionId') || ''));
+    if (!collection) return;
+    const mode = String(data.get('mode') || 'merge');
+    const validIds = collection.plantIds.filter(id => getPlant(id));
+    const invalidCount = collection.plantIds.length - validIds.length;
+    const beforeIds = [...moodboard.selectedIds];
+
+    if (mode === 'replace') {
+      if (!window.confirm(`Replace the current Mood Board plants with ${validIds.length} plant${validIds.length === 1 ? '' : 's'} from “${collection.name}”?`)) return;
+      moodboard.selectedIds = [...validIds];
+      const keep = new Set(validIds);
+      moodboard.cardColors = Object.fromEntries(Object.entries(moodboard.cardColors || {}).filter(([plantId]) => keep.has(plantId)));
+    } else {
+      moodboard.selectedIds = [...new Set([...moodboard.selectedIds, ...validIds])];
+    }
+
+    if (!saveAll()) return;
+    const added = moodboard.selectedIds.filter(id => !beforeIds.includes(id)).length;
+    const skipped = mode === 'merge' ? validIds.length - added + invalidCount : invalidCount;
+    closeModal();
+    setView('moodboard');
+    toast(`${mode === 'replace' ? validIds.length : added} plant${(mode === 'replace' ? validIds.length : added) === 1 ? '' : 's'} loaded${skipped ? ` · ${skipped} skipped` : ''}.`);
+  }
+
+  function openCollectionProjectTransfer(collectionId) {
+    const collection = getCollection(collectionId);
+    if (!collection) return;
+    const body = `<form id="collectionProjectForm" class="form-grid">
+      <input type="hidden" name="collectionId" value="${escapeHTML(collection.id)}">
+      <div class="form-field full">
+        <label for="collectionProjectDestination">Destination</label>
+        <select id="collectionProjectDestination" class="select-input" name="destination">
+          <option value="__new__">Create a new Project List</option>
+          ${projects.map(project => `<option value="${escapeHTML(project.id)}">${escapeHTML(project.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="collectionProjectName">New project name</label>
+        <input id="collectionProjectName" class="text-input" name="projectName" value="${escapeHTML(collection.name)}">
+      </div>
+      <div class="form-field">
+        <label for="collectionProjectLocation">New project location</label>
+        <input id="collectionProjectLocation" class="text-input" name="projectLocation" placeholder="Optional">
+      </div>
+      <fieldset class="form-field full">
+        <legend>Plants already in the destination</legend>
+        <label class="collection-radio"><input type="radio" name="duplicateMode" value="skip" checked><span><strong>Skip existing plant IDs</strong><small>Recommended default.</small></span></label>
+        <label class="collection-radio"><input type="radio" name="duplicateMode" value="add"><span><strong>Add as new lines</strong><small>Create additional editable project lines.</small></span></label>
+      </fieldset>
+      <p class="form-help full">Transferred plants start with quantity 1. Size, zone, spacing, and project notes remain blank.</p>
+    </form>`;
+    openModal('Add collection to Project List', collection.name, body,
+      '<button type="button" class="button secondary" data-action="close-modal">Cancel</button><button type="submit" class="button primary" form="collectionProjectForm">Transfer Plants</button>', true);
+    document.getElementById('collectionProjectForm')?.addEventListener('submit', transferCollectionToProject);
+  }
+
+  function transferCollectionToProject(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const collection = getCollection(String(data.get('collectionId') || ''));
+    if (!collection) return;
+    const destination = String(data.get('destination') || '__new__');
+    const duplicateMode = String(data.get('duplicateMode') || 'skip');
+    const now = new Date().toISOString();
+    let project = destination === '__new__' ? null : getProject(destination);
+
+    if (!project) {
+      const name = String(data.get('projectName') || '').trim() || collection.name;
+      project = {
+        id: uid('project'),
+        name,
+        location: String(data.get('projectLocation') || '').trim(),
+        client: '',
+        areaSize: '',
+        projectType: '',
+        startDate: '',
+        deadline: '',
+        designCost: '',
+        landscapingCost: '',
+        siteConditions: '',
+        notes: '',
+        items: [],
+        createdAt: now,
+        updatedAt: now
+      };
+      projects.unshift(project);
+    }
+
+    const existingIds = new Set((project.items || []).map(item => item.plantId));
+    let added = 0;
+    let skipped = 0;
+    collection.plantIds.forEach(plantId => {
+      const plant = getPlant(plantId);
+      if (!plant) {
+        skipped += 1;
+        return;
+      }
+      if (duplicateMode === 'skip' && existingIds.has(plantId)) {
+        skipped += 1;
+        return;
+      }
+      project.items.push({
+        id: uid('item'),
+        plantId: plant.id,
+        plantCode: plant.code || '',
+        commonName: plant.commonName || '',
+        scientificName: plant.scientificName || plant.material || '',
+        category: plant.category || '',
+        sizeLabel: '',
+        quantity: 1,
+        unit: 'pc/s',
+        zone: '',
+        spacing: '',
+        notes: ''
+      });
+      existingIds.add(plantId);
+      added += 1;
+    });
+    project.updatedAt = now;
+    state.selectedProjectId = project.id;
+    state.scheduleProjectId = project.id;
+    if (!saveAll()) return;
+    closeModal();
+    setView('projects');
+    toast(`${added} plant${added === 1 ? '' : 's'} transferred${skipped ? ` · ${skipped} skipped` : ''}.`);
+  }
+
+  function collectionsDecoratePlantDetail(plantId) {
+    const plant = getPlant(plantId);
+    const footer = modalRoot.querySelector('.modal.plant-detail-modal .modal-footer');
+    if (!plant || !footer || !collectionsWriteAllowed()) return;
+    let button = footer.querySelector('[data-collection-detail-bookmark]');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'button secondary collection-detail-bookmark';
+      button.setAttribute('data-collection-detail-bookmark', plant.id);
+      footer.insertBefore(button, footer.firstChild);
+    }
+    const count = collectionMembershipCount(plant.id);
+    button.setAttribute('data-collection-detail-bookmark', plant.id);
+    button.setAttribute('aria-label', `Save ${plant.commonName || 'plant'} to collections. Currently in ${count} collection${count === 1 ? '' : 's'}.`);
+    button.innerHTML = `${collectionBookmarkIcon(count > 0)}<span>${count ? `Saved in ${count}` : 'Save to Collection'}</span>`;
+  }
+
+  function collectionsDispatchContext() {
+    if (state.view !== 'collections') return;
+    document.dispatchEvent(new CustomEvent('greenscape:context-change', {
+      detail: { context: 'collections', prompt: guidedGreeniePrompts.collections }
+    }));
+  }
+
+  const collectionsOriginalOpenPlantDetail = openPlantDetail;
+  openPlantDetail = function (plantId) {
+    const result = collectionsOriginalOpenPlantDetail(plantId);
+    requestAnimationFrame(() => collectionsDecoratePlantDetail(plantId));
+    return result;
+  };
+
+  const collectionsOriginalRender = render;
+  render = function (...args) {
+    const result = collectionsOriginalRender(...args);
+    if (state.view === 'collections') renderCollections();
+    collectionsDispatchContext();
+    return result;
+  };
+
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const bookmark = target.closest('[data-collection-bookmark], [data-collection-detail-bookmark]');
+    if (bookmark) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openCollectionPicker(bookmark.getAttribute('data-collection-bookmark') || bookmark.getAttribute('data-collection-detail-bookmark') || '', bookmark);
+      return;
+    }
+
+    const pickerClose = target.closest('[data-collection-picker-close]');
+    if (pickerClose || target.id === 'collectionPickerBackdrop') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closeCollectionPicker();
+      return;
+    }
+
+    const open = target.closest('[data-collection-open]');
+    if (open) {
+      event.preventDefault();
+      state.selectedCollectionId = open.getAttribute('data-collection-open') || null;
+      state.collectionSearch = '';
+      renderCollections();
+      return;
+    }
+
+    if (target.closest('[data-collection-create]')) {
+      event.preventDefault();
+      openCollectionNameForm();
+      return;
+    }
+
+    const rename = target.closest('[data-collection-rename]');
+    if (rename) {
+      event.preventDefault();
+      openCollectionNameForm(rename.getAttribute('data-collection-rename') || '');
+      return;
+    }
+
+    const remove = target.closest('[data-collection-remove-plant]');
+    if (remove) {
+      event.preventDefault();
+      removePlantFromCollection(remove.getAttribute('data-collection-id') || '', remove.getAttribute('data-collection-remove-plant') || '');
+      return;
+    }
+
+    const exportButton = target.closest('[data-collection-export]');
+    if (exportButton) {
+      event.preventDefault();
+      exportCollectionCsv(exportButton.getAttribute('data-collection-export') || '');
+      return;
+    }
+
+    const moodboardButton = target.closest('[data-collection-moodboard]');
+    if (moodboardButton) {
+      event.preventDefault();
+      openCollectionMoodboardTransfer(moodboardButton.getAttribute('data-collection-moodboard') || '');
+      return;
+    }
+
+    const projectButton = target.closest('[data-collection-project]');
+    if (projectButton) {
+      event.preventDefault();
+      openCollectionProjectTransfer(projectButton.getAttribute('data-collection-project') || '');
+      return;
+    }
+
+    const deleteButton = target.closest('[data-collection-delete]');
+    if (deleteButton) {
+      event.preventDefault();
+      openCollectionDeleteDialog(deleteButton.getAttribute('data-collection-delete') || '');
+      return;
+    }
+
+    if (target.closest('[data-collections-back]')) {
+      event.preventDefault();
+      state.selectedCollectionId = null;
+      state.collectionSearch = '';
+      renderCollections();
+    }
+  }, true);
+
+
+  document.addEventListener('keydown', event => {
+    const dialog = document.querySelector('#collectionPickerBackdrop .collection-picker-dialog');
+    if (!dialog) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closeCollectionPicker();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const controls = Array.from(dialog.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+      .filter(control => !control.hidden && control.getClientRects().length);
+    if (!controls.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target?.id !== 'collectionSearch') return;
+    state.collectionSearch = event.target.value;
+    renderCollections();
+    const search = document.getElementById('collectionSearch');
+    if (search) {
+      search.focus();
+      search.setSelectionRange(search.value.length, search.value.length);
+    }
+  });
+
+  window.GREENSCAPE_COLLECTIONS = Object.freeze({
+    getAll: () => clone(collections),
+    getMembershipCount: collectionMembershipCount,
+    storageKey: STORAGE.collections
+  });
+  // GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_END
 
   document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === state.view));
   render();

@@ -348,7 +348,7 @@
     const action = qs('em', speech);
     if (line) line.textContent = prompt;
     if (action) action.textContent = context === 'detail' ? 'View plant guide' : 'How this works';
-    const contextLabel = context === 'detail' ? 'Plant Details' : (context === 'quality' ? 'Data Quality' : context);
+    const contextLabel = context === 'detail' ? 'Plant Details' : (context === 'quality' ? 'Data Quality' : (context === 'collections' ? 'Plant Collections' : context));
     speech.setAttribute('aria-label', `Open ${contextLabel} guide`);
   }
   // GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_GREENIE_END
@@ -405,3 +405,5 @@
     onReady();
   }
 })();
+
+/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_GREENIE */

@@ -75,14 +75,21 @@
     isAuthorized: isStaffAuthorized
   });
 
-  function storageWriteIsBlocked(storage) {
+  const COLLECTIONS_STORAGE_KEY = 'greenscape-plant-library-collections-v1';
+
+  function storageWriteIsBlocked(storage, key = '') {
+    const collectionBookmarkWrite = storage === window.localStorage
+      && key === COLLECTIONS_STORAGE_KEY
+      && isStaffAuthorized()
+      && location.hash.slice(1) === 'library';
     return storage === window.localStorage
       && html.classList.contains('maintenance-enabled')
-      && !staffWorkspaceIsActive();
+      && !staffWorkspaceIsActive()
+      && !collectionBookmarkWrite;
   }
 
   Storage.prototype.setItem = function (key, value) {
-    if (storageWriteIsBlocked(this)) {
+    if (storageWriteIsBlocked(this, key)) {
       announceBlocked();
       return undefined;
     }
@@ -90,7 +97,7 @@
   };
 
   Storage.prototype.removeItem = function (key) {
-    if (storageWriteIsBlocked(this)) {
+    if (storageWriteIsBlocked(this, key)) {
       announceBlocked();
       return undefined;
     }
@@ -117,7 +124,7 @@
     'scheduleProjectSelect',
     'feedbackMessage'
   ]);
-  const maintenanceLockedViews = new Set(['sheet', 'quality', 'moodboard', 'projects']);
+  const maintenanceLockedViews = new Set(['sheet', 'quality', 'collections', 'moodboard', 'projects']);
 
   function staffWorkspaceIsActive() {
     return isStaffAuthorized() && maintenanceLockedViews.has(location.hash.slice(1));
@@ -195,7 +202,7 @@
     const accessPanel = authorized
       ? `<div class="maintenance-staff-access-active" role="status">
           <strong>Staff access active</strong>
-          <span>Plant List Editor, Data Quality, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
+          <span>Plant List Editor, Data Quality, Plant Collections, Mood Board Creator, and Project Lists are available for ${escapeHTML(staffAccess.sessionMinutes)} minutes.</span>
           <button type="button" class="maintenance-secondary" data-maintenance-lock>Lock staff tools</button>
         </div>`
       : `<div class="maintenance-staff-access">
@@ -237,7 +244,7 @@
     const bannerClass = authorized ? ' is-authorized' : '';
     const label = authorized ? 'Staff tools unlocked' : 'Maintenance mode';
     const detail = authorized
-      ? 'Editor, data quality, mood board, and projects are available.'
+      ? 'Editor, data quality, collections, mood board, and projects are available.'
       : 'Read-only access — editing and saving are disabled.';
     const compact = authorized ? 'Staff access' : 'Read-only access';
     return `<button type="button" class="maintenance-readonly-banner feedback-launcher${bannerClass}" id="maintenanceReadonlyBanner" data-maintenance-show-startup data-maintenance-state="${authorized ? 'staff-tools-unlocked' : 'maintenance-mode'}" aria-live="polite" aria-label="${escapeHTML(label)}. Open maintenance details.">
@@ -702,3 +709,5 @@
   }
   /* GREENSCAPE_PLANT_DATA_QUALITY_CENTER_V1_MAINTENANCE_END */
 })();
+
+/* GREENSCAPE_SAVED_PLANT_COLLECTIONS_V1_MAINTENANCE */
