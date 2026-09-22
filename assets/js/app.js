@@ -119,6 +119,17 @@
     : (storedPlantRecords || clone(seedPlants));
   let plants = sanitizePlants(hydratePlantImages(migrateDuplicatePlantRecords(startupPlantRecords)));
   let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
+  const projectByIdMap = new Map();
+  function syncProjectMap() {
+    projectByIdMap.clear();
+    if (Array.isArray(projects)) {
+      for (let i = 0; i < projects.length; i++) {
+        const p = projects[i];
+        if (p && p.id) projectByIdMap.set(p.id, p);
+      }
+    }
+  }
+  syncProjectMap();
   let customCategories = sanitizeCategories(loadJSON(STORAGE.categories, []));
   let moodboard = sanitizeMoodboard(migrateDuplicateMoodboardRecord(loadJSON(STORAGE.moodboard, null)));
   let collections = sanitizeCollections(migrateDuplicateCollectionRecords(loadJSON(STORAGE.collections, [])));
@@ -387,6 +398,7 @@
       if (loadingExperienceLastSuccessfulState) {
         plants = clone(loadingExperienceLastSuccessfulState.plants);
         projects = clone(loadingExperienceLastSuccessfulState.projects);
+        syncProjectMap();
         customCategories = clone(loadingExperienceLastSuccessfulState.customCategories);
         moodboard = clone(loadingExperienceLastSuccessfulState.moodboard);
         collections = clone(loadingExperienceLastSuccessfulState.collections || []);
@@ -493,7 +505,7 @@
   }
 
   function getProject(id) {
-    return projects.find(p => p.id === id);
+    return projectByIdMap.get(id);
   }
 
   function projectTotals(project) {
@@ -4449,6 +4461,7 @@
         } : item;
       })
     }));
+    syncProjectMap();
   }
 
   function resizeImage(file) {
@@ -4519,6 +4532,7 @@
     };
     if (existing) projects = projects.map(p => p.id === existing.id ? project : p);
     else projects.unshift(project);
+    syncProjectMap();
     state.selectedProjectId = project.id;
     state.scheduleProjectId = project.id;
     saveAll();
@@ -4795,6 +4809,7 @@
       if (!Array.isArray(parsed.plants) || !Array.isArray(parsed.projects)) throw new Error('Invalid backup');
       plants = sanitizePlants(parsed.plants);
       projects = sanitizeProjects(parsed.projects);
+      syncProjectMap();
       customCategories = sanitizeCategories(parsed.categories || []);
       moodboard = sanitizeMoodboard(parsed.moodboard || null);
       collections = sanitizeCollections(migrateDuplicateCollectionRecords(parsed.collections || []));
@@ -4943,6 +4958,7 @@
       const project = getProject(target.dataset.projectId);
       if (project && confirm(`Delete “${project.name}” and its plant list?`)) {
         projects = projects.filter(p => p.id !== project.id);
+        syncProjectMap();
         state.selectedProjectId = null;
         state.scheduleProjectId = projects[0]?.id || null;
         saveAll(); render(); toast('Project deleted.');
@@ -6299,6 +6315,7 @@
         updatedAt: now
       };
       projects.unshift(project);
+      syncProjectMap();
     }
 
     const existingIds = new Set((project.items || []).map(item => item.plantId));
