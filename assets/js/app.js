@@ -4448,10 +4448,11 @@
   }
 
   function syncProjectPlantCodes() {
+    const plantById = new Map((Array.isArray(plants) ? plants : []).map(record => [record.id, record]));
     projects = (Array.isArray(projects) ? projects : []).map(project => ({
       ...project,
       items: (Array.isArray(project.items) ? project.items : []).map(item => {
-        const plant = plants.find(record => record.id === item.plantId);
+        const plant = plantById.get(item.plantId);
         return plant ? {
           ...item,
           plantCode: plant.code,
