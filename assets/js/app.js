@@ -257,10 +257,11 @@
   function migrateDuplicateProjectItems(items) {
     const migrated = [];
     const mergeIndex = new Map();
+    const plantById = new Map((plants || []).map(record => [record.id, record]));
 
     (Array.isArray(items) ? items : []).forEach(item => {
       const plantId = duplicatePlantTargetId(item?.plantId);
-      const plant = plants.find(record => record.id === plantId);
+      const plant = plantById.get(plantId);
       const next = { ...item, plantId };
       if (plant) {
         next.plantCode = plant.code;
