@@ -17,6 +17,13 @@
   let helpScrollTimer = 0;
   let helpVisibilityFrame = 0;
 
+  let cachedRawProjects = null;
+  let projectsCacheMap = null;
+
+  let cachedRawStoredPlants = null;
+  let cachedPlantDataRef = null;
+  let plantsCacheMap = null;
+
   function readJSON(key, fallback) {
     try {
       const raw = localStorage.getItem(key);
@@ -72,12 +79,62 @@
     return Array.isArray(window.GREENSCAPE_PLANT_DATA) ? window.GREENSCAPE_PLANT_DATA : [];
   }
 
+  function getProjectsMap() {
+    let currentRaw = null;
+    try {
+      currentRaw = localStorage.getItem(PROJECT_STORAGE_KEY);
+    } catch (error) {
+      currentRaw = null;
+    }
+
+    if (!projectsCacheMap || currentRaw !== cachedRawProjects) {
+      cachedRawProjects = currentRaw;
+      const list = projects();
+      projectsCacheMap = new Map();
+      for (let i = 0; i < list.length; i++) {
+        const p = list[i];
+        const key = String(p?.id || '');
+        if (!projectsCacheMap.has(key)) {
+          projectsCacheMap.set(key, p);
+        }
+      }
+    }
+    return projectsCacheMap;
+  }
+
+  function getPlantsMap() {
+    let currentRawStored = null;
+    try {
+      currentRawStored = localStorage.getItem(PLANT_STORAGE_KEY);
+    } catch (error) {
+      currentRawStored = null;
+    }
+    const currentPlantDataRef = window.GREENSCAPE_PLANT_DATA;
+
+    if (!plantsCacheMap || currentRawStored !== cachedRawStoredPlants || currentPlantDataRef !== cachedPlantDataRef) {
+      cachedRawStoredPlants = currentRawStored;
+      cachedPlantDataRef = currentPlantDataRef;
+      const list = plants();
+      plantsCacheMap = new Map();
+      for (let i = 0; i < list.length; i++) {
+        const p = list[i];
+        const key = String(p?.id || '');
+        if (!plantsCacheMap.has(key)) {
+          plantsCacheMap.set(key, p);
+        }
+      }
+    }
+    return plantsCacheMap;
+  }
+
   function projectById(projectId) {
-    return projects().find(project => String(project?.id || '') === String(projectId || ''));
+    const key = String(projectId || '');
+    return getProjectsMap().get(key);
   }
 
   function plantById(plantId) {
-    return plants().find(plant => String(plant?.id || '') === String(plantId || ''));
+    const key = String(plantId || '');
+    return getPlantsMap().get(key);
   }
 
   function sectionForCategory(category) {
