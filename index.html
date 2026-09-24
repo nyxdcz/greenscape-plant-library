@@ -4,123 +4,237 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b4632">
-  <meta name="color-scheme" content="light">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Greenscape plant library.">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-  <link rel="canonical" href="https://nyxdcz.github.io/greenscape-plant-library/">
+  <meta name="robots" content="noindex, nofollow">
   <title>Greenscape Plant Library</title>
-
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="alternate icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
-
-  <meta property="og:site_name" content="Greenscape Landscaping Services">
-  <meta property="og:title" content="Greenscape Plant Library">
-  <meta property="og:description" content="Plant Library for Greenscape Landscaping Services.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://nyxdcz.github.io/greenscape-plant-library/">
-  <meta property="og:image" content="https://nyxdcz.github.io/greenscape-plant-library/assets/icons/icon-512.png">
-  <meta property="og:image:alt" content="Greenscape Plant Library icon">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Greenscape Plant Library">
-  <meta name="twitter:description" content="Plant Library for Greenscape Landscaping Services.">
-  <meta name="twitter:image" content="https://nyxdcz.github.io/greenscape-plant-library/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Greenscape Plant Library icon">
-  <link rel="stylesheet" href="assets/css/maintenance.css?v=20260924-library-only">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260924-library-only">
-  <link rel="stylesheet" href="assets/css/feature-glow.css?v=20260924-library-only">
-  <link rel="stylesheet" href="assets/css/plant-library-refinements.css?v=20260924-library-only">
-  <link rel="stylesheet" href="assets/css/sidebar-assistant.css?v=20260924-library-only">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
   <style>
-    .nav-item:not([data-view="library"]),
-    .feedback-widget,
-    .company-use-notice,
-    .sidebar-confidentiality,
-    .sidebar-actions,
-    #maintenanceStartup,
-    .maintenance-startup,
-    .maintenance-readonly-banner,
-    #greenieSpeechBox,
-    .sidebar-pet,
-    .sidebar-pet-avatar,
-    .phone-dock,
-    .magnetic-dock {
-      display: none !important;
+    :root {
+      color-scheme: light;
+      --paper: #f3efe4;
+      --ink: #1a241c;
+      --muted: #5d675f;
+      --line: #d8d1c1;
+      --forest: #0b4632;
+      --card: #fffcf6;
+      --chip: #efeadd;
+      --leaf: #1f6b45;
     }
-    body.maintenance-startup-open {
-      overflow: auto !important;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    button, select { font: inherit; cursor: pointer; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    .wrap { max-width: 48rem; margin: 0 auto; padding: 1rem; }
+    h1 { margin: 0 0 0.75rem; font-size: 1.125rem; font-weight: 600; }
+    .search, select {
+      display: block;
+      width: 100%;
+      height: 2.75rem;
+      margin-top: 0.75rem;
+      padding: 0 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      background: var(--card);
+      color: var(--ink);
+    }
+    .field { margin-top: 0.75rem; position: relative; }
+    .search { margin-top: 0; padding-left: 2.4rem; }
+    .field svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      width: 1rem;
+      height: 1rem;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+    .count { margin: 0.75rem 0 0.5rem; color: var(--muted); font-size: 0.875rem; }
+    ul { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; overflow: hidden; }
+    li + li { border-top: 1px solid var(--line); }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      min-height: 4rem;
+      padding: 0.5rem 0.75rem;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+    }
+    .row:hover { background: var(--chip); }
+    .thumb { width: 3rem; height: 3rem; border-radius: 0.5rem; object-fit: cover; background: #e6dfd0; flex: none; }
+    .name { font-weight: 500; }
+    .latin { color: var(--muted); font-size: 0.875rem; font-style: italic; }
+    .empty { background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; padding: 2rem 1rem; text-align: center; }
+    .primary {
+      margin-top: 0.75rem;
+      height: 2.75rem;
+      padding: 0 1rem;
+      border: 0;
+      border-radius: 0.75rem;
+      background: var(--forest);
+      color: var(--card);
+      font-weight: 500;
+    }
+    .sheet[hidden] { display: none !important; }
+    .sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      align-items: flex-end;
+      background: rgba(26, 36, 28, 0.4);
+    }
+    .panel {
+      width: 100%;
+      max-height: 92vh;
+      overflow: auto;
+      background: var(--card);
+      border-radius: 1.5rem 1.5rem 0 0;
+    }
+    .hero { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e6dfd0; display: block; }
+    .panel-body { padding: 1.25rem; }
+    .cat { margin: 0; color: var(--leaf); font-size: 0.875rem; }
+    .panel h2 { margin: 0.25rem 0 0; font-size: 1.5rem; }
+    .sizes { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; padding: 0; list-style: none; }
+    .sizes li { background: var(--chip); border-radius: 999px; padding: 0.35rem 0.75rem; font-size: 0.875rem; }
+    .close { width: 100%; margin-top: 1.5rem; }
+    @media (min-width: 640px) {
+      .sheet { align-items: center; justify-content: center; padding: 1.5rem; }
+      .panel { max-width: 32rem; border-radius: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#mainContent">Skip to main content</a>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Main navigation">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 48 48" role="img">
-            <path d="M38 8C24 9 13 17 10 31c8 1 16-1 22-7-5 7-11 12-20 15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="brand-official-lockup">
-          <img class="brand-logo-official" src="assets/images/greenscape-logo.png" alt="Greenscape" width="600" height="70" decoding="async">
-          <em>Green today, greener tomorrow</em>
-        </div>
-      </div>
-
-      <nav class="nav-list" aria-label="Primary navigation">
-        <button class="nav-item active" type="button" data-view="library" data-dock-label="Plant Library" aria-current="page"><span class="nav-icon nav-icon-plant-library" aria-hidden="true"></span> Plant Library</button>
-      </nav>
-    </aside>
-
-    <main class="main-area" id="mainContent">
-      <header class="topbar">
-        <div class="topbar-title">
-          <h1 id="pageTitle" tabindex="-1">Plant Library</h1>
-        </div>
-      </header>
-
-      <section id="pageContent" class="page-content" aria-busy="true">
-        <div class="app-loading-skeleton" data-app-loading-skeleton role="status" aria-live="polite" aria-label="Loading plant library">
-          <p class="app-loading-message">Preparing the plant library…</p>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <div id="modalRoot"></div>
-  <div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
-
+  <header>
+    <div class="wrap">
+      <h1>Plant Library</h1>
+      <label class="field">
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search plants</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+        <input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off">
+      </label>
+      <label>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Category</span>
+        <select id="category"></select>
+      </label>
+    </div>
+  </header>
+  <main class="wrap">
+    <p id="count" class="count"></p>
+    <div id="list"></div>
+  </main>
+  <div id="sheet" class="sheet" hidden></div>
+  <script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1"></script>
   <script>
-    history.replaceState(null, "", "#library");
-    function greenscapeLibraryOnly() {
-      var shell = document.querySelector(".app-shell");
-      if (shell) shell.removeAttribute("inert");
-      document.body.classList.remove("maintenance-startup-open");
-      var overlay = document.getElementById("maintenanceStartup");
-      if (overlay) overlay.hidden = true;
-      document.querySelectorAll(".nav-item").forEach(function (button) {
-        if (button.getAttribute("data-view") !== "library") button.remove();
+    const IMAGE = "assets/images/";
+    const ORDER = ["Shrubs","Indoor Plants","Palms","Trees","Climbers & Ferns","Cycads, Agaves & Yuccas","Grasses & Groundcovers","Bamboo","Landscape Materials"];
+    const source = Array.isArray(window.GREENSCAPE_PLANT_DATA) ? window.GREENSCAPE_PLANT_DATA : [];
+    const plants = source.map((plant) => ({
+      id: plant.id,
+      name: plant.commonName || "",
+      latin: plant.scientificName || "",
+      category: plant.category || "Other",
+      code: plant.code || "",
+      image: plant.image ? String(plant.image).replace(/^assets\/images\//, "") : "",
+      sizes: (plant.sizes || []).map((size) => size.label || size.size).filter(Boolean)
+    })).sort((a, b) => a.name.localeCompare(b.name));
+
+    const searchEl = document.getElementById("search");
+    const categoryEl = document.getElementById("category");
+    const listEl = document.getElementById("list");
+    const countEl = document.getElementById("count");
+    const sheetEl = document.getElementById("sheet");
+
+    const categories = ORDER.filter((name) => plants.some((plant) => plant.category === name));
+    categoryEl.innerHTML = '<option value="All">All categories</option>' + categories.map((name) => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>').join("");
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => {
+        if (char === "&") return "&" + "amp;";
+        if (char === "<") return "&" + "lt;";
+        if (char === ">") return "&" + "gt;";
+        if (char === '"') return "&" + "quot;";
+        return "&" + "#39;";
       });
     }
-    document.addEventListener("DOMContentLoaded", greenscapeLibraryOnly);
-    window.addEventListener("load", function () {
-      greenscapeLibraryOnly();
-      setTimeout(greenscapeLibraryOnly, 60);
-      setTimeout(greenscapeLibraryOnly, 500);
+
+    function visible() {
+      const query = searchEl.value.trim().toLowerCase();
+      const category = categoryEl.value;
+      return plants.filter((plant) => {
+        if (category !== "All" && plant.category !== category) return false;
+        if (!query) return true;
+        return (plant.name + " " + plant.latin + " " + plant.code).toLowerCase().includes(query);
+      });
+    }
+
+    function render() {
+      const rows = visible();
+      countEl.textContent = rows.length + (rows.length === 1 ? " result" : " results");
+      if (!rows.length) {
+        listEl.innerHTML = '<div class="empty"><p>No plants found</p><button class="primary" type="button" id="clear">Clear search</button></div>';
+        document.getElementById("clear").addEventListener("click", () => {
+          searchEl.value = "";
+          categoryEl.value = "All";
+          render();
+          searchEl.focus();
+        });
+        return;
+      }
+      listEl.innerHTML = "<ul>" + rows.map((plant) => {
+        const photo = plant.image ? '<img class="thumb" alt="" src="' + IMAGE + escapeHtml(plant.image) + '">' : '<span class="thumb"></span>';
+        return '<li><button class="row" type="button" data-id="' + escapeHtml(plant.id) + '">' + photo + '<span><span class="name">' + escapeHtml(plant.name) + '</span><br><span class="latin">' + escapeHtml(plant.latin) + '</span></span></button></li>';
+      }).join("") + "</ul>";
+    }
+
+    function openPlant(plant) {
+      const sizes = plant.sizes.length
+        ? '<p style="margin:1rem 0 0;font-weight:500">Sizes</p><ul class="sizes">' + plant.sizes.map((size) => '<li>' + escapeHtml(size) + '</li>').join("") + '</ul>'
+        : "";
+      const photo = plant.image ? '<img class="hero" alt="" src="' + IMAGE + escapeHtml(plant.image) + '">' : "";
+      sheetEl.hidden = false;
+      sheetEl.innerHTML = '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="plant-title">' + photo + '<div class="panel-body"><p class="cat">' + escapeHtml(plant.category) + '</p><h2 id="plant-title">' + escapeHtml(plant.name) + '</h2><p class="latin">' + escapeHtml(plant.latin) + '</p>' + (plant.code ? '<p class="latin">Code ' + escapeHtml(plant.code) + '</p>' : '') + sizes + '<button class="primary close" type="button" id="close">Close</button></div></div>';
+      document.body.style.overflow = "hidden";
+      document.getElementById("close").focus();
+    }
+
+    function closePlant() {
+      sheetEl.hidden = true;
+      sheetEl.innerHTML = "";
+      document.body.style.overflow = "";
+    }
+
+    listEl.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-id]");
+      if (!button) return;
+      const plant = plants.find((item) => item.id === button.dataset.id);
+      if (plant) openPlant(plant);
     });
+    sheetEl.addEventListener("click", (event) => {
+      if (event.target === sheetEl || event.target.id === "close") closePlant();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePlant();
+    });
+    searchEl.addEventListener("input", render);
+    categoryEl.addEventListener("change", render);
+    render();
   </script>
-  <script src="assets/js/staff-access-config.js?v=access-d2efa9c3608d" defer></script>
-  <script src="assets/js/maintenance-config.js?v=20260731-separated-staff-access1" defer></script>
-  <script src="assets/js/maintenance-force.js?v=20260730-maintenance-staff-access1" defer></script>
-  <script src="assets/js/maintenance.js?v=20260924-library-only" defer></script>
-  <script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
-  <script src="assets/js/app.js?v=20260924-library-only" defer></script>
-  <script src="assets/js/magnetic-dock.js?v=20260924-library-only" defer></script>
-  <script src="assets/js/sidebar-assistant.js?v=20260924-library-only" defer></script>
 </body>
 </html>
