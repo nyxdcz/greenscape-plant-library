@@ -119,6 +119,17 @@
     : (storedPlantRecords || clone(seedPlants));
   let plants = sanitizePlants(hydratePlantImages(migrateDuplicatePlantRecords(startupPlantRecords)));
   let projects = sanitizeProjects(migrateDuplicateProjectRecords(loadJSON(STORAGE.projects, [])));
+  const plantByIdMap = new Map();
+  function syncPlantMap() {
+    plantByIdMap.clear();
+    if (Array.isArray(plants)) {
+      for (let i = 0; i < plants.length; i++) {
+        const p = plants[i];
+        if (p && p.id) plantByIdMap.set(p.id, p);
+      }
+    }
+  }
+  syncPlantMap();
   const projectByIdMap = new Map();
   function syncProjectMap() {
     projectByIdMap.clear();
@@ -375,6 +386,7 @@
   function saveAll() {
     try {
       plants = assignBotanicalPlantCodes(plants);
+      syncPlantMap();
       syncProjectPlantCodes();
       collections = sanitizeCollections(collections);
       localStorage.setItem(STORAGE.plants, JSON.stringify(compactPlantsForStorage()));
@@ -398,6 +410,7 @@
       storageAvailable = false;
       if (loadingExperienceLastSuccessfulState) {
         plants = clone(loadingExperienceLastSuccessfulState.plants);
+        syncPlantMap();
         projects = clone(loadingExperienceLastSuccessfulState.projects);
         syncProjectMap();
         customCategories = clone(loadingExperienceLastSuccessfulState.customCategories);
@@ -502,7 +515,7 @@
   }
 
   function getPlant(id) {
-    return plants.find(p => p.id === id);
+    return plantByIdMap.get(id);
   }
 
   function getProject(id) {
@@ -511,8 +524,7 @@
 
   function projectTotals(project) {
     const items = Array.isArray(project?.items) ? project.items : [];
-    const plantMap = new Map((Array.isArray(plants) ? plants : []).map(p => [p.id, p]));
-    const categoryNames = items.map(item => plantMap.get(item.plantId)?.category || item.category || '').filter(Boolean);
+    const categoryNames = items.map(item => plantByIdMap.get(item.plantId)?.category || item.category || '').filter(Boolean);
     return {
       species: new Set(items.map(i => i.plantId)).size,
       categories: new Set(categoryNames).size,
@@ -2350,6 +2362,7 @@
     });
     customCategories = sanitizeCategories(customCategories);
     plants = sanitizePlants(plants);
+    syncPlantMap();
     syncProjectPlantCodes();
     saveAll();
     return { updated, added, skipped };
@@ -3918,6 +3931,7 @@
 
     const deletedIds = new Set(plants.filter(plant => plant.category === category).map(plant => plant.id));
     plants = plants.filter(plant => plant.category !== category);
+    syncPlantMap();
     customCategories = customCategories.filter(name => name !== category);
     moodboard.selectedIds = moodboard.selectedIds.filter(id => !deletedIds.has(id));
     projects.forEach(project => {
@@ -4039,6 +4053,7 @@
     if (existing) plants = plants.map(p => p.id === existing.id ? record : p);
     else plants.push(record);
     plants.sort((a,b) => a.category.localeCompare(b.category) || a.commonName.localeCompare(b.commonName));
+    syncPlantMap();
     syncProjectPlantCodes();
     saveAll();
     closeModal();
@@ -4811,6 +4826,7 @@
       const parsed = JSON.parse(await file.text());
       if (!Array.isArray(parsed.plants) || !Array.isArray(parsed.projects)) throw new Error('Invalid backup');
       plants = sanitizePlants(parsed.plants);
+      syncPlantMap();
       projects = sanitizeProjects(parsed.projects);
       syncProjectMap();
       customCategories = sanitizeCategories(parsed.categories || []);
@@ -4971,6 +4987,7 @@
       const plant = getPlant(target.dataset.plantId);
       if (plant && confirm(`Delete “${plant.commonName}” from the plant library?`)) {
         plants = plants.filter(record => record.id !== plant.id);
+        syncPlantMap();
         moodboard.selectedIds = moodboard.selectedIds.filter(id => id !== plant.id);
         saveAll(); renderPlantSheet(); toast('Plant deleted.');
       }
