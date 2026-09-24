@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="light">
   <meta name="format-detection" content="telephone=no">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="Greenscape internal plant library for plant records, project schedules, mood boards, quotations, BOQs, and landscape project costing.">
+  <meta name="description" content="Greenscape plant library.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <link rel="canonical" href="https://nyxdcz.github.io/greenscape-plant-library/">
@@ -17,25 +17,44 @@
   <link rel="alternate icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="preload" as="image" href="assets/images/dashboard-slideshow/01-david-genelhu.jpg" imagesrcset="assets/images/dashboard-slideshow/01-david-genelhu-900.jpg 900w, assets/images/dashboard-slideshow/01-david-genelhu.jpg 1800w" imagesizes="(max-width: 980px) calc(100vw - 28px), 50vw" fetchpriority="high">
 
   <meta property="og:site_name" content="Greenscape Landscaping Services">
   <meta property="og:title" content="Greenscape Plant Library">
-  <meta property="og:description" content="Plant Library & Landscape Database for Greenscape Landscaping Services.">
+  <meta property="og:description" content="Plant Library for Greenscape Landscaping Services.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nyxdcz.github.io/greenscape-plant-library/">
   <meta property="og:image" content="https://nyxdcz.github.io/greenscape-plant-library/assets/icons/icon-512.png">
   <meta property="og:image:alt" content="Greenscape Plant Library icon">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Greenscape Plant Library">
-  <meta name="twitter:description" content="Plant Library & Landscape Database for Greenscape Landscaping Services.">
+  <meta name="twitter:description" content="Plant Library for Greenscape Landscaping Services.">
   <meta name="twitter:image" content="https://nyxdcz.github.io/greenscape-plant-library/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Greenscape Plant Library icon">
-  <link rel="stylesheet" href="assets/css/maintenance.css?v=20260731-phone-dock-maintenance1">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260803-saved-plant-collections-v1">
-  <link rel="stylesheet" href="assets/css/feature-glow.css?v=20260727-naviconscontrast1">
-  <link rel="stylesheet" href="assets/css/plant-library-refinements.css?v=20260803-saved-plant-collections-v1">
-  <link rel="stylesheet" href="assets/css/sidebar-assistant.css?v=20260730-greenie-intermediate1">
+  <link rel="stylesheet" href="assets/css/maintenance.css?v=20260924-library-only">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260924-library-only">
+  <link rel="stylesheet" href="assets/css/feature-glow.css?v=20260924-library-only">
+  <link rel="stylesheet" href="assets/css/plant-library-refinements.css?v=20260924-library-only">
+  <link rel="stylesheet" href="assets/css/sidebar-assistant.css?v=20260924-library-only">
+  <style>
+    .nav-item:not([data-view="library"]),
+    .feedback-widget,
+    .company-use-notice,
+    .sidebar-confidentiality,
+    .sidebar-actions,
+    #maintenanceStartup,
+    .maintenance-startup,
+    .maintenance-readonly-banner,
+    #greenieSpeechBox,
+    .sidebar-pet,
+    .sidebar-pet-avatar,
+    .phone-dock,
+    .magnetic-dock {
+      display: none !important;
+    }
+    body.maintenance-startup-open {
+      overflow: auto !important;
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#mainContent">Skip to main content</a>
@@ -54,113 +73,54 @@
       </div>
 
       <nav class="nav-list" aria-label="Primary navigation">
-        <button class="nav-item active" type="button" data-view="dashboard" data-dock-label="Dashboard" aria-current="page"><span class="nav-icon nav-icon-dashboard" aria-hidden="true"></span> Dashboard</button>
-        <button class="nav-item" type="button" data-view="library" data-dock-label="Plant Library"><span class="nav-icon nav-icon-plant-library" aria-hidden="true"></span> Plant Library</button>
-        <button class="nav-item" type="button" data-view="collections" data-dock-label="Plant Collections"><span class="nav-icon nav-icon-collections" aria-hidden="true"></span> Plant Collections</button>
-        <button class="nav-item" type="button" data-view="sheet" data-dock-label="Plant List Editor"><span class="nav-icon nav-icon-plant-list-editor" aria-hidden="true"></span> Plant List Editor</button>
-        <button class="nav-item" type="button" data-view="quality" data-dock-label="Data Quality"><span class="nav-icon nav-icon-quality" aria-hidden="true"></span> Data Quality</button>
-        <button class="nav-item" type="button" data-view="moodboard" data-dock-label="Mood Board Creator"><span class="nav-icon nav-icon-mood-board" aria-hidden="true"></span> Mood Board Creator</button>
-        <button class="nav-item" type="button" data-view="projects" data-dock-label="Project Lists"><span class="nav-icon nav-icon-project-lists" aria-hidden="true"></span> Project Lists</button>
+        <button class="nav-item active" type="button" data-view="library" data-dock-label="Plant Library" aria-current="page"><span class="nav-icon nav-icon-plant-library" aria-hidden="true"></span> Plant Library</button>
       </nav>
-
-      <div class="sidebar-confidentiality" role="note" aria-label="Confidentiality notice">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12v10H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div>
-          <strong>Company Use Only</strong>
-          <span>Confidential. Do not copy, distribute, or share outside Greenscape.</span>
-        </div>
-      </div>
-
-      <div class="sidebar-actions">
-        <a class="website-link" href="https://greenscapelandscapingph.com/" target="_blank" rel="noopener">Visit Greenscape website <span>↗</span></a>
-      </div>
     </aside>
 
     <main class="main-area" id="mainContent">
       <header class="topbar">
         <div class="topbar-title">
-          <h1 id="pageTitle" tabindex="-1">Dashboard</h1>
-        </div>
-        <div class="topbar-notices">
-<div class="company-use-notice" role="note" aria-label="Internal company use notice">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12v10H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div>
-              <strong>Internal Company Use Only</strong>
-              <span>Confidential — do not copy, distribute, publish, or share.</span>
-            </div>
-          </div>
+          <h1 id="pageTitle" tabindex="-1">Plant Library</h1>
         </div>
       </header>
 
       <section id="pageContent" class="page-content" aria-busy="true">
-        <div class="app-loading-skeleton" data-app-loading-skeleton role="status" aria-live="polite" aria-label="Loading Greenscape dashboard">
-          <div class="app-loading-hero" aria-hidden="true">
-            <span class="loading-skeleton-line is-kicker"></span>
-            <span class="loading-skeleton-line is-title"></span>
-            <span class="loading-skeleton-line is-copy"></span>
-            <span class="loading-skeleton-line is-copy short"></span>
-          </div>
-          <div class="app-loading-stats" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="app-loading-panels" aria-hidden="true">
-            <span></span><span></span>
-          </div>
-          <p class="app-loading-message">Preparing your Greenscape workspace…</p>
-          <p class="app-loading-slow">Still loading. Slower connections or older devices may need a little more time.</p>
-          <a class="button secondary small app-loading-retry" href="./">Retry loading</a>
+        <div class="app-loading-skeleton" data-app-loading-skeleton role="status" aria-live="polite" aria-label="Loading plant library">
+          <p class="app-loading-message">Preparing the plant library…</p>
         </div>
       </section>
     </main>
   </div>
 
-  <div class="connection-status" id="connectionStatus" role="status" aria-live="polite" aria-atomic="true" hidden>
-    <strong data-connection-title>Connection notice</strong>
-    <span data-connection-message></span>
-  </div>
-
-  <div class="feedback-widget" id="feedbackWidget">
-
-    <section class="feedback-panel" id="feedbackPanel" role="dialog" aria-labelledby="feedbackTitle" aria-describedby="feedbackDescription" hidden>
-      <header class="feedback-panel-header">
-        <div>
-          <span class="feedback-panel-kicker">Beta — Work in Progress</span>
-          <h2 id="feedbackTitle">Report an issue or send a suggestion</h2>
-          <p id="feedbackDescription">This website is still under development. Please describe any error, suggestion, or assistance you need.</p>
-        </div>
-        <button class="feedback-close" id="feedbackClose" type="button" aria-label="Close feedback form">×</button>
-      </header>
-
-      <form class="feedback-form" id="feedbackForm">
-        <label>
-          <span>Message</span>
-          <textarea id="feedbackMessage" rows="6" required placeholder="Describe the error, your suggestion, or the assistance you need."></textarea>
-        </label>
-
-        <div class="feedback-actions">
-          <button class="button secondary" id="feedbackCancel" type="button">Cancel</button>
-          <button class="button primary" type="submit">Send message</button>
-        </div>
-
-        <p class="feedback-email-note">Your email app or Gmail will open with the message prepared for <strong>nyxdcz@gmail.com</strong>.</p>
-      </form>
-    </section>
-  </div>
-
   <div id="modalRoot"></div>
   <div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
 
+  <script>
+    history.replaceState(null, "", "#library");
+    function greenscapeLibraryOnly() {
+      var shell = document.querySelector(".app-shell");
+      if (shell) shell.removeAttribute("inert");
+      document.body.classList.remove("maintenance-startup-open");
+      var overlay = document.getElementById("maintenanceStartup");
+      if (overlay) overlay.hidden = true;
+      document.querySelectorAll(".nav-item").forEach(function (button) {
+        if (button.getAttribute("data-view") !== "library") button.remove();
+      });
+    }
+    document.addEventListener("DOMContentLoaded", greenscapeLibraryOnly);
+    window.addEventListener("load", function () {
+      greenscapeLibraryOnly();
+      setTimeout(greenscapeLibraryOnly, 60);
+      setTimeout(greenscapeLibraryOnly, 500);
+    });
+  </script>
   <script src="assets/js/staff-access-config.js?v=access-d2efa9c3608d" defer></script>
   <script src="assets/js/maintenance-config.js?v=20260731-separated-staff-access1" defer></script>
   <script src="assets/js/maintenance-force.js?v=20260730-maintenance-staff-access1" defer></script>
-  <script src="assets/js/maintenance.js?v=20260803-saved-plant-collections-v1" defer></script>
+  <script src="assets/js/maintenance.js?v=20260924-library-only" defer></script>
   <script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
-  <script src="assets/js/app.js?v=20260803-saved-plant-collections-v1" defer></script>
-  <script src="assets/js/magnetic-dock.js?v=20260803-saved-plant-collections-v1" defer></script>
-  <script src="assets/js/sidebar-assistant.js?v=20260803-saved-plant-collections-v1" defer></script>
+  <script src="assets/js/app.js?v=20260924-library-only" defer></script>
+  <script src="assets/js/magnetic-dock.js?v=20260924-library-only" defer></script>
+  <script src="assets/js/sidebar-assistant.js?v=20260924-library-only" defer></script>
 </body>
 </html>
