@@ -15,7 +15,9 @@ button, select, input { font: inherit; }
 button, select { cursor: pointer; }
 header { position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--line); }
 .wrap { max-width: 48rem; margin: 0 auto; padding: 1rem; }
-h1 { margin: 0 0 0.75rem; font-size: 1.125rem; font-weight: 600; }
+h1 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.add { width: 2.75rem; height: 2.75rem; border: 0; border-radius: 0.75rem; background: var(--forest); color: var(--card); font-size: 1.5rem; line-height: 1; }
 .search, select { display: block; width: 100%; height: 2.75rem; margin-top: 0.75rem; padding: 0 0.75rem; border: 1px solid var(--line); border-radius: 0.75rem; background: var(--card); color: var(--ink); }
 .field { margin-top: 0.75rem; position: relative; }
 .search { margin-top: 0; padding-left: 2.4rem; }
@@ -52,7 +54,7 @@ li + li { border-top: 1px solid var(--line); }
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Plant Library</h1>
+<header><div class="wrap"><div class="title-row"><h1>Plant Library</h1><button type="button" class="add" id="add" aria-label="Add plant">+</button></div>
 <label class="field"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search plants</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg><input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off"></label>
 <label><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Category</span><select id="category"></select></label>
 </div></header>
@@ -70,7 +72,11 @@ const basePlants = plants.slice();
 let edits = {};
 try { edits = JSON.parse(localStorage.getItem("greenscape-plant-edits") || "{}") || {}; } catch (error) { edits = {}; }
 function withEdit(plant) { const edit = edits[plant.id]; if (!edit) return plant; return { id: plant.id, name: edit.name || plant.name, latin: edit.latin || "", category: edit.category || plant.category, code: edit.code || "", image: edit.image || "", sizes: Array.isArray(edit.sizes) ? edit.sizes : plant.sizes, material: edit.material || "" }; }
-plants = basePlants.map(withEdit);
+let added = [];
+try { added = JSON.parse(localStorage.getItem("greenscape-added-plants") || "[]") || []; } catch (error) { added = []; }
+if (!Array.isArray(added)) added = [];
+function rebuild() { plants = basePlants.map(withEdit).concat(added.map(withEdit)); }
+rebuild();
 const searchEl = document.getElementById("search");
 const categoryEl = document.getElementById("category");
 const listEl = document.getElementById("list");
@@ -94,9 +100,24 @@ function openPlant(plant) { currentId = plant.id; const photoSrc = imageSrc(plan
 function copyField(button) { const value = currentValues[Number(button.getAttribute("data-copy"))]; if (!value) return; const finish = () => { button.textContent = "Copied"; setTimeout(() => { button.textContent = "Copy"; }, 1200); }; const fallback = () => { const area = document.createElement("textarea"); area.value = value; document.body.appendChild(area); area.select(); document.execCommand("copy"); area.remove(); finish(); }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(finish).catch(fallback); else fallback(); }
 function closePlant() { sheetEl.hidden = true; sheetEl.innerHTML = ""; document.body.style.overflow = ""; editing = false; }
 listEl.addEventListener("click", (event) => { const button = event.target.closest("[data-id]"); if (!button) return; const plant = plants.find((item) => item.id === button.dataset.id); if (!plant) return; editing = false; justSaved = false; openPlant(plant); });
-sheetEl.addEventListener("click", (event) => { const copyButton = event.target.closest("[data-copy]"); if (copyButton) { copyField(copyButton); return; } if (event.target.id === "edit") { editing = true; justSaved = false; openPlant(currentPlant()); return; } if (event.target.id === "cancel-edit") { editing = false; openPlant(currentPlant()); return; } if (event.target.id === "add-size") { const list = document.getElementById("size-list"); const row = document.createElement("div"); row.className = "size-edit"; row.innerHTML = "<input name=\"size\" value=\"\"><button class=\"ghost\" type=\"button\" data-remove-size>Remove</button>"; list.appendChild(row); row.querySelector("input").focus(); return; } if (event.target.closest("[data-remove-size]")) { event.target.closest(".size-edit").remove(); return; } if (event.target === sheetEl || event.target.id === "close") closePlant(); });
-sheetEl.addEventListener("submit", (event) => { event.preventDefault(); const form = event.target; const name = form.name.value.trim(); if (!name) { form.name.focus(); return; } const original = basePlants.find((plant) => plant.id === currentId); edits[currentId] = { name: name, latin: form.latin.value.trim(), category: form.category.value, code: form.code.value.trim(), material: form.material.value.trim(), image: form.image.value.trim(), sizes: Array.from(form.querySelectorAll("[name=size]")).map((input) => input.value.trim()).filter(Boolean) }; localStorage.setItem("greenscape-plant-edits", JSON.stringify(edits)); plants = basePlants.map(withEdit); editing = false; justSaved = true; render(); openPlant(plants.find((plant) => plant.id === currentId) || original); });
-document.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (editing) { editing = false; openPlant(currentPlant()); return; } closePlant(); });
+sheetEl.addEventListener("click", (event) => { const copyButton = event.target.closest("[data-copy]"); if (copyButton) { copyField(copyButton); return; } if (event.target.id === "edit") { editing = true; justSaved = false; openPlant(currentPlant()); return; } if (event.target.id === "cancel-edit") { editing = false; if (String(currentId).indexOf("custom-") === 0 && !added.some((plant) => plant.id === currentId)) { closePlant(); return; } openPlant(currentPlant()); return; } if (event.target.id === "add-size") { const list = document.getElementById("size-list"); const row = document.createElement("div"); row.className = "size-edit"; row.innerHTML = "<input name=\"size\" value=\"\"><button class=\"ghost\" type=\"button\" data-remove-size>Remove</button>"; list.appendChild(row); row.querySelector("input").focus(); return; } if (event.target.closest("[data-remove-size]")) { event.target.closest(".size-edit").remove(); return; } if (event.target === sheetEl || event.target.id === "close") closePlant(); });
+sheetEl.addEventListener("submit", (event) => { event.preventDefault(); const form = event.target; const name = form.name.value.trim(); if (!name) { form.name.focus(); return; } const original = basePlants.find((plant) => plant.id === currentId); const record = { id: currentId, name: name, latin: form.latin.value.trim(), category: form.category.value, code: form.code.value.trim(), material: form.material.value.trim(), image: form.image.value.trim(), sizes: Array.from(form.querySelectorAll("[name=size]")).map((input) => input.value.trim()).filter(Boolean) };
+      if (String(currentId).indexOf("custom-") === 0) {
+        const index = added.findIndex((plant) => plant.id === currentId);
+        if (index < 0) added.push(record); else added[index] = record;
+        localStorage.setItem("greenscape-added-plants", JSON.stringify(added));
+      } else {
+        edits[currentId] = record;
+        localStorage.setItem("greenscape-plant-edits", JSON.stringify(edits));
+      }
+      rebuild(); editing = false; justSaved = true; render(); openPlant(plants.find((plant) => plant.id === currentId) || original); });
+document.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (editing && !(String(currentId).indexOf("custom-") === 0 && !added.some((plant) => plant.id === currentId))) { editing = false; openPlant(currentPlant()); return; } closePlant(); });
+document.getElementById("add").addEventListener("click", () => {
+  const plant = { id: "custom-" + Date.now(), name: "", latin: "", category: ORDER[0], code: "", image: "", sizes: [""], material: "" };
+  editing = true;
+  justSaved = false;
+  openPlant(plant);
+});
 searchEl.addEventListener("input", render);
 categoryEl.addEventListener("change", render);
 render();
