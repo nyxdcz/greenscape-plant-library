@@ -1,106 +1,105 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b4632">
-  <meta name="description" content="Greenscape plant library.">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Greenscape Plant Library</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
-  <style>
-    :root { color-scheme: light; --paper: #f3efe4; --ink: #1a241c; --muted: #5d675f; --line: #d8d1c1; --forest: #0b4632; --card: #fffcf6; --chip: #efeadd; --leaf: #1f6b45; }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Outfit, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
-    button, select, input { font: inherit; }
-    button, select { cursor: pointer; }
-    header { position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--line); }
-    .wrap { max-width: 48rem; margin: 0 auto; padding: 1rem; }
-    h1 { margin: 0 0 0.75rem; font-size: 1.125rem; font-weight: 600; }
-    .search, select { display: block; width: 100%; height: 2.75rem; margin-top: 0.75rem; padding: 0 0.75rem; border: 1px solid var(--line); border-radius: 0.75rem; background: var(--card); color: var(--ink); }
-    .field { margin-top: 0.75rem; position: relative; }
-    .search { margin-top: 0; padding-left: 2.4rem; }
-    .field svg { position: absolute; left: 0.75rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); color: var(--muted); }
-    .count { margin: 0.75rem 0 0.5rem; color: var(--muted); font-size: 0.875rem; }
-    ul { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; overflow: hidden; }
-    li + li { border-top: 1px solid var(--line); }
-    .row { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 4rem; padding: 0.5rem 0.75rem; border: 0; background: transparent; color: inherit; text-align: left; }
-    .row:hover { background: var(--chip); }
-    .thumb { width: 3rem; height: 3rem; border-radius: 0.5rem; object-fit: cover; background: #e6dfd0; flex: none; }
-    .name { font-weight: 500; }
-    .latin { color: var(--muted); font-size: 0.875rem; font-style: italic; }
-    .empty { background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; padding: 2rem 1rem; text-align: center; }
-    .primary { margin-top: 0.75rem; height: 2.75rem; padding: 0 1rem; border: 0; border-radius: 0.75rem; background: var(--forest); color: var(--card); font-weight: 500; }
-    .copy-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
-    .copy-row > div { min-width: 0; }
-    .copy-row h2, .copy-row p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .copy-label { margin: 0 0 0.15rem; font-size: 0.75rem; color: var(--muted); }
-    .copy { height: 2.75rem; flex: none; padding: 0 0.9rem; border: 0; border-radius: 0.75rem; background: var(--chip); color: var(--ink); font-weight: 500; }
-    .sheet[hidden] { display: none !important; }
-    .sheet { position: fixed; inset: 0; z-index: 5; display: flex; align-items: flex-end; background: rgba(26, 36, 28, 0.4); }
-    .panel { width: 100%; max-height: 92vh; overflow: auto; background: var(--card); border-radius: 1.5rem 1.5rem 0 0; }
-    .hero { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e6dfd0; display: block; }
-    .panel-body { padding: 0.5rem 1.25rem 1.25rem; }
-    .panel h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
-    .actions { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
-    .actions button { flex: 1; }
-    .ghost { height: 2.75rem; border: 0; border-radius: 0.75rem; background: var(--chip); color: var(--ink); font-weight: 500; }
-    .edit-label { display: block; padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: 0.75rem; color: var(--muted); }
-    .edit-label input, .edit-label select, .size-edit input { display: block; width: 100%; height: 2.75rem; margin-top: 0.25rem; border: 1px solid var(--line); border-radius: 0.75rem; padding: 0 0.75rem; background: var(--card); color: var(--ink); font-size: 1rem; }
-    .size-edit { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-    .size-edit input { margin-top: 0; }
-    @media (min-width: 640px) { .sheet { align-items: center; justify-content: center; padding: 1.5rem; } .panel { max-width: 32rem; border-radius: 1.5rem; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b4632">
+<title>Greenscape Plant Library</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
+<style>
+:root { color-scheme: light; --paper: #f3efe4; --ink: #1a241c; --muted: #5d675f; --line: #d8d1c1; --forest: #0b4632; --card: #fffcf6; --chip: #efeadd; --leaf: #1f6b45; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Outfit, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
+button, select, input { font: inherit; }
+button, select { cursor: pointer; }
+header { position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--line); }
+.wrap { max-width: 48rem; margin: 0 auto; padding: 1rem; }
+h1 { margin: 0 0 0.75rem; font-size: 1.125rem; font-weight: 600; }
+.search, select { display: block; width: 100%; height: 2.75rem; margin-top: 0.75rem; padding: 0 0.75rem; border: 1px solid var(--line); border-radius: 0.75rem; background: var(--card); color: var(--ink); }
+.field { margin-top: 0.75rem; position: relative; }
+.search { margin-top: 0; padding-left: 2.4rem; }
+.field svg { position: absolute; left: 0.75rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); color: var(--muted); }
+.count { margin: 0.75rem 0 0.5rem; color: var(--muted); font-size: 0.875rem; }
+ul { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; overflow: hidden; }
+li + li { border-top: 1px solid var(--line); }
+.row { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 4rem; padding: 0.5rem 0.75rem; border: 0; background: transparent; color: inherit; text-align: left; }
+.row:hover { background: var(--chip); }
+.thumb { width: 3rem; height: 3rem; border-radius: 0.5rem; object-fit: cover; background: #e6dfd0; flex: none; }
+.name { font-weight: 500; }
+.latin { color: var(--muted); font-size: 0.875rem; font-style: italic; }
+.empty { background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem; padding: 2rem 1rem; text-align: center; }
+.primary { height: 2.75rem; padding: 0 1rem; border: 0; border-radius: 0.75rem; background: var(--forest); color: var(--card); font-weight: 500; }
+.copy-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.copy-row > div { min-width: 0; }
+.copy-row h2, .copy-row p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.copy-label { margin: 0 0 0.15rem; font-size: 0.75rem; color: var(--muted); }
+.copy { height: 2.75rem; flex: none; padding: 0 0.9rem; border: 0; border-radius: 0.75rem; background: var(--chip); color: var(--ink); font-weight: 500; }
+.sheet[hidden] { display: none !important; }
+.sheet { position: fixed; inset: 0; z-index: 5; display: flex; align-items: flex-end; background: rgba(26, 36, 28, 0.4); }
+.panel { width: 100%; max-height: 92vh; overflow: auto; background: var(--card); border-radius: 1.5rem 1.5rem 0 0; }
+.hero { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e6dfd0; display: block; }
+.panel-body { padding: 0.5rem 1.25rem 1.25rem; }
+.panel h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.actions { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
+.actions button { flex: 1; }
+.ghost { height: 2.75rem; border: 0; border-radius: 0.75rem; background: var(--chip); color: var(--ink); font-weight: 500; }
+.edit-label { display: block; padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: 0.75rem; color: var(--muted); }
+.edit-label input, .edit-label select, .size-edit input { display: block; width: 100%; height: 2.75rem; margin-top: 0.25rem; border: 1px solid var(--line); border-radius: 0.75rem; padding: 0 0.75rem; background: var(--card); color: var(--ink); font-size: 1rem; }
+.size-edit { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.size-edit input { margin-top: 0; }
+@media (min-width: 640px) { .sheet { align-items: center; justify-content: center; padding: 1.5rem; } .panel { max-width: 32rem; border-radius: 1.5rem; } }
+</style>
 </head>
 <body>
-  <header><div class="wrap"><h1>Plant Library</h1>
-    <label class="field"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search plants</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg><input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off"></label>
-    <label><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Category</span><select id="category"></select></label>
-  </div></header>
-  <main class="wrap"><p id="count" class="count"></p><div id="list"></div></main>
-  <div id="sheet" class="sheet" hidden></div>
-  <script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1"></script>
-  <script>
-    const IMAGE = "assets/images/";
-    const ORDER = ["Shrubs","Indoor Plants","Palms","Trees","Climbers & Ferns","Cycads, Agaves & Yuccas","Grasses & Groundcovers","Bamboo","Landscape Materials"];
-    const source = Array.isArray(window.GREENSCAPE_PLANT_DATA) ? window.GREENSCAPE_PLANT_DATA : [];
-    let plants = source.map((plant) => ({ id: plant.id, name: plant.commonName || "", latin: plant.scientificName || "", category: plant.category || "Other", code: plant.code || "", image: plant.image ? String(plant.image).replace(/^assets\\/images\\//, "") : "", sizes: (plant.sizes || []).map((size) => size.label || size.size).filter(Boolean), material: plant.material || "" })).sort((a, b) => a.name.localeCompare(b.name));
-    const basePlants = plants.slice();
-    const searchEl = document.getElementById("search");
-    const categoryEl = document.getElementById("category");
-    const listEl = document.getElementById("list");
-    const countEl = document.getElementById("count");
-    const sheetEl = document.getElementById("sheet");
-    let edits = {};
-    try { edits = JSON.parse(localStorage.getItem("greenscape-plant-edits") || "{}") || {}; } catch (error) { edits = {}; }
-    let currentValues = [];
-    let editing = false;
-    let justSaved = false;
-    let currentId = "";
-    function imageSrc(image) { if (!image) return ""; if (/^https?:\\/\\//.test(image)) return image; return new URL(IMAGE + String(image).replace(/^assets\\/images\\//, ""), location.href).href; }
-    function withEdit(plant) { const edit = edits[plant.id]; if (!edit) return plant; return { id: plant.id, name: edit.name || plant.name, latin: edit.latin || "", category: edit.category || plant.category, code: edit.code || "", image: edit.image || "", sizes: Array.isArray(edit.sizes) ? edit.sizes : plant.sizes, material: edit.material || "" }; }
-    plants = basePlants.map(withEdit);
-    const categories = ORDER.filter((name) => plants.some((plant) => plant.category === name));
-    function escapeHtml(value) { return String(value).replace(/[&<>\"']/g, (char) => { if (char === "&") return "&" + "amp;"; if (char === "<") return "&" + "lt;"; if (char === ">") return "&" + "gt;"; if (char === '"') return "&" + "quot;"; return "&" + "#39;"; }); }
-    categoryEl.innerHTML = '<option value="All">All categories</option>' + categories.map((name) => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>').join("");
-    function visible() { const query = searchEl.value.trim().toLowerCase(); const category = categoryEl.value; return plants.filter((plant) => { if (category !== "All" && plant.category !== category) return false; if (!query) return true; return (plant.name + " " + plant.latin + " " + plant.code).toLowerCase().includes(query); }); }
-    function render() { const rows = visible(); countEl.textContent = rows.length + (rows.length === 1 ? " result" : " results"); if (!rows.length) { listEl.innerHTML = '<div class="empty"><p>No plants found</p><button class="primary" type="button" id="clear">Clear search</button></div>'; document.getElementById("clear").addEventListener("click", () => { searchEl.value = ""; categoryEl.value = "All"; render(); searchEl.focus(); }); return; } listEl.innerHTML = "<ul>" + rows.map((plant) => { const photo = plant.image ? '<img class="thumb" alt="" src="' + escapeHtml(imageSrc(plant.image)) + '">' : '<span class="thumb"></span>'; return '<li><button class="row" type="button" data-id="' + escapeHtml(plant.id) + '">' + photo + '<span><span class="name">' + escapeHtml(plant.name) + '</span><br><span class="latin">' + escapeHtml(plant.latin) + '</span></span></button></li>'; }).join("") + "</ul>"; }
-    function fieldRow(label, value) { if (!value) return ""; const index = currentValues.push(value) - 1; const text = label === "Common name" ? '<h2 id="plant-title">' + escapeHtml(value) + '</h2>' : '<p class="' + (label === "Scientific name" ? "latin" : "") + '">' + escapeHtml(value) + '</p>'; return '<div class="copy-row"><div><p class="copy-label">' + escapeHtml(label) + '</p>' + text + '</div><button type="button" class="copy" data-copy="' + index + '">Copy</button></div>'; }
-    function editField(label, name, value) { return '<label class="edit-label">' + escapeHtml(label) + '<input name="' + name + '" value="' + escapeHtml(value || "") + '"></label>'; }
-    function editForm(plant) { const options = ORDER.concat(ORDER.indexOf(plant.category) < 0 ? [plant.category] : []).map((name) => '<option value="' + escapeHtml(name) + '"' + (name === plant.category ? " selected" : "") + '>' + escapeHtml(name) + '</option>').join(""); const sizes = (plant.sizes.length ? plant.sizes : [""]).map((size) => '<div class="size-edit"><input name="size" value="' + escapeHtml(size) + '"><button class="ghost" type="button" data-remove-size>Remove</button></div>').join(""); return '<form id="edit-form">' + editField("Common name", "name", plant.name) + editField("Scientific name", "latin", plant.latin) + '<label class="edit-label">Category<select name="category">' + options + '</select></label>' + editField("Code", "code", plant.code) + editField("Material", "material", plant.material) + editField("Image", "image", plant.image) + '<div class="edit-label">Sizes<div id="size-list">' + sizes + '</div><button class="ghost" type="button" id="add-size" style="width:100%;margin-top:0.5rem">Add size</button></div><div class="actions"><button class="primary" type="submit">Save</button><button class="ghost" type="button" id="cancel-edit">Cancel</button></div></form>'; }
-    function viewBody(plant) { currentValues = []; const rows = [fieldRow("Common name", plant.name), fieldRow("Scientific name", plant.latin), fieldRow("Category", plant.category), fieldRow("Code", plant.code), fieldRow("Material", plant.material), fieldRow("Image link", imageSrc(plant.image))].concat(plant.sizes.map((size) => fieldRow("Size", size))).join(""); return rows + (justSaved ? '<p class="copy-label" style="margin-top:0.75rem">Saved on this device.</p>' : '') + '<div class="actions"><button class="primary" type="button" id="edit">Edit</button><button class="ghost" type="button" id="close">Close</button></div>'; }
-    function currentPlant() { return plants.find((plant) => plant.id === currentId); }
-    function openPlant(plant) { currentId = plant.id; const photoSrc = imageSrc(plant.image); const photo = photoSrc ? '<img class="hero" alt="" src="' + escapeHtml(photoSrc) + '">' : ''; const body = editing ? editForm(plant) : viewBody(plant); sheetEl.hidden = false; sheetEl.innerHTML = '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="plant-title">' + photo + '<div class="panel-body">' + body + '</div></div>'; document.body.style.overflow = 'hidden'; const focus = editing ? sheetEl.querySelector('[name=name]') : document.getElementById('close'); if (focus) focus.focus(); }
-    function copyField(button) { const value = currentValues[Number(button.getAttribute('data-copy'))]; if (!value) return; const finish = () => { button.textContent = 'Copied'; setTimeout(() => { button.textContent = 'Copy'; }, 1200); }; const fallback = () => { const area = document.createElement('textarea'); area.value = value; document.body.appendChild(area); area.select(); document.execCommand('copy'); area.remove(); finish(); }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(finish).catch(fallback); else fallback(); }
-    function closePlant() { sheetEl.hidden = true; sheetEl.innerHTML = ''; document.body.style.overflow = ''; editing = false; }
-    listEl.addEventListener('click', (event) => { const button = event.target.closest('[data-id]'); if (!button) return; const plant = plants.find((item) => item.id === button.dataset.id); if (!plant) return; editing = false; justSaved = false; openPlant(plant); });
-    sheetEl.addEventListener('click', (event) => { const copyButton = event.target.closest('[data-copy]'); if (copyButton) { copyField(copyButton); return; } if (event.target.id === 'edit') { editing = true; justSaved = false; openPlant(currentPlant()); return; } if (event.target.id === 'cancel-edit') { editing = false; openPlant(currentPlant()); return; } if (event.target.id === 'add-size') { const list = document.getElementById('size-list'); const row = document.createElement('div'); row.className = 'size-edit'; row.innerHTML = '<input name="size" value=""><button class="ghost" type="button" data-remove-size>Remove</button>'; list.appendChild(row); row.querySelector('input').focus(); return; } if (event.target.closest('[data-remove-size]')) { event.target.closest('.size-edit').remove(); return; } if (event.target === sheetEl || event.target.id === 'close') closePlant(); });
-    sheetEl.addEventListener('submit', (event) => { event.preventDefault(); const form = event.target; const name = form.name.value.trim(); if (!name) { form.name.focus(); return; } const original = basePlants.find((plant) => plant.id === currentId); edits[currentId] = { name: name, latin: form.latin.value.trim(), category: form.category.value, code: form.code.value.trim(), material: form.material.value.trim(), image: form.image.value.trim(), sizes: [...form.querySelectorAll('[name=size]')].map((input) => input.value.trim()).filter(Boolean) }; localStorage.setItem('greenscape-plant-edits', JSON.stringify(edits)); plants = basePlants.map(withEdit); editing = false; justSaved = true; render(); openPlant(plants.find((plant) => plant.id === currentId) || original); });
-    document.addEventListener('keydown', (event) => { if (event.key !== 'Escape') return; if (editing) { editing = false; openPlant(currentPlant()); return; } closePlant(); });
-    searchEl.addEventListener('input', render);
-    categoryEl.addEventListener('change', render);
-    render();
-  </script>
+<header><div class="wrap"><h1>Plant Library</h1>
+<label class="field"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search plants</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg><input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off"></label>
+<label><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Category</span><select id="category"></select></label>
+</div></header>
+<main class="wrap"><p id="count" class="count"></p><div id="list"></div></main>
+<div id="sheet" class="sheet" hidden></div>
+<script src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1"></script>
+<script>
+const IMAGE = "assets/images/";
+const ORDER = ["Shrubs","Indoor Plants","Palms","Trees","Climbers & Ferns","Cycads, Agaves & Yuccas","Grasses & Groundcovers","Bamboo","Landscape Materials"];
+const source = Array.isArray(window.GREENSCAPE_PLANT_DATA) ? window.GREENSCAPE_PLANT_DATA : [];
+function fileName(image) { const prefix = "assets/images/"; if (!image) return ""; if (image.indexOf(prefix) === 0) return image.slice(prefix.length); return image; }
+function imageSrc(image) { if (!image) return ""; if (image.indexOf("http://") === 0 || image.indexOf("https://") === 0) return image; return new URL(IMAGE + fileName(image), location.href).href; }
+let plants = source.map((plant) => ({ id: plant.id, name: plant.commonName || "", latin: plant.scientificName || "", category: plant.category || "Other", code: plant.code || "", image: fileName(plant.image || ""), sizes: (plant.sizes || []).map((size) => size.label || size.size).filter(Boolean), material: plant.material || "" })).sort((a, b) => a.name.localeCompare(b.name));
+const basePlants = plants.slice();
+let edits = {};
+try { edits = JSON.parse(localStorage.getItem("greenscape-plant-edits") || "{}") || {}; } catch (error) { edits = {}; }
+function withEdit(plant) { const edit = edits[plant.id]; if (!edit) return plant; return { id: plant.id, name: edit.name || plant.name, latin: edit.latin || "", category: edit.category || plant.category, code: edit.code || "", image: edit.image || "", sizes: Array.isArray(edit.sizes) ? edit.sizes : plant.sizes, material: edit.material || "" }; }
+plants = basePlants.map(withEdit);
+const searchEl = document.getElementById("search");
+const categoryEl = document.getElementById("category");
+const listEl = document.getElementById("list");
+const countEl = document.getElementById("count");
+const sheetEl = document.getElementById("sheet");
+let currentValues = [];
+let editing = false;
+let justSaved = false;
+let currentId = "";
+function escapeHtml(value) { return String(value).split("&").join("&" + "amp;").split("<").join("&" + "lt;").split(">").join("&" + "gt;").split('"').join("&" + "quot;").split("'").join("&" + "#39;"); }
+const categories = ORDER.filter((name) => plants.some((plant) => plant.category === name));
+categoryEl.innerHTML = "<option value=\"All\">All categories</option>" + categories.map((name) => "<option value=\"" + escapeHtml(name) + "\">" + escapeHtml(name) + "</option>").join("");
+function visible() { const query = searchEl.value.trim().toLowerCase(); const category = categoryEl.value; return plants.filter((plant) => (category === "All" || plant.category === category) && (!query || (plant.name + " " + plant.latin + " " + plant.code).toLowerCase().indexOf(query) >= 0)); }
+function render() { const rows = visible(); countEl.textContent = rows.length + (rows.length === 1 ? " result" : " results"); if (!rows.length) { listEl.innerHTML = "<div class=\"empty\"><p>No plants found</p><button class=\"primary\" type=\"button\" id=\"clear\">Clear search</button></div>"; document.getElementById("clear").addEventListener("click", () => { searchEl.value = ""; categoryEl.value = "All"; render(); searchEl.focus(); }); return; } listEl.innerHTML = "<ul>" + rows.map((plant) => { const photo = plant.image ? "<img class=\"thumb\" alt=\"\" src=\"" + escapeHtml(imageSrc(plant.image)) + "\">" : "<span class=\"thumb\"></span>"; return "<li><button class=\"row\" type=\"button\" data-id=\"" + escapeHtml(plant.id) + "\">" + photo + "<span><span class=\"name\">" + escapeHtml(plant.name) + "</span><br><span class=\"latin\">" + escapeHtml(plant.latin) + "</span></span></button></li>"; }).join("") + "</ul>"; }
+function fieldRow(label, value) { if (!value) return ""; const index = currentValues.push(value) - 1; const text = label === "Common name" ? "<h2 id=\"plant-title\">" + escapeHtml(value) + "</h2>" : "<p class=\"" + (label === "Scientific name" ? "latin" : "") + "\">" + escapeHtml(value) + "</p>"; return "<div class=\"copy-row\"><div><p class=\"copy-label\">" + escapeHtml(label) + "</p>" + text + "</div><button type=\"button\" class=\"copy\" data-copy=\"" + index + "\">Copy</button></div>"; }
+function editField(label, name, value) { return "<label class=\"edit-label\">" + escapeHtml(label) + "<input name=\"" + name + "\" value=\"" + escapeHtml(value || "") + "\"></label>"; }
+function editForm(plant) { const names = ORDER.indexOf(plant.category) < 0 ? ORDER.concat([plant.category]) : ORDER; const options = names.map((name) => "<option value=\"" + escapeHtml(name) + "\"" + (name === plant.category ? " selected" : "") + ">" + escapeHtml(name) + "</option>").join(""); const sizes = (plant.sizes.length ? plant.sizes : [""]).map((size) => "<div class=\"size-edit\"><input name=\"size\" value=\"" + escapeHtml(size) + "\"><button class=\"ghost\" type=\"button\" data-remove-size>Remove</button></div>").join(""); return "<form id=\"edit-form\">" + editField("Common name", "name", plant.name) + editField("Scientific name", "latin", plant.latin) + "<label class=\"edit-label\">Category<select name=\"category\">" + options + "</select></label>" + editField("Code", "code", plant.code) + editField("Material", "material", plant.material) + editField("Image", "image", plant.image) + "<div class=\"edit-label\">Sizes<div id=\"size-list\">" + sizes + "</div><button class=\"ghost\" type=\"button\" id=\"add-size\" style=\"width:100%;margin-top:0.5rem\">Add size</button></div><div class=\"actions\"><button class=\"primary\" type=\"submit\">Save</button><button class=\"ghost\" type=\"button\" id=\"cancel-edit\">Cancel</button></div></form>"; }
+function viewBody(plant) { currentValues = []; const rows = [fieldRow("Common name", plant.name), fieldRow("Scientific name", plant.latin), fieldRow("Category", plant.category), fieldRow("Code", plant.code), fieldRow("Material", plant.material), fieldRow("Image link", imageSrc(plant.image))].concat(plant.sizes.map((size) => fieldRow("Size", size))).join(""); return rows + (justSaved ? "<p class=\"copy-label\" style=\"margin-top:0.75rem\">Saved on this device.</p>" : "") + "<div class=\"actions\"><button class=\"primary\" type=\"button\" id=\"edit\">Edit</button><button class=\"ghost\" type=\"button\" id=\"close\">Close</button></div>"; }
+function currentPlant() { return plants.find((plant) => plant.id === currentId); }
+function openPlant(plant) { currentId = plant.id; const photoSrc = imageSrc(plant.image); const photo = photoSrc ? "<img class=\"hero\" alt=\"\" src=\"" + escapeHtml(photoSrc) + "\">" : ""; const body = editing ? editForm(plant) : viewBody(plant); sheetEl.hidden = false; sheetEl.innerHTML = "<div class=\"panel\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"plant-title\">" + photo + "<div class=\"panel-body\">" + body + "</div></div>"; document.body.style.overflow = "hidden"; const focus = editing ? sheetEl.querySelector("[name=name]") : document.getElementById("close"); if (focus) focus.focus(); }
+function copyField(button) { const value = currentValues[Number(button.getAttribute("data-copy"))]; if (!value) return; const finish = () => { button.textContent = "Copied"; setTimeout(() => { button.textContent = "Copy"; }, 1200); }; const fallback = () => { const area = document.createElement("textarea"); area.value = value; document.body.appendChild(area); area.select(); document.execCommand("copy"); area.remove(); finish(); }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(finish).catch(fallback); else fallback(); }
+function closePlant() { sheetEl.hidden = true; sheetEl.innerHTML = ""; document.body.style.overflow = ""; editing = false; }
+listEl.addEventListener("click", (event) => { const button = event.target.closest("[data-id]"); if (!button) return; const plant = plants.find((item) => item.id === button.dataset.id); if (!plant) return; editing = false; justSaved = false; openPlant(plant); });
+sheetEl.addEventListener("click", (event) => { const copyButton = event.target.closest("[data-copy]"); if (copyButton) { copyField(copyButton); return; } if (event.target.id === "edit") { editing = true; justSaved = false; openPlant(currentPlant()); return; } if (event.target.id === "cancel-edit") { editing = false; openPlant(currentPlant()); return; } if (event.target.id === "add-size") { const list = document.getElementById("size-list"); const row = document.createElement("div"); row.className = "size-edit"; row.innerHTML = "<input name=\"size\" value=\"\"><button class=\"ghost\" type=\"button\" data-remove-size>Remove</button>"; list.appendChild(row); row.querySelector("input").focus(); return; } if (event.target.closest("[data-remove-size]")) { event.target.closest(".size-edit").remove(); return; } if (event.target === sheetEl || event.target.id === "close") closePlant(); });
+sheetEl.addEventListener("submit", (event) => { event.preventDefault(); const form = event.target; const name = form.name.value.trim(); if (!name) { form.name.focus(); return; } const original = basePlants.find((plant) => plant.id === currentId); edits[currentId] = { name: name, latin: form.latin.value.trim(), category: form.category.value, code: form.code.value.trim(), material: form.material.value.trim(), image: form.image.value.trim(), sizes: Array.from(form.querySelectorAll("[name=size]")).map((input) => input.value.trim()).filter(Boolean) }; localStorage.setItem("greenscape-plant-edits", JSON.stringify(edits)); plants = basePlants.map(withEdit); editing = false; justSaved = true; render(); openPlant(plants.find((plant) => plant.id === currentId) || original); });
+document.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (editing) { editing = false; openPlant(currentPlant()); return; } closePlant(); });
+searchEl.addEventListener("input", render);
+categoryEl.addEventListener("change", render);
+render();
+</script>
 </body>
 </html>
