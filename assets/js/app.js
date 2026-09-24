@@ -511,7 +511,8 @@
 
   function projectTotals(project) {
     const items = Array.isArray(project?.items) ? project.items : [];
-    const categoryNames = items.map(item => getPlant(item.plantId)?.category || item.category || '').filter(Boolean);
+    const plantMap = new Map((Array.isArray(plants) ? plants : []).map(p => [p.id, p]));
+    const categoryNames = items.map(item => plantMap.get(item.plantId)?.category || item.category || '').filter(Boolean);
     return {
       species: new Set(items.map(i => i.plantId)).size,
       categories: new Set(categoryNames).size,
