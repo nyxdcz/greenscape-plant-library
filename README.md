@@ -8,6 +8,14 @@ It organizes plant information, project plant lists, schedules, mood boards, quo
 
 https://nyxdcz.github.io/greenscape-plant-library/
 
+### Current published entry page
+
+The current `index.html` serves the compact plant catalogue: search, category filtering, plant details, and browser-local Add/Edit. The larger dashboard and project-workspace assets documented below remain in the repository but are not loaded by this entry page.
+
+The compact catalogue now uses an accessible native modal, persistent dialog headings and actions, labeled size fields, required-name feedback, catalogue loading/retry states, photo fallbacks, and save-error feedback that keeps the draft open. Existing compact-catalogue storage keys remain compatible. See [the implementation notes](docs/catalogue-interface-first-pass.md).
+
+Run `npm run test:catalogue` for focused syntax and storage tests. The older repository-wide validator still expects dashboard markup and cache keys that were already absent from the published entry page before this change.
+
 ## Current Status
 
 The website is actively maintained.
