@@ -30,4 +30,8 @@ The storage keys and saved record shape remain compatible with existing compact-
 
 Run `npm run test:catalogue` for syntax checks and storage behavior tests, including failure rollback, retry, existing records, malformed storage, denied storage, and empty names.
 
-The original `npm run check` failed with 44 validation findings before this change. Most refer to older dashboard navigation and cache contracts absent from the current published entry page. Record the final baseline comparison in the pull request rather than removing those legacy checks or claiming that they pass.
+Run `npm test` for 16 catalogue entry-point regression tests and repository validation. Run `npm run quality` for the full import, synchronization, lint, storage-test, validation, build, and audit sequence.
+
+The entry page declares `data-app="catalogue"`. Validation requires the actual catalogue entry module, stylesheet, storage import, current data revision, labeled controls, named native dialog, and loading/live regions. It syntax-checks the imported module graph and rejects missing dependencies, stale cache combinations, remote data sources, and imports outside the project.
+
+The original entry page was missing its canonical URL, description, noindex policy, and referrer policy; those metadata omissions are repaired. Dashboard-only page assertions now apply when the dashboard entry is served. The shared security/data checks and the older dashboard's JavaScript/CSS asset assertions still run for the compact catalogue. This resolves the CI mismatch without restoring unused dashboard markup or disabling repository validation.

@@ -1,9 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-app="catalogue">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b4632">
+  <meta name="description" content="Greenscape's plant catalogue for finding botanical names, viewing plant photographs and sizes, and saving plant additions and edits on your device.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://nyxdcz.github.io/greenscape-plant-library/">
   <title>Greenscape Plant Library</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
@@ -16,7 +20,7 @@
         <h1>Plant Library</h1>
         <button type="button" class="add" id="add" aria-label="Add plant" disabled>+</button>
       </div>
-      <label class="field">
+      <label class="field" for="search">
         <span class="sr-only">Search plants</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
         <input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off" disabled>

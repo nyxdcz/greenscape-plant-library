@@ -14,7 +14,7 @@ The current `index.html` serves the compact plant catalogue: search, category fi
 
 The compact catalogue now uses an accessible native modal, persistent dialog headings and actions, labeled size fields, required-name feedback, catalogue loading/retry states, photo fallbacks, and save-error feedback that keeps the draft open. Existing compact-catalogue storage keys remain compatible. See [the implementation notes](docs/catalogue-interface-first-pass.md).
 
-Run `npm run test:catalogue` for focused syntax and storage tests. The older repository-wide validator still expects dashboard markup and cache keys that were already absent from the published entry page before this change.
+Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ## Current Status
 

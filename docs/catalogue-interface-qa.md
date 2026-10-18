@@ -5,6 +5,7 @@ Verified locally on 18 October 2026. This report covers the compact catalogue an
 ## Executed checks
 
 - `npm run test:catalogue`: 10 tests passed, including save rollback, retry without duplicate additions, denied storage, malformed data preservation, legacy records, and optional-field defaults.
+- `npm test`: 16 entry-point regression tests passed, followed by the catalogue page contract and 1,009 shared/legacy-asset assertions.
 - Plant import check, CSV sync check, and JavaScript lint passed as the initial stages of `npm run quality`. The 231 published records remain synchronized.
 - `npm run audit` completed. Its older asset accounting does not include the new .mjs files, so its byte counts are not used as performance evidence.
 - `git diff --check` passed.
@@ -16,9 +17,13 @@ Verified locally on 18 October 2026. This report covers the compact catalogue an
 - The browser reported no console errors or warnings on the normal preview. Deliberate fixture failures generated expected network errors only in the fixture.
 - Measured form layout sizes: 360 × 780, 389 × 843, 769 × 769, and 1024 × 360 CSS pixels. All had no horizontal page overflow, a visible header/footer, and a usable scrolling body. Details were also checked at 1024 × 576 and the normal desktop viewport.
 
-## Existing repository-wide check limitation
+## Repository-wide CI validation
 
-The unmodified checkout failed `npm run check` with 44 validator findings. After this change, `npm run quality`, `npm run check`, and `npm run build` reach the existing validator and report 41 findings. Every remaining finding was present in the baseline; no new validator findings were added. Most concern the older dashboard's missing markup and cache contracts. The remaining baseline metadata findings are also unchanged. These checks have not been removed or relaxed.
+`npm run quality` now passes the complete import, CSV sync, lint, storage tests, entry-point regression tests, repository validation, static build validation, and audit sequence.
+
+The CI failure was caused by four missing metadata fields and 37 page requirements tied to the older dashboard. The canonical URL, description, noindex policy, and referrer policy are restored. Of the dashboard requirements, 34 markup/cache assertions now apply only to a served dashboard entry; three mixed checks retain their JavaScript/permission assertions while applying the HTML portion to the appropriate entry. All shared data/security and legacy JavaScript/CSS asset checks continue to run.
+
+The catalogue has its own entry-point checks for module syntax and dependency resolution, local/versioned data, stylesheet/cache coherence, labeled controls, a native dialog and resolvable title, and loading/live regions. Sixteen regression cases demonstrate that missing or malformed modules, stylesheet/data/cache errors, remote or escaping imports, mixed application entries, and missing accessibility hooks are rejected. Unknown or missing entry selection still fails validation rather than silently skipping both application contracts.
 
 Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoom were not tested. Dynamic viewport units, scrollable form content, rem-based controls, semantic labels, and native modal behavior are implemented, but those device-specific checks remain appropriate before a production release. The twelve-second slow-request retry branch is source-reviewed; recovery through the same retry control was exercised using an HTTP failure.
 
@@ -58,7 +63,7 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-32 PASS: native modal containment, heading focus, Escape, visible focus indicators, size labels, and source-control focus restoration were verified.
 - R-33 PASS: changes are authored directly in HTML, CSS, and modules; no source-rewriting feature scripts are shipped.
 - R-34 PASS: the only shipped theme is the existing light theme, checked in the preview.
-- R-35 PASS: the actual local app was run and exercised; syntax/storage tests passed and the normal-preview console was clear. The unrelated baseline validator limitation is recorded above.
+- R-35 PASS: the actual local app was run and exercised; storage/entry-point tests and the full CI command passed, and the normal-preview console was clear.
 - R-36 PASS: no security, compliance, performance, or customer claims were added.
 - R-37 PASS: the accepted direction preserves the existing nursery catalogue style; the Design Read is recorded in the implementation note.
 - R-38 PASS: production content comes from the existing catalogue; QA sample data exists only in a temporary fixture.
