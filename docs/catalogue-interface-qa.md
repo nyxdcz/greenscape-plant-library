@@ -2,6 +2,8 @@
 
 Verified locally on 18 October 2026 and extended for the visual polish on 19 October 2026. This report covers the compact catalogue, not the older dashboard application. The [visual polish notes](catalogue-visual-polish.md) record the current design decisions and additional browser checks.
 
+The subsequent [two-style comparison](catalogue-style-comparison.md) records an additional refinement: factual recorded-size labels, accurate material labels, and explicit secondary-control boundaries. This gate applies to the refined catalogue at `index.html`. The separately requested AI-style demo is an intentional visual counterexample with its own documented checks and scope.
+
 ## Executed checks
 
 - `npm run test:catalogue`: 10 tests passed, including save rollback, retry without duplicate additions, denied storage, malformed data preservation, legacy records, and optional-field defaults.
@@ -45,7 +47,7 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-13 PASS: no glow effects are present.
 - R-14 PASS: the repeated list rows represent equal catalogue records; no feature-card system was introduced.
 - R-15 PASS: actions name their work: Add size, Save plant, Retry save, Retry loading, Close, and Cancel.
-- R-16 PASS: added UI copy describes local saves, fields, loading, and recovery without marketing claims.
+- R-16 PASS: added UI copy describes local saves, fields, loading, and recovery without marketing claims; size counts say recorded rather than implying live stock.
 - R-17 PASS: result counts come from the actual filtered records; no invented statistics were added.
 - R-18 PASS: no testimonials or fictional people were introduced.
 - R-19 PASS: there is no new animation; only hover/focus feedback is used.
@@ -54,7 +56,7 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-22 PASS: no unrelated illustrations were added.
 - R-23 PASS: the existing wordmark and plant photos are reused; the visual changes follow the approved catalogue-polish scope.
 - R-24 PASS: the new skip link resolves to the real catalogue section; there are no placeholder destinations.
-- R-25 PASS: checked text ratios are 13.92:1 (body/paper), 5.12:1 (muted/paper), 5.74:1 (muted/card), 4.90:1 (muted/chip), 7.13:1 (error/card), and 10.59:1 (primary text/button). Input boundaries are 3.86:1 against the card surface.
+- R-25 PASS: checked text ratios are 13.92:1 (body/paper), 5.12:1 (muted/paper), 5.74:1 (muted/card), 4.90:1 (muted/chip), 7.13:1 (error/card), and 10.59:1 (primary text/button). Input and secondary-control boundaries use the same token, at 3.86:1 against the card surface.
 - R-26 PASS: the new controls and existing catalogue action types were exercised in the browser, including retry, copy, cancellation, and form saves.
 - R-27 PASS: initial loading, empty catalogue, zero results, load failure, image failure, storage-read warning, and failed-save recovery have explicit text states.
 - R-28 PASS: no FAQ was introduced.

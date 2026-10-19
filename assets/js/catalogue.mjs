@@ -1,4 +1,4 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-polish1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-antislop2';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
@@ -31,6 +31,8 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 }
 
+function isMaterial(plant) { return plant.category === 'Landscape Materials'; }
+
 function imageSrc(image) {
   if (!image) return '';
   if (/^https?:\/\//i.test(image)) return image;
@@ -39,7 +41,7 @@ function imageSrc(image) {
 
 function photoMarkup(plant, large = false) {
   const source = imageSrc(plant.image);
-  return `<div class="image-frame ${large ? 'hero-frame' : 'thumb-frame'}" data-state="${source ? 'loading' : 'missing'}" ${large ? 'role="group" aria-label="Plant photo"' : 'aria-hidden="true"'}>
+  return `<div class="image-frame ${large ? 'hero-frame' : 'thumb-frame'}" data-state="${source ? 'loading' : 'missing'}" ${large ? 'role="group" aria-label="Reference photo"' : 'aria-hidden="true"'}>
     ${source ? `<img class="${large ? 'hero' : 'thumb'}" src="${escapeHtml(source)}" alt="${large ? escapeHtml(plant.name) : ''}" decoding="async" ${large ? '' : 'loading="lazy"'}>` : ''}
     <span class="photo-status">${source ? (large ? 'Loading photo...' : 'Loading') : (large ? 'No photo available' : 'No photo')}</span>
   </div>`;
@@ -108,8 +110,8 @@ function render() {
   columnsEl.hidden = false;
   listEl.innerHTML = '<ul>' + rows.map(plant => `<li><button class="row" type="button" data-id="${escapeHtml(plant.id)}">
     ${photoMarkup(plant)}
-    <span class="row-identity"><span class="name">${escapeHtml(plant.name)}</span><span class="latin">${escapeHtml(plant.latin || 'Scientific name not recorded')}</span></span>
-    <span class="row-category">${escapeHtml(plant.category)}<span class="size-count">${plant.sizes.length ? `${plant.sizes.length} ${plant.sizes.length === 1 ? 'size' : 'sizes'} available` : 'Sizes not recorded'}</span></span>
+    <span class="row-identity"><span class="name">${escapeHtml(plant.name)}</span><span class="latin ${isMaterial(plant) ? 'material-description' : ''}">${escapeHtml(plant.latin || (isMaterial(plant) ? plant.material || 'Description not recorded' : 'Scientific name not recorded'))}</span></span>
+    <span class="row-category">${escapeHtml(plant.category)}<span class="size-count">${plant.sizes.length ? `${plant.sizes.length} ${plant.sizes.length === 1 ? 'size' : 'sizes'} recorded` : 'Sizes not recorded'}</span></span>
     <span class="row-code"><span class="sr-only">Code: </span>${escapeHtml(plant.code || 'No code')}</span>
     <span class="row-action" aria-hidden="true">View details</span>
   </button></li>`).join('') + '</ul>';
@@ -169,10 +171,17 @@ function sizeOption(value) {
 }
 
 function plantDetails(plant) {
-  const identity = [fieldRow('Common name', plant.name), fieldRow('Scientific name', plant.latin), fieldRow('Category', plant.category), fieldRow('Plant code', plant.code), fieldRow('Material', plant.material)].join('');
+  const material = isMaterial(plant);
+  const identity = [
+    fieldRow(material ? 'Name' : 'Common name', plant.name),
+    material ? fieldRow('Description', plant.latin !== plant.material ? plant.latin : '') : fieldRow('Scientific name', plant.latin),
+    fieldRow('Category', plant.category),
+    fieldRow(material ? 'Record code' : 'Plant code', plant.code),
+    fieldRow('Material', plant.material)
+  ].join('');
   const sizes = plant.sizes.length ? `<div class="size-options">${plant.sizes.map(sizeOption).join('')}</div>` : '<p class="hint">No sizes have been recorded.</p>';
   const reference = plant.image ? `<details class="image-reference"><summary>Image reference</summary>${fieldRow('Image link', imageSrc(plant.image))}</details>` : '';
-  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}<p class="photo-caption">Reference photo</p></div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">Plant information</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Available sizes</h3>${sizes}</section>${reference}</div></div>`;
+  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? '<p class="photo-caption">Reference photo</p>' : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
 }
 
 function editField(label, name, value, extra = '') {
@@ -195,10 +204,10 @@ function editForm(plant) {
   const names = [...new Set(ORDER.concat(plant.category))];
   return `<form id="edit-form" novalidate>
     <p class="hint">Changes are saved in this browser on this device. They do not update the shared catalogue.</p>
-    <fieldset><legend>Plant identity</legend>
+    <fieldset><legend>Record identity</legend>
       ${editField('Common name (required)', 'name', plant.name, 'required')}
       <p id="name-error" class="error" role="alert" hidden>Enter a common name.</p>
-      ${editField('Scientific name', 'latin', plant.latin)}
+      ${editField(isMaterial(plant) ? 'Description' : 'Scientific name', 'latin', plant.latin)}
     </fieldset>
     <fieldset><legend>Classification</legend>
       <div class="edit-label"><label for="edit-category">Category</label><select id="edit-category" name="category">${names.map(name => `<option value="${escapeHtml(name)}" ${name === plant.category ? 'selected' : ''}>${escapeHtml(name)}</option>`).join('')}</select></div>
@@ -208,7 +217,7 @@ function editForm(plant) {
       ${editField('Image filename or URL', 'image', plant.image, 'aria-describedby="image-hint"')}
       <p id="image-hint" class="hint">Use a catalogue image filename, such as ind-015.webp, or a full https:// image URL.</p>
     </fieldset>
-    <fieldset><legend>Available sizes</legend>
+    <fieldset><legend>Recorded sizes</legend>
       <p class="hint">Enter each size separately, for example Seedlings or 20 cm. Sizes are optional.</p>
       <div id="size-list">${(plant.sizes.length ? plant.sizes : ['']).map(sizeRow).join('')}</div>
       <button class="ghost add-size" type="button" id="add-size">Add size</button>
@@ -232,7 +241,7 @@ function openPlant(plant, { edit = false, trigger = null, saved = false } = {}) 
   const title = edit ? (currentPlant() ? 'Edit plant' : 'Add plant') : plant.name;
   const body = edit ? editForm(plant) : plantDetails(plant);
   sheetEl.innerHTML = `<div class="panel ${edit ? 'panel-edit' : 'panel-detail'}">
-    <div class="panel-header"><div>${!edit ? `<p class="dialog-category">${escapeHtml(plant.category)}</p>` : ''}<h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
+    <div class="panel-header"><div>${!edit ? `<p class="dialog-category">${escapeHtml(plant.category)}</p>` : ''}<h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin ${isMaterial(plant) ? 'material-description' : ''}">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
     <div class="panel-scroll"><div class="panel-body">${body}</div></div>
     <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? '<button class="primary" type="submit" form="edit-form" id="save-plant">Save plant</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>' : '<button class="primary" type="button" id="edit">Edit plant</button>'}</div></div>
   </div>`;
@@ -333,6 +342,12 @@ sheetEl.addEventListener('input', event => {
     event.target.removeAttribute('aria-invalid');
     event.target.removeAttribute('aria-describedby');
     document.getElementById('name-error').hidden = true;
+  }
+});
+
+sheetEl.addEventListener('change', event => {
+  if (event.target.id === 'edit-category') {
+    sheetEl.querySelector('label[for="edit-latin"]').firstChild.textContent = isMaterial({ category: event.target.value }) ? 'Description' : 'Scientific name';
   }
 });
 

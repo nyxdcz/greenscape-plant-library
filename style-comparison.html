@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0b4632">
+  <title>Interface comparison | Greenscape</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style-comparison.css?v=comparison1">
+</head>
+<body>
+  <header class="comparison-toolbar">
+    <div class="comparison-heading">
+      <h1>Compare interface styles</h1>
+      <a href="index.html">Open catalogue</a>
+    </div>
+    <div class="style-options" role="group" aria-label="Interface style">
+      <button type="button" data-style="refined" aria-pressed="true" aria-controls="catalogue-preview" disabled>Anti Slop refinement</button>
+      <button type="button" data-style="ai" aria-pressed="false" aria-controls="catalogue-preview" disabled>AI-style demo</button>
+    </div>
+    <p id="style-status" role="status">Loading the catalogue preview...</p>
+    <p class="shared-data-note">Both styles use the same real catalogue. Edits save in this browser on this device.</p>
+  </header>
+  <main>
+    <iframe id="catalogue-preview" src="index.html" title="Refined Greenscape catalogue"></iframe>
+  </main>
+  <noscript><p>Turn on JavaScript to compare styles, or <a href="index.html">open the catalogue</a>.</p></noscript>
+  <script type="module" src="assets/js/style-comparison.mjs?v=comparison1"></script>
+</body>
+</html>

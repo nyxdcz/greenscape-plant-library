@@ -32,7 +32,7 @@ h1 { margin: 0; font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 600; line-hei
 .primary, .copy, .ghost { min-height: 2.75rem; padding: 0.65rem 1rem; border: 0; border-radius: 0.5rem; font-weight: 500; }
 .primary { background: var(--forest); color: var(--card); }
 .primary:hover { background: #073725; }
-.ghost, .copy { background: var(--chip); color: var(--ink); }
+.ghost, .copy { background: var(--chip); color: var(--ink); border: 1px solid var(--control-line); }
 .ghost:hover, .copy:hover { background: #e4dece; }
 .add { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; flex: none; }
 .add > span { font-size: 1.25rem; line-height: 1; font-weight: 400; }
@@ -60,6 +60,7 @@ li + li { border-top: 1px solid var(--line); }
 .row-identity { grid-area: identity; min-width: 0; align-self: end; }
 .name { display: block; font-weight: 500; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
 .latin { color: var(--muted); font-size: 0.875rem; font-style: italic; }
+.material-description { font-style: normal; }
 .row-identity .latin { display: block; margin-top: 0.25rem; overflow-wrap: anywhere; }
 .row-category { grid-area: category; align-self: start; min-width: 0; color: var(--muted); font-size: 0.75rem; overflow-wrap: anywhere; }
 .size-count { display: block; color: var(--muted); font-size: 0.75rem; margin-top: 0.15rem; }

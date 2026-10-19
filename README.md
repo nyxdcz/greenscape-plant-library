@@ -16,6 +16,8 @@ The compact catalogue now uses an accessible native modal, persistent dialog hea
 
 Its interface uses the existing Greenscape wordmark, a wider photo-led list with categories/sizes/codes, visible sticky filters, and a grouped details panel with the full reference photo and individual size-copy actions. See [the visual polish decisions](docs/catalogue-visual-polish.md) and [verification report](docs/catalogue-interface-qa.md).
 
+Open [the interface style comparison](style-comparison.html) to switch between the Anti Slop refinement and the deliberately AI-styled demo while keeping the same catalogue content and filters. The demo stylesheet is loaded only by that comparison page. See [comparison notes and verification limits](docs/catalogue-style-comparison.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ## Current Status
