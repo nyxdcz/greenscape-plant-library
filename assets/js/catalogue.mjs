@@ -1,4 +1,4 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=interface-first-pass1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-polish1';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
@@ -8,6 +8,8 @@ const countEl = document.getElementById('count');
 const sheetEl = document.getElementById('sheet');
 const addEl = document.getElementById('add');
 const noticeEl = document.getElementById('storage-notice');
+const resetEl = document.getElementById('reset-filters');
+const columnsEl = document.getElementById('catalogue-columns');
 let storage;
 try { storage = window.localStorage; } catch { storage = null; }
 const store = new CatalogueStore(storage);
@@ -84,6 +86,8 @@ function rebuild() {
 
 function render() {
   listEl.setAttribute('aria-busy', String(catalogueState === 'loading'));
+  resetEl.hidden = true;
+  columnsEl.hidden = true;
   for (const control of [searchEl, categoryEl, addEl]) control.disabled = catalogueState !== 'ready';
   if (catalogueState !== 'ready') {
     const failed = catalogueState === 'error';
@@ -94,12 +98,21 @@ function render() {
   const query = searchEl.value.trim().toLowerCase();
   const rows = plants.filter(plant => (categoryEl.value === 'All' || plant.category === categoryEl.value)
     && (!query || `${plant.name} ${plant.latin} ${plant.code}`.toLowerCase().includes(query)));
-  countEl.textContent = `${rows.length} ${rows.length === 1 ? 'result' : 'results'}`;
+  const filtered = Boolean(query || categoryEl.value !== 'All');
+  resetEl.hidden = !filtered;
+  countEl.textContent = filtered ? `${rows.length} of ${plants.length} records` : `${plants.length} ${plants.length === 1 ? 'record' : 'records'}`;
   if (!rows.length) {
-    listEl.innerHTML = `<div class="empty"><p>${plants.length ? 'No plants found' : 'No plants in this catalogue yet.'}</p>${plants.length ? '<button class="primary" type="button" id="clear">Clear search</button>' : '<p class="hint">Use Add plant to save the first plant on this device.</p>'}</div>`;
+    listEl.innerHTML = `<div class="empty"><h2>${plants.length ? 'No plants match your filters' : 'Your catalogue is empty'}</h2><p class="hint">${plants.length ? 'Try a different name or code, or reset the filters to see every record.' : 'Use Add plant to save the first plant on this device.'}</p>${plants.length ? '<button class="primary" type="button" id="clear">Reset filters</button>' : ''}</div>`;
     return;
   }
-  listEl.innerHTML = '<ul>' + rows.map(plant => `<li><button class="row" type="button" data-id="${escapeHtml(plant.id)}">${photoMarkup(plant)}<span><span class="name">${escapeHtml(plant.name)}</span><br><span class="latin">${escapeHtml(plant.latin)}</span></span></button></li>`).join('') + '</ul>';
+  columnsEl.hidden = false;
+  listEl.innerHTML = '<ul>' + rows.map(plant => `<li><button class="row" type="button" data-id="${escapeHtml(plant.id)}">
+    ${photoMarkup(plant)}
+    <span class="row-identity"><span class="name">${escapeHtml(plant.name)}</span><span class="latin">${escapeHtml(plant.latin || 'Scientific name not recorded')}</span></span>
+    <span class="row-category">${escapeHtml(plant.category)}<span class="size-count">${plant.sizes.length ? `${plant.sizes.length} ${plant.sizes.length === 1 ? 'size' : 'sizes'} available` : 'Sizes not recorded'}</span></span>
+    <span class="row-code"><span class="sr-only">Code: </span>${escapeHtml(plant.code || 'No code')}</span>
+    <span class="row-action" aria-hidden="true">View details</span>
+  </button></li>`).join('') + '</ul>';
   settleCachedPhotos(listEl);
 }
 
@@ -147,7 +160,19 @@ function loadCatalogue() {
 function fieldRow(label, value) {
   if (!value) return '';
   const index = currentValues.push(value) - 1;
-  return `<div class="copy-row"><div><p class="copy-label">${escapeHtml(label)}</p><p class="${label === 'Scientific name' ? 'latin' : ''}">${escapeHtml(value)}</p></div><button type="button" class="copy" data-copy="${index}" aria-label="Copy ${escapeHtml(label.toLowerCase())}${label === 'Size' ? ` ${escapeHtml(value)}` : ''}">Copy</button></div>`;
+  return `<div class="copy-row"><div><p class="copy-label">${escapeHtml(label)}</p><p class="${label === 'Scientific name' ? 'latin' : ''}">${escapeHtml(value)}</p></div><button type="button" class="copy" data-copy="${index}" aria-label="Copy ${escapeHtml(label.toLowerCase())}"><span data-copy-label>Copy</span></button></div>`;
+}
+
+function sizeOption(value) {
+  const index = currentValues.push(value) - 1;
+  return `<button type="button" class="size-option" data-copy="${index}" aria-label="Copy size ${escapeHtml(value)}"><span>${escapeHtml(value)}</span><span data-copy-label>Copy</span></button>`;
+}
+
+function plantDetails(plant) {
+  const identity = [fieldRow('Common name', plant.name), fieldRow('Scientific name', plant.latin), fieldRow('Category', plant.category), fieldRow('Plant code', plant.code), fieldRow('Material', plant.material)].join('');
+  const sizes = plant.sizes.length ? `<div class="size-options">${plant.sizes.map(sizeOption).join('')}</div>` : '<p class="hint">No sizes have been recorded.</p>';
+  const reference = plant.image ? `<details class="image-reference"><summary>Image reference</summary>${fieldRow('Image link', imageSrc(plant.image))}</details>` : '';
+  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}<p class="photo-caption">Reference photo</p></div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">Plant information</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Available sizes</h3>${sizes}</section>${reference}</div></div>`;
 }
 
 function editField(label, name, value, extra = '') {
@@ -205,10 +230,10 @@ function openPlant(plant, { edit = false, trigger = null, saved = false } = {}) 
   editing = edit;
   currentValues = [];
   const title = edit ? (currentPlant() ? 'Edit plant' : 'Add plant') : plant.name;
-  const body = edit ? editForm(plant) : [fieldRow('Common name', plant.name), fieldRow('Scientific name', plant.latin), fieldRow('Category', plant.category), fieldRow('Code', plant.code), fieldRow('Material', plant.material), fieldRow('Image link', imageSrc(plant.image)), ...plant.sizes.map(size => fieldRow('Size', size))].join('');
-  sheetEl.innerHTML = `<div class="panel">
-    <div class="panel-header"><div><h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
-    <div class="panel-scroll">${edit ? '' : photoMarkup(plant, true)}<div class="panel-body">${body}</div></div>
+  const body = edit ? editForm(plant) : plantDetails(plant);
+  sheetEl.innerHTML = `<div class="panel ${edit ? 'panel-edit' : 'panel-detail'}">
+    <div class="panel-header"><div>${!edit ? `<p class="dialog-category">${escapeHtml(plant.category)}</p>` : ''}<h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
+    <div class="panel-scroll"><div class="panel-body">${body}</div></div>
     <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? '<button class="primary" type="submit" form="edit-form" id="save-plant">Save plant</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>' : '<button class="primary" type="button" id="edit">Edit plant</button>'}</div></div>
   </div>`;
   document.body.style.overflow = 'hidden';
@@ -254,18 +279,23 @@ async function copyField(button) {
   status.hidden = false;
   status.textContent = copied ? `${button.getAttribute('aria-label').replace(/^Copy /, '')} copied.` : 'Could not copy. Select the field text and copy it manually.';
   if (copied) {
-    button.textContent = 'Copied';
-    setTimeout(() => { button.textContent = 'Copy'; }, 1200);
+    const label = button.querySelector('[data-copy-label]') || button;
+    label.textContent = 'Copied';
+    setTimeout(() => { label.textContent = 'Copy'; }, 1200);
   }
+}
+
+function resetFilters() {
+  searchEl.value = '';
+  categoryEl.value = 'All';
+  render();
+  searchEl.focus();
 }
 
 listEl.addEventListener('click', event => {
   if (event.target.id === 'retry-catalogue') { loadCatalogue(); return; }
   if (event.target.id === 'clear') {
-    searchEl.value = '';
-    categoryEl.value = 'All';
-    render();
-    searchEl.focus();
+    resetFilters();
     return;
   }
   const button = event.target.closest('[data-id]');
@@ -336,4 +366,5 @@ sheetEl.addEventListener('submit', event => {
 addEl.addEventListener('click', () => openPlant({ id: `custom-${crypto.randomUUID()}`, name: '', latin: '', category: ORDER[0], code: '', image: '', sizes: [''], material: '' }, { edit: true, trigger: addEl }));
 searchEl.addEventListener('input', render);
 categoryEl.addEventListener('change', render);
+resetEl.addEventListener('click', resetFilters);
 loadCatalogue();

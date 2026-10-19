@@ -1,11 +1,11 @@
 # Catalogue interface verification
 
-Verified locally on 18 October 2026. This report covers the compact catalogue and the first-pass changes, not the older dashboard application.
+Verified locally on 18 October 2026 and extended for the visual polish on 19 October 2026. This report covers the compact catalogue, not the older dashboard application. The [visual polish notes](catalogue-visual-polish.md) record the current design decisions and additional browser checks.
 
 ## Executed checks
 
 - `npm run test:catalogue`: 10 tests passed, including save rollback, retry without duplicate additions, denied storage, malformed data preservation, legacy records, and optional-field defaults.
-- `npm test`: 16 entry-point regression tests passed, followed by the catalogue page contract and 1,009 shared/legacy-asset assertions.
+- `npm test`: 16 entry-point regression tests passed, followed by the catalogue page contract and 1,010 shared/legacy-asset assertions in the polished entry.
 - Plant import check, CSV sync check, and JavaScript lint passed as the initial stages of `npm run quality`. The 231 published records remain synchronized.
 - `npm run audit` completed. Its older asset accounting does not include the new .mjs files, so its byte counts are not used as performance evidence.
 - `git diff --check` passed.
@@ -16,6 +16,7 @@ Verified locally on 18 October 2026. This report covers the compact catalogue an
 - Keyboard focus started on the details heading. Tabbing from the last action returned to dialog controls rather than the background. Close restored the source row, including after a save rebuilt it; Add/Cancel and Add/Escape restored Add plant.
 - The browser reported no console errors or warnings on the normal preview. Deliberate fixture failures generated expected network errors only in the fixture.
 - Measured form layout sizes: 360 × 780, 389 × 843, 769 × 769, and 1024 × 360 CSS pixels. All had no horizontal page overflow, a visible header/footer, and a usable scrolling body. Details were also checked at 1024 × 576 and the normal desktop viewport.
+- The polish adds the existing wordmark, desktop record columns, larger photos, visible filter labels, a skip link, grouped details, size-copy buttons, and an image-reference disclosure. New reset controls, Enter on the disclosure, copy feedback that preserves size text, long-name wrapping, material records without sizes, and the updated required-name/quota-retry flow were exercised. Responsive details and editing were checked again at the sizes documented in the visual polish notes.
 
 ## Repository-wide CI validation
 
@@ -39,7 +40,7 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-08 PASS: no decorative button arrows were added.
 - R-09 PASS: no promotional badges were added.
 - R-10 PASS: the interface uses solid surfaces and a modal backdrop, with no glass effects.
-- R-11 PASS: inputs/buttons use 0.75rem radii, thumbnails 0.5rem, and the modal 1.5rem.
+- R-11 PASS: inputs/buttons use 0.5rem radii, thumbnails 0.4rem, lists/detail photos 0.75rem, and dialogs 1.25rem.
 - R-12 PASS: no decorative component shadows were added.
 - R-13 PASS: no glow effects are present.
 - R-14 PASS: the repeated list rows represent equal catalogue records; no feature-card system was introduced.
@@ -51,15 +52,15 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-20 PASS: the existing nursery palette, real plant photographs, and botanical naming remain the visual identity.
 - R-21 PASS: the existing fixed light theme is retained for continuity with the approved cream catalogue direction.
 - R-22 PASS: no unrelated illustrations were added.
-- R-23 PASS: existing assets and navigation were retained; the work follows the approved first-pass scope.
-- R-24 PASS: no new navigation destinations or placeholder links were added.
+- R-23 PASS: the existing wordmark and plant photos are reused; the visual changes follow the approved catalogue-polish scope.
+- R-24 PASS: the new skip link resolves to the real catalogue section; there are no placeholder destinations.
 - R-25 PASS: checked text ratios are 13.92:1 (body/paper), 5.12:1 (muted/paper), 5.74:1 (muted/card), 4.90:1 (muted/chip), 7.13:1 (error/card), and 10.59:1 (primary text/button). Input boundaries are 3.86:1 against the card surface.
 - R-26 PASS: the new controls and existing catalogue action types were exercised in the browser, including retry, copy, cancellation, and form saves.
 - R-27 PASS: initial loading, empty catalogue, zero results, load failure, image failure, storage-read warning, and failed-save recovery have explicit text states.
 - R-28 PASS: no FAQ was introduced.
 - R-29 PASS: cream surfaces and forest green remain the main palette; a restrained brown-red is used only for textual errors.
 - R-30 PASS: the existing catalogue layout was preserved rather than replaced with another product's design.
-- R-31 PASS: the implementation note records the purpose of palette, typography, layout, field grouping, controls, and state feedback.
+- R-31 PASS: the first-pass and visual polish notes record the purpose of palette, typography, layout, photo sizing, spacing, field grouping, controls, and state feedback.
 - R-32 PASS: native modal containment, heading focus, Escape, visible focus indicators, size labels, and source-control focus restoration were verified.
 - R-33 PASS: changes are authored directly in HTML, CSS, and modules; no source-rewriting feature scripts are shipped.
 - R-34 PASS: the only shipped theme is the existing light theme, checked in the preview.

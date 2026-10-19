@@ -11,33 +11,52 @@
   <title>Greenscape Plant Library</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/css/catalogue.css?v=interface-first-pass1">
+  <link rel="stylesheet" href="assets/css/catalogue.css?v=catalogue-polish1">
 </head>
 <body>
-  <header class="library-header">
-    <div class="wrap">
-      <div class="title-row">
-        <h1>Plant Library</h1>
-        <button type="button" class="add" id="add" aria-label="Add plant" disabled>+</button>
-      </div>
-      <label class="field" for="search">
-        <span class="sr-only">Search plants</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
-        <input id="search" class="search" type="search" placeholder="Search by name" autocomplete="off" disabled>
-      </label>
-      <label class="sr-only" for="category">Category</label>
-      <select id="category" disabled><option value="All">All categories</option></select>
+  <a class="skip-link" href="#catalogue">Skip to plant catalogue</a>
+  <header class="brand-header">
+    <div class="wrap brand-row">
+      <img class="brand-logo" src="assets/images/greenscape-logo.png" width="600" height="70" alt="Greenscape">
+      <span class="brand-caption">Landscaping Services</span>
     </div>
   </header>
   <main class="wrap">
-    <div id="storage-notice" class="notice" role="status" hidden></div>
-    <p id="count" class="count" aria-live="polite" aria-atomic="true">Loading catalogue</p>
-    <div id="list" aria-busy="true">
-      <div class="empty" role="status"><p>Loading the plant catalogue...</p><p class="hint">Plant records will appear here when they are ready.</p></div>
+    <div class="page-heading">
+      <div>
+        <h1>Plant library</h1>
+        <p class="intro">A reference for the plants and materials in your landscape plans.</p>
+      </div>
+      <button type="button" class="primary add" id="add" disabled><span aria-hidden="true">+</span> Add plant</button>
     </div>
+    <section class="library-controls" aria-label="Catalogue filters">
+      <div class="search-control">
+        <label class="control-label" for="search">Search plants</label>
+        <div class="field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input id="search" class="search" type="search" placeholder="Name, scientific name, or code" autocomplete="off" disabled>
+        </div>
+      </div>
+      <div class="category-control">
+        <label class="control-label" for="category">Category</label>
+        <select id="category" disabled><option value="All">All categories</option></select>
+      </div>
+    </section>
+    <div id="storage-notice" class="notice" role="status" hidden></div>
+    <section id="catalogue" class="catalogue" aria-label="Plant catalogue" tabindex="-1">
+      <div class="result-bar">
+        <p id="count" class="count" aria-live="polite" aria-atomic="true">Loading catalogue</p>
+        <button id="reset-filters" class="text-button" type="button" hidden>Reset filters</button>
+      </div>
+      <div id="catalogue-columns" class="catalogue-columns" aria-hidden="true" hidden><span></span><span>Plant</span><span>Category / sizes</span><span>Code</span><span></span></div>
+      <div id="list" aria-busy="true">
+        <div class="empty" role="status"><p>Loading the plant catalogue...</p><p class="hint">Plant records will appear here when they are ready.</p></div>
+      </div>
+    </section>
+    <p class="catalogue-note">Open a record to check its photo, copy plant information, or view available sizes.</p>
     <noscript><p class="notice">Turn on JavaScript to search, view, and edit the plant catalogue.</p></noscript>
   </main>
   <dialog id="sheet" class="sheet" aria-labelledby="plant-title"></dialog>
-  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=interface-first-pass1" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
+  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=catalogue-polish1" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
 </body>
 </html>

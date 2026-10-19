@@ -14,6 +14,8 @@ The current `index.html` serves the compact plant catalogue: search, category fi
 
 The compact catalogue now uses an accessible native modal, persistent dialog headings and actions, labeled size fields, required-name feedback, catalogue loading/retry states, photo fallbacks, and save-error feedback that keeps the draft open. Existing compact-catalogue storage keys remain compatible. See [the implementation notes](docs/catalogue-interface-first-pass.md).
 
+Its interface uses the existing Greenscape wordmark, a wider photo-led list with categories/sizes/codes, visible sticky filters, and a grouped details panel with the full reference photo and individual size-copy actions. See [the visual polish decisions](docs/catalogue-visual-polish.md) and [verification report](docs/catalogue-interface-qa.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ## Current Status
