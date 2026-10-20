@@ -89,9 +89,9 @@ test('successful saves preserve sibling records and a deliberate empty optional 
   assert.equal(records[1].name, 'Peace Lily');
 });
 
-test('empty common names are rejected before anything is stored', () => {
+test('empty record names are rejected before anything is stored', () => {
   const storage = memoryStorage();
-  assert.throws(() => new CatalogueStore(storage).save(plant('custom-new', '   ')), /common name/);
+  assert.throws(() => new CatalogueStore(storage).save(plant('custom-new', '   ')), /Enter a name/);
   assert.equal(storage.values.size, 0);
 });
 

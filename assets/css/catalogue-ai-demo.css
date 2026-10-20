@@ -41,6 +41,10 @@ body.ai-style-demo {
 .ai-style-demo .ghost, .ai-style-demo .copy, .ai-style-demo .size-option { border-radius: 2rem; }
 .ai-style-demo .ghost:hover, .ai-style-demo .copy:hover { background: #454961; }
 .ai-style-demo .size-option:hover { background: #30354d; }
+.ai-style-demo .record-types button[aria-pressed="true"] { background: #cbb2ff; color: #101222; }
+.ai-style-demo mark { color: #101222; background: #dcc9ff; }
+.ai-style-demo .photo-viewer { background: #191d31; color: #f5f3ff; }
+.ai-style-demo .photo-stage { background: #fff; }
 .ai-style-demo .edit-label input, .ai-style-demo .edit-label select, .ai-style-demo .size-edit input { background: #101222; }
 .ai-style-demo .sheet::backdrop { background: rgba(6, 8, 20, 0.78); }
 @media (min-width: 700px) {

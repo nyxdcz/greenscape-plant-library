@@ -10,7 +10,7 @@ function applyStyle() {
     const stylesheet = page.createElement('link');
     stylesheet.id = 'ai-demo-styles';
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = 'assets/css/catalogue-ai-demo.css?v=comparison1';
+    stylesheet.href = 'assets/css/catalogue-ai-demo.css?v=comparison2';
     page.head.appendChild(stylesheet);
   }
   const aiStyle = selectedStyle === 'ai';

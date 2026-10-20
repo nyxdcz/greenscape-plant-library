@@ -11,7 +11,7 @@
   <title>Greenscape Plant Library</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/css/catalogue.css?v=catalogue-antislop2">
+  <link rel="stylesheet" href="assets/css/catalogue.css?v=catalogue-browse3">
 </head>
 <body>
   <a class="skip-link" href="#catalogue">Skip to plant catalogue</a>
@@ -25,13 +25,18 @@
     <div class="page-heading">
       <div>
         <h1>Plant library</h1>
-        <p class="intro">A reference for the plants and materials in your landscape plans.</p>
+        <p class="intro">Plants and materials for your landscape plans.</p>
       </div>
-      <button type="button" class="primary add" id="add" disabled><span aria-hidden="true">+</span> Add plant</button>
+      <button type="button" class="primary add" id="add" disabled><span aria-hidden="true">+</span> <span id="add-label">Add plant</span></button>
     </div>
     <section class="library-controls" aria-label="Catalogue filters">
+      <div class="record-types" role="group" aria-label="Record type">
+        <button type="button" data-scope="all" aria-pressed="true" aria-controls="list" disabled>All <span data-scope-count></span></button>
+        <button type="button" data-scope="plants" aria-pressed="false" aria-controls="list" disabled>Plants <span data-scope-count></span></button>
+        <button type="button" data-scope="materials" aria-pressed="false" aria-controls="list" disabled>Materials <span data-scope-count></span></button>
+      </div>
       <div class="search-control">
-        <label class="control-label" for="search">Search plants</label>
+        <label class="control-label" id="search-label" for="search">Search catalogue</label>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
           <input id="search" class="search" type="search" placeholder="Name, scientific name, or code" autocomplete="off" disabled>
@@ -48,7 +53,7 @@
         <p id="count" class="count" aria-live="polite" aria-atomic="true">Loading catalogue</p>
         <button id="reset-filters" class="text-button" type="button" hidden>Reset filters</button>
       </div>
-      <div id="catalogue-columns" class="catalogue-columns" aria-hidden="true" hidden><span></span><span>Plant</span><span>Category / sizes</span><span>Code</span><span></span></div>
+      <div id="catalogue-columns" class="catalogue-columns" aria-hidden="true" hidden><span></span><span id="record-column">Plant / material</span><span>Category / sizes</span><span>Code</span><span></span></div>
       <div id="list" aria-busy="true">
         <div class="empty" role="status"><p>Loading the plant catalogue...</p><p class="hint">Plant records will appear here when they are ready.</p></div>
       </div>
@@ -57,6 +62,7 @@
     <noscript><p class="notice">Turn on JavaScript to search, view, and edit the plant catalogue.</p></noscript>
   </main>
   <dialog id="sheet" class="sheet" aria-labelledby="plant-title"></dialog>
-  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=catalogue-antislop2" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
+  <dialog id="photo-viewer" class="photo-viewer" aria-labelledby="photo-title"></dialog>
+  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=catalogue-browse3" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
 </body>
 </html>

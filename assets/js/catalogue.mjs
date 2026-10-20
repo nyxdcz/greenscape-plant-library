@@ -1,4 +1,5 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-antislop2';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-browse3';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-browse3';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
@@ -10,6 +11,9 @@ const addEl = document.getElementById('add');
 const noticeEl = document.getElementById('storage-notice');
 const resetEl = document.getElementById('reset-filters');
 const columnsEl = document.getElementById('catalogue-columns');
+const scopeButtons = [...document.querySelectorAll('[data-scope]')];
+const photoEl = document.getElementById('photo-viewer');
+let scope = 'all';
 let storage;
 try { storage = window.localStorage; } catch { storage = null; }
 const store = new CatalogueStore(storage);
@@ -26,12 +30,6 @@ let opener;
 let openerId;
 let previousOverflow = '';
 let nextSizeId = 0;
-
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
-}
-
-function isMaterial(plant) { return plant.category === 'Landscape Materials'; }
 
 function imageSrc(image) {
   if (!image) return '';
@@ -55,6 +53,9 @@ function settlePhoto(image, failed) {
   const status = frame.querySelector('.photo-status');
   status.hidden = !failed;
   if (failed) status.textContent = frame.classList.contains('hero-frame') ? 'Photo unavailable' : 'No photo';
+  const enlarge = frame.closest('.detail-photo')?.querySelector('#enlarge-photo');
+  if (enlarge) enlarge.hidden = failed;
+  if (photoEl.contains(frame)) document.getElementById('zoom-photo').disabled = failed;
 }
 
 function settleCachedPhotos(root) {
@@ -63,7 +64,7 @@ function settleCachedPhotos(root) {
   });
 }
 
-for (const root of [listEl, sheetEl]) {
+for (const root of [listEl, sheetEl, photoEl]) {
   root.addEventListener('load', event => {
     if (event.target.matches('.image-frame img')) settlePhoto(event.target, false);
   }, true);
@@ -74,23 +75,39 @@ for (const root of [listEl, sheetEl]) {
 
 if (store.hasReadError) {
   noticeEl.hidden = false;
-  noticeEl.innerHTML = '<p>Some saved plant changes could not be read. The published catalogue is still available. Existing saved data has been left untouched.</p><button class="ghost" type="button" id="reload-storage">Reload to try again</button>';
+  noticeEl.innerHTML = '<p>Some saved catalogue changes could not be read. The published catalogue is still available. Existing saved data has been left untouched.</p><button class="ghost" type="button" id="reload-storage">Reload to try again</button>';
   document.getElementById('reload-storage').addEventListener('click', () => location.reload());
 }
 
 function rebuild() {
   plants = store.plants(basePlants);
+  updateCategories();
+  scopeButtons.forEach(button => {
+    button.querySelector('[data-scope-count]').textContent = plants.filter(record => inScope(record, button.dataset.scope)).length;
+  });
+}
+
+function updateCategories() {
   const selected = categoryEl.value;
-  const names = [...new Set(ORDER.concat(plants.map(plant => plant.category)))].filter(name => plants.some(plant => plant.category === name));
+  const available = plants.filter(record => inScope(record, scope));
+  const names = [...new Set(ORDER.concat(available.map(plant => plant.category)))].filter(name => available.some(plant => plant.category === name));
   categoryEl.innerHTML = '<option value="All">All categories</option>' + names.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
-  categoryEl.value = names.includes(selected) ? selected : 'All';
+  const singleCategory = names.length < 2;
+  categoryEl.value = !singleCategory && names.includes(selected) ? selected : 'All';
+  categoryEl.closest('.category-control').hidden = singleCategory;
+  document.querySelector('.library-controls').classList.toggle('single-category', singleCategory);
 }
 
 function render() {
   listEl.setAttribute('aria-busy', String(catalogueState === 'loading'));
   resetEl.hidden = true;
   columnsEl.hidden = true;
-  for (const control of [searchEl, categoryEl, addEl]) control.disabled = catalogueState !== 'ready';
+  for (const control of [searchEl, categoryEl, addEl, ...scopeButtons]) control.disabled = catalogueState !== 'ready';
+  scopeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.scope === scope)));
+  document.getElementById('search-label').textContent = scope === 'materials' ? 'Search materials' : scope === 'plants' ? 'Search plants' : 'Search catalogue';
+  searchEl.placeholder = scope === 'materials' ? 'Name, description, or code' : 'Name, scientific name, or code';
+  document.getElementById('record-column').textContent = scope === 'materials' ? 'Material' : scope === 'plants' ? 'Plant' : 'Plant / material';
+  document.getElementById('add-label').textContent = scope === 'materials' || categoryEl.value === 'Landscape Materials' ? 'Add material' : 'Add plant';
   if (catalogueState !== 'ready') {
     const failed = catalogueState === 'error';
     countEl.textContent = failed ? 'Catalogue unavailable' : 'Loading catalogue';
@@ -98,21 +115,20 @@ function render() {
     return;
   }
   const query = searchEl.value.trim().toLowerCase();
-  const rows = plants.filter(plant => (categoryEl.value === 'All' || plant.category === categoryEl.value)
-    && (!query || `${plant.name} ${plant.latin} ${plant.code}`.toLowerCase().includes(query)));
-  const filtered = Boolean(query || categoryEl.value !== 'All');
+  const rows = selectRecords(plants, { scope, category: categoryEl.value, query });
+  const filtered = Boolean(query || categoryEl.value !== 'All' || scope !== 'all');
   resetEl.hidden = !filtered;
   countEl.textContent = filtered ? `${rows.length} of ${plants.length} records` : `${plants.length} ${plants.length === 1 ? 'record' : 'records'}`;
   if (!rows.length) {
-    listEl.innerHTML = `<div class="empty"><h2>${plants.length ? 'No plants match your filters' : 'Your catalogue is empty'}</h2><p class="hint">${plants.length ? 'Try a different name or code, or reset the filters to see every record.' : 'Use Add plant to save the first plant on this device.'}</p>${plants.length ? '<button class="primary" type="button" id="clear">Reset filters</button>' : ''}</div>`;
+    listEl.innerHTML = `<div class="empty"><h2>${plants.length ? 'No records match your filters' : 'Your catalogue is empty'}</h2><p class="hint">${plants.length ? 'Try a different name or code, or reset the filters to see every record.' : 'Add a plant or material to save the first record on this device.'}</p>${plants.length ? '<button class="primary" type="button" id="clear">Reset filters</button>' : ''}</div>`;
     return;
   }
   columnsEl.hidden = false;
   listEl.innerHTML = '<ul>' + rows.map(plant => `<li><button class="row" type="button" data-id="${escapeHtml(plant.id)}">
     ${photoMarkup(plant)}
-    <span class="row-identity"><span class="name">${escapeHtml(plant.name)}</span><span class="latin ${isMaterial(plant) ? 'material-description' : ''}">${escapeHtml(plant.latin || (isMaterial(plant) ? plant.material || 'Description not recorded' : 'Scientific name not recorded'))}</span></span>
+    <span class="row-identity"><span class="name">${highlightedText(plant.name, query)}</span><span class="latin ${isMaterial(plant) ? 'material-description' : ''}">${plant.latin || (isMaterial(plant) && plant.material) ? highlightedText(plant.latin || plant.material, query) : escapeHtml(isMaterial(plant) ? 'Description not recorded' : 'Scientific name not recorded')}</span></span>
     <span class="row-category">${escapeHtml(plant.category)}<span class="size-count">${plant.sizes.length ? `${plant.sizes.length} ${plant.sizes.length === 1 ? 'size' : 'sizes'} recorded` : 'Sizes not recorded'}</span></span>
-    <span class="row-code"><span class="sr-only">Code: </span>${escapeHtml(plant.code || 'No code')}</span>
+    <span class="row-code"><span class="sr-only">Code: </span>${plant.code ? highlightedText(plant.code, query) : 'No code'}</span>
     <span class="row-action" aria-hidden="true">View details</span>
   </button></li>`).join('') + '</ul>';
   settleCachedPhotos(listEl);
@@ -181,7 +197,7 @@ function plantDetails(plant) {
   ].join('');
   const sizes = plant.sizes.length ? `<div class="size-options">${plant.sizes.map(sizeOption).join('')}</div>` : '<p class="hint">No sizes have been recorded.</p>';
   const reference = plant.image ? `<details class="image-reference"><summary>Image reference</summary>${fieldRow('Image link', imageSrc(plant.image))}</details>` : '';
-  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? '<p class="photo-caption">Reference photo</p>' : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
+  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? '<button type="button" class="ghost photo-enlarge" id="enlarge-photo" hidden>Enlarge reference photo</button>' : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
 }
 
 function editField(label, name, value, extra = '') {
@@ -205,8 +221,8 @@ function editForm(plant) {
   return `<form id="edit-form" novalidate>
     <p class="hint">Changes are saved in this browser on this device. They do not update the shared catalogue.</p>
     <fieldset><legend>Record identity</legend>
-      ${editField('Common name (required)', 'name', plant.name, 'required')}
-      <p id="name-error" class="error" role="alert" hidden>Enter a common name.</p>
+      ${editField(isMaterial(plant) ? 'Name (required)' : 'Common name (required)', 'name', plant.name, 'required')}
+      <p id="name-error" class="error" role="alert" hidden>Enter a name.</p>
       ${editField(isMaterial(plant) ? 'Description' : 'Scientific name', 'latin', plant.latin)}
     </fieldset>
     <fieldset><legend>Classification</legend>
@@ -238,12 +254,12 @@ function openPlant(plant, { edit = false, trigger = null, saved = false } = {}) 
   currentId = plant.id;
   editing = edit;
   currentValues = [];
-  const title = edit ? (currentPlant() ? 'Edit plant' : 'Add plant') : plant.name;
+  const title = edit ? `${currentPlant() ? 'Edit' : 'Add'} ${isMaterial(plant) ? 'material' : 'plant'}` : plant.name;
   const body = edit ? editForm(plant) : plantDetails(plant);
   sheetEl.innerHTML = `<div class="panel ${edit ? 'panel-edit' : 'panel-detail'}">
     <div class="panel-header"><div>${!edit ? `<p class="dialog-category">${escapeHtml(plant.category)}</p>` : ''}<h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin ${isMaterial(plant) ? 'material-description' : ''}">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
     <div class="panel-scroll"><div class="panel-body">${body}</div></div>
-    <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? '<button class="primary" type="submit" form="edit-form" id="save-plant">Save plant</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>' : '<button class="primary" type="button" id="edit">Edit plant</button>'}</div></div>
+    <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? `<button class="primary" type="submit" form="edit-form" id="save-plant">Save ${isMaterial(plant) ? 'material' : 'plant'}</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>` : `<button class="primary" type="button" id="copy-record" aria-label="Copy record"><span data-copy-label>Copy record</span></button><button class="ghost" type="button" id="edit">Edit ${isMaterial(plant) ? 'material' : 'plant'}</button>`}</div></div>
   </div>`;
   document.body.style.overflow = 'hidden';
   if (opening) sheetEl.showModal();
@@ -253,7 +269,36 @@ function openPlant(plant, { edit = false, trigger = null, saved = false } = {}) 
   settleCachedPhotos(sheetEl);
 }
 
-function closePlant() { sheetEl.close(); }
+function closePlant() {
+  if (photoEl.open) photoEl.close();
+  sheetEl.close();
+}
+
+function openPhoto() {
+  const plant = currentPlant();
+  if (!plant?.image || !sheetEl.querySelector('.hero-frame[data-state="ready"]')) return;
+  photoEl.innerHTML = `<div class="photo-view"><header class="photo-view-header"><h2 id="photo-title" tabindex="-1">${escapeHtml(plant.name)}: reference photo</h2><button type="button" class="ghost" id="close-photo">Close photo</button></header><div class="photo-view-tools"><button type="button" class="ghost" id="zoom-photo" aria-pressed="false">Zoom in</button><p class="hint">When zoomed, scroll or use arrow keys to move around the photo.</p></div><div class="photo-stage" tabindex="0" role="region" aria-label="Photo viewing area">${photoMarkup(plant, true)}</div></div>`;
+  photoEl.showModal();
+  document.getElementById('photo-title').focus({ preventScroll: true });
+  settleCachedPhotos(photoEl);
+}
+
+photoEl.addEventListener('click', event => {
+  if (event.target === photoEl || event.target.id === 'close-photo') photoEl.close();
+  if (event.target.id === 'zoom-photo') {
+    const stage = photoEl.querySelector('.photo-stage');
+    const zoomed = stage.classList.toggle('is-zoomed');
+    event.target.setAttribute('aria-pressed', String(zoomed));
+    event.target.textContent = zoomed ? 'Zoom out' : 'Zoom in';
+    stage.scrollTop = 0;
+    stage.scrollLeft = 0;
+    stage.focus({ preventScroll: true });
+  }
+});
+photoEl.addEventListener('close', () => {
+  photoEl.innerHTML = '';
+  sheetEl.querySelector('#enlarge-photo')?.focus({ preventScroll: true });
+});
 
 sheetEl.addEventListener('close', () => {
   document.body.style.overflow = previousOverflow;
@@ -271,7 +316,7 @@ sheetEl.addEventListener('cancel', event => {
 });
 
 async function copyField(button) {
-  const value = currentValues[Number(button.dataset.copy)];
+  const value = button.id === 'copy-record' ? recordSummary(currentPlant()) : currentValues[Number(button.dataset.copy)];
   if (!value) return;
   let copied = false;
   try { await navigator.clipboard.writeText(value); copied = true; } catch {
@@ -289,13 +334,16 @@ async function copyField(button) {
   status.textContent = copied ? `${button.getAttribute('aria-label').replace(/^Copy /, '')} copied.` : 'Could not copy. Select the field text and copy it manually.';
   if (copied) {
     const label = button.querySelector('[data-copy-label]') || button;
+    const original = label.dataset.copyDefault ||= label.textContent;
     label.textContent = 'Copied';
-    setTimeout(() => { label.textContent = 'Copy'; }, 1200);
+    setTimeout(() => { label.textContent = original; }, 1200);
   }
 }
 
 function resetFilters() {
   searchEl.value = '';
+  scope = 'all';
+  updateCategories();
   categoryEl.value = 'All';
   render();
   searchEl.focus();
@@ -312,6 +360,8 @@ listEl.addEventListener('click', event => {
 });
 
 sheetEl.addEventListener('click', event => {
+  if (event.target.id === 'enlarge-photo') { openPhoto(); return; }
+  if (event.target.closest('#copy-record')) { void copyField(document.getElementById('copy-record')); return; }
   const copyButton = event.target.closest('[data-copy]');
   if (copyButton) { void copyField(copyButton); return; }
   if (event.target === sheetEl || event.target.id === 'close') { closePlant(); return; }
@@ -347,7 +397,11 @@ sheetEl.addEventListener('input', event => {
 
 sheetEl.addEventListener('change', event => {
   if (event.target.id === 'edit-category') {
-    sheetEl.querySelector('label[for="edit-latin"]').firstChild.textContent = isMaterial({ category: event.target.value }) ? 'Description' : 'Scientific name';
+    const material = isMaterial({ category: event.target.value });
+    sheetEl.querySelector('label[for="edit-latin"]').firstChild.textContent = material ? 'Description' : 'Scientific name';
+    sheetEl.querySelector('label[for="edit-name"]').firstChild.textContent = material ? 'Name (required)' : 'Common name (required)';
+    document.getElementById('plant-title').textContent = `${currentPlant() ? 'Edit' : 'Add'} ${material ? 'material' : 'plant'}`;
+    document.getElementById('save-plant').textContent = material ? 'Save material' : 'Save plant';
   }
 });
 
@@ -378,7 +432,12 @@ sheetEl.addEventListener('submit', event => {
   openPlant(currentPlant(), { saved: true });
 });
 
-addEl.addEventListener('click', () => openPlant({ id: `custom-${crypto.randomUUID()}`, name: '', latin: '', category: ORDER[0], code: '', image: '', sizes: [''], material: '' }, { edit: true, trigger: addEl }));
+addEl.addEventListener('click', () => openPlant({ id: `custom-${crypto.randomUUID()}`, name: '', latin: '', category: categoryEl.value !== 'All' ? categoryEl.value : scope === 'materials' ? 'Landscape Materials' : ORDER[0], code: '', image: '', sizes: [''], material: '' }, { edit: true, trigger: addEl }));
+scopeButtons.forEach(button => button.addEventListener('click', () => {
+  scope = button.dataset.scope;
+  updateCategories();
+  render();
+}));
 searchEl.addEventListener('input', render);
 categoryEl.addEventListener('change', render);
 resetEl.addEventListener('click', resetFilters);

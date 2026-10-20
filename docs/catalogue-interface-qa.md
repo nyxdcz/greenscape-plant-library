@@ -4,6 +4,8 @@ Verified locally on 18 October 2026 and extended for the visual polish on 19 Oct
 
 The subsequent [two-style comparison](catalogue-style-comparison.md) records an additional refinement: factual recorded-size labels, accurate material labels, and explicit secondary-control boundaries. This gate applies to the refined catalogue at `index.html`. The separately requested AI-style demo is an intentional visual counterexample with its own documented checks and scope.
 
+The [20 October browsing refinements](catalogue-browsing-refinements.md) add compact mobile spacing, type filters, ranked/highlighted search, Copy record, and an enlarged photo dialog. The current full quality run includes 19 storage/record tests and 19 entry-point tests. The scoped PASS findings below continue to apply, with the new evidence in that note.
+
 ## Executed checks
 
 - `npm run test:catalogue`: 10 tests passed, including save rollback, retry without duplicate additions, denied storage, malformed data preservation, legacy records, and optional-field defaults.
@@ -42,7 +44,7 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-08 PASS: no decorative button arrows were added.
 - R-09 PASS: no promotional badges were added.
 - R-10 PASS: the interface uses solid surfaces and a modal backdrop, with no glass effects.
-- R-11 PASS: inputs/buttons use 0.5rem radii, thumbnails 0.4rem, lists/detail photos 0.75rem, and dialogs 1.25rem.
+- R-11 PASS: inputs/buttons use 0.5rem radii, thumbnails 0.4rem, lists/detail photos 0.75rem, and detail dialogs 1.25rem. The full-screen photo viewer has square edges to use the viewing area.
 - R-12 PASS: no decorative component shadows were added.
 - R-13 PASS: no glow effects are present.
 - R-14 PASS: the repeated list rows represent equal catalogue records; no feature-card system was introduced.
@@ -56,14 +58,14 @@ Real-device keyboard behavior, screen-reader speech, and actual 200% browser zoo
 - R-22 PASS: no unrelated illustrations were added.
 - R-23 PASS: the existing wordmark and plant photos are reused; the visual changes follow the approved catalogue-polish scope.
 - R-24 PASS: the new skip link resolves to the real catalogue section; there are no placeholder destinations.
-- R-25 PASS: checked text ratios are 13.92:1 (body/paper), 5.12:1 (muted/paper), 5.74:1 (muted/card), 4.90:1 (muted/chip), 7.13:1 (error/card), and 10.59:1 (primary text/button). Input and secondary-control boundaries use the same token, at 3.86:1 against the card surface.
-- R-26 PASS: the new controls and existing catalogue action types were exercised in the browser, including retry, copy, cancellation, and form saves.
+- R-25 PASS: checked text ratios are 13.92:1 (body/paper), 5.12:1 (muted/paper), 5.74:1 (muted/card), 4.90:1 (muted/chip), 7.13:1 (error/card), 10.59:1 (primary text/button), and 10.98:1 (search highlights). Input and secondary-control boundaries use the same token, at 3.86:1 against the card surface.
+- R-26 PASS: the new controls and existing catalogue action types were exercised in the browser, including type filtering, summary copy, photo enlarge/zoom/close, retry, individual copy, cancellation, and form saves.
 - R-27 PASS: initial loading, empty catalogue, zero results, load failure, image failure, storage-read warning, and failed-save recovery have explicit text states.
 - R-28 PASS: no FAQ was introduced.
 - R-29 PASS: cream surfaces and forest green remain the main palette; a restrained brown-red is used only for textual errors.
 - R-30 PASS: the existing catalogue layout was preserved rather than replaced with another product's design.
 - R-31 PASS: the first-pass and visual polish notes record the purpose of palette, typography, layout, photo sizing, spacing, field grouping, controls, and state feedback.
-- R-32 PASS: native modal containment, heading focus, Escape, visible focus indicators, size labels, and source-control focus restoration were verified.
+- R-32 PASS: native modal containment, heading focus, Escape, visible focus indicators, size labels, keyboard photo panning, and focus restoration from the photo viewer to details and from details to its source control were verified.
 - R-33 PASS: changes are authored directly in HTML, CSS, and modules; no source-rewriting feature scripts are shipped.
 - R-34 PASS: the only shipped theme is the existing light theme, checked in the preview.
 - R-35 PASS: the actual local app was run and exercised; storage/entry-point tests and the full CI command passed, and the normal-preview console was clear.

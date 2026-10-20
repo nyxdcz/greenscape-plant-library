@@ -52,9 +52,9 @@ export class CatalogueStore {
   }
 
   save(record) {
-    if (!isRecord(record) || typeof record.id !== 'string' || !record.name.trim()) throw new Error('Enter a common name before saving.');
+    if (!isRecord(record) || typeof record.id !== 'string' || !record.name.trim()) throw new Error('Enter a name before saving.');
     const collection = record.id.startsWith('custom-') ? 'added' : 'edits';
-    if (!this.readable[collection]) throw new Error('Previously saved plants could not be read. Existing data has been left untouched. Reload the page to try reading it again.');
+    if (!this.readable[collection]) throw new Error('Previously saved records could not be read. Existing data has been left untouched. Reload the page to try reading it again.');
     const savedRecord = { ...record, sizes: [...(record.sizes || [])] };
     const next = collection === 'added'
       ? this.added.filter(plant => plant.id !== record.id).concat(savedRecord)
@@ -63,7 +63,7 @@ export class CatalogueStore {
       // Commit in memory only after the browser accepts the complete storage write.
       this.storage.setItem(STORAGE_KEYS[collection], JSON.stringify(next));
     } catch {
-      throw new Error('The browser could not save this plant. Free some browser storage or allow site storage, then retry.');
+      throw new Error('The browser could not save this record. Free some browser storage or allow site storage, then retry.');
     }
     this[collection] = next;
   }

@@ -18,6 +18,8 @@ Its interface uses the existing Greenscape wordmark, a wider photo-led list with
 
 Open [the interface style comparison](style-comparison.html) to switch between the Anti Slop refinement and the deliberately AI-styled demo while keeping the same catalogue content and filters. The demo stylesheet is loaded only by that comparison page. See [comparison notes and verification limits](docs/catalogue-style-comparison.md).
 
+The selected refinement adds a compact phone header, All/Plants/Materials controls, exact-match search ranking and safe match highlights, Copy record, and an enlarged reference-photo viewer with zoom and keyboard panning. See [browsing refinement decisions and verification](docs/catalogue-browsing-refinements.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ## Current Status
