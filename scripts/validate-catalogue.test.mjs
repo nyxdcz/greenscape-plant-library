@@ -6,7 +6,7 @@ import { validateCataloguePage } from './validate-catalogue.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const originalHtml = fs.readFileSync(`${root}index.html`, 'utf8');
-const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/data.js', 'assets/css/catalogue.css']
+const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/catalogue-records.mjs', 'assets/js/data.js', 'assets/css/catalogue.css']
   .map(file => [file, fs.readFileSync(`${root}${file}`, 'utf8')]));
 
 function fixture() {
@@ -28,6 +28,12 @@ test('a missing transitive storage module is rejected', () => {
   const page = fixture();
   page.files.delete('assets/js/catalogue-store.mjs');
   assert.match(validateCataloguePage(page).join('\n'), /Missing catalogue module: assets\/js\/catalogue-store.mjs/);
+});
+
+test('a missing transitive record module is rejected', () => {
+  const page = fixture();
+  page.files.delete('assets/js/catalogue-records.mjs');
+  assert.match(validateCataloguePage(page).join('\n'), /Missing catalogue module: assets\/js\/catalogue-records.mjs/);
 });
 
 test('module syntax errors fail validation before deployment', () => {
@@ -82,6 +88,18 @@ test('removing the native dialog is rejected', () => {
   const page = fixture();
   page.html = page.html.replace('<dialog ', '<div ').replace('</dialog>', '</div>');
   assert.match(validateCataloguePage(page).join('\n'), /named native dialog/);
+});
+
+test('removing the enlarged-photo dialog is rejected', () => {
+  const page = fixture();
+  page.html = page.html.replace(/<dialog id="photo-viewer"[^>]*><\/dialog>/, '');
+  assert.match(validateCataloguePage(page).join('\n'), /named native photo dialog/);
+});
+
+test('incomplete record-type controls are rejected', () => {
+  const page = fixture();
+  page.html = page.html.replace('data-scope="materials"', 'data-scope="other"');
+  assert.match(validateCataloguePage(page).join('\n'), /record-type controls/);
 });
 
 test('a dangling dialog title is rejected', () => {

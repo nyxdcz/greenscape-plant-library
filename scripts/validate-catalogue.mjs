@@ -76,10 +76,14 @@ export function validateCataloguePage({ html, read, exists }) {
   }
   const dialog = tags(html, 'dialog').find(tag => tag.id === 'sheet');
   check(Boolean(dialog?.['aria-labelledby']), 'The catalogue must provide a named native dialog.');
+  const photoDialog = tags(html, 'dialog').find(tag => tag.id === 'photo-viewer');
+  check(Boolean(photoDialog?.['aria-labelledby']), 'The catalogue must provide a named native photo dialog.');
+  const scopeControls = tags(html, 'button').filter(button => button['data-scope']);
+  check(scopeControls.length === 3 && ['all', 'plants', 'materials'].every(scope => scopeControls.some(button => button['data-scope'] === scope && button['aria-controls'] === 'list' && ['true', 'false'].includes(button['aria-pressed']))), 'The catalogue record-type controls must identify all, plants, and materials and expose their state.');
   const markup = `${html}\n${[...sources.values()].join('\n')}`;
-  if (dialog?.['aria-labelledby']) {
+  for (const namedDialog of [dialog, photoDialog].filter(Boolean)) {
     const renderedIds = new Set(tags(markup, '[a-z][\\w-]*').map(tag => tag.id).filter(Boolean));
-    check(dialog['aria-labelledby'].split(/\s+/).every(id => renderedIds.has(id)), 'The catalogue dialog title must exist in its rendered markup.');
+    check(Boolean(namedDialog['aria-labelledby']) && namedDialog['aria-labelledby'].split(/\s+/).every(id => renderedIds.has(id)), 'The catalogue dialog title must exist in its rendered markup.');
   }
   const labels = new Set(tags(markup, 'label').map(label => label.for).filter(Boolean));
   for (const control of tags(markup, '(?:input|select)')) {
