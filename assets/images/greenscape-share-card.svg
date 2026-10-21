@@ -1,10 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
   <title>Greenscape Plant Library</title>
-  <desc>Greenscape wordmark and Plant library title on a forest-green background.</desc>
+  <desc>Greenscape logo centered on a forest-green background.</desc>
   <rect width="1200" height="630" fill="#0b4632"/>
-  <image x="360" y="173" width="480" height="56" xlink:href="greenscape-logo.png"/>
-  <g fill="#fffdf7" text-anchor="middle" font-family="Arial, Helvetica, sans-serif">
-    <text x="600" y="340" font-size="76" font-weight="600">Plant library</text>
-    <text x="600" y="397" font-size="28">Plants &amp; landscape materials</text>
-  </g>
+  <image x="300" y="280" width="600" height="70" xlink:href="greenscape-logo.png"/>
 </svg>
