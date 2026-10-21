@@ -22,9 +22,8 @@ button:disabled, input:disabled, select:disabled { cursor: wait; opacity: 0.65; 
 .skip-link:focus { transform: none; }
 .wrap { width: 100%; max-width: 78rem; margin: 0 auto; padding: 0 1.25rem; }
 .brand-header { background: var(--forest); color: var(--card); }
-.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.25rem; }
+.brand-row { display: flex; align-items: center; justify-content: center; min-height: 4.25rem; }
 .brand-logo { display: block; width: 11.5rem; height: auto; }
-.brand-caption { font-size: 0.75rem; text-align: right; }
 .page-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; padding: 2rem 0 1rem; }
 .page-heading > div { max-width: 43rem; }
 h1 { margin: 0; font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.04em; }
@@ -164,7 +163,6 @@ li + li { border-top: 1px solid var(--line); }
 @media (min-width: 640px) {
   .wrap { padding-right: 2rem; padding-left: 2rem; }
   .brand-logo { width: 14rem; }
-  .brand-caption { font-size: 0.875rem; }
   .page-heading { padding-top: 2.75rem; padding-bottom: 1.5rem; }
   .library-controls { grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.42fr); gap: 1rem; padding-bottom: 1.5rem; }
   .record-types { display: flex; }

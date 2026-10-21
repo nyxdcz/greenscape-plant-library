@@ -8,6 +8,10 @@ The [20 October browsing refinements](catalogue-browsing-refinements.md) add com
 
 ## Executed checks
 
+On 21 October 2026, the user requested removal of the header's Landscaping Services caption and a centered Greenscape logo. The caption markup and its unused catalogue CSS were removed, and the header flex alignment now centers the existing logo. The original logo sizes, header heights, palette, and alternative text remain. Catalogue stylesheet, entry, and import cache keys advance together so the new alignment is fetched after publication.
+
+The local browser confirmed that the logo loads, the caption is absent, and its midpoint is within one CSS pixel of the viewport center at desktop width and a measured 360-by-780 layout, with no horizontal overflow. All 231 records loaded. `npm run quality` passed all 45 existing tests, validation, build, and audit; `git diff --check` passed. The scoped gate below continues to apply: this is a layout adjustment using the existing approved identity, with no new controls, assets, motion, or content claims. Live publication remains a separate step after merge.
+
 - `npm run test:catalogue`: 10 tests passed, including save rollback, retry without duplicate additions, denied storage, malformed data preservation, legacy records, and optional-field defaults.
 - `npm test`: 16 entry-point regression tests passed, followed by the catalogue page contract and 1,010 shared/legacy-asset assertions in the polished entry.
 - Plant import check, CSV sync check, and JavaScript lint passed as the initial stages of `npm run quality`. The 231 published records remain synchronized.
