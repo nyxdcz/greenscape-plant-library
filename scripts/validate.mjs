@@ -4,6 +4,7 @@ import vm from 'node:vm';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { validateCataloguePage } from './validate-catalogue.mjs';
+import { validateSharePreview } from './validate-share-preview.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -17,6 +18,7 @@ const check = (condition, message) => {
 };
 
 const html = read('index.html');
+failures.push(...validateSharePreview({ html, exists, readBytes: file => fs.readFileSync(path.join(root, file)) }));
 const compactCatalogue = /<html\b[^>]*\bdata-app="catalogue"/i.test(html);
 // Only dashboard markup requirements are conditional; shared and legacy-asset guards still run.
 const checkDashboardPage = (condition, message) => {
