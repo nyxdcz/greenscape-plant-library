@@ -24,6 +24,10 @@ Copy image is available below a loaded record photo and in the enlarged viewer. 
 
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
+### Website validation and publishing
+
+Pull requests to `main` run the full **Website Quality** workflow once. After merge, **Build Deployment Package and Deploy Pages** runs the same full checks before packaging and publishing. The retired Website Checks workflow no longer duplicates these runs. Manual deployment is limited to `main`; Pages uses **GitHub Actions** as its publishing source. The existing design and plant-sync workflows retain their narrow triggers. No dependency installation or package cache is needed for this dependency-free project. See [workflow verification and operating notes](docs/workflow-consolidation.md).
+
 ## Current Status
 
 The website is actively maintained.
@@ -321,7 +325,7 @@ scripts/validate.mjs
 - Updates the workflow action runtime to `actions/setup-node@v6` while continuing to test the website with Node.js 20.
 - Disables automatic package-manager caching with `package-manager-cache: false`.
 - Removes the unnecessary dependency-install step because the repository currently has no npm dependency packages.
-- Continues running the complete `npm run quality` suite on every push to `main`, every pull request, and manual workflow runs.
+- Retains complete validation without package installation: pull requests and manual quality runs use Website Quality; main releases validate inside the deployment workflow.
 - Adds regression checks that reject `cache: npm`, reject the unnecessary install step, and require the corrected action configuration.
 - Does not change the live website interface, plant data, staff access, Greenie, project tools, or browser cache keys.
 
@@ -343,7 +347,7 @@ README.md
 - Clarifies that Plant List Editor additions are local to the current browser and links directly to the shared GitHub `ADD_PLANTS_HERE` publishing folder.
 - Renames local creation actions to **Add local plant** and gives clear local-only save messages.
 - Adds touch-friendly mood-board move controls, disables empty exports, and confirms very large bulk additions with an estimated A3 page count.
-- Adds `.github/workflows/quality.yml` so every push to `main` and every pull request runs `npm run quality`.
+- Uses `.github/workflows/quality.yml` for complete pull-request validation, with complete main-branch validation inside the deployment workflow.
 - Keeps all plant data, access-code security settings, Greenie, project tools, and the separate staff-access configuration unchanged.
 
 Affected files:
@@ -705,7 +709,7 @@ assets/js/data.js
 4. Export the active sheet as CSV.
 5. Replace the repository CSV file.
 6. Commit the change to `main`.
-7. Wait for **Plant CSV Sync** and **Website Checks** to pass.
+7. Wait for **Plant CSV Sync** and the validated deployment workflow to pass.
 8. Hard-refresh the live website.
 
 Important rules:
@@ -865,7 +869,7 @@ Real Core Web Vitals should be measured against the deployed website using Light
 - Hard-refresh the browser.
 - Reopen the affected view.
 
-### Website Checks fail
+### Website validation fails
 
 1. Open the failed run in **Actions**.
 2. Expand the first failed step.
