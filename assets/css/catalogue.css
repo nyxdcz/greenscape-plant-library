@@ -124,7 +124,10 @@ li + li { border-top: 1px solid var(--line); }
 .photo-status { position: absolute; inset: 0; display: grid; place-items: center; padding: 0.75rem; color: var(--muted); text-align: center; font-size: 0.875rem; }
 .thumb-frame .photo-status { padding: 0.25rem; font-size: 0.7rem; line-height: 1.2; }
 .photo-caption { margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--muted); }
-.photo-enlarge { width: 100%; margin-top: 0.75rem; font-size: 0.875rem; }
+.photo-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.photo-actions button { flex: 1 1 10rem; min-height: 2.75rem; font-size: 0.875rem; }
+.photo-copy-status { margin: 0.75rem 0 0; overflow-wrap: anywhere; }
+.photo-copy-status a { color: var(--forest); }
 .photo-viewer { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--card); color: var(--ink); }
 .photo-viewer::backdrop { background: rgba(26, 36, 28, 0.75); }
 .photo-view { display: flex; flex-direction: column; height: 100%; }
@@ -133,6 +136,7 @@ li + li { border-top: 1px solid var(--line); }
 .photo-view-header button { flex: none; }
 .photo-view-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; }
 .photo-view-tools .hint { flex: 1; min-width: 10rem; margin: 0; font-size: 0.8125rem; }
+.photo-view-tools .photo-copy-status { flex-basis: 100%; margin: 0; }
 .photo-stage { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; margin: 0.25rem 1.25rem 1.25rem; background: #fff; border: 1px solid var(--control-line); }
 .photo-stage:focus-visible { outline-offset: -4px; }
 .photo-viewer .hero-frame { width: 100%; height: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); aspect-ratio: auto; border: 0; border-radius: 0; }

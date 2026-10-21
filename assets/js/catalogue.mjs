@@ -1,5 +1,6 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-header1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-header1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-image1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-image1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-image1';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
@@ -53,9 +54,12 @@ function settlePhoto(image, failed) {
   const status = frame.querySelector('.photo-status');
   status.hidden = !failed;
   if (failed) status.textContent = frame.classList.contains('hero-frame') ? 'Photo unavailable' : 'No photo';
-  const enlarge = frame.closest('.detail-photo')?.querySelector('#enlarge-photo');
-  if (enlarge) enlarge.hidden = failed;
-  if (photoEl.contains(frame)) document.getElementById('zoom-photo').disabled = failed;
+  const actions = frame.closest('.detail-photo')?.querySelector('.photo-actions');
+  if (actions) actions.hidden = failed;
+  if (photoEl.contains(frame)) {
+    document.getElementById('zoom-photo').disabled = failed;
+    photoEl.querySelector('[data-copy-image]').disabled = failed;
+  }
 }
 
 function settleCachedPhotos(root) {
@@ -197,7 +201,7 @@ function plantDetails(plant) {
   ].join('');
   const sizes = plant.sizes.length ? `<div class="size-options">${plant.sizes.map(sizeOption).join('')}</div>` : '<p class="hint">No sizes have been recorded.</p>';
   const reference = plant.image ? `<details class="image-reference"><summary>Image reference</summary>${fieldRow('Image link', imageSrc(plant.image))}</details>` : '';
-  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? '<button type="button" class="ghost photo-enlarge" id="enlarge-photo" hidden>Enlarge reference photo</button>' : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
+  return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? `<div class="photo-actions" hidden><button type="button" class="ghost" id="enlarge-photo">Enlarge reference photo</button><button type="button" class="ghost" data-copy-image>Copy image</button></div><p class="photo-copy-status feedback" role="status" hidden></p>` : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
 }
 
 function editField(label, name, value, extra = '') {
@@ -277,13 +281,15 @@ function closePlant() {
 function openPhoto() {
   const plant = currentPlant();
   if (!plant?.image || !sheetEl.querySelector('.hero-frame[data-state="ready"]')) return;
-  photoEl.innerHTML = `<div class="photo-view"><header class="photo-view-header"><h2 id="photo-title" tabindex="-1">${escapeHtml(plant.name)}: reference photo</h2><button type="button" class="ghost" id="close-photo">Close photo</button></header><div class="photo-view-tools"><button type="button" class="ghost" id="zoom-photo" aria-pressed="false">Zoom in</button><p class="hint">When zoomed, scroll or use arrow keys to move around the photo.</p></div><div class="photo-stage" tabindex="0" role="region" aria-label="Photo viewing area">${photoMarkup(plant, true)}</div></div>`;
+  photoEl.innerHTML = `<div class="photo-view"><header class="photo-view-header"><h2 id="photo-title" tabindex="-1">${escapeHtml(plant.name)}: reference photo</h2><button type="button" class="ghost" id="close-photo">Close photo</button></header><div class="photo-view-tools"><button type="button" class="ghost" id="zoom-photo" aria-pressed="false">Zoom in</button><button type="button" class="ghost" data-copy-image disabled>Copy image</button><p class="hint">When zoomed, scroll or use arrow keys to move around the photo.</p><p class="photo-copy-status feedback" role="status" hidden></p></div><div class="photo-stage" tabindex="0" role="region" aria-label="Photo viewing area">${photoMarkup(plant, true)}</div></div>`;
   photoEl.showModal();
   document.getElementById('photo-title').focus({ preventScroll: true });
   settleCachedPhotos(photoEl);
 }
 
 photoEl.addEventListener('click', event => {
+  const copyButton = event.target.closest('[data-copy-image]');
+  if (copyButton) { void copyPhoto(copyButton); return; }
   if (event.target === photoEl || event.target.id === 'close-photo') photoEl.close();
   if (event.target.id === 'zoom-photo') {
     const stage = photoEl.querySelector('.photo-stage');
@@ -295,6 +301,40 @@ photoEl.addEventListener('click', event => {
     stage.focus({ preventScroll: true });
   }
 });
+
+async function copyPhoto(button) {
+  if (button.disabled) return;
+  const root = button.closest('dialog');
+  const image = root.querySelector('.hero-frame[data-state="ready"] img');
+  const status = root.querySelector('.photo-copy-status');
+  if (!image || !status) return;
+  const source = image.currentSrc || image.src;
+  const name = image.alt;
+  button.disabled = true;
+  button.textContent = 'Copying image...';
+  button.setAttribute('aria-busy', 'true');
+  status.hidden = false;
+  status.textContent = 'Preparing the image to copy...';
+  try {
+    await copyImageToClipboard(source);
+    status.textContent = `${name} image copied. Paste it into your message or document.`;
+  } catch {
+    status.textContent = 'Could not copy this image. Open the original photo to copy or save it.';
+    const link = document.createElement('a');
+    link.href = source;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Open original photo';
+    status.append(' ', link);
+  } finally {
+    button.disabled = !root.querySelector('.hero-frame[data-state="ready"] img');
+    button.textContent = 'Copy image';
+    button.removeAttribute('aria-busy');
+    if (button.isConnected && !button.disabled && root.open && [document.body, root].includes(document.activeElement)) {
+      button.focus({ preventScroll: true });
+    }
+  }
+}
 photoEl.addEventListener('close', () => {
   photoEl.innerHTML = '';
   sheetEl.querySelector('#enlarge-photo')?.focus({ preventScroll: true });
@@ -360,6 +400,8 @@ listEl.addEventListener('click', event => {
 });
 
 sheetEl.addEventListener('click', event => {
+  const imageButton = event.target.closest('[data-copy-image]');
+  if (imageButton) { void copyPhoto(imageButton); return; }
   if (event.target.id === 'enlarge-photo') { openPhoto(); return; }
   if (event.target.closest('#copy-record')) { void copyField(document.getElementById('copy-record')); return; }
   const copyButton = event.target.closest('[data-copy]');

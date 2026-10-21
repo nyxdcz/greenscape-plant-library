@@ -6,7 +6,7 @@ import { validateCataloguePage } from './validate-catalogue.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const originalHtml = fs.readFileSync(`${root}index.html`, 'utf8');
-const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/catalogue-records.mjs', 'assets/js/data.js', 'assets/css/catalogue.css']
+const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/catalogue-records.mjs', 'assets/js/catalogue-image.mjs', 'assets/js/data.js', 'assets/css/catalogue.css']
   .map(file => [file, fs.readFileSync(`${root}${file}`, 'utf8')]));
 
 function fixture() {
