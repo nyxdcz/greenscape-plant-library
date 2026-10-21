@@ -1,5 +1,5 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-browse3';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-browse3';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-header1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-header1';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
