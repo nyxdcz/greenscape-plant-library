@@ -880,6 +880,10 @@ Wait a few minutes after deployment and perform a hard refresh.
 
 Confirm that the complete `assets/` directory was uploaded and that file names and paths were not changed.
 
+### Link-sharing preview
+
+The entry page declares a dedicated forest-green sharing card instead of leaving messaging apps to choose the narrow header logo. Keep the Open Graph and Twitter image URLs aligned with the versioned PNG in `assets/images/`. Website checks verify that the image exists and its actual dimensions match the metadata. See [sharing preview notes](docs/share-preview.md) for artwork sources and publication limits. Messaging services may retain cached previews after a deployment.
+
 ### Saved records disappeared
 
 Check whether browser data was cleared or whether the website was opened in another browser or device.
