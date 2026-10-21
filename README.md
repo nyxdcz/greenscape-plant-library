@@ -20,6 +20,8 @@ Open [the interface style comparison](style-comparison.html) to switch between t
 
 The selected refinement adds a compact phone header, All/Plants/Materials controls, exact-match search ranking and safe match highlights, Copy record, and an enlarged reference-photo viewer with zoom and keyboard panning. See [browsing refinement decisions and verification](docs/catalogue-browsing-refinements.md).
 
+Copy image is available below a loaded record photo and in the enlarged viewer. It copies the full photograph as PNG image data for pasting into an app that accepts images. If the browser blocks copying, Open original photo provides a manual copy/save option. See [image-copy behavior and verification](docs/catalogue-image-copy.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ## Current Status
