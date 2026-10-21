@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { validateCataloguePage } from './validate-catalogue.mjs';
 import { validateSharePreview } from './validate-share-preview.mjs';
+import { validateWorkflowLayout } from './validate-workflows.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -35,7 +36,9 @@ const styles = read('assets/css/styles.css');
 const maintenanceStyles = read('assets/css/maintenance.css');
 const sidebarAssistantStyles = read('assets/css/sidebar-assistant.css');
 const plantLibraryStyles = read('assets/css/plant-library-refinements.css');
-const workflow = read('.github/workflows/ci.yml');
+const workflow = read('.github/workflows/quality.yml');
+failures.push(...validateWorkflowLayout(Object.fromEntries(fs.readdirSync(path.join(root, '.github/workflows'))
+  .filter(file => /\.ya?ml$/.test(file)).map(file => [file, read(`.github/workflows/${file}`)]))));
 const syncScript = read('scripts/sync_plants_from_csv.mjs');
 const jsPaths = [
   'assets/js/app.js',
@@ -96,8 +99,8 @@ check(jsSources['assets/js/app.js'].includes('ensureProjectToolsLoaded()'), 'Pro
 check(!/(?:quotation|boq|boq-enhancements|project-costing)\.(?:css|js)[^"]*"[^>]*(?:rel="stylesheet"|defer)/i.test(html), 'Project-only CSS and JavaScript must not block the initial page.');
 check(/aria-label="View details for \$\{escapeHTML\(plant\.commonName/i.test(jsSources['assets/js/app.js']), 'Plant detail actions must include the plant name in their accessible label.');
 check(styles.includes('REPOSITORY_QUALITY_REVIEW_V2_TOUCH_TARGETS_START'), 'Touch target safeguards are required.');
-check(/permissions:\s*\n\s+contents:\s+read/.test(workflow), 'Website Checks must use read-only repository permissions.');
-check(/timeout-minutes:\s*10/.test(workflow), 'Website Checks must have a bounded timeout.');
+check(/permissions:\s*\n\s+contents:\s+read/.test(workflow), 'Website Quality must use read-only repository permissions.');
+check(/timeout-minutes:\s*10/.test(workflow), 'Website Quality must have a bounded timeout.');
 
 const dashboardSlides = [...jsSources['assets/js/app.js'].matchAll(/'(assets\/images\/dashboard-slideshow\/[^']+\.jpg)'/g)]
   .map(match => match[1]);
@@ -978,7 +981,7 @@ check(
 );
 
 // GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_VALIDATION
-const qualityWorkflow = read('.github/workflows/quality.yml');
+const qualityWorkflow = workflow;
 const interfaceStyles = read('assets/css/styles.css');
 const interfaceApp = jsSources['assets/js/app.js'];
 const interfaceMaintenance = jsSources['assets/js/maintenance.js'];
@@ -988,7 +991,7 @@ check(
   qualityWorkflow.includes('npm run quality')
     && qualityWorkflow.includes('pull_request:')
     && qualityWorkflow.includes('- main'),
-  'Website Quality workflow must run the full quality suite for main and pull requests.'
+  'Website Quality workflow must run the full quality suite for pull requests to main.'
 );
 check(
   interfaceMaintenance.includes('GREENSCAPE_PHONE_STAFF_NAVIGATION_FIX_V1')
@@ -1051,7 +1054,7 @@ check(
 );
 
 // GREENSCAPE_WEBSITE_QUALITY_WORKFLOW_FIX_V1_1_VALIDATION
-const qualityWorkflowV11 = read('.github/workflows/quality.yml');
+const qualityWorkflowV11 = workflow;
 check(
   qualityWorkflowV11.includes('uses: actions/setup-node@v6')
     && qualityWorkflowV11.includes('node-version: 20')
@@ -1067,7 +1070,7 @@ check(
   qualityWorkflowV11.includes('run: npm run quality')
     && qualityWorkflowV11.includes('pull_request:')
     && qualityWorkflowV11.includes('- main'),
-  'Website Quality must run the complete quality suite on main pushes and pull requests.'
+  'Website Quality must run the complete quality suite on pull requests to main.'
 );
 check(
   readme.includes('### Website Quality Workflow Lock-File Fix V1.1'),

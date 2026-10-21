@@ -1,10 +1,9 @@
 name: Website Quality
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,6 +16,7 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Download repository
