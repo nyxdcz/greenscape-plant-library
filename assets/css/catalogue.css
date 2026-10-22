@@ -168,6 +168,7 @@ li + li { border-top: 1px solid var(--line); }
   .page-heading .intro { display: none; }
   .add { padding-right: 0.75rem; padding-left: 0.75rem; font-size: 0.875rem; }
   .library-controls { gap: 0.65rem; padding-top: 0.65rem; padding-bottom: 0.85rem; }
+  .library-controls .control-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .result-bar { min-height: 3.25rem; }
 }
 @media (min-width: 640px) {

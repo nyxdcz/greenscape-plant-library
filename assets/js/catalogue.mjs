@@ -1,8 +1,8 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance-category1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance-category1';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance-category1';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance-category1';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance-category1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance-category2';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance-category2';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance-category2';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance-category2';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance-category2';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
