@@ -1,3 +1,5 @@
+> Historical README archived on 22 October 2026. This document preserves earlier dashboard features and update history. For the current catalogue, see the [repository guide](../../README.md) and [documentation index](../README.md).
+
 # Greenscape Plant Library
 
 A browser-based plant library and landscape project workspace created for **Greenscape Landscaping Services**.
@@ -12,27 +14,27 @@ https://nyxdcz.github.io/greenscape-plant-library/
 
 The current `index.html` serves the compact plant catalogue: search, category filtering, plant details, and browser-local Add/Edit. The larger dashboard and project-workspace assets documented below remain in the repository but are not loaded by this entry page.
 
-The compact catalogue now uses an accessible native modal, persistent dialog headings and actions, labeled size fields, required-name feedback, catalogue loading/retry states, photo fallbacks, and save-error feedback that keeps the draft open. Existing compact-catalogue storage keys remain compatible. See [the implementation notes](docs/catalogue-interface-first-pass.md).
+The compact catalogue now uses an accessible native modal, persistent dialog headings and actions, labeled size fields, required-name feedback, catalogue loading/retry states, photo fallbacks, and save-error feedback that keeps the draft open. Existing compact-catalogue storage keys remain compatible. See [the implementation notes](../../docs/catalogue-interface-first-pass.md).
 
-Its interface uses the existing Greenscape wordmark, a wider photo-led list with categories/sizes/codes, visible sticky filters, and a grouped details panel with the full reference photo and individual size-copy actions. See [the visual polish decisions](docs/catalogue-visual-polish.md) and [verification report](docs/catalogue-interface-qa.md).
+Its interface uses the existing Greenscape wordmark, a wider photo-led list with categories/sizes/codes, visible sticky filters, and a grouped details panel with the full reference photo and individual size-copy actions. See [the visual polish decisions](../../docs/catalogue-visual-polish.md) and [verification report](../../docs/catalogue-interface-qa.md).
 
-Open [the interface style comparison](style-comparison.html) to switch between the Anti Slop refinement and the deliberately AI-styled demo while keeping the same catalogue content and filters. The demo stylesheet is loaded only by that comparison page. See [comparison notes and verification limits](docs/catalogue-style-comparison.md).
+Open [the interface style comparison](../../style-comparison.html) to switch between the Anti Slop refinement and the deliberately AI-styled demo while keeping the same catalogue content and filters. The demo stylesheet is loaded only by that comparison page. See [comparison notes and verification limits](../../docs/catalogue-style-comparison.md).
 
-The selected refinement adds a compact phone header, All/Plants/Materials controls, exact-match search ranking and safe match highlights, Copy record, and an enlarged reference-photo viewer with zoom and keyboard panning. See [browsing refinement decisions and verification](docs/catalogue-browsing-refinements.md).
+The selected refinement adds a compact phone header, All/Plants/Materials controls, exact-match search ranking and safe match highlights, Copy record, and an enlarged reference-photo viewer with zoom and keyboard panning. See [browsing refinement decisions and verification](../../docs/catalogue-browsing-refinements.md).
 
 Add plant sits beside the category selector on phone and desktop. Search, category, and the add action have matching heights; the phone places search on the row above.
 
-Copy image is available below a loaded record photo and in the enlarged viewer. It copies the full photograph as PNG image data for pasting into an app that accepts images. If the browser blocks copying, Open original photo provides a manual copy/save option. See [image-copy behavior and verification](docs/catalogue-image-copy.md).
+Copy image is available below a loaded record photo and in the enlarged viewer. It copies the full photograph as PNG image data for pasting into an app that accepts images. If the browser blocks copying, Open original photo provides a manual copy/save option. See [image-copy behavior and verification](../../docs/catalogue-image-copy.md).
 
-The list uses generated 160-pixel thumbnails while details, enlargement, and Copy image retain original photographs. Search groups rapid inputs into one update per animation frame and reuses result rows and photos. `npm run thumbnails:check` checks every derivative against its original; the CSV-sync workflow regenerates thumbnails before publishing catalogue changes. See [performance changes and verification](docs/catalogue-performance.md).
+The list uses generated 160-pixel thumbnails while details, enlargement, and Copy image retain original photographs. Search groups rapid inputs into one update per animation frame and reuses result rows and photos. `npm run thumbnails:check` checks every derivative against its original; the CSV-sync workflow regenerates thumbnails before publishing catalogue changes. See [performance changes and verification](../../docs/catalogue-performance.md).
 
-Plant details link to researched botanical information pages instead of the raw image URL. A matching reference is available for 117 published plants; the other 103 use a Google search containing their common and scientific names. New records and identity edits also use Google until a matching reference is checked. See [reference selection and verification](docs/plant-references.md).
+Plant details link to researched botanical information pages instead of the raw image URL. A matching reference is available for 117 published plants; the other 103 use a Google search containing their common and scientific names. New records and identity edits also use Google until a matching reference is checked. See [reference selection and verification](../../docs/plant-references.md).
 
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ### Website validation and publishing
 
-Pull requests to `main` run the full **Website Quality** workflow once. After merge, **Build Deployment Package and Deploy Pages** runs the same full checks before packaging and publishing. The retired Website Checks workflow no longer duplicates these runs. Manual deployment is limited to `main`; Pages uses **GitHub Actions** as its publishing source. The existing design and plant-sync workflows retain their narrow triggers. Normal quality/deployment checks need no dependency installation or package cache. The separate plant-sync workflow installs Sharp in a temporary tool directory to generate thumbnails; the website has no runtime package dependency. See [workflow verification and operating notes](docs/workflow-consolidation.md).
+Pull requests to `main` run the full **Website Quality** workflow once. After merge, **Build Deployment Package and Deploy Pages** runs the same full checks before packaging and publishing. The retired Website Checks workflow no longer duplicates these runs. Manual deployment is limited to `main`; Pages uses **GitHub Actions** as its publishing source. The existing design and plant-sync workflows retain their narrow triggers. Normal quality/deployment checks need no dependency installation or package cache. The separate plant-sync workflow installs Sharp in a temporary tool directory to generate thumbnails; the website has no runtime package dependency. See [workflow verification and operating notes](../../docs/workflow-consolidation.md).
 
 ## Current Status
 
@@ -894,7 +896,7 @@ Confirm that the complete `assets/` directory was uploaded and that file names a
 
 ### Link-sharing preview
 
-The entry page declares a dedicated forest-green sharing card instead of leaving messaging apps to choose the narrow header logo. Keep the Open Graph and Twitter image URLs aligned with the versioned PNG in `assets/images/`. Website checks verify that the image exists and its actual dimensions match the metadata. See [sharing preview notes](docs/share-preview.md) for artwork sources and publication limits. Messaging services may retain cached previews after a deployment.
+The entry page declares a dedicated forest-green sharing card instead of leaving messaging apps to choose the narrow header logo. Keep the Open Graph and Twitter image URLs aligned with the versioned PNG in `assets/images/`. Website checks verify that the image exists and its actual dimensions match the metadata. See [sharing preview notes](../../docs/share-preview.md) for artwork sources and publication limits. Messaging services may retain cached previews after a deployment.
 
 ### Saved records disappeared
 
