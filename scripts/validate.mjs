@@ -934,9 +934,9 @@ check(
   'Package scripts must expose and validate the folder plant-import workflow.'
 );
 check(
-  plantFolderreleaseDocumentation.includes('assets/images/')
-    && plantFolderreleaseDocumentation.includes('filename must exactly match')
-    && plantFolderreleaseDocumentation.includes('stops publication safely'),
+  plantFolderReadme.includes('assets/images/')
+    && plantFolderReadme.includes('filename must exactly match')
+    && plantFolderReadme.includes('stops publication safely'),
   'The plant-addition folder must document image, filename, and safe-failure rules.'
 );
 check(
@@ -971,8 +971,8 @@ check(
   'The staff code tool must generate a random salted hash, update the cache key, and delete plaintext input.'
 );
 check(
-  staffAccessreleaseDocumentation.includes('must never be committed')
-    && staffAccessreleaseDocumentation.includes('client-side access control'),
+  staffAccessReadme.includes('must never be committed')
+    && staffAccessReadme.includes('client-side access control'),
   'Staff access documentation must explain plaintext handling and the static-site security limitation.'
 );
 check(
@@ -1276,7 +1276,7 @@ const mobileReviewStyles = mobileReviewReadFileSync('assets/css/styles.css', 'ut
 const mobileReviewLibraryStyles = mobileReviewReadFileSync('assets/css/plant-library-refinements.css', 'utf8');
 const mobileReviewApp = mobileReviewReadFileSync('assets/js/app.js', 'utf8');
 const mobileReviewHtml = mobileReviewReadFileSync('index.html', 'utf8');
-const mobileReviewReadme = mobileReviewReadFileSync('README.md', 'utf8');
+const mobileReviewReadme = releaseDocumentation;
 
 const mobileReviewStylesBlock = mobileReviewStyles
   .split('/* GREENSCAPE_MOBILE_FORM_VIEWPORT_IMAGE_LOADING_V1_1_START')[1]
@@ -1330,9 +1330,9 @@ checkDashboardPage(
   'Mobile form, viewport, and image-loading assets must use the V1.1 cache key.'
 );
 check(
-  mobileReviewreleaseDocumentation.includes('### Mobile Form, Viewport and Image Loading V1.1')
-    && mobileReviewreleaseDocumentation.includes('computed font size at **16 px**')
-    && mobileReviewreleaseDocumentation.includes('targeted lazy loading'),
+  mobileReviewReadme.includes('### Mobile Form, Viewport and Image Loading V1.1')
+    && mobileReviewReadme.includes('computed font size at **16 px**')
+    && mobileReviewReadme.includes('targeted lazy loading'),
   'Release documentation must document the approved mobile form, viewport, image-loading, and V1.1 installer correction release.'
 );
 check(
@@ -1349,7 +1349,7 @@ const plantDiscoveryStyles = plantDiscoveryReadFileSync('assets/css/styles.css',
 const plantDiscoveryLibraryStyles = plantDiscoveryReadFileSync('assets/css/plant-library-refinements.css', 'utf8');
 const plantDiscoveryApp = plantDiscoveryReadFileSync('assets/js/app.js', 'utf8');
 const plantDiscoveryHtml = plantDiscoveryReadFileSync('index.html', 'utf8');
-const plantDiscoveryReadme = plantDiscoveryReadFileSync('README.md', 'utf8');
+const plantDiscoveryReadme = releaseDocumentation;
 
 const plantDiscoveryJsBlock = plantDiscoveryApp
   .split('// GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_START')[1]
@@ -1414,9 +1414,9 @@ checkDashboardPage(
   'Interactive Plant Discovery assets must use the current V1 cache key.'
 );
 check(
-  plantDiscoveryreleaseDocumentation.includes('### Interactive Plant Discovery V1')
-    && plantDiscoveryreleaseDocumentation.includes('session-only **Compare Plants**')
-    && plantDiscoveryreleaseDocumentation.includes('no React, Framer, GSAP, animation package, image, or new dependency is added'),
+  plantDiscoveryReadme.includes('### Interactive Plant Discovery V1')
+    && plantDiscoveryReadme.includes('session-only **Compare Plants**')
+    && plantDiscoveryReadme.includes('no React, Framer, GSAP, animation package, image, or new dependency is added'),
   'Release documentation must document the approved Interactive Plant Discovery release and preserved dependency scope.'
 );
 check(
@@ -1482,9 +1482,9 @@ checkDashboardPage(
   'Interactive Plant Discovery V1.1 assets must use the corrected cache key.'
 );
 check(
-  plantDiscoveryreleaseDocumentation.includes('### Interactive Plant Discovery V1.1')
-    && plantDiscoveryreleaseDocumentation.includes('unrelated Plant Library cards could flash')
-    && plantDiscoveryreleaseDocumentation.includes('three-plant comparison workflow'),
+  plantDiscoveryReadme.includes('### Interactive Plant Discovery V1.1')
+    && plantDiscoveryReadme.includes('unrelated Plant Library cards could flash')
+    && plantDiscoveryReadme.includes('three-plant comparison workflow'),
   'Release documentation must document the Plant Details transition-glitch correction and preserved comparison workflow.'
 );
 
