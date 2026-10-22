@@ -52,7 +52,13 @@ mark { background: #e1d6ad; color: var(--ink); padding: 0 0.05em; border-radius:
 .field svg { position: absolute; left: 1rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .category-control { display: flex; align-items: center; gap: 1rem; }
 .category-control .control-label { margin: 0; flex: none; }
-.category-control select { flex: 1; min-width: 0; }
+.category-select { position: relative; flex: 1; min-width: 0; }
+.category-select select { appearance: none; -webkit-appearance: none; padding-right: 2.75rem; }
+.category-select svg { position: absolute; right: 1rem; top: 50%; width: 1.1rem; height: 1.1rem; transform: translateY(-50%); pointer-events: none; color: var(--ink); }
+@media (forced-colors: active) {
+  .category-select select { appearance: auto; -webkit-appearance: auto; }
+  .category-select svg { display: none; }
+}
 .catalogue { scroll-margin-top: 10rem; }
 .result-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 4rem; }
 .count { margin: 0; color: var(--muted); font-size: 0.875rem; }
