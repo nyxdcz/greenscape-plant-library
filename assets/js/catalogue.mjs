@@ -1,12 +1,13 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-references2';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-references2';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-references2';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-references2';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-references2';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-submissions1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-submissions1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-submissions1';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-submissions1';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-submissions1';
 
-import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-references2';
+import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-submissions1';
 
-import { plantReference } from './catalogue-reference.mjs?v=catalogue-references2';
+import { plantReference } from './catalogue-reference.mjs?v=catalogue-submissions1';
+import { openSubmission } from './catalogue-submission.mjs?v=catalogue-submissions1';
 
 trackInputModality(document);
 
@@ -317,7 +318,7 @@ function openPlant(plant, { edit = false, trigger = null, saved = false } = {}) 
   sheetEl.innerHTML = `<div class="panel ${edit ? 'panel-edit' : 'panel-detail'}">
     <div class="panel-header"><div>${!edit ? `<p class="dialog-category">${escapeHtml(plant.category)}</p>` : ''}<h2 id="plant-title" tabindex="-1" autofocus>${escapeHtml(title)}</h2>${!edit && plant.latin ? `<p class="hint latin ${isMaterial(plant) ? 'material-description' : ''}">${escapeHtml(plant.latin)}</p>` : ''}</div><button class="ghost" type="button" id="close">Close</button></div>
     <div class="panel-scroll"><div class="panel-body">${body}</div></div>
-    <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? `<button class="primary" type="submit" form="edit-form" id="save-plant">Save ${isMaterial(plant) ? 'material' : 'plant'}</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>` : `<button class="primary" type="button" id="copy-record" aria-label="Copy record"><span data-copy-label>Copy record</span></button><button class="ghost" type="button" id="edit">Edit ${isMaterial(plant) ? 'material' : 'plant'}</button>`}</div></div>
+    <div class="panel-footer"><p id="copy-status" class="feedback" role="status" ${saved ? '' : 'hidden'}>${saved ? 'Saved in this browser on this device.' : ''}</p><p id="save-error" class="error" role="alert" tabindex="-1" hidden></p><div class="actions">${edit ? `<button class="primary" type="submit" form="edit-form" id="save-plant">Save ${isMaterial(plant) ? 'material' : 'plant'}</button><button class="ghost" type="button" id="cancel-edit">Cancel</button>` : `<button class="primary" type="button" id="copy-record" aria-label="Copy record"><span data-copy-label>Copy record</span></button><button class="ghost" type="button" id="edit">Suggest a correction</button>`}</div></div>
   </div>`;
   document.body.style.overflow = 'hidden';
   if (opening) sheetEl.showModal();
@@ -461,7 +462,7 @@ sheetEl.addEventListener('click', event => {
   const copyButton = event.target.closest('[data-copy]');
   if (copyButton) { void copyField(copyButton); return; }
   if (event.target === sheetEl || event.target.id === 'close') { closePlant(); return; }
-  if (event.target.id === 'edit') { openPlant(currentPlant(), { edit: true }); return; }
+  if (event.target.id === 'edit') { void openSubmission({ plant: currentPlant(), categories: ORDER, trigger: event.target }); return; }
   if (event.target.id === 'cancel-edit') {
     if (currentPlant()) openPlant(currentPlant());
     else closePlant();
@@ -528,7 +529,7 @@ sheetEl.addEventListener('submit', event => {
   openPlant(currentPlant(), { saved: true });
 });
 
-addEl.addEventListener('click', () => openPlant({ id: `custom-${crypto.randomUUID()}`, name: '', latin: '', category: categoryEl.value !== 'All' ? categoryEl.value : scope === 'materials' ? 'Landscape Materials' : ORDER[0], code: '', image: '', sizes: [''], material: '' }, { edit: true, trigger: addEl }));
+addEl.addEventListener('click', () => { void openSubmission({ categories: ORDER, category: categoryEl.value !== 'All' ? categoryEl.value : '', trigger: addEl }); });
 scopeButtons.forEach(button => button.addEventListener('click', () => {
   scope = button.dataset.scope;
   updateCategories();
