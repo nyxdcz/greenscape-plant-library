@@ -26,6 +26,8 @@ Copy image is available below a loaded record photo and in the enlarged viewer. 
 
 The list uses generated 160-pixel thumbnails while details, enlargement, and Copy image retain original photographs. Search groups rapid inputs into one update per animation frame and reuses result rows and photos. `npm run thumbnails:check` checks every derivative against its original; the CSV-sync workflow regenerates thumbnails before publishing catalogue changes. See [performance changes and verification](docs/catalogue-performance.md).
 
+Plant details link to researched botanical information pages instead of the raw image URL. A matching reference is available for 117 published plants; the other 103 use a Google search containing their common and scientific names. New records and identity edits also use Google until a matching reference is checked. See [reference selection and verification](docs/plant-references.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ### Website validation and publishing

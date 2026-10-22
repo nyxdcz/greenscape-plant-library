@@ -1,10 +1,12 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-controls1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-controls1';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-controls1';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-controls1';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-controls1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-references1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-references1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-references1';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-references1';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-references1';
 
-import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-controls1';
+import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-references1';
+
+import { plantReference } from './catalogue-reference.mjs?v=catalogue-references1';
 
 trackInputModality(document);
 
@@ -244,8 +246,16 @@ function plantDetails(plant) {
     fieldRow('Material', plant.material)
   ].join('');
   const sizes = plant.sizes.length ? `<div class="size-options">${plant.sizes.map(sizeOption).join('')}</div>` : '<p class="hint">No sizes have been recorded.</p>';
-  const reference = plant.image ? `<details class="image-reference"><summary>Image reference</summary>${fieldRow('Image link', imageSrc(plant.image))}</details>` : '';
+  const reference = referenceMarkup(plant);
   return `<div class="detail-layout"><div class="detail-photo">${photoMarkup(plant, true)}${plant.image ? `<div class="photo-actions" hidden><button type="button" class="ghost" id="enlarge-photo">Enlarge reference photo</button><button type="button" class="ghost" data-copy-image>Copy image</button></div><p class="photo-copy-status feedback" role="status" hidden></p>` : ''}</div><div class="detail-information"><section class="detail-section" aria-labelledby="identity-title"><h3 id="identity-title">${material ? 'Material information' : 'Plant information'}</h3>${identity}</section><section class="detail-section" aria-labelledby="sizes-title"><h3 id="sizes-title">Recorded sizes</h3>${sizes}</section>${reference}</div></div>`;
+}
+
+function referenceMarkup(plant) {
+  const reference = plantReference(plant);
+  if (!reference) return '';
+  const verified = reference.kind === 'reference';
+  const label = verified ? 'Read plant reference' : 'Search Google';
+  return `<section class="detail-section plant-reference" aria-labelledby="reference-title"><h3 id="reference-title">Plant reference</h3><p class="hint">${verified ? escapeHtml(reference.source) : 'No confirmed reference yet. Search Google for this plant.'}</p><a class="ghost reference-link" href="${escapeHtml(reference.url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> for ${escapeHtml(plant.name)} (opens in a new tab)</span></a></section>`;
 }
 
 function editField(label, name, value, extra = '') {

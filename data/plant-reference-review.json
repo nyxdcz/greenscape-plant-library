@@ -1,0 +1,1996 @@
+[
+  {
+    "id": "bam-014",
+    "name": "Bayog",
+    "latin": "Bambusa merrilliana",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-002",
+    "name": "Black Bamboo",
+    "latin": "Gigantochloa atroviolacea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-013",
+    "name": "Buho",
+    "latin": "Schizostachyum lumampao",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-003",
+    "name": "Chinese Bamboo",
+    "latin": "Bambusa vulgaris",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/6/3600",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "bam-010",
+    "name": "Iron Bamboo",
+    "latin": "Guadua angustifolia Kunth",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-015",
+    "name": "Long Pipe Bamboo",
+    "latin": "Neololeba atra",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/7/0/7086",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "bam-011",
+    "name": "Longpipe Bamboo",
+    "latin": "Bambusa atra Lindley",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-009",
+    "name": "Muscle Bamboo",
+    "latin": "Bambusa wamin",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-001",
+    "name": "Pole Bamboo",
+    "latin": "Thyrsostachys siamensis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/4/7/4791",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "bam-005",
+    "name": "Shiroshima Bamboo",
+    "latin": "× Phyllosasa tranquillans 'Shiroshima'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-004",
+    "name": "Thai Bamboo",
+    "latin": "Bambusa dolichomerithalla",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-006",
+    "name": "Variegated Bamboo",
+    "latin": "Bambusa multiplex 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "bam-008",
+    "name": "Yellow Bamboo",
+    "latin": "Bambusa vulgaris",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "clf-023",
+    "name": "Bird's Nest Fern",
+    "latin": "Asplenium musifolium",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-004",
+    "name": "Bleeding Heart",
+    "latin": "Lamprocapnos spectabilis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/lamprocapnos-spectabilis/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-014",
+    "name": "Blue Ternate",
+    "latin": "Clitoria ternatea",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/clitoria-ternatea/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-002",
+    "name": "Bogambilya",
+    "latin": "Bougainvillea spectabilis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/bougainvillea-spectabilis/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-010",
+    "name": "Bridal Bouquet",
+    "latin": "Stephanotis floribunda",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1504",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-005",
+    "name": "Chilean Jasmine",
+    "latin": "Mandevilla laxa",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-016",
+    "name": "Cobra Fern",
+    "latin": "Asplenium nidus 'Cobra'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-021",
+    "name": "Cross Ferns",
+    "latin": "Nephrolepis falcata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1555",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-018",
+    "name": "Fern Tree",
+    "latin": "Cyathea medullaris",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-006",
+    "name": "Garlic Vine",
+    "latin": "Mansoa alliacea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-017",
+    "name": "Giant Ferns",
+    "latin": "Angiopteris evecta",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1539",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-020",
+    "name": "Macho Fern",
+    "latin": "Nephrolepis biserrata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1554",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-011",
+    "name": "Millionaire Vine",
+    "latin": "Cissus verticillata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/6/0/6023",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-013",
+    "name": "Passion Fruit",
+    "latin": "Passiflora edulis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-022",
+    "name": "Peruvian Fern",
+    "latin": "Nephrolepis pendula",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-015",
+    "name": "Purple Allamanda",
+    "latin": "Allamanda blanchetii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/3/1302",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-001",
+    "name": "Rangoon Creeper",
+    "latin": "Combretum indicum",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/4/1497",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-019",
+    "name": "Sampalok Fern",
+    "latin": "Nephrolepis cordifolia",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/nephrolepis-cordifolia/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-009",
+    "name": "Sandpaper Vine",
+    "latin": "Petrea volubilis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/4/1471",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-008",
+    "name": "Singaporean Vine",
+    "latin": "Tarlmounia elliptica",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "clf-012",
+    "name": "Thunbergia Purple",
+    "latin": "Thunbergia grandiflora",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1520",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-007",
+    "name": "White Thunbergia Vine",
+    "latin": "Thunbergia grandiflora 'Alba'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/5/1521",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "clf-003",
+    "name": "Yellow Bell",
+    "latin": "Allamanda cathartica",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/3/1303",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-009",
+    "name": "Agave Green",
+    "latin": "Furcraea foetida",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-008",
+    "name": "Agave Magie",
+    "latin": "Agave attenuata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-012",
+    "name": "Blue Agave",
+    "latin": "Agave tequilana",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/6/1606",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-005",
+    "name": "Chinese Fern Cycad",
+    "latin": "Cycas debaoensis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-001",
+    "name": "Dioon edule",
+    "latin": "Dioon edule",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-014",
+    "name": "Green Yucca",
+    "latin": "Yucca gloriosa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2566",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-004",
+    "name": "Maputaland Cycad",
+    "latin": "Encephalartos ferox",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/7/1/7187",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-002",
+    "name": "Pitogo",
+    "latin": "Cycas curranii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-015",
+    "name": "Ponytail Palm",
+    "latin": "Beaucarnea recurvata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/2/2269",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-003",
+    "name": "Sago Palm",
+    "latin": "Cycas revoluta",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/5/1/5108",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "cay-013",
+    "name": "Silver Yucca",
+    "latin": "Yucca gigantea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "cay-006",
+    "name": "Twin-flowered Agave",
+    "latin": "Agave geminiflora",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-007",
+    "name": "Variegated Century Plant",
+    "latin": "Agave americana 'Marginata'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-011",
+    "name": "Variegated Furcraea",
+    "latin": "Furcraea selloa",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "cay-010",
+    "name": "Variegated Mauritius Hemp",
+    "latin": "Furcraea foetida 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ggc-001",
+    "name": "Bermuda Grass",
+    "latin": "Cynodon dactylon",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/9/1919",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-003",
+    "name": "Blue Grass",
+    "latin": "Poa pratensis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/poa-pratensis/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-015",
+    "name": "Boat of Moses",
+    "latin": "Tradescantia spathacea",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2524",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-002",
+    "name": "Carabao Grass",
+    "latin": "Paspalum conjugatum",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/4/5/4520",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-004",
+    "name": "Frog Grass",
+    "latin": "Axonopus compressus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/7/1711",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-010",
+    "name": "Kyoto Grass",
+    "latin": "Ophiopogon japonicus 'Kyoto Dwarf'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/2/2280",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-005",
+    "name": "Manila Grass",
+    "latin": "Zoysia matrella",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2576",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-014",
+    "name": "Mondo grass",
+    "latin": "Ophiopogon japonicus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/8/5/8542",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-009",
+    "name": "Ophiopogon grass Green",
+    "latin": "Ophiopogon japonicus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/8/5/8542",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-011",
+    "name": "Ophiopogon grass White",
+    "latin": "Ophiopogon japonicus 'Vittatus'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ggc-006",
+    "name": "Peanut Grass",
+    "latin": "Arachis pintoi",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/6/1684",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-008",
+    "name": "Pilea",
+    "latin": "Pilea nummulariifolia",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/4/1489",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-012",
+    "name": "Silver Wall",
+    "latin": "Dianella tasmanica 'Silver Streak'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ggc-013",
+    "name": "Spiny Pandan",
+    "latin": "Pandanus pygmaeus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/3/2301",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ggc-007",
+    "name": "Wedelia",
+    "latin": "Sphagneticola trilobata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/sphagneticola-trilobata/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-015",
+    "name": "Adansonii",
+    "latin": "Monstera adansonii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://gardeningsg.nparks.gov.sg/gardening-resource-library/adansons-monstera/",
+    "source": "NParks GardeningSG",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-018",
+    "name": "Billietiae",
+    "latin": "Philodendron billietiae",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/6/9/6937",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-028",
+    "name": "Birkin",
+    "latin": "Philodendron 'Birkin'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/philodendron-birkin/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-002",
+    "name": "Black Cardinal",
+    "latin": "Philodendron 'Black Cardinal'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-034",
+    "name": "Bright Star",
+    "latin": "Murdannia edulis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-019",
+    "name": "Burle Marx",
+    "latin": "Philodendron burle-marxii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-035",
+    "name": "Calathea Roseolineata",
+    "latin": "Goeppertia ornata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "ind-036",
+    "name": "Calathea Sanderiana",
+    "latin": "Goeppertia ornata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "ind-038",
+    "name": "Calathea Silver Plate",
+    "latin": "Goeppertia roseopicta 'Silver Plate'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-039",
+    "name": "Calathea Zebrina",
+    "latin": "Goeppertia zebrina",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/7/1767",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-024",
+    "name": "Giganteum Blizzard",
+    "latin": "Philodendron giganteum 'Blizzard'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-025",
+    "name": "Golden Melinonii",
+    "latin": "Philodendron melinonii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-011",
+    "name": "Golden Pothos",
+    "latin": "Epipremnum aureum",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/3/1390",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-023",
+    "name": "Green Giganteum",
+    "latin": "Philodendron giganteum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-001",
+    "name": "Green Melinonii",
+    "latin": "Philodendron melinonii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-013",
+    "name": "Green Shield",
+    "latin": "Schismatoglottis wallichii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/4/2442",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-014",
+    "name": "Homalomena Red",
+    "latin": "Homalomena rubescens",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/1/2106",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-009",
+    "name": "Marble Queen",
+    "latin": "Epipremnum aureum 'Marble Queen'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-016",
+    "name": "Monstera",
+    "latin": "Monstera deliciosa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/4/1453",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-017",
+    "name": "Monstera Peru",
+    "latin": "Monstera karstenianum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-010",
+    "name": "Neon",
+    "latin": "Epipremnum aureum 'Neon'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/3/1391",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-031",
+    "name": "Peace Lily",
+    "latin": "Spathiphyllum wallisii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/4/2465",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-032",
+    "name": "Peace Lily Silver",
+    "latin": "Spathiphyllum wallisii 'Silver Streak'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-026",
+    "name": "Philodendron Lime Fiddle",
+    "latin": "Philodendron minarum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-030",
+    "name": "Philodendron Mexicanum",
+    "latin": "Philodendron mexicanum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-027",
+    "name": "Pink Princess",
+    "latin": "Philodendron erubescens 'Pink Princess'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-029",
+    "name": "Prince of Orange",
+    "latin": "Philodendron 'Prince of Orange'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-003",
+    "name": "Red Congo",
+    "latin": "Philodendron 'Rojo Congo'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-022",
+    "name": "Redleaf",
+    "latin": "Philodendron cruentum",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/8/2/8266",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-021",
+    "name": "Ring of Fire",
+    "latin": "Philodendron 'Ring of Fire'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-006",
+    "name": "Rudolph Roehrs",
+    "latin": "Dieffenbachia seguine",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "ind-012",
+    "name": "Silver Shield",
+    "latin": "Homalomena crinipes",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-037",
+    "name": "Silver Variegated",
+    "latin": "Goeppertia picturata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "ind-008",
+    "name": "Star Bright",
+    "latin": "Dieffenbachia 'Star Bright'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-040",
+    "name": "Stromanthe Triostar",
+    "latin": "Stromanthe sanguinea 'Triostar'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-007",
+    "name": "Tropic Snow",
+    "latin": "Dieffenbachia seguine",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "ind-020",
+    "name": "Variegated Burle Marx",
+    "latin": "Philodendron burle-marxii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "ind-033",
+    "name": "Variegated Clusia",
+    "latin": "Clusia rosea 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/8/2816",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-004",
+    "name": "Velvet Leaf Anthurium",
+    "latin": "Anthurium clarinervium",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/7/3/7318",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "ind-005",
+    "name": "Wave of Love",
+    "latin": "Anthurium plowmanii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/6/1678",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-014",
+    "name": "African Oil Palm",
+    "latin": "Elaeis guineensis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2625",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-029",
+    "name": "Anahaw",
+    "latin": "Saribus rotundifolius",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2653",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-036",
+    "name": "Bear (Redneck) palm",
+    "latin": "Dypsis leptocheilos",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-032",
+    "name": "Blue Palm",
+    "latin": "Dypsis decaryi",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-028",
+    "name": "Bottle Palm",
+    "latin": "Hyophorbe lagenicaulis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2631",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-037",
+    "name": "Bunga",
+    "latin": "Areca catechu",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-022",
+    "name": "Carpentaria Palm",
+    "latin": "Carpentaria acuminata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2606",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-020",
+    "name": "Date Palm",
+    "latin": "Phoenix dactylifera",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/4/3414",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-023",
+    "name": "Everglades Palm/paurotis",
+    "latin": "Acoelorrhaphe wrightii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-026",
+    "name": "Fishtail Palm",
+    "latin": "Caryota mitis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/caryota-mitis/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-001",
+    "name": "Foxtail Palm",
+    "latin": "Wodyetia bifurcata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2691",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-035",
+    "name": "Golden Betcha Palm",
+    "latin": "Adonidia merrillii 'Golden'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-038",
+    "name": "Golden Dwarf Coconut",
+    "latin": "Cocos nucifera",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "pal-007",
+    "name": "Green Bismarck Palm",
+    "latin": "Bismarckia nobilis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "pal-033",
+    "name": "Henry Palm",
+    "latin": "Pelagodoxa henryana",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/4/5/4523",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-013",
+    "name": "Ivory Palm",
+    "latin": "Pinanga coronata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2668",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-030",
+    "name": "King Palm",
+    "latin": "Archontophoenix cunninghamiana",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-009",
+    "name": "Licuala Grandis",
+    "latin": "Licuala grandis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/5/1/5102",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-011",
+    "name": "Licuala Ramsayi",
+    "latin": "Licuala ramsayi",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2646",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-010",
+    "name": "Licuala Spinosa",
+    "latin": "Licuala spinosa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/5/1/5129",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-004",
+    "name": "Macarthur Palm",
+    "latin": "Ptychosperma macarthurii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2673",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-003",
+    "name": "Madagascar Palm",
+    "latin": "Dypsis madagascariensis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-034",
+    "name": "Manila Palm",
+    "latin": "Veitchia merrillii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/adonidia-merrillii/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "The source explicitly lists the catalogue scientific name under Previously known as."
+  },
+  {
+    "id": "pal-024",
+    "name": "Palawan Pinanga",
+    "latin": "Pinanga curranii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-005",
+    "name": "Palmera",
+    "latin": "Dypsis lutescens",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/chrysalidocarpus-lutescens/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "The source explicitly lists the catalogue scientific name under Previously known as."
+  },
+  {
+    "id": "pal-006",
+    "name": "Parlor Palm",
+    "latin": "Chamaedorea seifrizii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "pal-019",
+    "name": "Phoenix Palm",
+    "latin": "Phoenix roebelenii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/phoenix-roebelenii/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-031",
+    "name": "Queens Palm",
+    "latin": "Syagrus romanzoffiana",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-012",
+    "name": "Red Palm",
+    "latin": "Cyrtostachys renda",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2618",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-017",
+    "name": "Rhapis Dwarf",
+    "latin": "Rhapis multifida",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "pal-015",
+    "name": "Rhapis Palm",
+    "latin": "Rhapis excelsa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2676",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-016",
+    "name": "Rhapis Variegated",
+    "latin": "Rhapis excelsa 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-002",
+    "name": "Royal Palm",
+    "latin": "Roystonea regia",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2682",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-027",
+    "name": "Sagisi Palm",
+    "latin": "Orania decipiens",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "pal-021",
+    "name": "Salak Palm",
+    "latin": "Salacca zalacca",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/2/3289",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "pal-008",
+    "name": "Silver Bismarck Palm",
+    "latin": "Bismarckia nobilis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2600",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "The source explicitly names this common-name cultivar/form as well as its parent species."
+  },
+  {
+    "id": "pal-018",
+    "name": "Stilt root Palm",
+    "latin": "Verschaffeltia splendida",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/6/2689",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-038",
+    "name": "Ara Hamerang",
+    "latin": "Ficus padana",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-042",
+    "name": "Balete",
+    "latin": "Ficus benjamina",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2902",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-024",
+    "name": "Blue Iris",
+    "latin": "Iris spuria",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/iris-spuria/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-028",
+    "name": "Boat of Moses",
+    "latin": "Tradescantia spathacea",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2524",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-022",
+    "name": "Bogambilya",
+    "latin": "Bougainvillea glabra",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/7/0/7059",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-007",
+    "name": "Caballero",
+    "latin": "Caesalpinia pulcherrima",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/caesalpinia-pulcherrima/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-002",
+    "name": "Calathea Tobacco",
+    "latin": "Goeppertia lutea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-043",
+    "name": "Chinese Banyan",
+    "latin": "Ficus sp. 'Compacta'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-025",
+    "name": "Cinamomo",
+    "latin": "Aglaia odorata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-020",
+    "name": "Don Manuel",
+    "latin": "Hamelia patens",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/0/2058",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-005",
+    "name": "Dwarf Kamuning",
+    "latin": "Murraya paniculata",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-008",
+    "name": "Dwarf Santan",
+    "latin": "Ixora coccinea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-001",
+    "name": "Eugenia",
+    "latin": "Syzygium myrtifolium",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3156",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-037",
+    "name": "Ficus microcarpa",
+    "latin": "Ficus microcarpa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2912",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-046",
+    "name": "Firecracker Plant",
+    "latin": "Russelia equisetiformis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/4/2406",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-012",
+    "name": "Golden Duranta",
+    "latin": "Duranta erecta",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-036",
+    "name": "Golden Ficus",
+    "latin": "Ficus microcarpa 'Golden'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2913",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-017",
+    "name": "Golden Lily",
+    "latin": "Crinum xanthophyllum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-010",
+    "name": "Golden Miagos",
+    "latin": "Osmoxylon lineare",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-030",
+    "name": "Golden Schefflera",
+    "latin": "Schefflera arboricola",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-041",
+    "name": "Green Ficus triangularis",
+    "latin": "Ficus deltoidea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-048",
+    "name": "Green Polyscias",
+    "latin": "Polyscias guilfoylei",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-031",
+    "name": "Green Schefflera",
+    "latin": "Heptapleurum arboricola",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/4/2432",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-032",
+    "name": "Green Tuhod Manok",
+    "latin": "Justicia gendarussa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/1/2159",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-034",
+    "name": "Hibiscus Variegated",
+    "latin": "Hibiscus cooperii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-009",
+    "name": "Hong Kong Santan",
+    "latin": "Ixora chinensis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-004",
+    "name": "Kamuning",
+    "latin": "Murraya paniculata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/2/2239",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-026",
+    "name": "Matdo",
+    "latin": "Suregada multiflora",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-050",
+    "name": "Moradong Dilaw",
+    "latin": "Pseuderanthemum reticulatum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-013",
+    "name": "Pandakaki Green",
+    "latin": "Tabernaemontana pandacaqui",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/6/3/6388",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-016",
+    "name": "Parrot Plant",
+    "latin": "Heliconia psittacorum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-011",
+    "name": "Podo Maki",
+    "latin": "Podocarpus macrophyllus",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-029",
+    "name": "Powder Puff",
+    "latin": "Calliandra haematocephala",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/7/1768",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-003",
+    "name": "Red Acalypha",
+    "latin": "Acalypha wilkesiana",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/acalypha-wilkesiana/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-015",
+    "name": "Red Picara",
+    "latin": "Excoecaria cochinchinensis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/0/2010",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-018",
+    "name": "Rosal",
+    "latin": "Gardenia jasminoides",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/4/2/4216",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-045",
+    "name": "Shanghai Beauty",
+    "latin": "Jatropha integerrima",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/1/2152",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-014",
+    "name": "Silver Pandakaki",
+    "latin": "Tabernaemontana pandacaqui ‘Variegata’",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-023",
+    "name": "Song of India",
+    "latin": "Dracaena reflexa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/9/1964",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "The source explicitly names this common-name cultivar/form as well as its parent species."
+  },
+  {
+    "id": "shr-006",
+    "name": "Spider Lily",
+    "latin": "Hymenocallis littoralis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/1/2118",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-019",
+    "name": "Ti Plant",
+    "latin": "Cordyline fruticosa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/cordyline-fruticosa/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-027",
+    "name": "Variegated Costus",
+    "latin": "Cheilocostus speciosus 'Variegatus'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/1/8/1871",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-040",
+    "name": "Variegated Ficus triangularis",
+    "latin": "Ficus deltoidea",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-039",
+    "name": "Variegated Lemon Ficus",
+    "latin": "Ficus altissima",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "shr-021",
+    "name": "Variegated Rosal",
+    "latin": "Gardenia jasminoides 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/0/2026",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-033",
+    "name": "Variegated Tuhod-Manok",
+    "latin": "Justicia gendarussa 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/1/2160",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "shr-044",
+    "name": "White Oleander",
+    "latin": "Nerium oleander",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-047",
+    "name": "White Polyscias",
+    "latin": "Polyscias guilfoylei",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "shr-049",
+    "name": "Yellow Iris",
+    "latin": "Iris pseudacorus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/iris-pseudacorus/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-001",
+    "name": "African Talisay",
+    "latin": "Terminalia mantaly",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2762",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-005",
+    "name": "African Tulip",
+    "latin": "Spathodea campanulata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3132",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-025",
+    "name": "Aguho Tree",
+    "latin": "Casuarina equisetifolia",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2793",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-024",
+    "name": "Alii Fig",
+    "latin": "Ficus maclellandii",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/4/1/4171",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-008",
+    "name": "Bagras",
+    "latin": "Eucalyptus deglupta",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/8/2886",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-003",
+    "name": "Balitbitan Tree",
+    "latin": "Cynometra ramiflora",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/8/2834",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-007",
+    "name": "Banaba Tree",
+    "latin": "Lagerstroemia speciosa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/lagerstroemia-speciosa/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-027",
+    "name": "Bitaog Tree",
+    "latin": "Calophyllum inophyllum",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2774",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-011",
+    "name": "Bitoon Tree",
+    "latin": "Barringtonia asiatica",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2744",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-023",
+    "name": "Bunog Tree",
+    "latin": "Garcinia benthamii",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-013",
+    "name": "Calachuchi Red",
+    "latin": "Plumeria rubra",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "Common name, colour, dwarf form, or named variety needs confirmation."
+  },
+  {
+    "id": "tre-012",
+    "name": "Calachuchi White",
+    "latin": "Plumeria obtusa",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-014",
+    "name": "Chestnut Tree",
+    "latin": "Castanea sativa",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/castanea-sativa/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-016",
+    "name": "Dita Tree",
+    "latin": "Alstonia scholaris",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-015",
+    "name": "Esperanza Tree",
+    "latin": "Tecoma stans",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3177",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-018",
+    "name": "Golden Legumes",
+    "latin": "Desmodium gangeticum",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-020",
+    "name": "Golden Shower",
+    "latin": "Cassia fistula",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2787",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-017",
+    "name": "Japanese Fern Tree",
+    "latin": "Filicium decipiens",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2918",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-010",
+    "name": "Katmon",
+    "latin": "Dillenia philippinensis",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/8/2845",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-028",
+    "name": "Malakatmon",
+    "latin": "Dillenia luzoniensis",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-022",
+    "name": "Malobago Tree",
+    "latin": "Hibiscus tiliaceus",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2954",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-009",
+    "name": "Monkey Puzzle Tree",
+    "latin": "Araucaria araucana",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://plants.ces.ncsu.edu/plants/araucaria-araucana/",
+    "source": "NC State Extension Plant Toolbox",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-004",
+    "name": "Palawan Cherry",
+    "latin": "Cassia javanica",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-006",
+    "name": "Pink Shower Tree",
+    "latin": "Cassia nodosa",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-021",
+    "name": "Rubber Plant",
+    "latin": "Ficus elastica Roxb.",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2906",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-026",
+    "name": "Tabebuia",
+    "latin": "Tabebuia heterophylla",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3170",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  },
+  {
+    "id": "tre-002",
+    "name": "Variegated African Talisay",
+    "latin": "Terminalia mantaly 'Variegata'",
+    "checkedAt": "2026-10-22",
+    "status": "google",
+    "reason": "No unambiguous information-page match confirmed in the searched botanical sources."
+  },
+  {
+    "id": "tre-019",
+    "name": "Ylang-Ylang",
+    "latin": "Cananga odorata",
+    "checkedAt": "2026-10-22",
+    "status": "reference",
+    "url": "https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2779",
+    "source": "NParks Flora & Fauna Web",
+    "reason": "Matching scientific name and a plant-information page; named forms and documented synonyms checked separately."
+  }
+]
