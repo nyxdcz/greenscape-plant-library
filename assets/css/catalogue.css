@@ -17,6 +17,8 @@ button, select, input { font: inherit; }
 button, select { cursor: pointer; }
 button:disabled, input:disabled, select:disabled { cursor: wait; opacity: 0.65; }
 :focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; }
+html[data-input-modality="pointer"] :focus-visible { outline: none; }
+#plant-title:focus, #photo-title:focus { outline: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 10; transform: translateY(-200%); padding: 0.75rem 1rem; background: var(--card); color: var(--forest); border-radius: 0.5rem; }
 .skip-link:focus { transform: none; }
@@ -94,7 +96,6 @@ li + li { border-top: 1px solid var(--line); }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--line); flex: none; }
 .panel-header > div { min-width: 0; }
 .panel h2 { margin: 0; font-size: 1.5rem; line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
-.panel h2:focus-visible { outline-offset: 4px; }
 .dialog-category { margin: 0 0 0.35rem; color: var(--muted); font-size: 0.8125rem; }
 .panel-header .hint { margin-top: 0.35rem; }
 .panel-header .ghost { flex: none; }

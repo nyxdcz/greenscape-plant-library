@@ -1,8 +1,12 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance-category2';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance-category2';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance-category2';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance-category2';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance-category2';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance-focus1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance-focus1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance-focus1';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance-focus1';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance-focus1';
+
+import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-performance-focus1';
+
+trackInputModality(document);
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
