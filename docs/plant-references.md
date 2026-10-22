@@ -31,3 +31,9 @@ These are local browser and source checks. Physical-device behavior and live dep
 ## Interface scope
 
 The selected Anti Slop refinement remains in place: cream and forest green, Outfit type, real catalogue photos, existing detail sections and button styling. The new link uses the existing Ghost control treatment with a 44-pixel minimum target. Native keyboard navigation, visible keyboard focus, pointer focus suppression, named dialogs and sticky actions remain intact. This change adds one useful reference action per plant without new decorative elements.
+
+## Collapsible reference follow-up
+
+Plant reference is a native details/summary dropdown, collapsed each time a plant is opened. Its existing botanical or Google action is revealed on demand, reducing the default details-panel height. The native marker communicates the open/closed state without another icon asset or custom toggle script. The summary has a minimum 44-pixel target and inherits the catalogue keyboard-focus style; tap, mouse, Enter and Space use native disclosure behavior. The reference matching and external-link destinations are unchanged.
+
+Follow-up verification: the full quality suite still passes 87 tests. In local Brave, 42 assertions passed at 320, 390 and 1080 CSS pixels for both researched and Google-fallback records: collapsed initial state, hidden link, 44-pixel disclosure target, click expansion/collapse, retained destinations and no horizontal overflow. Native Enter expanded the focused summary and Space collapsed it; the external link appeared and disappeared in the accessibility tree. Physical-device and live-deployment checks remain separate.

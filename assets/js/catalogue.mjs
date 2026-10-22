@@ -1,12 +1,12 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-references1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-references1';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-references1';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-references1';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-references1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-references2';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-references2';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-references2';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-references2';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-references2';
 
-import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-references1';
+import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-references2';
 
-import { plantReference } from './catalogue-reference.mjs?v=catalogue-references1';
+import { plantReference } from './catalogue-reference.mjs?v=catalogue-references2';
 
 trackInputModality(document);
 
@@ -255,7 +255,7 @@ function referenceMarkup(plant) {
   if (!reference) return '';
   const verified = reference.kind === 'reference';
   const label = verified ? 'Read plant reference' : 'Search Google';
-  return `<section class="detail-section plant-reference" aria-labelledby="reference-title"><h3 id="reference-title">Plant reference</h3><p class="hint">${verified ? escapeHtml(reference.source) : 'No confirmed reference yet. Search Google for this plant.'}</p><a class="ghost reference-link" href="${escapeHtml(reference.url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> for ${escapeHtml(plant.name)} (opens in a new tab)</span></a></section>`;
+  return `<details class="detail-section plant-reference"><summary>Plant reference</summary><p class="hint">${verified ? escapeHtml(reference.source) : 'No confirmed reference yet. Search Google for this plant.'}</p><a class="ghost reference-link" href="${escapeHtml(reference.url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> for ${escapeHtml(plant.name)} (opens in a new tab)</span></a></details>`;
 }
 
 function editField(label, name, value, extra = '') {
