@@ -1,0 +1,33 @@
+.submission-panel { max-width: 40rem; }
+.submission-panel form { display: flex; flex-direction: column; min-height: 0; }
+.submission-panel .panel-header { flex: none; }
+.submission-panel .panel-footer .actions { justify-content: flex-end; }
+.submission-panel .panel-footer button { flex: 1; min-width: 0; }
+.submission-panel .hint { font-size: 0.8125rem; }
+.submission-identity { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 0.75rem; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.submission-identity strong { font-weight: 500; }
+.submission-fields { display: grid; gap: 1rem; margin-top: 1.25rem; }
+.submission-field { min-width: 0; }
+.submission-label { margin-bottom: 0.4rem; font-size: 0.875rem; font-weight: 500; }
+.submission-label label { display: flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; }
+.submission-label input { width: 1.15rem; height: 1.15rem; margin: 0; accent-color: var(--forest); flex: none; }
+.submission-label .hint { margin: 0.1rem 0 0; overflow-wrap: anywhere; font-weight: 400; }
+.submission-value { min-width: 0; }
+.submission-value > input, .submission-value > select { display: block; width: 100%; min-width: 0; min-height: 3rem; border: 1px solid var(--control-line); border-radius: 0.5rem; padding: 0.6rem 0.75rem; background: var(--card); color: var(--ink); font: inherit; font-size: 1rem; }
+.submission-value > input::placeholder { color: var(--muted); opacity: 1; }
+.submission-value > input:disabled, .submission-value > select:disabled { opacity: 1; background: var(--paper); color: var(--muted); cursor: default; }
+.submission-value input[type=file] { min-height: 3rem; padding: 0.5rem; overflow-wrap: anywhere; font-size: 0.8125rem; }
+.submission-value input::file-selector-button { min-height: 2.75rem; padding: 0.5rem 0.75rem; margin-right: 0.5rem; border: 1px solid var(--control-line); border-radius: 0.4rem; background: var(--chip); color: var(--ink); font: inherit; }
+.submission-required { color: var(--muted); font-size: 0.75rem; font-weight: 400; }
+.submission-correction .submission-field { padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.submission-recipient { margin: 1.25rem 0 0.35rem; font-size: 0.875rem; }
+.submission-recipient strong { font-weight: 500; }
+.submission-panel a { color: var(--forest); }
+.submission-panel #submission-feedback { margin-top: 1rem; }
+.submission-panel #submission-title:focus { outline: none; }
+@media (min-width: 560px) {
+  .submission-add .submission-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .submission-add .submission-image, .submission-add .submission-sizes { grid-column: 1 / -1; }
+  .submission-correction .submission-field { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 1rem; align-items: center; }
+  .submission-panel .panel-footer button { flex: none; }
+}
