@@ -1,10 +1,10 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance-focus1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance-focus1';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance-focus1';
-import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance-focus1';
-import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance-focus1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-controls1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-controls1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-controls1';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-controls1';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-controls1';
 
-import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-performance-focus1';
+import { trackInputModality } from './catalogue-focus.mjs?v=catalogue-controls1';
 
 trackInputModality(document);
 

@@ -20,6 +20,8 @@ Open [the interface style comparison](style-comparison.html) to switch between t
 
 The selected refinement adds a compact phone header, All/Plants/Materials controls, exact-match search ranking and safe match highlights, Copy record, and an enlarged reference-photo viewer with zoom and keyboard panning. See [browsing refinement decisions and verification](docs/catalogue-browsing-refinements.md).
 
+Add plant sits beside the category selector on phone and desktop. Search, category, and the add action have matching heights; the phone places search on the row above.
+
 Copy image is available below a loaded record photo and in the enlarged viewer. It copies the full photograph as PNG image data for pasting into an app that accepts images. If the browser blocks copying, Open original photo provides a manual copy/save option. See [image-copy behavior and verification](docs/catalogue-image-copy.md).
 
 The list uses generated 160-pixel thumbnails while details, enlargement, and Copy image retain original photographs. Search groups rapid inputs into one update per animation frame and reuses result rows and photos. `npm run thumbnails:check` checks every derivative against its original; the CSV-sync workflow regenerates thumbnails before publishing catalogue changes. See [performance changes and verification](docs/catalogue-performance.md).
