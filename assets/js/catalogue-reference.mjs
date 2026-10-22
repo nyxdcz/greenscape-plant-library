@@ -1,4 +1,4 @@
-import { PLANT_REFERENCES } from './catalogue-reference-data.mjs?v=catalogue-references2';
+import { PLANT_REFERENCES } from './catalogue-reference-data.mjs?v=catalogue-submissions1';
 
 const normalized = value => String(value ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
 

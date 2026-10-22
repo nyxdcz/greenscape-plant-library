@@ -6,7 +6,7 @@ import { validateCataloguePage } from './validate-catalogue.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const originalHtml = fs.readFileSync(`${root}index.html`, 'utf8');
-const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/catalogue-records.mjs', 'assets/js/catalogue-image.mjs', 'assets/js/catalogue-thumbnails.mjs', 'assets/js/catalogue-render.mjs', 'assets/js/catalogue-focus.mjs', 'assets/js/catalogue-reference.mjs', 'assets/js/catalogue-reference-data.mjs', 'assets/js/data.js', 'assets/css/catalogue.css']
+const originalFiles = new Map(['assets/js/catalogue.mjs', 'assets/js/catalogue-store.mjs', 'assets/js/catalogue-records.mjs', 'assets/js/catalogue-image.mjs', 'assets/js/catalogue-thumbnails.mjs', 'assets/js/catalogue-render.mjs', 'assets/js/catalogue-focus.mjs', 'assets/js/catalogue-reference.mjs', 'assets/js/catalogue-reference-data.mjs', 'assets/js/catalogue-submission.mjs', 'assets/js/data.js', 'assets/css/catalogue.css', 'assets/css/catalogue-submission.css']
   .map(file => [file, fs.readFileSync(`${root}${file}`, 'utf8')]));
 
 function fixture() {
@@ -22,6 +22,14 @@ test('a missing application module is rejected', () => {
   const page = fixture();
   page.files.delete('assets/js/catalogue.mjs');
   assert.match(validateCataloguePage(page).join('\n'), /Missing catalogue module/);
+});
+
+test('missing submission code or styling cannot pass deployment validation', () => {
+  for (const file of ['assets/js/catalogue-submission.mjs', 'assets/css/catalogue-submission.css']) {
+    const page = fixture();
+    page.files.delete(file);
+    assert.ok(validateCataloguePage(page).some(message => /submission/.test(message)), file);
+  }
 });
 
 test('a missing transitive storage module is rejected', () => {

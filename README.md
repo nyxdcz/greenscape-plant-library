@@ -11,11 +11,11 @@ Greenscape’s catalogue of plants and landscape materials for landscape plannin
 - View original reference photos, enlarge them, and copy an image.
 - Read recorded sizes and copy individual fields or a complete record.
 - Expand Plant reference to open a researched botanical page or search Google when the identity is uncertain.
-- Add plants and edit records in your current browser.
+- Suggest a new plant or a correction for review by email.
 
-## Local edits and shared updates
+## Suggestions and shared updates
 
-**Add plant and Edit plant save changes in this browser on this device.** They do not update GitHub or other people’s copies of the catalogue. Browser storage can be cleared or unavailable.
+**Add plant and Suggest a correction send proposals to nyxdcz@gmail.com through FormSubmit.** Add plant requires a common name, scientific name, existing category, and uploaded image. Corrections send only selected fields with the original record for comparison. See [submission setup and email verification](docs/catalogue-submissions.md).
 
 To update the shared catalogue, use the repository’s plant-data publishing process below. Changes to the shared website become available after validation and deployment.
 
@@ -62,19 +62,3 @@ python3 -m http.server 8765
 Then visit `http://localhost:8765/`.
 
 Thumbnail generation has separate tooling requirements; see [performance and thumbnail maintenance](docs/catalogue-performance.md).
-
-## Validate and publish
-
-- **Website Quality** validates pull requests to `main`.
-- **Build Deployment Package and Deploy Pages** validates and publishes merged changes from `main`.
-- **Plant CSV Sync** maintains published plant data and thumbnails when catalogue submissions change.
-
-GitHub Pages uses GitHub Actions as its publishing source. Keep the current publishing workflow and plant-data checks together when changing this process. See [workflow operating notes](docs/workflow-consolidation.md).
-
-## Further reading
-
-- [Documentation index](docs/README.md)
-- [Plant references and Google fallback](docs/plant-references.md)
-- [Image copying and browser support](docs/catalogue-image-copy.md)
-- [Security policy](SECURITY.md)
-- [Previous README and dashboard update history](docs/archive/README-before-cleanup-2026-10-22.md)

@@ -12,7 +12,9 @@ The current website is the compact plant and landscape-material catalogue served
 | [Copying plant images](catalogue-image-copy.md) | Full-size image copying, browser support, and manual fallback |
 | [Plant references](plant-references.md) | Checked botanical links, Google fallback, and reference maintenance |
 
-Add and Edit changes made in the website are saved in the current browser on the current device. They do not publish updates to the shared catalogue.
+Add plant and Suggest a correction send proposals to nyxdcz@gmail.com through FormSubmit for review. They do not publish catalogue changes.
+
+See [plant suggestions and corrections](catalogue-submissions.md) for required fields, uploads, email activation, and delivery checks.
 
 ## Managing shared plant data
 
