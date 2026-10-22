@@ -94,7 +94,7 @@ li + li { border-top: 1px solid var(--line); }
 .notice button { width: 100%; }
 .sheet { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; padding: 0; margin: 0; border: 0; background: transparent; color: var(--ink); overflow: hidden; }
 .sheet[open] { display: flex; align-items: flex-end; justify-content: center; }
-.sheet::backdrop { background: rgba(26, 36, 28, 0.48); }
+.sheet::backdrop { background: rgba(26, 36, 28, 0.48); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .panel { display: flex; flex-direction: column; width: 100%; max-height: 94vh; max-height: calc(100dvh - 1rem); background: var(--card); border-radius: 1.25rem 1.25rem 0 0; overflow: hidden; }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--line); flex: none; }
 .panel-header > div { min-width: 0; }
@@ -140,7 +140,7 @@ li + li { border-top: 1px solid var(--line); }
 .photo-copy-status { margin: 0.75rem 0 0; overflow-wrap: anywhere; }
 .photo-copy-status a { color: var(--forest); }
 .photo-viewer { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--card); color: var(--ink); }
-.photo-viewer::backdrop { background: rgba(26, 36, 28, 0.75); }
+.photo-viewer::backdrop { background: rgba(26, 36, 28, 0.75); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .photo-view { display: flex; flex-direction: column; height: 100%; }
 .photo-view-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--line); }
 .photo-view-header h2 { min-width: 0; margin: 0; font-size: 1.125rem; font-weight: 600; overflow-wrap: anywhere; }
