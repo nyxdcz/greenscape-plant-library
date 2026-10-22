@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Catalogue row reuse tests</title>
+<h1>Catalogue row reuse tests</h1>
+<pre id="results">Running...</pre>
+<div id="fixture" hidden></div>
+<script type="module">
+  import { createRecordList } from '../../assets/js/catalogue-render.mjs';
+
+  const root = document.getElementById('fixture');
+  const checks = [];
+  function check(name, condition) {
+    checks.push(`${condition ? 'PASS' : 'FAIL'}: ${name}`);
+    if (!condition) throw new Error(name);
+  }
+  const create = record => {
+    const row = document.createElement('li');
+    const button = document.createElement('button');
+    button.dataset.id = record.id;
+    button.type = 'button';
+    const image = document.createElement('img');
+    const text = document.createElement('span');
+    text.textContent = record.name;
+    button.append(image, text);
+    row.append(button);
+    return row;
+  };
+  const update = (row, record, query) => { row.querySelector('span').textContent = `${record.name}: ${query}`; };
+  const records = [{ id: 'a', name: 'A' }, { id: 'b', name: 'B' }, { id: 'c', name: 'C' }];
+  const list = createRecordList(root, create, update);
+  const ids = () => [...root.querySelectorAll('button')].map(button => button.dataset.id).join(',');
+  try {
+    list.render(records, '');
+    const images = [...root.querySelectorAll('img')];
+    check('initial rows follow result order', ids() === 'a,b,c');
+    list.render([records[2], records[0]], 'a');
+    check('filtering and relevance reordering preserve order', ids() === 'c,a');
+    check('surviving photo node is retained', root.querySelector('img') === images[2]);
+    check('query text updates without replacing the photo', root.querySelector('span').textContent === 'C: a');
+    list.render(records, '');
+    check('clearing filters reuses removed photo nodes', [...root.querySelectorAll('img')].every((image, index) => image === images[index]));
+    root.replaceChildren(document.createElement('p'));
+    list.render(records, '');
+    check('recovery from an empty/error panel restores cached rows', ids() === 'a,b,c' && root.querySelector('img') === images[0]);
+    list.reset();
+    list.render([{ ...records[0], name: 'Updated A' }], '');
+    check('record rebuild replaces stale content and removes duplicate IDs', ids() === 'a' && root.querySelector('span').textContent === 'Updated A' && root.querySelector('img') !== images[0]);
+    list.render([], 'none');
+    check('empty result reconciliation removes obsolete rows', root.querySelectorAll('li').length === 0);
+    document.title = 'PASS: catalogue row reuse tests';
+  } catch (error) {
+    document.title = 'FAIL: catalogue row reuse tests';
+    checks.push(error.stack);
+  }
+  document.getElementById('results').textContent = checks.join('\n');
+</script>

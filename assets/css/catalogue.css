@@ -17,6 +17,8 @@ button, select, input { font: inherit; }
 button, select { cursor: pointer; }
 button:disabled, input:disabled, select:disabled { cursor: wait; opacity: 0.65; }
 :focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; }
+html[data-input-modality="pointer"] :focus-visible { outline: none; }
+#plant-title:focus, #photo-title:focus { outline: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 10; transform: translateY(-200%); padding: 0.75rem 1rem; background: var(--card); color: var(--forest); border-radius: 0.5rem; }
 .skip-link:focus { transform: none; }
@@ -52,7 +54,13 @@ mark { background: #e1d6ad; color: var(--ink); padding: 0 0.05em; border-radius:
 .field svg { position: absolute; left: 1rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .category-control { display: flex; align-items: center; gap: 1rem; }
 .category-control .control-label { margin: 0; flex: none; }
-.category-control select { flex: 1; min-width: 0; }
+.category-select { position: relative; flex: 1; min-width: 0; }
+.category-select select { appearance: none; -webkit-appearance: none; padding-right: 2.75rem; }
+.category-select svg { position: absolute; right: 1rem; top: 50%; width: 1.1rem; height: 1.1rem; transform: translateY(-50%); pointer-events: none; color: var(--ink); }
+@media (forced-colors: active) {
+  .category-select select { appearance: auto; -webkit-appearance: auto; }
+  .category-select svg { display: none; }
+}
 .catalogue { scroll-margin-top: 10rem; }
 .result-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 4rem; }
 .count { margin: 0; color: var(--muted); font-size: 0.875rem; }
@@ -88,7 +96,6 @@ li + li { border-top: 1px solid var(--line); }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--line); flex: none; }
 .panel-header > div { min-width: 0; }
 .panel h2 { margin: 0; font-size: 1.5rem; line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
-.panel h2:focus-visible { outline-offset: 4px; }
 .dialog-category { margin: 0 0 0.35rem; color: var(--muted); font-size: 0.8125rem; }
 .panel-header .hint { margin-top: 0.35rem; }
 .panel-header .ghost { flex: none; }
@@ -162,6 +169,7 @@ li + li { border-top: 1px solid var(--line); }
   .page-heading .intro { display: none; }
   .add { padding-right: 0.75rem; padding-left: 0.75rem; font-size: 0.875rem; }
   .library-controls { gap: 0.65rem; padding-top: 0.65rem; padding-bottom: 0.85rem; }
+  .library-controls .control-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .result-bar { min-height: 3.25rem; }
 }
 @media (min-width: 640px) {
