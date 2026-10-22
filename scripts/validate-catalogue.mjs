@@ -69,6 +69,7 @@ export function validateCataloguePage({ html, read, exists }) {
   if (app && localFile(app.src) === 'assets/js/catalogue.mjs') visitModule('assets/js/catalogue.mjs');
   check(sources.has('assets/js/catalogue-store.mjs'), 'The catalogue entry must import its storage module.');
   check(exists('assets/css/catalogue.css'), 'The catalogue stylesheet must exist.');
+  if (sources.has('assets/js/catalogue-submission.mjs')) check(exists('assets/css/catalogue-submission.css'), 'The catalogue submission stylesheet must exist.');
 
   const ids = new Set(tags(html, '[a-z][\\w-]*').map(tag => tag.id).filter(Boolean));
   for (const id of ['add', 'search', 'category', 'count', 'list', 'storage-notice', 'sheet']) {
