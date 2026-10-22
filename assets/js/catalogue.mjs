@@ -1,6 +1,8 @@
-import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-image1';
-import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-image1';
-import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-image1';
+import { CatalogueStore } from './catalogue-store.mjs?v=catalogue-performance1';
+import { escapeHtml, isMaterial, inScope, selectRecords, highlightedText, recordSummary } from './catalogue-records.mjs?v=catalogue-performance1';
+import { copyImageToClipboard } from './catalogue-image.mjs?v=catalogue-performance1';
+import { THUMBNAILS } from './catalogue-thumbnails.mjs?v=catalogue-performance1';
+import { createFrameScheduler, createRecordList } from './catalogue-render.mjs?v=catalogue-performance1';
 
 const ORDER = ['Shrubs', 'Indoor Plants', 'Palms', 'Trees', 'Climbers & Ferns', 'Cycads, Agaves & Yuccas', 'Grasses & Groundcovers', 'Bamboo', 'Landscape Materials'];
 const searchEl = document.getElementById('search');
@@ -31,6 +33,11 @@ let opener;
 let openerId;
 let previousOverflow = '';
 let nextSizeId = 0;
+let composing = false;
+let revision = 0;
+let renderedKey = '';
+const searchRender = createFrameScheduler(render, callback => requestAnimationFrame(callback), handle => cancelAnimationFrame(handle));
+const recordList = createRecordList(listEl, createRow, updateRowText);
 
 function imageSrc(image) {
   if (!image) return '';
@@ -39,9 +46,12 @@ function imageSrc(image) {
 }
 
 function photoMarkup(plant, large = false) {
-  const source = imageSrc(plant.image);
+  const original = imageSrc(plant.image);
+  const name = plant.image?.replace(/^assets\/images\//, '');
+  const thumbnail = !large && Object.hasOwn(THUMBNAILS, name) ? THUMBNAILS[name] : '';
+  const source = thumbnail ? imageSrc(thumbnail) : original;
   return `<div class="image-frame ${large ? 'hero-frame' : 'thumb-frame'}" data-state="${source ? 'loading' : 'missing'}" ${large ? 'role="group" aria-label="Reference photo"' : 'aria-hidden="true"'}>
-    ${source ? `<img class="${large ? 'hero' : 'thumb'}" src="${escapeHtml(source)}" alt="${large ? escapeHtml(plant.name) : ''}" decoding="async" ${large ? '' : 'loading="lazy"'}>` : ''}
+    ${source ? `<img class="${large ? 'hero' : 'thumb'}" src="${escapeHtml(source)}" alt="${large ? escapeHtml(plant.name) : ''}" decoding="async" ${large ? '' : 'loading="lazy"'}${thumbnail ? ` data-original="${escapeHtml(original)}"` : ''}>` : ''}
     <span class="photo-status">${source ? (large ? 'Loading photo...' : 'Loading') : (large ? 'No photo available' : 'No photo')}</span>
   </div>`;
 }
@@ -73,7 +83,13 @@ for (const root of [listEl, sheetEl, photoEl]) {
     if (event.target.matches('.image-frame img')) settlePhoto(event.target, false);
   }, true);
   root.addEventListener('error', event => {
-    if (event.target.matches('.image-frame img')) settlePhoto(event.target, true);
+    const image = event.target;
+    if (!image.matches('.image-frame img')) return;
+    if (image.dataset.original) {
+      const original = image.dataset.original;
+      delete image.dataset.original;
+      image.src = original;
+    } else settlePhoto(image, true);
   }, true);
 }
 
@@ -84,6 +100,8 @@ if (store.hasReadError) {
 }
 
 function rebuild() {
+  revision += 1;
+  recordList.reset();
   plants = store.plants(basePlants);
   updateCategories();
   scopeButtons.forEach(button => {
@@ -103,6 +121,11 @@ function updateCategories() {
 }
 
 function render() {
+  searchRender.cancel();
+  const query = searchEl.value.trim().toLowerCase();
+  const key = JSON.stringify([revision, catalogueState, scope, categoryEl.value, query]);
+  if (key === renderedKey) return;
+  renderedKey = key;
   listEl.setAttribute('aria-busy', String(catalogueState === 'loading'));
   resetEl.hidden = true;
   columnsEl.hidden = true;
@@ -118,7 +141,6 @@ function render() {
     listEl.innerHTML = `<div class="empty" role="${failed ? 'alert' : 'status'}"><p>${failed ? 'The plant catalogue could not be loaded.' : 'Loading the plant catalogue...'}</p><p class="hint">${failed ? 'Check your connection, then try again. Saved plant data has not been changed.' : 'Plant records will appear here when they are ready.'}</p><button id="retry-catalogue" class="primary" type="button" ${failed ? '' : 'hidden'}>Retry loading</button></div>`;
     return;
   }
-  const query = searchEl.value.trim().toLowerCase();
   const rows = selectRecords(plants, { scope, category: categoryEl.value, query });
   const filtered = Boolean(query || categoryEl.value !== 'All' || scope !== 'all');
   resetEl.hidden = !filtered;
@@ -128,14 +150,32 @@ function render() {
     return;
   }
   columnsEl.hidden = false;
-  listEl.innerHTML = '<ul>' + rows.map(plant => `<li><button class="row" type="button" data-id="${escapeHtml(plant.id)}">
+  recordList.render(rows, query);
+  settleCachedPhotos(listEl);
+}
+
+function descriptionMarkup(plant, query) {
+  return plant.latin || (isMaterial(plant) && plant.material)
+    ? highlightedText(plant.latin || plant.material, query)
+    : escapeHtml(isMaterial(plant) ? 'Description not recorded' : 'Scientific name not recorded');
+}
+
+function updateRowText(row, plant, query) {
+  row.querySelector('.name').innerHTML = highlightedText(plant.name, query);
+  row.querySelector('.latin').innerHTML = descriptionMarkup(plant, query);
+  row.querySelector('.row-code').innerHTML = `<span class="sr-only">Code: </span>${plant.code ? highlightedText(plant.code, query) : 'No code'}`;
+}
+
+function createRow(plant, query) {
+  const row = document.createElement('li');
+  row.innerHTML = `<button class="row" type="button" data-id="${escapeHtml(plant.id)}">
     ${photoMarkup(plant)}
-    <span class="row-identity"><span class="name">${highlightedText(plant.name, query)}</span><span class="latin ${isMaterial(plant) ? 'material-description' : ''}">${plant.latin || (isMaterial(plant) && plant.material) ? highlightedText(plant.latin || plant.material, query) : escapeHtml(isMaterial(plant) ? 'Description not recorded' : 'Scientific name not recorded')}</span></span>
+    <span class="row-identity"><span class="name">${highlightedText(plant.name, query)}</span><span class="latin ${isMaterial(plant) ? 'material-description' : ''}">${descriptionMarkup(plant, query)}</span></span>
     <span class="row-category">${escapeHtml(plant.category)}<span class="size-count">${plant.sizes.length ? `${plant.sizes.length} ${plant.sizes.length === 1 ? 'size' : 'sizes'} recorded` : 'Sizes not recorded'}</span></span>
     <span class="row-code"><span class="sr-only">Code: </span>${plant.code ? highlightedText(plant.code, query) : 'No code'}</span>
     <span class="row-action" aria-hidden="true">View details</span>
-  </button></li>`).join('') + '</ul>';
-  settleCachedPhotos(listEl);
+  </button>`;
+  return row;
 }
 
 function loadCatalogue() {
@@ -480,7 +520,11 @@ scopeButtons.forEach(button => button.addEventListener('click', () => {
   updateCategories();
   render();
 }));
-searchEl.addEventListener('input', render);
+searchEl.addEventListener('compositionstart', () => { composing = true; searchRender.cancel(); });
+searchEl.addEventListener('compositionend', () => { composing = false; searchRender.schedule(); });
+searchEl.addEventListener('input', event => {
+  if (!composing && !event.isComposing) searchRender.schedule();
+});
 categoryEl.addEventListener('change', render);
 resetEl.addEventListener('click', resetFilters);
 loadCatalogue();

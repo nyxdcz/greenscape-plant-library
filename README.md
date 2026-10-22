@@ -22,11 +22,13 @@ The selected refinement adds a compact phone header, All/Plants/Materials contro
 
 Copy image is available below a loaded record photo and in the enlarged viewer. It copies the full photograph as PNG image data for pasting into an app that accepts images. If the browser blocks copying, Open original photo provides a manual copy/save option. See [image-copy behavior and verification](docs/catalogue-image-copy.md).
 
+The list uses generated 160-pixel thumbnails while details, enlargement, and Copy image retain original photographs. Search groups rapid inputs into one update per animation frame and reuses result rows and photos. `npm run thumbnails:check` checks every derivative against its original; the CSV-sync workflow regenerates thumbnails before publishing catalogue changes. See [performance changes and verification](docs/catalogue-performance.md).
+
 Run `npm run test:catalogue` for focused syntax and storage tests, `npm test` for catalogue entry-point regression tests and repository validation, and `npm run quality` for the complete CI checks. Validation checks the active catalogue's modules, asset/cache wiring, native dialog, labels, and feedback regions. Shared security/data checks and the older dashboard's asset checks remain active; dashboard-only page markup and cache-tag requirements apply when the dashboard entry is served.
 
 ### Website validation and publishing
 
-Pull requests to `main` run the full **Website Quality** workflow once. After merge, **Build Deployment Package and Deploy Pages** runs the same full checks before packaging and publishing. The retired Website Checks workflow no longer duplicates these runs. Manual deployment is limited to `main`; Pages uses **GitHub Actions** as its publishing source. The existing design and plant-sync workflows retain their narrow triggers. No dependency installation or package cache is needed for this dependency-free project. See [workflow verification and operating notes](docs/workflow-consolidation.md).
+Pull requests to `main` run the full **Website Quality** workflow once. After merge, **Build Deployment Package and Deploy Pages** runs the same full checks before packaging and publishing. The retired Website Checks workflow no longer duplicates these runs. Manual deployment is limited to `main`; Pages uses **GitHub Actions** as its publishing source. The existing design and plant-sync workflows retain their narrow triggers. Normal quality/deployment checks need no dependency installation or package cache. The separate plant-sync workflow installs Sharp in a temporary tool directory to generate thumbnails; the website has no runtime package dependency. See [workflow verification and operating notes](docs/workflow-consolidation.md).
 
 ## Current Status
 
