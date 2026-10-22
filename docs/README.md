@@ -38,6 +38,8 @@ These documents record particular changes and the evidence collected at the time
 
 ## Historical dashboard and update history
 
+The [historical workflow archive](archive/workflows/README.md) preserves 20 retired layout installers outside GitHub Actions and identifies the four maintained workflows.
+
 The [previous README, archived on 22 October 2026](archive/README-before-cleanup-2026-10-22.md), preserves the longer feature history, older dashboard/project-workspace descriptions, maintenance notices, and past update lists. Those entries describe historical versions; they are not a list of features currently available in the compact catalogue.
 
 The original README can also be viewed [at the pre-cleanup commit](https://github.com/nyxdcz/greenscape-plant-library/blob/d7a17ef19e92a029615dfd59333b0c6f7930d8c8/README.md), with its original root-relative links.
