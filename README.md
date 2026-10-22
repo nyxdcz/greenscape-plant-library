@@ -23,8 +23,8 @@ To update the shared catalogue, use the repository’s plant-data publishing pro
 
 1. Follow the [plant-folder instructions](data/ADD_PLANTS_HERE/README.md) and start with the supplied JSON template.
 2. Use the correct record ID and image filename. Include confirmed plant details; leave uncertain details unconfirmed.
-3. Submit the record through a branch and pull request.
-4. Check the Plant CSV Sync and website validation results before publishing.
+3. Follow the plant-folder instructions to commit the JSON and image together to `main`.
+4. Confirm that Plant CSV Sync and deployment succeed in GitHub Actions.
 
 Plant CSV Sync validates submitted records, updates the canonical CSV and website data, and generates catalogue thumbnails. The detailed instructions explain the required fields and image rules.
 
