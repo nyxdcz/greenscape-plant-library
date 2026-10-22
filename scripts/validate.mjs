@@ -31,7 +31,7 @@ if (compactCatalogue) {
   failures.push(...catalogueFailures);
 }
 check(compactCatalogue || /<script\b[^>]*\bsrc="assets\/js\/app\.js(?:\?[^\"]*)?"/i.test(html), 'The entry page must select a supported catalogue or dashboard application.');
-const readme = read('README.md');
+const releaseDocumentation = read('README.md') + read('docs/archive/README-before-cleanup-2026-10-22.md');
 const styles = read('assets/css/styles.css');
 const maintenanceStyles = read('assets/css/maintenance.css');
 const sidebarAssistantStyles = read('assets/css/sidebar-assistant.css');
@@ -508,10 +508,10 @@ checkDashboardPage(
   'Plant Library breakpoint continuity styles must use the current cache key.'
 );
 check(
-  readme.includes('### Plant Library Breakpoint Continuity V1')
-    && readme.includes('three catalogue columns from **761–1023 px**')
-    && readme.includes('four-column catalogue beginning at **1024 px**'),
-  'README must document the Plant Library breakpoint-continuity release.'
+  releaseDocumentation.includes('### Plant Library Breakpoint Continuity V1')
+    && releaseDocumentation.includes('three catalogue columns from **761–1023 px**')
+    && releaseDocumentation.includes('four-column catalogue beginning at **1024 px**'),
+  'Release documentation must document the Plant Library breakpoint-continuity release.'
 );
 
 // GREENSCAPE_DESKTOP_COMPACT_ADD_ACTION_V1_VALIDATION
@@ -750,9 +750,9 @@ checkDashboardPage(
   'Safe-cleanup assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Safe Repository Cleanup V1')
-    && readme.includes('Greenie Help assistant and feedback form'),
-  'README must record the safe cleanup and current Help entry point.'
+  releaseDocumentation.includes('### Safe Repository Cleanup V1')
+    && releaseDocumentation.includes('Greenie Help assistant and feedback form'),
+  'Release documentation must record the safe cleanup and current Help entry point.'
 );
 
 
@@ -804,9 +804,9 @@ checkDashboardPage(
   'Greenie scroll-loading assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Greenie Scroll Loading V1')
-    && readme.includes('assets/images/greenie/dig-to-plant.gif'),
-  'README must record the Greenie scroll-loading release and exact GIF asset.'
+  releaseDocumentation.includes('### Greenie Scroll Loading V1')
+    && releaseDocumentation.includes('assets/images/greenie/dig-to-plant.gif'),
+  'Release documentation must record the Greenie scroll-loading release and exact GIF asset.'
 );
 
 
@@ -859,8 +859,8 @@ checkDashboardPage(
   'Phone maintenance menu and higher phone-filter assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Phone Dock Maintenance Status V1'),
-  'README must record the phone dock maintenance status update.'
+  releaseDocumentation.includes('### Phone Dock Maintenance Status V1'),
+  'Release documentation must record the phone dock maintenance status update.'
 );
 // GREENSCAPE_PHONE_DOCK_FREEZE_HOTFIX_V1_2_VALIDATION
 check(
@@ -895,8 +895,8 @@ checkDashboardPage(
   'The phone-dock freeze hotfix must use the current JavaScript cache key.'
 );
 check(
-  readme.includes('### Phone Dock Freeze Hotfix V1.2'),
-  'README must record the phone-dock freeze hotfix.'
+  releaseDocumentation.includes('### Phone Dock Freeze Hotfix V1.2'),
+  'Release documentation must record the phone-dock freeze hotfix.'
 );
 
 // GREENSCAPE_GITHUB_PLANT_FOLDER_AND_STAFF_ACCESS_V1_VALIDATION
@@ -976,8 +976,8 @@ check(
   'Staff access documentation must explain plaintext handling and the static-site security limitation.'
 );
 check(
-  readme.includes('### GitHub Plant Folder and Separated Staff Access V1'),
-  'README must record the GitHub plant folder and separated staff access update.'
+  releaseDocumentation.includes('### GitHub Plant Folder and Separated Staff Access V1'),
+  'Release documentation must record the GitHub plant folder and separated staff access update.'
 );
 
 // GREENSCAPE_INTERFACE_QA_IMPROVEMENTS_V1_VALIDATION
@@ -1049,8 +1049,8 @@ checkDashboardPage(
   'Interface QA assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Interface QA Fixes and Workflow Clarity V1'),
-  'README must record the interface QA fixes.'
+  releaseDocumentation.includes('### Interface QA Fixes and Workflow Clarity V1'),
+  'Release documentation must record the interface QA fixes.'
 );
 
 // GREENSCAPE_WEBSITE_QUALITY_WORKFLOW_FIX_V1_1_VALIDATION
@@ -1073,8 +1073,8 @@ check(
   'Website Quality must run the complete quality suite on pull requests to main.'
 );
 check(
-  readme.includes('### Website Quality Workflow Lock-File Fix V1.1'),
-  'README must record the Website Quality lock-file correction.'
+  releaseDocumentation.includes('### Website Quality Workflow Lock-File Fix V1.1'),
+  'Release documentation must record the Website Quality lock-file correction.'
 );
 
 // GREENSCAPE_PHONE_EXPANDING_HOVER_MENU_V1_VALIDATION
@@ -1115,8 +1115,8 @@ checkDashboardPage(
   'The expanding phone dock stylesheet must use the current cache key.'
 );
 check(
-  readme.includes('### Expanding Hover Phone Menu V1'),
-  'README must record the expanding hover phone menu release.'
+  releaseDocumentation.includes('### Expanding Hover Phone Menu V1'),
+  'Release documentation must record the expanding hover phone menu release.'
 );
 
 // GREENSCAPE_BRANDED_INTERACTION_FEEDBACK_V1_VALIDATION
@@ -1161,9 +1161,9 @@ checkDashboardPage(
   'Branded interaction feedback assets must use the V1 cache key.'
 );
 check(
-  readme.includes('Fine-pointer hover elevation and image zoom')
-    && readme.includes('Plant Library result announcements'),
-  'README must document branded interaction feedback and accessible result context.'
+  releaseDocumentation.includes('Fine-pointer hover elevation and image zoom')
+    && releaseDocumentation.includes('Plant Library result announcements'),
+  'Release documentation must document branded interaction feedback and accessible result context.'
 );
 
 // GREENSCAPE_PHONE_DOCK_TOUCH_STATE_FIX_V1_1_VALIDATION
@@ -1205,9 +1205,9 @@ checkDashboardPage(
   'Phone dock touch-state styles must use the V1.1 cache key.'
 );
 check(
-  readme.includes('### Phone Dock Touch-State Stability V1.1')
-    && readme.includes('Does not change phone navigation JavaScript'),
-  'README must document the phone dock touch-state correction and its unchanged JavaScript scope.'
+  releaseDocumentation.includes('### Phone Dock Touch-State Stability V1.1')
+    && releaseDocumentation.includes('Does not change phone navigation JavaScript'),
+  'Release documentation must document the phone dock touch-state correction and its unchanged JavaScript scope.'
 );
 
 // GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_VALIDATION
@@ -1263,10 +1263,10 @@ checkDashboardPage(
   'Magic Bento Dashboard assets must use the V1 cache keys.'
 );
 check(
-  readme.includes('### Magic Bento Dashboard Interaction V1')
-    && readme.includes('no Framer, React, GSAP, animation library, image, or new dependency is added')
-    && readme.includes('phone dock touch-state correction'),
-  'README must document the Magic Bento Dashboard interaction and preserved scope.'
+  releaseDocumentation.includes('### Magic Bento Dashboard Interaction V1')
+    && releaseDocumentation.includes('no Framer, React, GSAP, animation library, image, or new dependency is added')
+    && releaseDocumentation.includes('phone dock touch-state correction'),
+  'Release documentation must document the Magic Bento Dashboard interaction and preserved scope.'
 );
 
 
@@ -1276,7 +1276,7 @@ const mobileReviewStyles = mobileReviewReadFileSync('assets/css/styles.css', 'ut
 const mobileReviewLibraryStyles = mobileReviewReadFileSync('assets/css/plant-library-refinements.css', 'utf8');
 const mobileReviewApp = mobileReviewReadFileSync('assets/js/app.js', 'utf8');
 const mobileReviewHtml = mobileReviewReadFileSync('index.html', 'utf8');
-const mobileReviewReadme = mobileReviewReadFileSync('README.md', 'utf8');
+const mobileReviewReadme = releaseDocumentation;
 
 const mobileReviewStylesBlock = mobileReviewStyles
   .split('/* GREENSCAPE_MOBILE_FORM_VIEWPORT_IMAGE_LOADING_V1_1_START')[1]
@@ -1333,7 +1333,7 @@ check(
   mobileReviewReadme.includes('### Mobile Form, Viewport and Image Loading V1.1')
     && mobileReviewReadme.includes('computed font size at **16 px**')
     && mobileReviewReadme.includes('targeted lazy loading'),
-  'README must document the approved mobile form, viewport, image-loading, and V1.1 installer correction release.'
+  'Release documentation must document the approved mobile form, viewport, image-loading, and V1.1 installer correction release.'
 );
 check(
   mobileReviewStyles.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START')
@@ -1349,7 +1349,7 @@ const plantDiscoveryStyles = plantDiscoveryReadFileSync('assets/css/styles.css',
 const plantDiscoveryLibraryStyles = plantDiscoveryReadFileSync('assets/css/plant-library-refinements.css', 'utf8');
 const plantDiscoveryApp = plantDiscoveryReadFileSync('assets/js/app.js', 'utf8');
 const plantDiscoveryHtml = plantDiscoveryReadFileSync('index.html', 'utf8');
-const plantDiscoveryReadme = plantDiscoveryReadFileSync('README.md', 'utf8');
+const plantDiscoveryReadme = releaseDocumentation;
 
 const plantDiscoveryJsBlock = plantDiscoveryApp
   .split('// GREENSCAPE_INTERACTIVE_PLANT_DISCOVERY_V1_START')[1]
@@ -1417,7 +1417,7 @@ check(
   plantDiscoveryReadme.includes('### Interactive Plant Discovery V1')
     && plantDiscoveryReadme.includes('session-only **Compare Plants**')
     && plantDiscoveryReadme.includes('no React, Framer, GSAP, animation package, image, or new dependency is added'),
-  'README must document the approved Interactive Plant Discovery release and preserved dependency scope.'
+  'Release documentation must document the approved Interactive Plant Discovery release and preserved dependency scope.'
 );
 check(
   plantDiscoveryStyles.includes('GREENSCAPE_MAGIC_BENTO_DASHBOARD_V1_START')
@@ -1485,7 +1485,7 @@ check(
   plantDiscoveryReadme.includes('### Interactive Plant Discovery V1.1')
     && plantDiscoveryReadme.includes('unrelated Plant Library cards could flash')
     && plantDiscoveryReadme.includes('three-plant comparison workflow'),
-  'README must document the Plant Details transition-glitch correction and preserved comparison workflow.'
+  'Release documentation must document the Plant Details transition-glitch correction and preserved comparison workflow.'
 );
 
 
@@ -1556,12 +1556,12 @@ checkDashboardPage(
   'Guided Plant Discovery assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Guided Plant Discovery V1')
-    && readme.includes('Recently Viewed')
-    && readme.includes('How this works')
-    && readme.includes('Similar Plants')
-    && readme.includes('no dependency, framework, external API, image, GIF, or data file is added'),
-  'README must document all Guided Plant Discovery features and preserved dependency scope.'
+  releaseDocumentation.includes('### Guided Plant Discovery V1')
+    && releaseDocumentation.includes('Recently Viewed')
+    && releaseDocumentation.includes('How this works')
+    && releaseDocumentation.includes('Similar Plants')
+    && releaseDocumentation.includes('no dependency, framework, external API, image, GIF, or data file is added'),
+  'Release documentation must document all Guided Plant Discovery features and preserved dependency scope.'
 );
 check(
   guidedDiscoveryApp.includes('function plantDiscoveryClearTransitionState()')
@@ -1617,8 +1617,8 @@ check(
   'The previous Guided Plant Discovery Plant Library cache key must be removed from index.html.'
 );
 check(
-  readme.includes('### Compact Recently Viewed Plants V1'),
-  'README must document Compact Recently Viewed Plants V1.'
+  releaseDocumentation.includes('### Compact Recently Viewed Plants V1'),
+  'Release documentation must document Compact Recently Viewed Plants V1.'
 );
 
 
@@ -1705,11 +1705,11 @@ checkDashboardPage(
   'Plant Data Quality Center assets must use the current cache keys.'
 );
 check(
-  readme.includes('### Plant Data Quality Center V1')
-    && readme.includes('No automatic corrections')
-    && readme.includes('Landscape Materials')
-    && readme.includes('no package, framework, external API, image, GIF, server, or data file is added'),
-  'README must document Plant Data Quality Center V1, its safeguards, and preserved dependency scope.'
+  releaseDocumentation.includes('### Plant Data Quality Center V1')
+    && releaseDocumentation.includes('No automatic corrections')
+    && releaseDocumentation.includes('Landscape Materials')
+    && releaseDocumentation.includes('no package, framework, external API, image, GIF, server, or data file is added'),
+  'Release documentation must document Plant Data Quality Center V1, its safeguards, and preserved dependency scope.'
 );
 check(
   plantLibraryStyles.includes('GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_START')
@@ -1782,9 +1782,9 @@ checkDashboardPage(
   'Loading Experience assets must use the current cache key.'
 );
 check(
-  readme.includes('### Greenscape Loading Experience V1')
-    && readme.includes('no dependency, framework, external API, service worker, image, GIF, server, or database is added'),
-  'README must document Loading Experience V1 and its dependency safeguards.'
+  releaseDocumentation.includes('### Greenscape Loading Experience V1')
+    && releaseDocumentation.includes('no dependency, framework, external API, service worker, image, GIF, server, or database is added'),
+  'Release documentation must document Loading Experience V1 and its dependency safeguards.'
 );
 check(
   plantLibraryStyles.includes('GREENSCAPE_COMPACT_RECENTLY_VIEWED_PLANTS_V1_START')
@@ -1890,10 +1890,10 @@ checkDashboardPage(
   'Saved Collections affected assets must use the current cache key.'
 );
 check(
-  readme.includes('### Saved Plant Collections V1')
-    && readme.includes('one plant to belong to several collections')
-    && readme.includes('no dependency, framework, external API, image, GIF, server, database, or multi-device synchronization is added'),
-  'README must document Saved Plant Collections V1 and its preserved dependency scope.'
+  releaseDocumentation.includes('### Saved Plant Collections V1')
+    && releaseDocumentation.includes('one plant to belong to several collections')
+    && releaseDocumentation.includes('no dependency, framework, external API, image, GIF, server, database, or multi-device synchronization is added'),
+  'Release documentation must document Saved Plant Collections V1 and its preserved dependency scope.'
 );
 check(
   collectionsApp.includes('GREENSCAPE_LOADING_EXPERIENCE_V1_START')
