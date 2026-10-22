@@ -39,7 +39,10 @@ h1 { margin: 0; font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 600; line-hei
 .add > span { font-size: 1.25rem; line-height: 1; font-weight: 400; }
 .add > #add-label { font: inherit; }
 .library-controls { position: sticky; top: 0; z-index: 2; display: grid; gap: 0.75rem; padding: 1rem 0; background: var(--paper); border-bottom: 1px solid var(--line); }
-.library-controls.single-category .search-control { grid-column: 1 / -1; }
+.catalogue-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0.65rem; min-width: 0; }
+.library-controls.single-category .catalogue-actions { grid-template-columns: minmax(0, 1fr); }
+.library-controls .search, .library-controls #category, .library-controls .add { height: 3rem; min-height: 3rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.library-controls .add { white-space: nowrap; }
 .record-types { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
 .record-types button { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.35rem; min-height: 2.75rem; padding: 0.5rem 0.35rem; border: 1px solid var(--control-line); border-radius: 0.5rem; background: var(--card); color: var(--ink); font-size: 0.875rem; font-weight: 500; }
 .record-types button:hover { background: var(--chip); }
@@ -164,7 +167,7 @@ li + li { border-top: 1px solid var(--line); }
 @media (max-width: 639px) {
   .brand-row { min-height: 3.5rem; }
   .brand-logo { width: 10.5rem; }
-  .page-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.75rem; padding: 1.1rem 0 0.5rem; }
+  .page-heading { display: block; padding: 1.1rem 0 0.5rem; }
   .page-heading h1 { font-size: 1.9rem; letter-spacing: -0.035em; }
   .page-heading .intro { display: none; }
   .add { padding-right: 0.75rem; padding-left: 0.75rem; font-size: 0.875rem; }
@@ -176,7 +179,8 @@ li + li { border-top: 1px solid var(--line); }
   .wrap { padding-right: 2rem; padding-left: 2rem; }
   .brand-logo { width: 14rem; }
   .page-heading { padding-top: 2.75rem; padding-bottom: 1.5rem; }
-  .library-controls { grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.42fr); gap: 1rem; padding-bottom: 1.5rem; }
+  .library-controls { grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.85fr); align-items: end; gap: 1rem; padding-bottom: 1.5rem; }
+  .library-controls.single-category { grid-template-columns: minmax(0, 1fr) auto; }
   .record-types { display: flex; }
   .record-types button { min-width: 6rem; padding-right: 1rem; padding-left: 1rem; }
   .category-control { display: block; }

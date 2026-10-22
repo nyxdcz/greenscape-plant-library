@@ -27,7 +27,7 @@
   <title>Greenscape Plant Library</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/css/catalogue.css?v=catalogue-performance-focus1">
+  <link rel="stylesheet" href="assets/css/catalogue.css?v=catalogue-controls1">
 </head>
 <body>
   <a class="skip-link" href="#catalogue">Skip to plant catalogue</a>
@@ -42,9 +42,8 @@
         <h1>Plant library</h1>
         <p class="intro">Plants and materials for your landscape plans.</p>
       </div>
-      <button type="button" class="primary add" id="add" disabled><span aria-hidden="true">+</span> <span id="add-label">Add plant</span></button>
     </div>
-    <section class="library-controls" aria-label="Catalogue filters">
+    <section class="library-controls" aria-label="Catalogue controls">
       <div class="record-types" role="group" aria-label="Record type">
         <button type="button" data-scope="all" aria-pressed="true" aria-controls="list" disabled>All <span data-scope-count></span></button>
         <button type="button" data-scope="plants" aria-pressed="false" aria-controls="list" disabled>Plants <span data-scope-count></span></button>
@@ -57,12 +56,15 @@
           <input id="search" class="search" type="search" placeholder="Name, scientific name, or code" autocomplete="off" disabled>
         </div>
       </div>
-      <div class="category-control">
-        <label class="control-label" for="category">Category</label>
-        <div class="category-select">
-          <select id="category" disabled><option value="All">All categories</option></select>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 8 5-5 5 5M7 16l5 5 5-5"/></svg>
+      <div class="catalogue-actions">
+        <div class="category-control">
+          <label class="control-label" for="category">Category</label>
+          <div class="category-select">
+            <select id="category" disabled><option value="All">All categories</option></select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 8 5-5 5 5M7 16l5 5 5-5"/></svg>
+          </div>
         </div>
+        <button type="button" class="primary add" id="add" disabled><span aria-hidden="true">+</span> <span id="add-label">Add plant</span></button>
       </div>
     </section>
     <div id="storage-notice" class="notice" role="status" hidden></div>
@@ -81,6 +83,6 @@
   </main>
   <dialog id="sheet" class="sheet" aria-labelledby="plant-title"></dialog>
   <dialog id="photo-viewer" class="photo-viewer" aria-labelledby="photo-title"></dialog>
-  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=catalogue-performance-focus1" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
+  <script id="catalogue-app" type="module" src="assets/js/catalogue.mjs?v=catalogue-controls1" data-catalogue-src="assets/js/data.js?v=csv-dc6dec84698e-catalogue-sync1" defer></script>
 </body>
 </html>
