@@ -36,7 +36,7 @@ These documents record particular changes and the evidence collected at the time
 - [Interface style comparison](catalogue-style-comparison.md)
 - [Website sharing preview](share-preview.md)
 
-## Historical dashboard and update history
+## Historical dashboard and update historyThe [historical workflow archive](archive/workflows/README.md) preserves 20 retired layout installers outside GitHub Actions and identifies the four maintained workflows.
 
 The [previous README, archived on 22 October 2026](archive/README-before-cleanup-2026-10-22.md), preserves the longer feature history, older dashboard/project-workspace descriptions, maintenance notices, and past update lists. Those entries describe historical versions; they are not a list of features currently available in the compact catalogue.
 
