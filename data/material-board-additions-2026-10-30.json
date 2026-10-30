@@ -1,0 +1,1336 @@
+{
+  "date": "2026-10-30",
+  "baselineCommit": "b9b7d1c1c1c3731941724e38ecd098c5e5b74861",
+  "records": [
+    {
+      "recordId": "board-20261030-angel-hand",
+      "name": "Angel hand",
+      "scientificName": "Xiphidium caeruleum",
+      "category": "Shrubs",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        329,
+        81,
+        610,
+        298
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-angel-hand.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-heliconia-tomato-red",
+      "name": "Heliconia Tomato Red",
+      "scientificName": "Heliconia bihai",
+      "category": "Shrubs",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        627,
+        81,
+        908,
+        298
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-heliconia-tomato-red.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-heliconia-lobster-claw",
+      "name": "Heliconia Lobster Claw",
+      "scientificName": "Heliconia rostrata",
+      "category": "Shrubs",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        925,
+        81,
+        1205,
+        298
+      ],
+      "sourcePhotoDimensions": [
+        280,
+        217
+      ],
+      "image": "assets/images/board-20261030-heliconia-lobster-claw.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-alocasia",
+      "name": "Alocasia",
+      "scientificName": "Alocasia macrorrhiza",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        384,
+        1866,
+        718,
+        2125
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        259
+      ],
+      "image": "assets/images/board-20261030-alocasia.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-selloum",
+      "name": "Selloum",
+      "scientificName": "Thaumatophyllum bipinnatifidum",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1",
+        "CAPITOL",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        1822,
+        63,
+        2157,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-selloum.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-persian-shield",
+      "name": "Persian Shield",
+      "scientificName": "Strobilanthes dyerianus",
+      "category": "Shrubs",
+      "sourceBoard": "MADERAZO PLANT MATERIAL.png",
+      "sourceBoardSha256": "87e479b028f95912f2580deef15e45101e13a030fe51799b0e95de828c15b7e8",
+      "sourceBoards": [
+        "MADERAZO"
+      ],
+      "sourcePhotoBounds": [
+        1631,
+        1093,
+        2017,
+        1395
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        302
+      ],
+      "image": "assets/images/board-20261030-persian-shield.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-rondeleta",
+      "name": "Rondeleta",
+      "scientificName": "Rondeletia odorata",
+      "category": "Shrubs",
+      "sourceBoard": "CAPITOL PLANT MATERIAL.jpg",
+      "sourceBoardSha256": "76ed809b6feae92d1210d617f81a0d398238d0369e9043624b31416d35d72174",
+      "sourceBoards": [
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        1274,
+        874,
+        1608,
+        1134
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        260
+      ],
+      "image": "assets/images/board-20261030-rondeleta.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-golden-pandakaki",
+      "name": "Golden Pandakaki",
+      "scientificName": "Tabernaemontana pandacaqui",
+      "category": "Shrubs",
+      "sourceBoard": "CAPITOL PLANT MATERIAL.jpg",
+      "sourceBoardSha256": "76ed809b6feae92d1210d617f81a0d398238d0369e9043624b31416d35d72174",
+      "sourceBoards": [
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        1274,
+        1281,
+        1608,
+        1540
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        259
+      ],
+      "image": "assets/images/board-20261030-golden-pandakaki.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Golden-foliage form shown on the Capitol material board; cultivar name is not specified."
+    },
+    {
+      "recordId": "board-20261030-yellow-candle",
+      "name": "Yellow Candle",
+      "scientificName": "Pachystachys lutea",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        743,
+        63,
+        1078,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-yellow-candle.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-hibiscus-assorted",
+      "name": "Hibiscus (assorted)",
+      "scientificName": "Hibiscus rosa-sinensis",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        1102,
+        63,
+        1437,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-hibiscus-assorted.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-silver-button",
+      "name": "Silver Button",
+      "scientificName": "Conocarpus erectus var. sericeus",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        1461,
+        63,
+        1796,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-silver-button.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-green-crinum",
+      "name": "Green Crinum",
+      "scientificName": "Crinum asiaticum",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        384,
+        513,
+        718,
+        773
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        260
+      ],
+      "image": "assets/images/board-20261030-green-crinum.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-plumbago",
+      "name": "Plumbago",
+      "scientificName": "Plumbago auriculata",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        743,
+        513,
+        1078,
+        773
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-plumbago.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-do-a-aurora",
+      "name": "Doña Aurora",
+      "scientificName": "Mussaenda philippica",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        1102,
+        965,
+        1437,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-do-a-aurora.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-red-button",
+      "name": "Red Button",
+      "scientificName": "Costus woodsonii",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        384,
+        1416,
+        718,
+        1675
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        259
+      ],
+      "image": "assets/images/board-20261030-red-button.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-lemon-bromeliad",
+      "name": "Lemon Bromeliad",
+      "scientificName": "Aechmea blanchetiana",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        1822,
+        1416,
+        2157,
+        1675
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-lemon-bromeliad.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-canna-lily",
+      "name": "Canna Lily",
+      "scientificName": "Canna indica",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        743,
+        1866,
+        1078,
+        2125
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-canna-lily.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-bay-bean-grass",
+      "name": "Bay Bean Grass",
+      "scientificName": "Canavalia rosea",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        2894,
+        63,
+        3229,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-bay-bean-grass.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-beach-naupaka",
+      "name": "Beach Naupaka",
+      "scientificName": "Scaevola taccada",
+      "category": "Shrubs",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        2535,
+        513,
+        2870,
+        773
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-beach-naupaka.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-rubra-grass",
+      "name": "Rubra Grass",
+      "scientificName": "Imperata cylindrica",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "1.png",
+      "sourceBoardSha256": "aade0ee0befad70bfe287726c99a063454d72d49ff7e6a6e31e338da713fdf18",
+      "sourceBoards": [
+        "1"
+      ],
+      "sourcePhotoBounds": [
+        2894,
+        965,
+        3229,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-rubra-grass.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-nedra",
+      "name": "Nedra",
+      "scientificName": "Conocarpus erectus",
+      "category": "Shrubs",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        2518,
+        1270,
+        2903,
+        1572
+      ],
+      "sourcePhotoDimensions": [
+        385,
+        302
+      ],
+      "image": "assets/images/board-20261030-nedra.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-citronella",
+      "name": "Citronella",
+      "scientificName": "Cymbopogon nardus",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        2111,
+        456,
+        2392,
+        673
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-citronella.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-lemon-tree",
+      "name": "Lemon Tree",
+      "scientificName": "Citrus × limon",
+      "category": "Trees",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        576,
+        286,
+        962,
+        587
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-lemon-tree.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-mango",
+      "name": "Mango",
+      "scientificName": "Mangifera indica",
+      "category": "Trees",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        576,
+        729,
+        962,
+        1030
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-mango.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Shown under client-available plants on the Tolentino board; this does not establish nursery stock availability."
+    },
+    {
+      "recordId": "board-20261030-avocado-tree",
+      "name": "Avocado Tree",
+      "scientificName": "Persea americana",
+      "category": "Trees",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        576,
+        1270,
+        962,
+        1572
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        302
+      ],
+      "image": "assets/images/board-20261030-avocado-tree.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-calamansi",
+      "name": "Calamansi",
+      "scientificName": "Citrus × microcarpa",
+      "category": "Trees",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        576,
+        1712,
+        962,
+        2013
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-calamansi.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-malunggay",
+      "name": "Malunggay",
+      "scientificName": "Moringa oleifera",
+      "category": "Trees",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO",
+        "2"
+      ],
+      "sourcePhotoBounds": [
+        993,
+        1712,
+        1379,
+        2013
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-malunggay.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-origano",
+      "name": "Origano",
+      "scientificName": "Origanum vulgare",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        1680,
+        286,
+        2066,
+        587
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-origano.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Scientific name follows the Tolentino board label. Confirm the intended oregano identity and photograph before specifying it for a project."
+    },
+    {
+      "recordId": "board-20261030-dill",
+      "name": "Dill",
+      "scientificName": "Anethum graveolens",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        2099,
+        286,
+        2485,
+        587
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-dill.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-thyme",
+      "name": "Thyme",
+      "scientificName": "Thymus vulgaris",
+      "category": "Shrubs",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        2518,
+        286,
+        2903,
+        587
+      ],
+      "sourcePhotoDimensions": [
+        385,
+        301
+      ],
+      "image": "assets/images/board-20261030-thyme.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-lemon-verbena",
+      "name": "Lemon Verbena",
+      "scientificName": "Aloysia citrodora",
+      "category": "Shrubs",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        1680,
+        729,
+        2066,
+        1030
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-lemon-verbena.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-lemon-balm",
+      "name": "Lemon Balm",
+      "scientificName": "Melissa officinalis",
+      "category": "Grasses & Groundcovers",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        2099,
+        729,
+        2485,
+        1030
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-lemon-balm.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-sage",
+      "name": "Sage",
+      "scientificName": "Salvia officinalis",
+      "category": "Shrubs",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        2518,
+        729,
+        2903,
+        1030
+      ],
+      "sourcePhotoDimensions": [
+        385,
+        301
+      ],
+      "image": "assets/images/board-20261030-sage.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-traveller-s-palm",
+      "name": "Traveller's Palm",
+      "scientificName": "Ravenala madagascariensis",
+      "category": "Palms",
+      "sourceBoard": "2.png",
+      "sourceBoardSha256": "141c809e6639563a244b63a1d44d34c15bc89a5e25b0f38d6564a1c6d2b3c060",
+      "sourceBoards": [
+        "2",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        736,
+        965,
+        1071,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-traveller-s-palm.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-swamp-palm",
+      "name": "Swamp Palm",
+      "scientificName": "Mauritia flexuosa",
+      "category": "Palms",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        3005,
+        1200,
+        3285,
+        1417
+      ],
+      "sourcePhotoDimensions": [
+        280,
+        217
+      ],
+      "image": "assets/images/board-20261030-swamp-palm.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-karagumoy",
+      "name": "Karagumoy",
+      "scientificName": "Pandanus simplex",
+      "category": "Cycads, Agaves & Yuccas",
+      "sourceBoard": "2.png",
+      "sourceBoardSha256": "141c809e6639563a244b63a1d44d34c15bc89a5e25b0f38d6564a1c6d2b3c060",
+      "sourceBoards": [
+        "2"
+      ],
+      "sourcePhotoBounds": [
+        377,
+        1864,
+        711,
+        2124
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        260
+      ],
+      "image": "assets/images/board-20261030-karagumoy.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-pandanus",
+      "name": "Pandanus",
+      "scientificName": "Pandanus tectorius",
+      "category": "Cycads, Agaves & Yuccas",
+      "sourceBoard": "2.png",
+      "sourceBoardSha256": "141c809e6639563a244b63a1d44d34c15bc89a5e25b0f38d6564a1c6d2b3c060",
+      "sourceBoards": [
+        "2",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        736,
+        1864,
+        1071,
+        2124
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-pandanus.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-tiring-bamboo",
+      "name": "Tiring Bamboo",
+      "scientificName": "Bambusa blumeana",
+      "category": "Bamboo",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        1519,
+        827,
+        1799,
+        1044
+      ],
+      "sourcePhotoDimensions": [
+        280,
+        217
+      ],
+      "image": "assets/images/board-20261030-tiring-bamboo.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-fire-tree",
+      "name": "Fire Tree",
+      "scientificName": "Delonix regia",
+      "category": "Trees",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        329,
+        1572,
+        610,
+        1789
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-fire-tree.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-orchid-tree",
+      "name": "Orchid Tree",
+      "scientificName": "Bauhinia variegata",
+      "category": "Trees",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        1221,
+        1572,
+        1502,
+        1789
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-orchid-tree.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-madre-de-cacao-kakawate",
+      "name": "Madre de Cacao / Kakawate",
+      "scientificName": "Gliricidia sepium",
+      "category": "Trees",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        1815,
+        1572,
+        2096,
+        1789
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-madre-de-cacao-kakawate.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-banana",
+      "name": "Banana",
+      "scientificName": "Musa × paradisiaca",
+      "category": "Trees",
+      "sourceBoard": "2.png",
+      "sourceBoardSha256": "141c809e6639563a244b63a1d44d34c15bc89a5e25b0f38d6564a1c6d2b3c060",
+      "sourceBoards": [
+        "2",
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        2534,
+        965,
+        2868,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        260
+      ],
+      "image": "assets/images/board-20261030-banana.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Scientific name follows board 2. Banana cultivar and fruit type are not specified."
+    },
+    {
+      "recordId": "board-20261030-chico",
+      "name": "Chico",
+      "scientificName": "Manilkara zapota",
+      "category": "Trees",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        925,
+        1945,
+        1205,
+        2162
+      ],
+      "sourcePhotoDimensions": [
+        280,
+        217
+      ],
+      "image": "assets/images/board-20261030-chico.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-kamias",
+      "name": "Kamias",
+      "scientificName": "Averrhoa bilimbi",
+      "category": "Trees",
+      "sourceBoard": "MATERIALS SHRUBS.png",
+      "sourceBoardSha256": "fd31ff40007bf39fd38116191cb05d57db75440bb8fb7c16d2937b41ce0d9ab9",
+      "sourceBoards": [
+        "MATERIALS SHRUBS"
+      ],
+      "sourcePhotoBounds": [
+        1221,
+        1945,
+        1502,
+        2162
+      ],
+      "sourcePhotoDimensions": [
+        281,
+        217
+      ],
+      "image": "assets/images/board-20261030-kamias.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-grass-grid",
+      "name": "Grass grid",
+      "scientificName": "Concrete grass paver",
+      "category": "Landscape Materials",
+      "sourceBoard": "3.png",
+      "sourceBoardSha256": "70ea554875f7b434f0b615ec7007c528837fdb7e6bea0739c9c09e695017bff7",
+      "sourceBoards": [
+        "3",
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        2174,
+        63,
+        2509,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-grass-grid.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-pebbles-stone",
+      "name": "Pebbles stone",
+      "scientificName": "Stone",
+      "category": "Landscape Materials",
+      "sourceBoard": "3.png",
+      "sourceBoardSha256": "70ea554875f7b434f0b615ec7007c528837fdb7e6bea0739c9c09e695017bff7",
+      "sourceBoards": [
+        "3"
+      ],
+      "sourcePhotoBounds": [
+        2534,
+        63,
+        2868,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        259
+      ],
+      "image": "assets/images/board-20261030-pebbles-stone.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Material label follows board 3. Stone type, color mix, and grading are not specified."
+    },
+    {
+      "recordId": "board-20261030-exposed-aggregate",
+      "name": "Exposed aggregate",
+      "scientificName": "Aggregate",
+      "category": "Landscape Materials",
+      "sourceBoard": "3.png",
+      "sourceBoardSha256": "70ea554875f7b434f0b615ec7007c528837fdb7e6bea0739c9c09e695017bff7",
+      "sourceBoards": [
+        "3"
+      ],
+      "sourcePhotoBounds": [
+        2174,
+        515,
+        2509,
+        774
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-exposed-aggregate.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Material label follows board 3; loose aggregate versus surface-finish specification is not confirmed."
+    },
+    {
+      "recordId": "board-20261030-exposed-aggregate-concrete",
+      "name": "Exposed aggregate concrete",
+      "scientificName": "Concrete with exposed aggregate",
+      "category": "Landscape Materials",
+      "sourceBoard": "3.png",
+      "sourceBoardSha256": "70ea554875f7b434f0b615ec7007c528837fdb7e6bea0739c9c09e695017bff7",
+      "sourceBoards": [
+        "3"
+      ],
+      "sourcePhotoBounds": [
+        2534,
+        515,
+        2868,
+        774
+      ],
+      "sourcePhotoDimensions": [
+        334,
+        259
+      ],
+      "image": "assets/images/board-20261030-exposed-aggregate-concrete.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-stepping-stones",
+      "name": "Stepping stones",
+      "scientificName": "Stepping stone paver",
+      "category": "Landscape Materials",
+      "sourceBoard": "3.png",
+      "sourceBoardSha256": "70ea554875f7b434f0b615ec7007c528837fdb7e6bea0739c9c09e695017bff7",
+      "sourceBoards": [
+        "3",
+        "MADERAZO"
+      ],
+      "sourcePhotoBounds": [
+        2174,
+        965,
+        2509,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-stepping-stones.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-riverstone",
+      "name": "Riverstone",
+      "scientificName": "River stone",
+      "category": "Landscape Materials",
+      "sourceBoard": "CAPITOL PLANT MATERIAL.jpg",
+      "sourceBoardSha256": "76ed809b6feae92d1210d617f81a0d398238d0369e9043624b31416d35d72174",
+      "sourceBoards": [
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        1004,
+        63,
+        1339,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-riverstone.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-black-pebbles",
+      "name": "Black pebbles",
+      "scientificName": "Black stone pebbles",
+      "category": "Landscape Materials",
+      "sourceBoard": "CAPITOL PLANT MATERIAL.jpg",
+      "sourceBoardSha256": "76ed809b6feae92d1210d617f81a0d398238d0369e9043624b31416d35d72174",
+      "sourceBoards": [
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        1372,
+        63,
+        1707,
+        322
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-black-pebbles.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-concrete-movable-bench",
+      "name": "Concrete movable bench",
+      "scientificName": "Concrete bench",
+      "category": "Landscape Materials",
+      "sourceBoard": "CAPITOL PLANT MATERIAL.jpg",
+      "sourceBoardSha256": "76ed809b6feae92d1210d617f81a0d398238d0369e9043624b31416d35d72174",
+      "sourceBoards": [
+        "CAPITOL"
+      ],
+      "sourcePhotoBounds": [
+        1372,
+        468,
+        1707,
+        727
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        259
+      ],
+      "image": "assets/images/board-20261030-concrete-movable-bench.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-boulders",
+      "name": "Boulders",
+      "scientificName": "Stone",
+      "category": "Landscape Materials",
+      "sourceBoard": "MADERAZO PLANT MATERIAL.png",
+      "sourceBoardSha256": "87e479b028f95912f2580deef15e45101e13a030fe51799b0e95de828c15b7e8",
+      "sourceBoards": [
+        "MADERAZO"
+      ],
+      "sourcePhotoBounds": [
+        2453,
+        1608,
+        2838,
+        1910
+      ],
+      "sourcePhotoDimensions": [
+        385,
+        302
+      ],
+      "image": "assets/images/board-20261030-boulders.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-gravel",
+      "name": "Gravel",
+      "scientificName": "Gravel",
+      "category": "Landscape Materials",
+      "sourceBoard": "TOLENTINO PLANT MATERIAL.png",
+      "sourceBoardSha256": "77803dfc5d93fdefb0cef0c4f6d5b5b6b5a4662527b9163ce32ebe69ab1fe1b6",
+      "sourceBoards": [
+        "TOLENTINO"
+      ],
+      "sourcePhotoBounds": [
+        1680,
+        1712,
+        2066,
+        2013
+      ],
+      "sourcePhotoDimensions": [
+        386,
+        301
+      ],
+      "image": "assets/images/board-20261030-gravel.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": ""
+    },
+    {
+      "recordId": "board-20261030-putat-tree",
+      "name": "Putat Tree",
+      "scientificName": "Barringtonia racemosa",
+      "category": "Trees",
+      "sourceBoard": "2.png",
+      "sourceBoardSha256": "141c809e6639563a244b63a1d44d34c15bc89a5e25b0f38d6564a1c6d2b3c060",
+      "sourceBoards": [
+        "2"
+      ],
+      "sourcePhotoBounds": [
+        2894,
+        965,
+        3229,
+        1225
+      ],
+      "sourcePhotoDimensions": [
+        335,
+        260
+      ],
+      "image": "assets/images/board-20261030-putat-tree.webp",
+      "identityStatus": "Board label; no independent botanical identification",
+      "notes": "Board 2 identifies this as Barringtonia racemosa. It is separate from the existing Bitoon Tree, Barringtonia asiatica."
+    }
+  ]
+}
