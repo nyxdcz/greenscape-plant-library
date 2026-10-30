@@ -399,7 +399,12 @@ try {
     check(plantData.every(plant => Object.hasOwn(plant, 'overviewDescription')), 'Every published record must include an Overview Description field.');
     const removedDuplicateIds = ['bam-012', 'bam-007', 'pal-025', 'shr-035'];
     const survivingDuplicateIds = ['bam-006', 'bam-008', 'pal-037', 'shr-010'];
-    check(plantData.length === 231, `Published plant data must contain 231 consolidated entries, found ${plantData.length}.`);
+    check(plantData.length >= 231, `Published plant data must retain at least the 231-entry consolidated baseline, found ${plantData.length}.`);
+    const plantMeta = sandbox.window.GREENSCAPE_PLANT_META;
+    const materialCount = plantData.filter(plant => plant.category === 'Landscape Materials').length;
+    check(plantMeta?.totalCount === plantData.length, 'Published catalogue total must match its records.');
+    check(plantMeta?.materialCount === materialCount && plantMeta?.plantCount === plantData.length - materialCount,
+      'Published plant and material totals must match their record categories.');
     removedDuplicateIds.forEach(id => check(!plantData.some(plant => plant.id === id), `${id}: removed duplicate must not be published.`));
     survivingDuplicateIds.forEach(id => check(plantData.some(plant => plant.id === id), `${id}: surviving consolidated plant is required.`));
     const consolidatedById = new Map(plantData.map(plant => [plant.id, plant]));
