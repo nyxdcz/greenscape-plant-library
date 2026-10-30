@@ -1483,7 +1483,7 @@
       "image": "pal-023.webp",
       "sourceHash": "0ff5a0f2c09519ace3f4e6f8476d021d169bca1cf4b150354240f8f91d756a84",
       "thumbnail": "thumbnails/pal-023-0ff5a0f2c095.webp",
-      "outputHash": "faa3a55f2b3bb752eefc811bc4ce6e48fe3d4cd368afa2d15eadd3e70632e695",
+      "outputHash": "e61f3e4a8cc937129944b3f8de4d72e0d6f278c5324126f5411a0151e89caf7d",
       "width": 108,
       "height": 160
     },
@@ -1691,7 +1691,7 @@
       "image": "shr-013.webp",
       "sourceHash": "15545ab67ed260b21000f466cb9abd56d48fb041dd0ab6a745e75c4dabcf0f2c",
       "thumbnail": "thumbnails/shr-013-15545ab67ed2.webp",
-      "outputHash": "cce1e36d11eb86733b4a7b0c7e5d12d335dfa802adc2ea85ec6a4dc392b1fe83",
+      "outputHash": "873496e8cc9353676f3b3375dd65fc21539ecd8df1a3a40cf44fa7e55e855bdd",
       "width": 160,
       "height": 133
     },
@@ -1707,7 +1707,7 @@
       "image": "shr-015.webp",
       "sourceHash": "73277d71c88762c15cc125abe5abecc7e14341972c918b1ddd0edfb4f5706f5b",
       "thumbnail": "thumbnails/shr-015-73277d71c887.webp",
-      "outputHash": "af96209fb35a61287c02c6d8e65b654ff2ae7ccf211916f9448ce6560bb4ea32",
+      "outputHash": "76b947576b08d5831239d787ba9afff76fce951c8147cb3d42fa4afddc64b1c6",
       "width": 160,
       "height": 144
     },
@@ -1843,7 +1843,7 @@
       "image": "shr-032.webp",
       "sourceHash": "1724c2746471b60ae3dad9de8c41ee50ee3f109d218f213c55f4e2fa6a4e020b",
       "thumbnail": "thumbnails/shr-032-1724c2746471.webp",
-      "outputHash": "8db27948103365b614d14d84bb9beaa3d094789d233f4c682f2456b541cf87d2",
+      "outputHash": "5ae2236b1dda6f9a12789e74fabef8a50f357206c5a1f443bf040a101746fb12",
       "width": 160,
       "height": 120
     },
@@ -1939,7 +1939,7 @@
       "image": "shr-046.webp",
       "sourceHash": "a738e8195b545b8bfc4a28f5de936314643ca16c99b24a8dd126c49d0d8e1add",
       "thumbnail": "thumbnails/shr-046-a738e8195b54.webp",
-      "outputHash": "a82f6d587e2288b757217c01b3f28bcb3ca9b2c063d4e2ba17bb0d0cba02fa05",
+      "outputHash": "d4bc48d3e8ba7877051defedeb3f91449f1de5ee3cc211eb033480d313512ef1",
       "width": 160,
       "height": 125
     },
