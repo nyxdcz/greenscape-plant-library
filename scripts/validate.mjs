@@ -432,11 +432,18 @@ try {
       groups.get(base).push(plant);
     });
 
-    const codeKeys = plantData.map(plant => String(plant.code || '').toLowerCase());
+    const boardCodes = JSON.parse(fs.readFileSync(path.join(root, 'data/material-board-codes.json'), 'utf8'));
+    const codeKeys = plantData.map(plant => String(plant.catalogueCode || plant.code || '').toLowerCase());
     check(new Set(codeKeys).size === codeKeys.length, 'Every published plant and material code must be unique.');
 
     plantData.forEach(plant => {
+      if (Object.hasOwn(boardCodes, plant.id)) {
+        check(plant.code === boardCodes[plant.id] && plant.boardCode === boardCodes[plant.id], `${plant.id}: published code must match the material board.`);
+      } else {
+        check(!plant.boardCode && (!plant.catalogueCode || plant.code === plant.catalogueCode), `${plant.id}: unapproved board code override.`);
+      }
       const base = baseCode(plant);
+      const automaticCode = plant.catalogueCode || plant.code;
       if (plant.category === 'Landscape Materials' || plant.isPlant === false) return;
       if (!base) {
         check(plant.codeIncomplete === true, `${plant.id}: incomplete scientific names must be marked.`);
@@ -445,10 +452,10 @@ try {
       const group = groups.get(base) || [];
       check(plant.codeBase === base, `${plant.id}: codeBase must match the botanical initials ${base}.`);
       if (group.length === 1) {
-        check(plant.code === base, `${plant.id}: unique botanical code must be ${base}.`);
+        check(automaticCode === base, `${plant.id}: unique botanical code must be ${base}.`);
         check(plant.codeConflict === false, `${plant.id}: a unique botanical code must not be marked as a conflict.`);
       } else {
-        check(new RegExp(`^${base}-\\d{2}$`).test(plant.code), `${plant.id}: same-initial code must use ${base}-NN.`);
+        check(new RegExp(`^${base}-\\d{2}$`).test(automaticCode), `${plant.id}: same-initial code must use ${base}-NN.`);
         check(plant.codeConflict === true, `${plant.id}: same-initial code must be marked as a conflict.`);
       }
     });

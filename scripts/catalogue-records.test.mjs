@@ -53,3 +53,16 @@ test('summaries omit missing values, avoid duplicate material text, and preserve
   assert.equal(recordSummary(plants[3]), 'Pot\nConcrete\nCategory: Landscape Materials\nRecorded sizes: Not recorded');
   assert.equal(recordSummary({ name: 'A & B' }), 'A & B\nRecorded sizes: Not recorded');
 });
+
+
+test('shared board codes retain separate plant and material records', () => {
+  const boardRecords = [
+    { id: 'silver-wall', name: 'Silver Wall', code: 'SDt', category: 'Shrubs' },
+    { id: 'snake-plant', name: 'Snake Plant', code: 'SDt', category: 'Shrubs' },
+    { id: 'riverstone', name: 'Riverstone', code: 'PA', category: 'Landscape Materials' },
+    { id: 'black-pebbles', name: 'Black Pebbles', code: 'PA', category: 'Landscape Materials' },
+    { id: 'boulders', name: 'Boulders', code: 'PA', category: 'Landscape Materials' }
+  ];
+  assert.deepEqual(selectRecords(boardRecords, { query: 'SDt' }).map(record => record.id), ['silver-wall', 'snake-plant']);
+  assert.deepEqual(selectRecords(boardRecords, { query: 'PA', scope: 'materials' }).map(record => record.id), ['black-pebbles', 'boulders', 'riverstone']);
+});
