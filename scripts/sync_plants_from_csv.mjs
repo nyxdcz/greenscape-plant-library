@@ -35,6 +35,12 @@ const checkOnly = args.has('--check');
 const bootstrap = args.has('--bootstrap');
 const allowLargeDelete = args.has('--allow-large-delete');
 const DATA_SCHEMA_VERSION = 'catalogue-sync1';
+const boardCodes = JSON.parse(fs.readFileSync(path.join(root, 'data', 'material-board-codes.json'), 'utf8'));
+for (const [id, code] of Object.entries(boardCodes)) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]{1,79}$/.test(id) || typeof code !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{1,31}$/.test(code)) {
+    fail('Material board codes must contain valid record IDs and code labels.');
+  }
+}
 
 function fail(message) {
   console.error(`Plant CSV sync failed: ${message}`);
@@ -87,7 +93,7 @@ function publishedDataToCsv(plants) {
     )
     .map(plant => [
       plant.id || '',
-      plant.code || '',
+      plant.catalogueCode || plant.code || '',
       plant.commonName || '',
       plant.scientificName || plant.material || '',
       plant.category || 'Uncategorized',
@@ -335,7 +341,7 @@ function recordsFromCsv(csvText, existingPlants) {
   const existingById = new Map(existingPlants.map(plant => [String(plant.id || '').trim(), plant]));
   const existingByCode = new Map();
   existingPlants.forEach(plant => {
-    const key = String(plant.code || '').trim().toLowerCase();
+    const key = String(plant.catalogueCode || plant.code || '').trim().toLowerCase();
     if (key && !existingByCode.has(key)) existingByCode.set(key, plant);
   });
 
@@ -420,7 +426,13 @@ function recordsFromCsv(csvText, existingPlants) {
     fail(`The CSV has ${records.length} rows, below the deletion safety limit of ${minimumSafeCount}. Restore missing rows or run manually with --allow-large-delete.`);
   }
 
-  return assignBotanicalCodes(records);
+  assignBotanicalCodes(records);
+  return records.map(record => {
+    // Board labels may repeat; keep automatic codes for CSV record matching.
+    const catalogueCode = record.code;
+    const boardCode = boardCodes[record.id];
+    return { ...record, catalogueCode, code: boardCode || catalogueCode, boardCode: boardCode || '' };
+  });
 }
 
 function sourceRevision(csvText) {

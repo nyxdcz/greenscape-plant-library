@@ -159,6 +159,8 @@ export const THUMBNAILS = {
   "ind-038.webp": "thumbnails/ind-038-4a5bcbe23201.webp",
   "ind-039.webp": "thumbnails/ind-039-d3febd1c5d18.webp",
   "ind-040.webp": "thumbnails/ind-040-eccbb63ed7f3.webp",
+  "lim-20261120-cardboard-palm.webp": "thumbnails/lim-20261120-cardboard-palm-c5f13be8c4bf.webp",
+  "lim-20261120-snake-plant.webp": "thumbnails/lim-20261120-snake-plant-662318bf1aed.webp",
   "malakatmon.jpg": "thumbnails/malakatmon-977a618c6bd2.webp",
   "mat-002.webp": "thumbnails/mat-002-66d3ed780263.webp",
   "mat-003.webp": "thumbnails/mat-003-34d350f72dad.webp",

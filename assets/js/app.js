@@ -4160,6 +4160,9 @@
       });
     });
 
+    list.forEach(plant => {
+      if (plant.boardCode) plant.code = plant.boardCode;
+    });
     return list;
   }
 
