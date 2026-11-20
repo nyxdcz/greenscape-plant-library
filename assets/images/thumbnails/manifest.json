@@ -1280,6 +1280,22 @@
       "height": 160
     },
     {
+      "image": "lim-20261120-cardboard-palm.webp",
+      "sourceHash": "c5f13be8c4bf2d0e705bdfdd2cfe0d034fe2836e21ca638f3c830c65f2aeec70",
+      "thumbnail": "thumbnails/lim-20261120-cardboard-palm-c5f13be8c4bf.webp",
+      "outputHash": "9bdf656431fb551264a4d71a81a74b178122321caedcdd7486156f41e21ecdb9",
+      "width": 160,
+      "height": 125
+    },
+    {
+      "image": "lim-20261120-snake-plant.webp",
+      "sourceHash": "662318bf1aedeb9d9dd67a7fbd87d3a63cbaa971e8a560040ae6c6f47f9cce73",
+      "thumbnail": "thumbnails/lim-20261120-snake-plant-662318bf1aed.webp",
+      "outputHash": "105d8f3be139848634197bee83d6d1f290320ab40421cd61aeb2a6b5433bd53f",
+      "width": 160,
+      "height": 125
+    },
+    {
       "image": "malakatmon.jpg",
       "sourceHash": "977a618c6bd2f9792c6d2e30d4cbde9064b7d4e0e3b8453380b734ef09545677",
       "thumbnail": "thumbnails/malakatmon-977a618c6bd2.webp",
